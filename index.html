@@ -3,24 +3,61 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Integrated Life & Health Operating System</title>
+    <title>Life & Health OS | Kawaii Minimal</title>
+    
+    <!-- Google Fonts: Nunito (Rounded, friendly, highly readable) -->
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
-    <!-- Chosen Palette: Warm Neutrals with Soft Contextual Accents (Stone, Sage, Rose, Amber) -->
-    <!-- Application Structure Plan: A two-column dashboard optimized for low-friction daily navigation. The left column presents the high-level health context and the interactive "Master Flow" timeline, which is the "source of truth" for the user's day. The right column is the "PT Execution Engine," featuring a persistent checklist that directly mirrors the user's workout CSV data. This structure is designed as an Information Architecture that separates "Strategy/Planning" (the schedule) from "Execution/Tasks" (the PT checklist), allowing the user to focus on short, 5-minute movement snacks during work breaks without losing their place in the broader day. -->
+    <!-- Custom Tailwind Configuration for Kawaii Palette -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        kawaii: {
+                            bg: '#fffaf5',          // Very light warm cream
+                            text: '#5c5470',        // Dusty dark charcoal purple
+                            textDark: '#4a4453',    // Darker variant for headings
+                            textMuted: '#9a8fa8',   // Soft muted text
+                            lavender: '#f4eff7',    // Soft pastel lavender background
+                            lavenderBorder: '#e6dced',// Slightly darker border
+                            lavenderAccent: '#d4bcee',// Deep pastel lavender
+                            mint: '#e6fcf0',        // Soft mint background
+                            mintBorder: '#bbf7d0',  // Mint border
+                            mintAccent: '#6ee7b7',  // Deep pastel mint
+                            peach: '#fff3e6',       // Soft peach background
+                            peachBorder: '#fde0d9', // Peach border
+                            peachAccent: '#fca5a5', // Deep pastel peach/rose
+                            card: '#ffffff',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Nunito', 'sans-serif'],
+                    },
+                    borderRadius: {
+                        '4xl': '2rem',
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Chosen Palette: Kawaii Minimal (Cream, Pastel Lavender, Mint, Peach) -->
+    <!-- Application Structure Plan: The exact same highly functional two-column structure (Timeline on left, persistent PT engine on right), but wrapped in a UI/UX that prioritizes calmness. Heavy dark-modes have been eliminated to reduce eye strain, and sharp corners are replaced with maximum border-radius. -->
     <!-- Visualization & Content Choices: 
-         1. PT Consistency (Bar Chart) -> Goal: Motivation via comparison -> Viz: Chart.js Bar Chart -> Interaction: Hover tooltips -> Justification: Visualizes the performance drop noted in the user's CSV logs (from 3 days/week down to 0) to highlight the need for the new integrated structure. 
-         2. Time Allocation (Doughnut Chart) -> Goal: Information balance -> Viz: Chart.js Doughnut -> Justification: Confirms the puppy 1:2 sleep ratio fits within the 24-hour cycle alongside work and therapy.
-         3. Interactive Timeline -> Goal: Task organization -> Viz: Styled HTML list -> Interaction: Dynamic filters (Puppy, Medical, Work) -> Justification: Reduces cognitive load by letting the user isolate specific responsibilities based on their current "mode." 
-         4. PT Checklist -> Goal: Task completion -> Viz: Interactive Checkboxes with Progress Tracking -> Interaction: LocalStorage persistence -> Justification: Gamifies the 1-hour PT goal and ensures data isn't lost on page refresh. -->
+         - Timeline: Uses soft pastel borders based on category (Peach for Puppy, Mint for Work, Lavender for Medical).
+         - PT Checklist: Circular checkboxes with a gentle scale-up animation when checked. The progress bar is a soft mint.
+         - Charts: Redesigned with the new pastel hex codes to match the overarching aesthetic perfectly.
+    -->
     <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
 
     <style>
         body {
-            font-family: system-ui, -apple-system, sans-serif;
-            background-color: #fafaf9; /* Tailwind stone-50 */
-            color: #292524; /* stone-800 */
+            background-color: #fffaf5;
+            color: #5c5470;
             overflow-x: hidden;
         }
 
@@ -34,137 +71,160 @@
             max-height: 280px;
         }
 
-        .custom-scroll::-webkit-scrollbar { width: 6px; }
-        .custom-scroll::-webkit-scrollbar-track { background: #f5f5f4; border-radius: 8px;}
-        .custom-scroll::-webkit-scrollbar-thumb { background: #d6d3d1; border-radius: 8px; }
+        /* Soft Kawaii Scrollbar */
+        .custom-scroll::-webkit-scrollbar { width: 8px; }
+        .custom-scroll::-webkit-scrollbar-track { background: transparent; }
+        .custom-scroll::-webkit-scrollbar-thumb { background: #e6dced; border-radius: 20px; border: 2px solid #fffaf5; }
         
+        /* Squishy Micro-Animations */
+        .hover-bounce {
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s ease;
+        }
+        .hover-bounce:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 25px rgba(212, 188, 238, 0.2);
+        }
+
+        /* Circular Kawaii Checkbox */
         .pt-checkbox {
             appearance: none;
-            width: 1.25rem;
-            height: 1.25rem;
-            border: 2px solid #a8a29e;
-            border-radius: 0.25rem;
+            width: 1.5rem;
+            height: 1.5rem;
+            border: 2px solid #e6dced;
+            border-radius: 50%;
             outline: none;
             cursor: pointer;
             position: relative;
-            transition: all 0.2s;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             background-color: #fff;
         }
         .pt-checkbox:checked {
-            background-color: #10b981; /* emerald-500 */
-            border-color: #10b981;
+            background-color: #bbf7d0;
+            border-color: #bbf7d0;
+            transform: scale(1.1);
         }
         .pt-checkbox:checked::after {
             content: '✓';
             position: absolute;
             color: white;
-            font-size: 0.85rem;
+            font-size: 0.9rem;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            font-weight: bold;
+            font-weight: 900;
         }
-        .completed-text { text-decoration: line-through; opacity: 0.4; }
         
-        .timeline-item {
-            transition: all 0.3s ease-in-out;
+        .completed-text { 
+            text-decoration: line-through; 
+            opacity: 0.4; 
+        }
+        
+        .animate-fade-in {
+            animation: fadeIn 0.4s ease-out forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
-<body class="antialiased min-h-screen p-4 md:p-6 lg:p-10">
+<body class="antialiased min-h-screen p-4 md:p-8 lg:p-12 flex flex-col items-center">
 
-    <div class="w-full max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8">
+    <div class="w-full max-w-7xl grid grid-cols-1 lg:grid-cols-12 gap-10">
         
-        <!-- Header -->
-        <header class="lg:col-span-12 border-b border-stone-200 pb-8 flex flex-col md:flex-row md:items-end justify-between gap-4">
+        <!-- HEADER -->
+        <header class="lg:col-span-12 flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6">
             <div>
-                <h1 class="text-3xl md:text-4xl font-extrabold text-stone-800 tracking-tight">Life & Health OS</h1>
-                <p class="text-stone-500 text-lg mt-1">Research • Sophia Yin Puppy Protocol • PT Execution</p>
+                <h1 class="text-4xl md:text-5xl font-black text-kawaii-textDark tracking-tight mb-2">Life OS</h1>
+                <p class="text-kawaii-textMuted text-lg font-semibold">Scientist Routine ✿ Sophia Yin Protocol ✿ PT Engine</p>
             </div>
-            <div class="flex items-center gap-3">
-                <button onclick="resetDailyPT()" class="bg-stone-200 hover:bg-stone-300 text-stone-700 text-xs font-bold py-2 px-4 rounded-lg transition-colors border border-stone-300 uppercase tracking-tighter">
+            <div class="flex items-center">
+                <button onclick="resetDailyProgress()" class="hover-bounce bg-white text-kawaii-lavenderAccent font-extrabold py-3 px-6 rounded-full border-2 border-kawaii-lavenderBorder shadow-sm uppercase tracking-widest text-xs">
                     Reset Daily Progress
                 </button>
             </div>
         </header>
 
-        <!-- LEFT COLUMN: Timeline & Metrics -->
-        <div class="lg:col-span-7 space-y-8">
+        <!-- MAIN OPERATIONAL VIEW -->
+        <div class="lg:col-span-7 space-y-10">
             
-            <!-- Key Health Targets -->
-            <section class="grid grid-cols-2 md:grid-cols-3 gap-4">
-                <div class="bg-white p-5 rounded-2xl shadow-sm border border-stone-200 border-l-4 border-l-stone-400">
-                    <p class="text-[10px] font-bold text-stone-400 uppercase tracking-widest mb-1">Fasting Status</p>
-                    <p class="text-base font-semibold text-stone-800">8:30PM - 8:30AM</p>
+            <!-- CRITICAL STATS -->
+            <section class="grid grid-cols-2 md:grid-cols-3 gap-5">
+                <div class="bg-white p-6 rounded-4xl border-2 border-kawaii-peachBorder flex flex-col justify-center items-center text-center hover-bounce">
+                    <p class="text-xs font-black text-kawaii-peachAccent uppercase tracking-widest mb-1">Fasting</p>
+                    <p class="text-lg font-extrabold text-kawaii-textDark">8:30PM - 8:30AM</p>
                 </div>
-                <div class="bg-white p-5 rounded-2xl shadow-sm border border-stone-200 border-l-4 border-l-emerald-400">
-                    <p class="text-[10px] font-bold text-stone-400 uppercase tracking-widest mb-1">Fuel & Iron</p>
-                    <p class="text-base font-semibold text-stone-800">1.7k kcal • Iron • Meds</p>
+                <div class="bg-white p-6 rounded-4xl border-2 border-kawaii-mintBorder flex flex-col justify-center items-center text-center hover-bounce">
+                    <p class="text-xs font-black text-kawaii-mintAccent uppercase tracking-widest mb-1">Fuel & Iron</p>
+                    <p class="text-lg font-extrabold text-kawaii-textDark">1.7k kcal • Meds</p>
                 </div>
-                <div class="bg-white p-5 rounded-2xl shadow-sm border border-stone-200 border-l-4 border-l-rose-400 col-span-2 md:col-span-1">
-                    <p class="text-[10px] font-bold text-stone-400 uppercase tracking-widest mb-1">RLT Protocol</p>
-                    <p class="text-base font-semibold text-stone-800">Both Lights (Red+NIR)</p>
+                <div class="bg-white p-6 rounded-4xl border-2 border-kawaii-lavenderBorder flex flex-col justify-center items-center text-center hover-bounce col-span-2 md:col-span-1">
+                    <p class="text-xs font-black text-kawaii-lavenderAccent uppercase tracking-widest mb-1">RLT Protocol</p>
+                    <p class="text-lg font-extrabold text-kawaii-textDark">Red + NIR</p>
                 </div>
             </section>
 
-            <!-- Interactive Timeline -->
-            <section class="bg-white p-6 rounded-3xl shadow-sm border border-stone-200 flex flex-col h-[650px]">
-                <div class="mb-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
-                    <h2 class="text-xl font-bold text-stone-800">Master Flow</h2>
-                    <div class="flex flex-wrap gap-1.5" id="timeline-filters">
-                        <button data-filter="all" class="filter-btn px-3 py-1 rounded-full text-[10px] font-bold bg-stone-800 text-white transition-all uppercase tracking-tighter">All</button>
-                        <button data-filter="puppy" class="filter-btn px-3 py-1 rounded-full text-[10px] font-bold bg-stone-100 text-stone-500 hover:bg-amber-100 transition-all uppercase tracking-tighter">🐶 Puppy</button>
-                        <button data-filter="work" class="filter-btn px-3 py-1 rounded-full text-[10px] font-bold bg-stone-100 text-stone-500 hover:bg-sky-100 transition-all uppercase tracking-tighter">💻 Work</button>
-                        <button data-filter="medical" class="filter-btn px-3 py-1 rounded-full text-[10px] font-bold bg-stone-100 text-stone-500 hover:bg-rose-100 transition-all uppercase tracking-tighter">💊 Medical</button>
+            <!-- INTERACTIVE MASTER FLOW -->
+            <section class="bg-white p-8 md:p-10 rounded-4xl border-2 border-kawaii-lavenderBorder flex flex-col h-[700px]">
+                <div class="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-6 border-b-2 border-kawaii-lavender pb-6">
+                    <h2 class="text-2xl font-black text-kawaii-textDark">Master Flow</h2>
+                    <div class="flex flex-wrap gap-2" id="filter-box">
+                        <!-- Filters -->
+                        <button data-filter="all" class="filter-btn hover-bounce px-5 py-2 rounded-full text-xs font-black bg-kawaii-lavenderAccent text-white transition-all uppercase tracking-wider">All</button>
+                        <button data-filter="puppy" class="filter-btn hover-bounce px-5 py-2 rounded-full text-xs font-black bg-white border-2 border-kawaii-lavenderBorder text-kawaii-textMuted transition-all uppercase tracking-wider">🐶 Puppy</button>
+                        <button data-filter="work" class="filter-btn hover-bounce px-5 py-2 rounded-full text-xs font-black bg-white border-2 border-kawaii-lavenderBorder text-kawaii-textMuted transition-all uppercase tracking-wider">💻 Work</button>
+                        <button data-filter="medical" class="filter-btn hover-bounce px-5 py-2 rounded-full text-xs font-black bg-white border-2 border-kawaii-lavenderBorder text-kawaii-textMuted transition-all uppercase tracking-wider">💊 Medical</button>
                     </div>
                 </div>
 
-                <div class="custom-scroll overflow-y-auto pr-3 flex-grow" id="timeline-body">
-                    <!-- Dynamic Items -->
+                <div class="custom-scroll overflow-y-auto pr-4 flex-grow" id="timeline-body">
+                    <!-- JS Content Injection -->
                 </div>
             </section>
 
-            <!-- Insight Charts -->
-            <section class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div class="bg-white p-6 rounded-3xl shadow-sm border border-stone-200">
-                    <h3 class="text-xs font-bold text-stone-400 uppercase tracking-widest mb-4">Daily Balance</h3>
+            <!-- DATA VISUALIZATION -->
+            <section class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="bg-white p-8 rounded-4xl border-2 border-kawaii-lavenderBorder hover-bounce">
+                    <h3 class="text-xs font-black text-kawaii-textMuted uppercase tracking-widest mb-6 text-center">Daily Balance</h3>
                     <div class="chart-container"><canvas id="allocationChart"></canvas></div>
                 </div>
-                <div class="bg-white p-6 rounded-3xl shadow-sm border border-stone-200">
-                    <h3 class="text-xs font-bold text-stone-400 uppercase tracking-widest mb-4">Consistency Goal</h3>
+                <div class="bg-white p-8 rounded-4xl border-2 border-kawaii-lavenderBorder hover-bounce">
+                    <h3 class="text-xs font-black text-kawaii-textMuted uppercase tracking-widest mb-6 text-center">Consistency Goal</h3>
                     <div class="chart-container"><canvas id="historyChart"></canvas></div>
                 </div>
             </section>
         </div>
 
-        <!-- RIGHT COLUMN: PT ENGINE -->
+        <!-- RIGHT PANEL: PT ENGINE -->
         <div class="lg:col-span-5">
-            <section class="bg-stone-800 text-stone-100 p-8 rounded-3xl shadow-xl border border-stone-700 h-full flex flex-col sticky top-8">
+            <!-- Completely softened styling: light lavender background instead of dark gray -->
+            <section class="bg-kawaii-lavender p-8 md:p-10 rounded-4xl border-2 border-kawaii-lavenderBorder h-full flex flex-col sticky top-10">
                 
-                <div class="mb-8">
-                    <h2 class="text-2xl font-bold mb-2">PT Execution Engine</h2>
-                    <p class="text-stone-400 text-sm leading-relaxed">
-                        Chisel away at your routines during work breaks. Checkboxes save automatically to your browser storage.
+                <div class="mb-10 text-center">
+                    <h2 class="text-3xl font-black text-kawaii-textDark mb-3">PT Engine</h2>
+                    <p class="text-kawaii-textMuted text-sm font-semibold leading-relaxed">
+                        Chisel away at your routines during work breaks. Checkboxes save automatically. You got this! ✨
                     </p>
                 </div>
 
-                <!-- Progress Meter -->
-                <div class="mb-10 bg-stone-900/40 p-6 rounded-2xl border border-stone-700">
-                    <div class="flex justify-between items-end mb-3">
-                        <span class="text-xs font-bold tracking-widest text-stone-400 uppercase">Daily PT Progress</span>
-                        <span class="text-3xl font-bold text-emerald-400" id="pt-progress-text">0%</span>
+                <!-- PROGRESS METER -->
+                <div class="mb-10 bg-white p-8 rounded-4xl border-2 border-kawaii-lavenderBorder hover-bounce">
+                    <div class="flex justify-between items-end mb-4">
+                        <span class="text-xs font-black tracking-widest text-kawaii-textMuted uppercase">Movement Progress</span>
+                        <span class="text-4xl font-black text-kawaii-mintAccent" id="pt-progress-text">0%</span>
                     </div>
-                    <div class="w-full bg-stone-700 rounded-full h-3">
-                        <div class="bg-emerald-500 h-3 rounded-full transition-all duration-700 ease-in-out" id="pt-progress-bar" style="width: 0%"></div>
+                    <!-- Soft pill track -->
+                    <div class="w-full bg-kawaii-lavender rounded-full h-4 border-2 border-kawaii-lavenderBorder">
+                        <div class="bg-kawaii-mintAccent h-full rounded-full transition-all duration-700 ease-out" id="pt-progress-bar" style="width: 0%"></div>
                     </div>
-                    <div class="mt-3 flex justify-between text-[10px] font-bold text-stone-500 uppercase tracking-widest">
-                        <span>Movement Target: 1 Hour</span>
+                    <div class="mt-4 flex justify-between text-xs font-extrabold text-kawaii-textMuted uppercase tracking-widest">
+                        <span>Target: 1 Hour</span>
                         <span><span id="pt-completed-num">0</span> / <span id="pt-total-num">0</span> Done</span>
                     </div>
                 </div>
 
-                <!-- Checklist -->
-                <div class="custom-scroll overflow-y-auto pr-3 flex-grow space-y-8" id="pt-checklist-body">
+                <!-- LIST ENGINE -->
+                <div class="custom-scroll overflow-y-auto pr-4 flex-grow space-y-10" id="pt-checklist-body">
                     <!-- Dynamic Sections -->
                 </div>
 
@@ -173,23 +233,23 @@
     </div>
 
     <script>
-        // --- DATA OBJECTS ---
-        const masterTimeline = [
+        // DATA ARRAYS
+        const schedule = [
             { t: "08:00 AM", h: "Quiet Exit & Potty", d: "Carry Timber outside. No paws on floor. Reward success.", c: "puppy", i: "🚽" },
-            { t: "08:10 AM", h: "Tether & Teeth", d: "Tether Timber first. Guest Bath: Brush + Calf Raises.", c: "puppy", i: "🪢" },
+            { t: "08:10 AM", h: "Tether & Teeth", d: "Tether first. Guest Bath: Brush + Calf Raises.", c: "puppy", i: "🪢" },
             { t: "08:15 AM", h: "Morning Walk", d: "20m Socialization. Joint lubrication for user.", c: "puppy", i: "☀️" },
             { t: "08:40 AM", h: "Break Fast", d: "Meal + Vyvanse/Glucosamine. Grab Groov tool.", c: "medical", i: "🟢" },
-            { t: "09:00 AM", h: "RLT & Work Start", d: "Crate (Nap #1) with Groov tool. RLT Hips/Arms. Arm PT after.", c: "medical", i: "🔴" },
+            { t: "09:00 AM", h: "RLT & Work Start", d: "Crate (Nap #1) with Groov. RLT Hips/Arms. Arm PT after.", c: "medical", i: "🔴" },
             { t: "10:00 AM", h: "25/5 Cycle Start", d: "Focus work. Use 5m breaks for PT Checklist (Right).", c: "work", i: "🔄" },
             { t: "11:00 AM", h: "Potty then Play", d: "If potty, 10m play. Then Office Playpen.", c: "puppy", i: "🚽" },
             { t: "12:40 PM", h: "RLT Stomach", d: "Fasted. 20m. RED+NIR. Stay stationary.", c: "medical", i: "🔴" },
             { t: "01:00 PM", h: "Lymphatic Flush Walk", d: "Remove Timber from crate. 20m walk.", c: "medical", i: "🦮" },
             { t: "01:20 PM", h: "Lunch & Iron", d: "Eat + Iron Supplement. Timber Tethered.", c: "medical", i: "🍽️" },
-            { t: "02:00 PM", h: "Rest in Crate", d: "Nap #2 with frozen Kong/Ball. Secure Timber.", c: "puppy", i: "😴" },
-            { t: "02:05 PM", h: "Sit/Stand Switch", d: "Toggle desk height. PT snacks in work breaks.", c: "work", i: "🔄" },
+            { t: "02:00 PM", h: "Rest in Crate", d: "Nap #2 with frozen Kong. Secure Timber.", c: "puppy", i: "😴" },
+            { t: "02:05 PM", h: "Sit/Stand Switch", d: "Toggle desk height. PT micro-doses in breaks.", c: "work", i: "🔄" },
             { t: "04:00 PM", h: "Wake Up Potty", d: "Out immediately. Return to Tether/Umbilical.", c: "puppy", i: "🚽" },
             { t: "05:00 PM", h: "Work Stop & Walk", d: "20m decompression walk.", c: "work", i: "🦮" },
-            { t: "05:30 PM", h: "Nap & Household", d: "Timber Nap #3. 15m Sweepy tasks. Cat play ritual.", c: "puppy", i: "🧹" },
+            { t: "05:30 PM", h: "Nap & Household", d: "Timber Nap #3. 15m Sweepy. Cat play ritual.", c: "puppy", i: "🧹" },
             { t: "06:30 PM", h: "Prep & Social", d: "Prep tomorrow's treats. Cook with Nathan.", c: "puppy", i: "🧊" },
             { t: "07:30 PM", h: "Dinner & TV", d: "Wake Timber. Tethered or Playpen with chew.", c: "puppy", i: "🍽️" },
             { t: "08:15 PM", h: "Teeth & Balance", d: "Single-leg balance while brushing.", c: "work", i: "🦷" },
@@ -199,7 +259,7 @@
             { t: "11:30 PM", h: "PM Meds", d: "Sertraline + Sronyx.", c: "medical", i: "💊" }
         ];
 
-        const ptRoutines = [
+        const ptData = [
             { group: "Daily Essentials", items: [
                 { n: "Nerve Glides", d: "10 reps/side" },
                 { n: "Plank (Standard)", d: "5 x 30s" },
@@ -213,7 +273,7 @@
                 { n: "Around the World", d: "2 x 10" },
                 { n: "4-Way Band Walk", d: "10 reps" }
             ]},
-            { group: "Floor Routine (A)", items: [
+            { group: "Floor Routine (Group A)", items: [
                 { n: "Supine Bridge", d: "3 x 10" },
                 { n: "Clamshell", d: "3 x 10" },
                 { n: "Inner/Outer Thigh", d: "3 x 10" },
@@ -223,88 +283,105 @@
             ]}
         ];
 
-        // --- CORE LOGIC ---
-        let ptState = [];
+        let state = { completed: [] };
 
+        // INITIALIZATION
         function init() {
             renderTimeline('all');
-            renderPTChecklist();
+            renderPT();
             initCharts();
             
-            // Filter Handlers
+            // Filter listeners (Kawaii UI updates)
             document.querySelectorAll('.filter-btn').forEach(btn => {
-                btn.addEventListener('click', () => {
+                btn.addEventListener('click', (e) => {
                     document.querySelectorAll('.filter-btn').forEach(b => {
-                        b.classList.replace('bg-stone-800', 'bg-stone-100');
-                        b.classList.replace('text-white', 'text-stone-500');
+                        b.classList.remove('bg-kawaii-lavenderAccent', 'text-white', 'border-transparent');
+                        b.classList.add('bg-white', 'border-2', 'border-kawaii-lavenderBorder', 'text-kawaii-textMuted');
                     });
-                    btn.classList.replace('bg-stone-100', 'bg-stone-800');
-                    btn.classList.replace('text-stone-500', 'text-white');
+                    
+                    btn.classList.remove('bg-white', 'border-2', 'border-kawaii-lavenderBorder', 'text-kawaii-textMuted');
+                    btn.classList.add('bg-kawaii-lavenderAccent', 'text-white', 'border-transparent');
+                    
                     renderTimeline(btn.dataset.filter);
                 });
             });
         }
 
+        // RENDER TIMELINE
         function renderTimeline(filter) {
             const container = document.getElementById('timeline-body');
             container.innerHTML = '';
             
-            masterTimeline.filter(item => filter === 'all' || item.c === filter).forEach((item, idx) => {
+            schedule.filter(item => filter === 'all' || item.c === filter).forEach((item, idx) => {
                 const row = document.createElement('div');
-                row.className = "flex space-x-4 mb-6 relative timeline-item";
+                row.className = "flex space-x-6 mb-8 relative animate-fade-in";
                 
-                let colorClass = "bg-stone-100 text-stone-600";
-                if(item.c === 'puppy') colorClass = "bg-amber-100 text-amber-700";
-                if(item.c === 'medical') colorClass = "bg-rose-100 text-rose-700";
-                if(item.c === 'work') colorClass = "bg-sky-100 text-sky-700";
+                // Color Logic for Kawaii Theme
+                let colorBg = "bg-kawaii-mint";
+                let colorBorder = "border-kawaii-mintBorder";
+                let colorText = "text-emerald-600";
+                
+                if(item.c === 'puppy') {
+                    colorBg = "bg-kawaii-peach";
+                    colorBorder = "border-kawaii-peachBorder";
+                    colorText = "text-orange-500";
+                }
+                if(item.c === 'medical') {
+                    colorBg = "bg-kawaii-lavender";
+                    colorBorder = "border-kawaii-lavenderBorder";
+                    colorText = "text-purple-500";
+                }
 
                 row.innerHTML = `
-                    <div class="flex-shrink-0 w-10 flex flex-col items-center">
-                        <div class="w-8 h-8 rounded-full ${colorClass} flex items-center justify-center text-sm font-bold z-10">${item.i}</div>
-                        <div class="w-0.5 h-full bg-stone-100 mt-2"></div>
+                    <div class="flex-shrink-0 w-12 flex flex-col items-center">
+                        <div class="w-12 h-12 rounded-full ${colorBg} border-2 ${colorBorder} flex items-center justify-center text-xl font-bold z-10 shadow-sm">${item.i}</div>
+                        <!-- Soft dashed connector line -->
+                        <div class="w-1 h-full border-r-2 border-dashed border-kawaii-lavenderBorder mt-2"></div>
                     </div>
-                    <div class="flex-grow bg-stone-50/50 p-4 rounded-2xl border border-stone-100 hover:border-stone-200 transition-all">
-                        <div class="flex justify-between items-baseline mb-1">
-                            <h4 class="font-bold text-stone-800 text-sm tracking-tight">${item.h}</h4>
-                            <span class="text-[10px] font-black text-stone-400 uppercase tracking-tighter">${item.t}</span>
+                    <div class="flex-grow bg-white p-6 rounded-4xl border-2 ${colorBorder} hover-bounce">
+                        <div class="flex flex-col sm:flex-row sm:justify-between sm:items-baseline mb-2">
+                            <h4 class="font-extrabold text-kawaii-textDark text-base tracking-tight">${item.h}</h4>
+                            <span class="text-[11px] font-black ${colorText} uppercase tracking-widest mt-1 sm:mt-0">${item.t}</span>
                         </div>
-                        <p class="text-xs text-stone-500 leading-relaxed">${item.d}</p>
+                        <p class="text-sm font-semibold text-kawaii-textMuted leading-relaxed">${item.d}</p>
                     </div>
                 `;
                 container.appendChild(row);
             });
         }
 
-        function renderPTChecklist() {
+        // RENDER PT ENGINE
+        function renderPT() {
             const container = document.getElementById('pt-checklist-body');
             container.innerHTML = '';
             
-            const stored = localStorage.getItem('life_os_pt_v2');
-            ptState = stored ? JSON.parse(stored) : [];
+            const stored = localStorage.getItem('life_os_pt_kawaii');
+            state.completed = stored ? JSON.parse(stored) : [];
 
             let total = 0;
             let done = 0;
 
-            ptRoutines.forEach((section, sIdx) => {
+            ptData.forEach((section, sIdx) => {
                 const secDiv = document.createElement('div');
-                secDiv.innerHTML = `<h5 class="text-[10px] font-black text-stone-500 uppercase tracking-[0.2em] mb-4 border-b border-stone-700 pb-2">${section.group}</h5>`;
+                secDiv.innerHTML = `<h5 class="text-[11px] font-black text-kawaii-lavenderAccent uppercase tracking-[0.25em] mb-5 border-b-2 border-kawaii-lavenderBorder pb-2 pl-2">${section.group}</h5>`;
                 
                 const list = document.createElement('div');
-                list.className = "space-y-4 mb-8";
+                list.className = "space-y-4 mb-10";
                 
                 section.items.forEach((item, iIdx) => {
                     total++;
                     const id = `pt-${sIdx}-${iIdx}`;
-                    const isDone = ptState.includes(id);
+                    const isDone = state.completed.includes(id);
                     if(isDone) done++;
 
                     const itemDiv = document.createElement('div');
-                    itemDiv.className = "flex items-start space-x-4 group";
+                    itemDiv.className = "flex items-center space-x-5 group bg-white p-4 rounded-3xl border-2 border-kawaii-lavenderBorder hover-bounce";
+                    
                     itemDiv.innerHTML = `
-                        <input type="checkbox" id="${id}" class="pt-checkbox mt-0.5" ${isDone ? 'checked' : ''} onchange="updatePTStatus('${id}')">
-                        <label for="${id}" class="cursor-pointer">
-                            <p class="text-sm font-bold text-stone-200 group-hover:text-white transition-colors ${isDone ? 'completed-text' : ''}">${item.n}</p>
-                            <p class="text-[10px] text-stone-500 uppercase tracking-wider font-bold ${isDone ? 'completed-text' : ''}">${item.d}</p>
+                        <input type="checkbox" id="${id}" class="pt-checkbox flex-shrink-0" ${isDone ? 'checked' : ''} onchange="togglePT('${id}')">
+                        <label for="${id}" class="cursor-pointer flex-grow flex flex-col">
+                            <span class="text-[15px] font-extrabold text-kawaii-textDark transition-all ${isDone ? 'completed-text' : ''}">${item.n}</span>
+                            <span class="text-[11px] text-kawaii-textMuted uppercase tracking-widest font-bold mt-0.5 ${isDone ? 'completed-text' : ''}">${item.d}</span>
                         </label>
                     `;
                     list.appendChild(itemDiv);
@@ -313,63 +390,78 @@
                 container.appendChild(secDiv);
             });
 
+            // Update Progress UI
             document.getElementById('pt-total-num').innerText = total;
-            document.getElementById('pt-completed-num').innerText = done;
+            document.getElementById('pt-complete-num').innerText = done;
             const pct = total > 0 ? Math.round((done/total) * 100) : 0;
             document.getElementById('pt-progress-bar').style.width = `${pct}%`;
             document.getElementById('pt-progress-text').innerText = `${pct}%`;
         }
 
-        window.updatePTStatus = (id) => {
-            if(ptState.includes(id)) {
-                ptState = ptState.filter(i => i !== id);
+        window.togglePT = (id) => {
+            if(state.completed.includes(id)) {
+                state.completed = state.completed.filter(i => i !== id);
             } else {
-                ptState.push(id);
+                state.completed.push(id);
             }
-            localStorage.setItem('life_os_pt_v2', JSON.stringify(ptState));
-            renderPTChecklist();
+            localStorage.setItem('life_os_pt_kawaii', JSON.stringify(state.completed));
+            renderPT();
         };
 
-        window.resetDailyPT = () => {
-            if(confirm("New day? This will clear your PT progress.")) {
-                localStorage.removeItem('life_os_pt_v2');
-                renderPTChecklist();
+        window.resetDailyProgress = () => {
+            if(confirm("Ready for a fresh day? This clears your PT checkboxes! ☀️")) {
+                localStorage.removeItem('life_os_pt_kawaii');
+                renderPT();
             }
         };
 
+        // CHARTS (Kawaii Palette)
         function initCharts() {
-            // Doughnut: Time Balance
+            // Colors: Peach, Mint, Lavender, Soft Pink, Cream Accent
+            const kawaiiColors = ['#fca5a5', '#6ee7b7', '#d4bcee', '#fde0d9', '#e6dced'];
+            
+            Chart.defaults.font.family = "'Nunito', sans-serif";
+            Chart.defaults.font.weight = "bold";
+            Chart.defaults.color = "#9a8fa8";
+
+            // Allocation
             new Chart(document.getElementById('allocationChart'), {
                 type: 'doughnut',
                 data: {
-                    labels: ['Sleep', 'Work', 'Therapy/PT', 'Puppy', 'Unwind'],
+                    labels: ['Sleep', 'Work', 'PT/Therapy', 'Puppy', 'Unwind'],
                     datasets: [{
                         data: [8, 5, 2.5, 4.5, 4],
-                        backgroundColor: ['#e7e5e4', '#7dd3fc', '#fda4af', '#fcd34d', '#a8a29e'],
-                        borderWidth: 0
+                        backgroundColor: kawaiiColors,
+                        borderWidth: 4,
+                        borderColor: '#ffffff',
+                        hoverOffset: 8
                     }]
                 },
                 options: { 
-                    responsive: true, maintainAspectRatio: false, cutout: '75%',
-                    plugins: { legend: { display: false } }
+                    responsive: true, maintainAspectRatio: false, cutout: '70%',
+                    plugins: { legend: { display: false }, tooltip: { padding: 12, cornerRadius: 16 } }
                 }
             });
 
-            // Bar: Motivation / History
+            // History
             new Chart(document.getElementById('historyChart'), {
                 type: 'bar',
                 data: {
                     labels: ['Feb 02', 'Feb 17', 'Target'],
                     datasets: [{
                         data: [3, 0, 7],
-                        backgroundColor: ['#d6d3d1', '#f87171', '#34d399'],
-                        borderRadius: 4
+                        backgroundColor: ['#e6dced', '#fca5a5', '#6ee7b7'],
+                        borderRadius: 8,
+                        borderSkipped: false
                     }]
                 },
                 options: {
                     responsive: true, maintainAspectRatio: false,
-                    scales: { y: { display: false }, x: { grid: { display: false } } },
-                    plugins: { legend: { display: false } }
+                    scales: { 
+                        y: { display: false, max: 7 }, 
+                        x: { grid: { display: false }, border: {display: false} } 
+                    },
+                    plugins: { legend: { display: false }, tooltip: { padding: 12, cornerRadius: 16 } }
                 }
             });
         }

@@ -287,6 +287,13 @@
                 { n: "Active Leg Raise", d: "3 x 10", days: [1, 3, 5] },
                 { n: "Lower Trunk Rot", d: "3 x 10", days: [1, 3, 5] },
                 { n: "Open Book", d: "3 x 10", days: [1, 3, 5] }
+            ]},
+            { group: "Group B (Floor) [T/Th]", items: [
+                { n: "Bird Dog", d: "3 x 10", days: [2, 4] }, 
+                { n: "Dead Bug", d: "3 x 10", days: [2, 4] },
+                { n: "Prone Hip Extension", d: "3 x 10", days: [2, 4] },
+                { n: "Fire Hydrant", d: "3 x 10", days: [2, 4] },
+                { n: "Child's Pose", d: "3 x 30s", days: [2, 4] }
             ]}
         ];
 
@@ -373,7 +380,7 @@
 
             ptData.forEach((section, sIdx) => {
                 const activeItems = section.items.filter(item => item.days.includes(currentDayFilter));
-                if(activeItems.length === 0) return; // Skips Group A on Tuesdays!
+                if(activeItems.length === 0) return; // Skips Group A on Tuesdays, Group B on Mon!
 
                 const secDiv = document.createElement('div');
                 secDiv.className = "animate-fade-in";
@@ -414,6 +421,14 @@
             }
 
             document.getElementById('pt-total-num').innerText = totalPTItemsForToday;
+            
+            // FIX: This ensures the text renders the correct completed number on load!
+            let loadDoneCount = 0;
+            ptState.forEach(savedId => {
+                if(document.getElementById(`checkbox-${savedId}`)) loadDoneCount++;
+            });
+            document.getElementById('pt-completed-num').innerText = loadDoneCount;
+
             updatePTProgressUI();
         }
 
@@ -438,8 +453,16 @@
         };
 
         function updatePTProgressUI() {
-            // Guard against bad data
-            let doneCount = ptState.length;
+            // Recalculate accurately based on what is currently checked on screen
+            let doneCount = 0;
+            ptState.forEach(savedId => {
+                // Only count items that belong to the current day's active list
+                if(document.getElementById(`checkbox-${savedId}`)) {
+                    doneCount++;
+                }
+            });
+
+            // Fallback guard
             if (doneCount > totalPTItemsForToday) doneCount = totalPTItemsForToday;
 
             document.getElementById('pt-completed-num').innerText = doneCount;

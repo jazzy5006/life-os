@@ -14,6 +14,22 @@
   --rmd:16px;--rlg:22px;--rxl:32px;--rf:999px;
   --nav-h:60px;--tab-h:56px;
 }
+
+/* Night Mode Color Palette Shifts */
+body.night-mode {
+  --bg:#2f2b36; --bgc:#393441; --bgp:#332f3c; 
+  --td:#e2dceb; --tb:#b6aec4; --tm:#8c839c;
+  --ll:#483f55; --lm:#5e546e; --la:#9c85c2;
+  --ml:#2d4239; --mm:#3a614e; --ma:#4ea37d;
+  --pl:#47342d; --pm:#6e4536; --pa:#ba6a50;
+  --sl:#2c3a4a; --sm:#3b5673; --sa:#5e94cc;
+}
+
+/* Smooth transitions for night mode */
+body, .card, .top-nav, .tab-bar, .tc, .sc, .desk-sc, .desk-pt {
+  transition: background-color 1.5s ease, border-color 1.5s ease, color 1.5s ease;
+}
+
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
 body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--tb);min-height:100vh;overflow-x:hidden;padding-bottom:env(safe-area-inset-bottom)}
@@ -25,6 +41,10 @@ h3{font-size:.9rem;font-weight:800;color:var(--td)}
 h4{font-size:.83rem;font-weight:800;color:var(--td);line-height:1.3}
 p{font-size:.8rem;font-weight:600;color:var(--tb);line-height:1.6}
 .lbl{font-size:.56rem;font-weight:900;letter-spacing:.18em;text-transform:uppercase;color:var(--tm)}
+
+/* ── LINKS ── */
+.step a { color: var(--la); text-decoration: none; border-bottom: 2px solid var(--lm); font-weight: 900; transition: border-color .2s; }
+.step a:hover { border-color: var(--la); }
 
 /* ── CARDS ── */
 .card{background:var(--bgc);border-radius:var(--rlg);border:2px solid var(--lm);padding:16px}
@@ -78,6 +98,10 @@ p{font-size:.8rem;font-weight:600;color:var(--tb);line-height:1.6}
 .page{display:none;flex-direction:column;padding:14px 14px calc(var(--tab-h) + 14px + env(safe-area-inset-bottom));min-height:calc(100vh - var(--nav-h))}
 .page.active{display:flex}
 
+/* Floating Action Button (Mobile) */
+.fab-now{position:fixed;bottom:calc(var(--tab-h) + 16px);right:16px;z-index:90;background:var(--la);color:#fff;border:none;border-radius:var(--rf);padding:10px 18px;font-family:'Nunito',sans-serif;font-weight:900;font-size:.65rem;letter-spacing:.08em;text-transform:uppercase;box-shadow:0 6px 16px rgba(184,157,224,.4);cursor:pointer;transition:transform .2s;display:none;align-items:center;gap:6px;}
+.fab-now:active{transform:scale(.92);}
+
 /* Stat cards */
 .stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
 .sc{padding:14px 10px;border-radius:var(--rlg);border:2px solid;display:flex;flex-direction:column;align-items:center;text-align:center;gap:3px;background:var(--bgc)}
@@ -117,7 +141,7 @@ p{font-size:.8rem;font-weight:600;color:var(--tb);line-height:1.6}
 .ti.now .tcw{border-color:var(--sa);background:var(--bgc);box-shadow:0 0 0 4px var(--sl), 0 8px 20px rgba(123,184,245,.12)}
 .ti.now .tcm{border-color:var(--la);background:var(--bgc);box-shadow:0 0 0 4px var(--ll), 0 8px 20px rgba(184,157,224,.15)}
 .nbadge{display:inline-flex;align-items:center;gap:3px;font-size:.5rem;font-weight:900;letter-spacing:.14em;text-transform:uppercase;padding:2px 8px;border-radius:var(--rf);margin-left:4px;flex-shrink:0;line-height:1.8}
-.nbp{background:var(--pm);color:#a03818}.nbw{background:var(--sm);color:#1a4e8a}.nbm{background:var(--lm);color:#5020a0}
+.nbp{background:var(--pm);color:var(--td)}.nbw{background:var(--sm);color:var(--td)}.nbm{background:var(--lm);color:var(--td)}
 .ndot{width:5px;height:5px;border-radius:50%;flex-shrink:0;animation:bl 1.4s ease-in-out infinite}
 .ndp{background:var(--pa)}.ndw{background:var(--sa)}.ndm{background:var(--la)}
 @keyframes bl{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.25;transform:scale(1.8)}}
@@ -157,6 +181,12 @@ select{appearance:none;background:transparent;border:none;outline:none;font-fami
 .leg-item{display:flex;align-items:center;gap:4px;font-size:.6rem;font-weight:800;color:var(--tb)}
 .leg-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
 
+/* Desktop Collapsible Helper */
+.collapsible-body { transition: max-height 0.4s ease-out, opacity 0.3s ease; overflow: hidden; opacity: 1; }
+.collapsible-body.collapsed { max-height: 0; opacity: 0; pointer-events: none; }
+.collapse-icon { font-size: 0.8rem; color: var(--tm); transition: transform 0.3s ease; }
+.collapse-icon.collapsed { transform: rotate(-90deg); }
+
 /* ════════════════════════════════════════
    DESKTOP LAYOUT (≥ 768px)
 ════════════════════════════════════════ */
@@ -164,6 +194,7 @@ select{appearance:none;background:transparent;border:none;outline:none;font-fami
   /* Hide mobile tab bar and mobile pages */
   .tab-bar{display:none}
   .page{display:none !important}
+  .fab-now{display:none !important;}
 
   /* Show desktop layout */
   .desktop-layout{display:flex !important;flex-direction:column;min-height:100vh;padding:24px 24px 32px}
@@ -175,7 +206,7 @@ select{appearance:none;background:transparent;border:none;outline:none;font-fami
 
   .desk-grid{display:grid;grid-template-columns:1fr 360px;gap:20px;flex:1}
   .desk-left{display:flex;flex-direction:column;gap:16px}
-  .desk-right{display:flex;flex-direction:column}
+  .desk-right{display:flex;flex-direction:column; gap:16px;}
 
   /* Stat cards desktop */
   .desk-stat-row{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
@@ -183,8 +214,9 @@ select{appearance:none;background:transparent;border:none;outline:none;font-fami
   .desk-sc:hover{transform:translateY(-3px)}
 
   /* Flow box desktop */
-  .desk-flow{display:flex;flex-direction:column;height:580px}
-  .desk-fhd{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-bottom:12px;margin-bottom:12px;border-bottom:2px solid var(--ll)}
+  .desk-flow{display:flex;flex-direction:column;height:580px;transition:height 0.4s ease}
+  .desk-flow.collapsed{height:auto;}
+  .desk-fhd{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-bottom:12px;margin-bottom:12px;border-bottom:2px solid var(--ll);cursor:pointer;}
   .desk-fg{display:flex;gap:7px}
   .desk-btn-f{background:var(--bgc);border-color:var(--lm);color:var(--tm);flex:none;padding:8px 16px;font-size:.62rem}
   .desk-btn-f.on{background:var(--la);border-color:var(--la);color:#fff}
@@ -195,11 +227,12 @@ select{appearance:none;background:transparent;border:none;outline:none;font-fami
   /* Chart row desktop */
   .desk-charts{display:grid;grid-template-columns:1fr 1fr;gap:14px}
   .desk-cb{position:relative;height:160px}
+  .chart-head-wrap{cursor:pointer;}
 
   /* PT panel desktop */
   .desk-pt{background:var(--bgp);border-radius:var(--rxl);border:2px solid var(--lm);padding:22px 18px;display:flex;flex-direction:column;position:sticky;top:20px;max-height:calc(100vh - 40px)}
-  .desk-pt-head{text-align:center;margin-bottom:16px}
-  .desk-pt-head h2{font-size:1.3rem;margin-bottom:4px}
+  .desk-pt-head{text-align:center;margin-bottom:16px;cursor:pointer;}
+  .desk-pt-head h2{font-size:1.3rem;margin-bottom:4px;display:flex;align-items:center;justify-content:center;gap:8px;}
   .desk-pt-head p{font-size:.72rem;color:var(--tm);margin-bottom:10px}
   .desk-pts{overflow-y:auto;flex:1;padding-right:4px}
   .desk-pts::-webkit-scrollbar{width:5px}
@@ -218,9 +251,6 @@ select{appearance:none;background:transparent;border:none;outline:none;font-fami
 </head>
 <body>
 
-<!-- ═══════════════════════════════════════
-     MOBILE TOP NAV
-═══════════════════════════════════════ -->
 <nav class="top-nav" id="topNav">
   <div class="nav-brand">
     <h1>Jasmine's Life OS ✿</h1>
@@ -238,11 +268,10 @@ select{appearance:none;background:transparent;border:none;outline:none;font-fami
   <span class="pill ppe">💊 PT Engine</span>
 </div>
 
-<!-- ═══════════════════════════════════════
-     MOBILE PAGES
-═══════════════════════════════════════ -->
+<button id="jumpNowBtn" class="fab-now" onclick="document.querySelector('.now')?.scrollIntoView({behavior:'smooth',block:'center'})">
+  🎯 Now
+</button>
 
-<!-- Page: Flow -->
 <div class="page active" id="page-flow">
   <div class="filter-row" style="margin-top:14px">
     <button class="btn btn-f on" id="mba" onclick="ftl('all','m')">All</button>
@@ -253,7 +282,6 @@ select{appearance:none;background:transparent;border:none;outline:none;font-fami
   <div class="tl-wrap" id="mTlb"></div>
 </div>
 
-<!-- Page: PT -->
 <div class="page" id="page-pt">
   <div style="margin-top:14px">
     <div class="pt-header">
@@ -279,7 +307,6 @@ select{appearance:none;background:transparent;border:none;outline:none;font-fami
   </div>
 </div>
 
-<!-- Page: Stats -->
 <div class="page" id="page-stats">
   <div style="margin-top:14px;display:flex;flex-direction:column;gap:14px">
     <div class="stat-grid">
@@ -299,9 +326,6 @@ select{appearance:none;background:transparent;border:none;outline:none;font-fami
   </div>
 </div>
 
-<!-- ═══════════════════════════════════════
-     MOBILE BOTTOM TAB BAR
-═══════════════════════════════════════ -->
 <nav class="tab-bar">
   <button class="tab active" id="tab-flow" onclick="switchTab('flow')">
     <span class="tab-icon">🗓️</span>
@@ -317,9 +341,6 @@ select{appearance:none;background:transparent;border:none;outline:none;font-fami
   </button>
 </nav>
 
-<!-- ═══════════════════════════════════════
-     DESKTOP LAYOUT
-═══════════════════════════════════════ -->
 <div class="desktop-layout" id="desktopLayout">
   <header class="desk-header">
     <div class="desk-brand">
@@ -339,73 +360,103 @@ select{appearance:none;background:transparent;border:none;outline:none;font-fami
 
   <div class="desk-grid">
     <div class="desk-left">
-      <!-- Stat row -->
       <div class="desk-stat-row">
         <div class="desk-sc" style="border-color:var(--pm)"><span class="si">⏱️</span><span class="lbl" style="color:var(--pa)">Fasting</span><span class="sv">8:30 PM – 8:30 AM</span></div>
         <div class="desk-sc" style="border-color:var(--mm)"><span class="si">🥗</span><span class="lbl" style="color:var(--ma)">Daily Fuel</span><span class="sv">1,700 kcal + Meds</span></div>
         <div class="desk-sc" style="border-color:var(--lm)"><span class="si">🔴</span><span class="lbl" style="color:var(--la)">RLT Protocol</span><span class="sv">Red + NIR Daily</span></div>
       </div>
 
-      <!-- Flow -->
-      <div class="card desk-flow">
-        <div class="desk-fhd">
-          <h2>Master Flow ✿</h2>
-          <div class="desk-fg">
+      <div class="card desk-flow" id="deskFlowCard">
+        <div class="desk-fhd" onclick="toggleDeskCollapse('deskFlowCard', 'deskFlowBody', 'deskFlowIcon')">
+          <h2 style="display:flex;align-items:center;gap:8px">Master Flow ✿ <span class="collapse-icon" id="deskFlowIcon">▼</span></h2>
+          <div class="desk-fg" onclick="event.stopPropagation()">
             <button class="btn desk-btn-f on" id="dba" onclick="ftl('all','d')">All</button>
             <button class="btn desk-btn-f" id="dbp" onclick="ftl('puppy','d')">🐶 Puppy</button>
             <button class="btn desk-btn-f" id="dbw" onclick="ftl('work','d')">💻 Work</button>
             <button class="btn desk-btn-f" id="dbm" onclick="ftl('medical','d')">💊 Medical</button>
           </div>
         </div>
-        <div class="desk-tls" id="dTlb"></div>
+        <div class="collapsible-body" id="deskFlowBody" style="display:flex;flex-direction:column;flex:1;min-height:0;">
+            <div class="desk-tls" id="dTlb"></div>
+        </div>
       </div>
 
-      <!-- Charts -->
       <div class="desk-charts">
         <div class="card" style="padding:16px">
-          <p class="lbl" style="text-align:center;margin-bottom:8px">Daily Balance</p>
-          <div class="desk-cb"><canvas id="dChA"></canvas></div>
+          <div class="chart-head-wrap" onclick="toggleDeskCollapse(null, 'deskChartABody', 'deskChartAIcon')">
+            <p class="lbl" style="text-align:center;margin-bottom:8px;display:flex;justify-content:center;align-items:center;gap:6px">Daily Balance <span class="collapse-icon" id="deskChartAIcon">▼</span></p>
+          </div>
+          <div class="collapsible-body" id="deskChartABody">
+            <div class="desk-cb"><canvas id="dChA"></canvas></div>
+          </div>
         </div>
         <div class="card" style="padding:16px">
-          <p class="lbl" style="text-align:center;margin-bottom:8px">Consistency Goal</p>
-          <div class="desk-cb"><canvas id="dChB"></canvas></div>
+          <div class="chart-head-wrap" onclick="toggleDeskCollapse(null, 'deskChartBBody', 'deskChartBIcon')">
+            <p class="lbl" style="text-align:center;margin-bottom:8px;display:flex;justify-content:center;align-items:center;gap:6px">Consistency Goal <span class="collapse-icon" id="deskChartBIcon">▼</span></p>
+          </div>
+          <div class="collapsible-body" id="deskChartBBody">
+            <div class="desk-cb"><canvas id="dChB"></canvas></div>
+          </div>
         </div>
       </div>
     </div>
 
-    <!-- PT Panel -->
     <div class="desk-right">
       <div class="desk-pt">
-        <div class="desk-pt-head">
-          <h2>PT Engine 🌿</h2>
+        <div class="desk-pt-head" onclick="toggleDeskCollapse(null, 'deskPtBody', 'deskPtIcon')">
+          <h2>PT Engine 🌿 <span class="collapse-icon" id="deskPtIcon">▼</span></h2>
           <p>Chisel away during Pomodoro breaks.<br>Saves automatically! ✨</p>
-          <div style="display:flex;justify-content:center">
-            <div class="dw2"><span class="lbl">Showing:</span>
-              <select id="dDsel" onchange="chDay()">
-                <option value="1">Monday</option><option value="2">Tuesday</option>
-                <option value="3">Wednesday</option><option value="4">Thursday</option>
-                <option value="5">Friday</option><option value="6">Saturday</option>
-                <option value="0">Sunday</option>
-              </select>
+        </div>
+        
+        <div class="collapsible-body" id="deskPtBody" style="display:flex;flex-direction:column;flex:1;min-height:0;">
+            <div style="display:flex;justify-content:center;margin-bottom:16px;">
+              <div class="dw2"><span class="lbl">Showing:</span>
+                <select id="dDsel" onchange="chDay()">
+                  <option value="1">Monday</option><option value="2">Tuesday</option>
+                  <option value="3">Wednesday</option><option value="4">Thursday</option>
+                  <option value="5">Friday</option><option value="6">Saturday</option>
+                  <option value="0">Sunday</option>
+                </select>
+              </div>
             </div>
-          </div>
+            <div class="prog-card" style="margin-bottom:14px">
+              <div class="pt2"><span class="lbl">Movement Progress</span><span class="pp" id="dPtxt">0%</span></div>
+              <div class="ptr"><div class="pf" id="dPbar"></div></div>
+              <div class="pm2"><span>Target: 1 Hour</span><span><span id="dDn">0</span> / <span id="dTn">0</span> Done</span></div>
+            </div>
+            <div class="desk-pts" id="dPtb"></div>
         </div>
-        <div class="prog-card" style="margin-bottom:14px">
-          <div class="pt2"><span class="lbl">Movement Progress</span><span class="pp" id="dPtxt">0%</span></div>
-          <div class="ptr"><div class="pf" id="dPbar"></div></div>
-          <div class="pm2"><span>Target: 1 Hour</span><span><span id="dDn">0</span> / <span id="dTn">0</span> Done</span></div>
-        </div>
-        <div class="desk-pts" id="dPtb"></div>
+
       </div>
     </div>
   </div>
 </div>
 
 <script>
+// ─── DESKTOP COLLAPSE LOGIC ──────────────────────────────────────
+function toggleDeskCollapse(cardId, bodyId, iconId) {
+    const body = document.getElementById(bodyId);
+    const icon = document.getElementById(iconId);
+    const card = cardId ? document.getElementById(cardId) : null;
+    
+    body.classList.toggle('collapsed');
+    icon.classList.toggle('collapsed');
+    
+    if (body.classList.contains('collapsed')) {
+        body.style.maxHeight = '0px';
+        if(card) card.classList.add('collapsed');
+    } else {
+        body.style.maxHeight = '800px'; // arbitrary large size for fluid transition
+        if(card) card.classList.remove('collapsed');
+        setTimeout(() => { if(!body.classList.contains('collapsed')) body.style.maxHeight = 'none'; }, 400);
+    }
+}
+
 // ─── DATA ────────────────────────────────────────────────────────
 const S=[
  {t:"08:00 AM",e:"08:15 AM",c:"puppy",i:"🚽",h:"Quiet Exit & Potty",
-  steps:["Carry Timber — do NOT let paws touch the floor yet.",
+  steps:["Apply Vitamin C serum and sunscreen before getting Timber.",
+         "Carry Timber — do NOT let paws touch the floor yet.",
          "Walk straight outside to his potty spot. Stand still, no talking, no play.",
          "The moment he finishes: say 'Yes!' and give a high-value treat immediately.",
          "No potty in 5 min? Bring inside, crate for 10 minutes, then try again."]},
@@ -422,6 +473,7 @@ const S=[
          "If he pulls: plant feet completely until leash is loose, then resume."]},
  {t:"08:40 AM",e:"09:00 AM",c:"medical",i:"🟢",h:"Break Fast — Meal + Meds",
   steps:["Eat your high-protein breakfast. Fasting window ended at 8:30 AM.",
+         "Log this meal in <a href='https://cronometer.com' target='_blank'>Cronometer</a> and your pain/symptoms in <a href='https://guavahealth.com' target='_blank'>Guava</a>.",
          "Take Vyvanse with water. Take Glucosamine with food.",
          "While Timber eats: practice Learn to Earn — ask for a Sit before each handful of kibble.",
          "Practice handling: touch ears, paws, mouth gently. Reward each touch with kibble.",
@@ -463,6 +515,7 @@ const S=[
          "During play: practice recalls — 'Timber, come!', treat when he arrives, release back to play."]},
  {t:"01:20 PM",e:"02:00 PM",c:"medical",i:"🍽️",h:"Lunch + Iron Supplement",
   steps:["Eat your lunch now.",
+         "Log lunch in <a href='https://cronometer.com' target='_blank'>Cronometer</a> and update pain/symptoms in <a href='https://guavahealth.com' target='_blank'>Guava</a>.",
          "Take Iron Supplement with food. Do NOT take with dairy — wait 1 hour before coffee.",
          "Timber is tethered to your waist or desk leg nearby with a safe chew toy.",
          "Practice Sit to Please: ask for a sit before giving him any pets or attention."]},
@@ -497,7 +550,7 @@ const S=[
  {t:"05:30 PM",e:"06:30 PM",c:"puppy",i:"😴",h:"Nap 3 + Chores + Cat Time",
   steps:["Secure Timber in his crate. This is Dr. Yin's mandatory rest block — do not skip it.",
          "Cats now have full house access — give them undivided attention.",
-         "Chores: 15–20 minutes of cleaning (vacuum, dishes, whatever is needed).",
+         "Chores: Check the <a href='sweepy://' target='_blank'>Sweepy</a> app for today's specific tasks and do 15–20 minutes of cleaning.",
          "Tulip: active play session with wand toy or laser — she needs it.",
          "Tigris: offer treats and gentle pets. Let her come to you; don't chase her."]},
  {t:"06:30 PM",e:"07:30 PM",c:"puppy",i:"🧊",h:"Frozen Treat Prep + Social Time",
@@ -508,11 +561,12 @@ const S=[
  {t:"07:30 PM",e:"08:15 PM",c:"puppy",i:"🍽️",h:"Dinner + TV Hour",
   steps:["Wake Timber. Take him outside immediately for a quick potty trip.",
          "Back inside: tether Timber to your waist or couch leg.",
-         "Eat your dinner. Every time Timber sits calmly: quietly mark 'Yes' and offer a tiny treat.",
+         "Eat your dinner and log it in <a href='https://cronometer.com' target='_blank'>Cronometer</a>.",
          "Watch TV or relax. Timber has a safe chew or puzzle feeder. Keep energy calm.",
          "Impulse control: place a treat on the floor, cover with your hand. Release ONLY when he looks at your face."]},
  {t:"08:15 PM",e:"08:30 PM",c:"work",i:"🦷",h:"Teeth + Balance — Wind Down",
-  steps:["Head to the Master Bathroom.",
+  steps:["Take your evening shower.",
+         "Head to the Master Bathroom.",
          "Brush teeth for 2 full minutes.",
          "While brushing: stand on one leg. Switch at the 1-minute mark. 30 seconds each side.",
          "This is your daily balance PT — single-leg stance counts toward your PT goal.",
@@ -522,11 +576,14 @@ const S=[
          "Set up RLT device.",
          "Monday / Wednesday / Friday: Face protocol — 10 minutes.",
          "All other nights: Rotating pain area — hips, lower back, or wherever you need it most.",
-         "RED + NIR setting. 6 inches from skin. Stay completely still for the full duration."]},
+         "RED + NIR setting. 6 inches from skin. Stay completely still for the full duration.",
+         "Apply Vitamin A serum, face lotion, and body oil.",
+         "Log final pain/symptoms in <a href='https://guavahealth.com' target='_blank'>Guava</a>."]},
  {t:"09:00 PM",e:"09:30 PM",c:"puppy",i:"🧩",h:"Hobbies + Puzzle Feeders",
   steps:["Feed remainder of Timber's daily kibble in puzzle feeders: snuffle mat, Licki Mat, or Kong Wobbler.",
          "Brain work tires him without burning your energy.",
          "You: game, craft, Discord, or any hobby. This is YOUR time.",
+         "Fill out your 'My 100' page or track habits in your Hobonichi planner.",
          "Timber can be off-tether if behavior has been good today — supervised but relaxed."]},
  {t:"09:30 PM",e:"11:00 PM",c:"puppy",i:"🐕",h:"Handling + Lap Session",
   steps:["Take Timber outside for a potty trip first.",
@@ -595,12 +652,16 @@ const CL={
 let ps=[],cday=new Date().getDay(),tot=0;
 let mFilter='all', dFilter='all';
 
-// ─── CLOCK ───────────────────────────────────────────────────────
+// ─── CLOCK & NIGHT MODE ──────────────────────────────────────────
 function updateClock(){
   const n=new Date();let h=n.getHours(),m=n.getMinutes(),ap=h>=12?'PM':'AM';
-  h=h%12||12;const s=`${h}:${String(m).padStart(2,'0')} ${ap}`;
+  let h12=h%12||12;const s=`${h12}:${String(m).padStart(2,'0')} ${ap}`;
   const mc=document.getElementById('mClk'),dc=document.getElementById('dClk');
   if(mc)mc.textContent=s;if(dc)dc.textContent=s;
+  
+  // Activate night mode between 8:00 PM and 6:00 AM
+  if (h >= 20 || h < 6) document.body.classList.add('night-mode');
+  else document.body.classList.remove('night-mode');
 }
 setInterval(updateClock,10000);
 
@@ -610,6 +671,11 @@ window.switchTab=(tab)=>{
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
   document.getElementById('page-'+tab).classList.add('active');
   document.getElementById('tab-'+tab).classList.add('active');
+  
+  // Toggle floating Now button
+  const fab = document.getElementById('jumpNowBtn');
+  if(tab === 'flow') fab.style.display = 'flex';
+  else fab.style.display = 'none';
 };
 
 // ─── TIMELINE RENDERER ────────────────────────────────────────────
@@ -776,8 +842,10 @@ window.onload=()=>{
   buildTL('all','dTlb','db');
   renderPT();
   initCharts();
+  
+  // Show FAB on load if we are on the flow tab
+  document.getElementById('jumpNowBtn').style.display='flex';
 };
 </script>
 </body>
 </html>
-

@@ -1,526 +1,451 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jasmine's Life OS | Kawaii Minimal</title>
-    
-    <!-- Google Fonts: Nunito -->
-    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
-    
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    
-    <!-- Custom Tailwind Configuration for Kawaii Palette -->
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        kawaii: {
-                            bg: '#fffaf5',          
-                            text: '#5c5470',        
-                            textDark: '#4a4453',    
-                            textMuted: '#9a8fa8',   
-                            lavender: '#f4eff7',    
-                            lavenderBorder: '#e6dced',
-                            lavenderAccent: '#d4bcee',
-                            mint: '#e6fcf0',        
-                            mintBorder: '#bbf7d0',  
-                            mintAccent: '#6ee7b7',  
-                            peach: '#fff3e6',       
-                            peachBorder: '#fde0d9', 
-                            peachAccent: '#fca5a5', 
-                            card: '#ffffff',
-                        }
-                    },
-                    fontFamily: { sans: ['Nunito', 'sans-serif'] },
-                    borderRadius: { '4xl': '2rem' }
-                }
-            }
-        }
-    </script>
-    
-    <!-- Application Structure Plan: Kawaii minimal dashboard for Jasmine's Life OS. Fixed filter buttons and direct DOM manipulation for the PT Engine to ensure progress bar tracks flawlessly. -->
-    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
-
-    <style>
-        body {
-            background-color: #fffaf5;
-            color: #5c5470;
-            overflow-x: hidden;
-        }
-
-        .chart-container {
-            position: relative;
-            width: 100%;
-            max-width: 100%;
-            margin-left: auto;
-            margin-right: auto;
-            height: 250px;
-            max-height: 280px;
-        }
-
-        /* Soft Kawaii Scrollbar */
-        .custom-scroll::-webkit-scrollbar { width: 8px; }
-        .custom-scroll::-webkit-scrollbar-track { background: transparent; }
-        .custom-scroll::-webkit-scrollbar-thumb { background: #e6dced; border-radius: 20px; border: 2px solid #fffaf5; }
-        
-        /* Squishy Micro-Animations */
-        .hover-bounce {
-            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s ease;
-        }
-        .hover-bounce:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 10px 25px rgba(212, 188, 238, 0.2);
-        }
-
-        /* Circular Kawaii Checkbox */
-        .pt-checkbox {
-            appearance: none;
-            width: 1.5rem;
-            height: 1.5rem;
-            border: 2px solid #e6dced;
-            border-radius: 50%;
-            outline: none;
-            cursor: pointer;
-            position: relative;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            background-color: #fff;
-            flex-shrink: 0;
-        }
-        .pt-checkbox:checked {
-            background-color: #bbf7d0;
-            border-color: #bbf7d0;
-            transform: scale(1.1);
-        }
-        .pt-checkbox:checked::after {
-            content: '✓';
-            position: absolute;
-            color: white;
-            font-size: 0.9rem;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-weight: 900;
-        }
-        
-        .completed-text { text-decoration: line-through; opacity: 0.4; }
-        
-        .animate-fade-in { animation: fadeIn 0.4s ease-out forwards; }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* Custom Select Dropdown styling */
-        select {
-            appearance: none;
-            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%239a8fa8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
-            background-repeat: no-repeat;
-            background-position: right 0.7rem center;
-            background-size: 1em;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jasmine's Life OS ✿</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+:root{--bg:#fdf8f4;--bgc:#fff;--bgp:#f7f2fb;--td:#4a4060;--tb:#6b5f7a;--tm:#a396b4;
+--ll:#f0ebf8;--lm:#ddd0f0;--la:#b89de0;--ml:#edfaf3;--mm:#b8f0d2;--ma:#5dd9a0;
+--pl:#fff4ee;--pm:#ffd8c8;--pa:#f79a7a;--sl:#eef6ff;--sm:#c2deff;--sa:#7bb8f5;
+--rmd:20px;--rlg:28px;--rxl:36px;--rf:999px}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--tb);min-height:100vh;padding:20px 14px 48px;overflow-x:hidden}
+.wrap{max-width:1300px;margin:0 auto}
+h1{font-size:clamp(1.5rem,3vw,2.3rem);font-weight:900;color:var(--td);letter-spacing:-.03em;line-height:1.1}
+h2{font-size:1.15rem;font-weight:800;color:var(--td)}
+h3{font-size:.92rem;font-weight:800;color:var(--td)}
+h4{font-size:.85rem;font-weight:800;color:var(--td);line-height:1.3}
+p{font-size:.82rem;font-weight:600;color:var(--tb);line-height:1.65}
+.lbl{font-size:.58rem;font-weight:900;letter-spacing:.18em;text-transform:uppercase;color:var(--tm)}
+.card{background:var(--bgc);border-radius:var(--rlg);border:2px solid var(--lm);padding:20px;transition:transform .28s cubic-bezier(.34,1.56,.64,1),box-shadow .28s ease}
+.card:hover{transform:translateY(-3px);box-shadow:0 10px 26px rgba(184,157,224,.14)}
+.btn{display:inline-flex;align-items:center;gap:5px;padding:8px 18px;border-radius:var(--rf);border:2px solid transparent;font-family:'Nunito',sans-serif;font-size:.64rem;font-weight:900;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;transition:transform .28s cubic-bezier(.34,1.56,.64,1);white-space:nowrap}
+.btn:hover{transform:translateY(-2px)}
+.btn-ghost{background:var(--bgc);border-color:var(--lm);color:var(--la)}
+.btn-f{background:var(--bgc);border-color:var(--lm);color:var(--tm)}
+.btn-f.on{background:var(--la);border-color:var(--la);color:#fff}
+.pgrid{display:grid;grid-template-columns:1fr;gap:18px}
+@media(min-width:1024px){.pgrid{grid-template-columns:1fr 370px}}
+.lcol{display:flex;flex-direction:column;gap:16px}
+.hdr{display:flex;flex-direction:column;gap:12px;padding-bottom:20px;margin-bottom:4px;border-bottom:2px solid var(--lm)}
+@media(min-width:640px){.hdr{flex-direction:row;align-items:flex-end;justify-content:space-between}}
+.pills{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}
+.pill{display:inline-flex;align-items:center;padding:3px 11px;border-radius:var(--rf);font-size:.58rem;font-weight:900;letter-spacing:.1em;text-transform:uppercase}
+.pla{background:var(--ll);color:var(--la);border:1.5px solid var(--lm)}
+.pmi{background:var(--ml);color:var(--ma);border:1.5px solid var(--mm)}
+.ppe{background:var(--pl);color:var(--pa);border:1.5px solid var(--pm)}
+.srow{display:grid;grid-template-columns:repeat(2,1fr);gap:11px}
+@media(min-width:640px){.srow{grid-template-columns:repeat(3,1fr)}}
+.sc{padding:18px 12px;border-radius:var(--rlg);border:2px solid;display:flex;flex-direction:column;align-items:center;text-align:center;gap:3px;background:var(--bgc);transition:transform .28s cubic-bezier(.34,1.56,.64,1)}
+.sc:hover{transform:translateY(-3px)}
+.si{font-size:1.1rem;margin-bottom:1px}
+.sv{font-size:.82rem;font-weight:800;color:var(--td)}
+.fbox{display:flex;flex-direction:column;height:640px}
+.fhd{display:flex;flex-direction:column;gap:10px;padding-bottom:14px;margin-bottom:12px;border-bottom:2px solid var(--ll)}
+@media(min-width:640px){.fhd{flex-direction:row;align-items:center;justify-content:space-between}}
+.fg{display:flex;flex-wrap:wrap;gap:6px}
+.tls{overflow-y:auto;flex:1;padding-right:8px}
+.tls::-webkit-scrollbar{width:5px}
+.tls::-webkit-scrollbar-thumb{background:var(--lm);border-radius:20px}
+.ti{display:flex;gap:13px;margin-bottom:16px;animation:fs .32s ease-out both}
+@keyframes fs{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.tdc{display:flex;flex-direction:column;align-items:center;flex-shrink:0;width:38px}
+.tdot{width:38px;height:38px;border-radius:50%;border:2px solid;display:flex;align-items:center;justify-content:center;font-size:.9rem;flex-shrink:0;transition:transform .3s ease,box-shadow .3s ease}
+.tln{width:2px;flex:1;border-left:2px dashed var(--lm);margin-top:4px}
+.dp{background:var(--pl);border-color:var(--pm)}
+.dw{background:var(--sl);border-color:var(--sm)}
+.dm{background:var(--ll);border-color:var(--lm)}
+.tc{flex:1;background:var(--bgc);border-radius:var(--rmd);border:2px solid;padding:12px 15px;transition:transform .22s cubic-bezier(.34,1.56,.64,1)}
+.tc:hover{transform:translateX(3px)}
+.tcp{border-color:var(--pm)}.tcw{border-color:var(--sm)}.tcm{border-color:var(--lm)}
+.thd{display:flex;justify-content:space-between;align-items:center;gap:6px;margin-bottom:6px;flex-wrap:wrap}
+.tt{font-size:.58rem;font-weight:900;letter-spacing:.12em;text-transform:uppercase}
+.ttp{color:var(--pa)}.ttw{color:var(--sa)}.ttm{color:var(--la)}
+.steps{display:flex;flex-direction:column;gap:5px;margin-top:2px}
+.step{display:flex;gap:8px;align-items:flex-start;font-size:.78rem;font-weight:700;color:var(--tb);line-height:1.5}
+.snum{min-width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.58rem;font-weight:900;color:#fff;flex-shrink:0;margin-top:1px}
+.snp{background:var(--pa)}.snw{background:var(--sa)}.snm{background:var(--la)}
+.ti.now .tdot{transform:scale(1.14);border-width:3px}
+.ti.now .dp{border-color:var(--pa);box-shadow:0 0 0 4px rgba(247,154,122,.15)}
+.ti.now .dw{border-color:var(--sa);box-shadow:0 0 0 4px rgba(123,184,245,.15)}
+.ti.now .dm{border-color:var(--la);box-shadow:0 0 0 4px rgba(184,157,224,.18)}
+.ti.now .tcp{border-color:var(--pa);background:linear-gradient(135deg,#fffaf7,var(--pl));box-shadow:0 6px 22px rgba(247,154,122,.17)}
+.ti.now .tcw{border-color:var(--sa);background:linear-gradient(135deg,#f5faff,var(--sl));box-shadow:0 6px 22px rgba(123,184,245,.17)}
+.ti.now .tcm{border-color:var(--la);background:linear-gradient(135deg,#f9f6ff,var(--ll));box-shadow:0 6px 22px rgba(184,157,224,.19)}
+.nbadge{display:inline-flex;align-items:center;gap:4px;font-size:.52rem;font-weight:900;letter-spacing:.14em;text-transform:uppercase;padding:2px 9px;border-radius:var(--rf);margin-left:6px;flex-shrink:0;line-height:1.8}
+.nbp{background:var(--pm);color:#a03818}.nbw{background:var(--sm);color:#1a4e8a}.nbm{background:var(--lm);color:#5020a0}
+.ndot{width:5px;height:5px;border-radius:50%;flex-shrink:0;animation:bl 1.4s ease-in-out infinite}
+.ndp{background:var(--pa)}.ndw{background:var(--sa)}.ndm{background:var(--la)}
+@keyframes bl{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.25;transform:scale(1.8)}}
+.ti.past .tc{opacity:.5}.ti.past .tdot{opacity:.5}
+.crow{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.cb{position:relative;height:165px}
+.ptp{background:var(--bgp);border-radius:var(--rxl);border:2px solid var(--lm);padding:22px 18px;display:flex;flex-direction:column}
+@media(min-width:1024px){.ptp{position:sticky;top:14px;max-height:calc(100vh - 28px)}}
+.pth{text-align:center;margin-bottom:16px}
+.pth h2{font-size:1.4rem;margin-bottom:4px}
+.pth p{font-size:.75rem;color:var(--tm);margin-bottom:11px}
+.dw2{display:inline-flex;align-items:center;gap:6px;background:var(--bgc);border:2px solid var(--lm);border-radius:var(--rf);padding:7px 15px}
+select{appearance:none;background:transparent;border:none;outline:none;font-family:'Nunito',sans-serif;font-size:.74rem;font-weight:900;color:var(--la);cursor:pointer;padding-right:18px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23b89de0' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 0 center;background-size:15px}
+.pw{background:var(--bgc);border-radius:var(--rlg);border:2px solid var(--lm);padding:17px 19px;margin-bottom:14px}
+.pt2{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:8px}
+.pp{font-size:1.8rem;font-weight:900;color:var(--ma);line-height:1}
+.ptr{height:9px;background:var(--ll);border-radius:var(--rf);border:1.5px solid var(--lm);overflow:hidden}
+.pf{height:100%;background:linear-gradient(90deg,var(--ma),#7ce8b5);border-radius:var(--rf);transition:width .6s cubic-bezier(.34,1.56,.64,1);width:0%}
+.pm2{display:flex;justify-content:space-between;margin-top:7px;font-size:.58rem;font-weight:900;letter-spacing:.12em;text-transform:uppercase;color:var(--tm)}
+.pts{overflow-y:auto;flex:1;padding-right:4px;max-height:320px}
+@media(min-width:1024px){.pts{max-height:260px}}
+.pts::-webkit-scrollbar{width:5px}
+.pts::-webkit-scrollbar-thumb{background:var(--lm);border-radius:20px}
+.psl{font-size:.56rem;font-weight:900;letter-spacing:.2em;text-transform:uppercase;color:var(--la);padding-bottom:5px;margin-bottom:7px;border-bottom:2px solid var(--lm)}
+.pi{display:flex;align-items:center;gap:10px;background:var(--bgc);border-radius:var(--rmd);border:2px solid var(--lm);padding:9px 12px;margin-bottom:5px;transition:transform .22s cubic-bezier(.34,1.56,.64,1),border-color .2s;animation:fs .3s ease-out both}
+.pi:hover{transform:translateX(3px);border-color:var(--la)}
+.pcb{appearance:none;width:18px;height:18px;min-width:18px;border:2px solid var(--lm);border-radius:50%;cursor:pointer;position:relative;transition:all .3s cubic-bezier(.34,1.56,.64,1);background:var(--bg)}
+.pcb:checked{background:var(--mm);border-color:var(--ma);transform:scale(1.1)}
+.pcb:checked::after{content:'✓';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:.66rem;font-weight:900;color:#fff}
+.pl2{flex:1;cursor:pointer}
+.pn{font-size:.8rem;font-weight:800;color:var(--td);display:block}
+.pd{font-size:.58rem;font-weight:900;letter-spacing:.1em;text-transform:uppercase;color:var(--tm);margin-top:1px;display:block}
+.dn .pn{text-decoration:line-through;opacity:.35}
+.dn .pd{opacity:.3}
+.psb{margin-bottom:16px}
+.rc{text-align:center;padding:30px 16px;background:var(--bgc);border-radius:var(--rlg);border:2px dashed var(--lm)}
+.rc .ico{font-size:1.9rem;display:block;margin-bottom:8px}
+.clkbar{display:flex;align-items:center;gap:8px;padding:6px 0 0}
+.clktime{font-size:1rem;font-weight:900;color:var(--td);letter-spacing:.04em}
+</style>
 </head>
-<body class="antialiased min-h-screen p-4 md:p-8 lg:p-12 flex flex-col items-center">
-
-    <div class="w-full max-w-7xl grid grid-cols-1 lg:grid-cols-12 gap-10">
-        
-        <!-- HEADER -->
-        <header class="lg:col-span-12 flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 border-b-2 border-kawaii-lavenderBorder">
-            <div>
-                <h1 class="text-4xl md:text-5xl font-black text-kawaii-textDark tracking-tight mb-2">Jasmine's Life OS</h1>
-                <p class="text-kawaii-textMuted text-lg font-semibold">Scientist Routine ✿ Sophia Yin Protocol ✿ PT Engine</p>
-            </div>
-            <div class="flex items-center">
-                <button onclick="resetDailyProgress()" class="hover-bounce bg-white text-kawaii-lavenderAccent font-extrabold py-3 px-6 rounded-full border-2 border-kawaii-lavenderBorder shadow-sm uppercase tracking-widest text-xs">
-                    Reset Daily Progress
-                </button>
-            </div>
-        </header>
-
-        <!-- MAIN OPERATIONAL VIEW -->
-        <div class="lg:col-span-7 space-y-10">
-            
-            <!-- CRITICAL STATS -->
-            <section class="grid grid-cols-2 md:grid-cols-3 gap-5 mt-4">
-                <div class="bg-white p-6 rounded-4xl border-2 border-kawaii-peachBorder flex flex-col justify-center items-center text-center hover-bounce">
-                    <p class="text-xs font-black text-kawaii-peachAccent uppercase tracking-widest mb-1">Fasting</p>
-                    <p class="text-lg font-extrabold text-kawaii-textDark">8:30PM - 8:30AM</p>
-                </div>
-                <div class="bg-white p-6 rounded-4xl border-2 border-kawaii-mintBorder flex flex-col justify-center items-center text-center hover-bounce">
-                    <p class="text-xs font-black text-kawaii-mintAccent uppercase tracking-widest mb-1">Fuel & Iron</p>
-                    <p class="text-lg font-extrabold text-kawaii-textDark">1.7k kcal • Meds</p>
-                </div>
-                <div class="bg-white p-6 rounded-4xl border-2 border-kawaii-lavenderBorder flex flex-col justify-center items-center text-center hover-bounce col-span-2 md:col-span-1">
-                    <p class="text-xs font-black text-kawaii-lavenderAccent uppercase tracking-widest mb-1">RLT Protocol</p>
-                    <p class="text-lg font-extrabold text-kawaii-textDark">Red + NIR</p>
-                </div>
-            </section>
-
-            <!-- INTERACTIVE MASTER FLOW -->
-            <section class="bg-white p-8 md:p-10 rounded-4xl border-2 border-kawaii-lavenderBorder flex flex-col h-[700px]">
-                <div class="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-6 border-b-2 border-kawaii-lavender pb-6">
-                    <h2 class="text-2xl font-black text-kawaii-textDark">Master Flow</h2>
-                    <div class="flex flex-wrap gap-2" id="filter-box">
-                        <button onclick="filterTimeline('all')" id="btn-all" class="filter-btn hover-bounce px-5 py-2 rounded-full text-xs font-black bg-kawaii-lavenderAccent text-white transition-all uppercase tracking-wider">All</button>
-                        <button onclick="filterTimeline('puppy')" id="btn-puppy" class="filter-btn hover-bounce px-5 py-2 rounded-full text-xs font-black bg-white border-2 border-kawaii-lavenderBorder text-kawaii-textMuted transition-all uppercase tracking-wider">🐶 Puppy</button>
-                        <button onclick="filterTimeline('work')" id="btn-work" class="filter-btn hover-bounce px-5 py-2 rounded-full text-xs font-black bg-white border-2 border-kawaii-lavenderBorder text-kawaii-textMuted transition-all uppercase tracking-wider">💻 Work</button>
-                        <button onclick="filterTimeline('medical')" id="btn-medical" class="filter-btn hover-bounce px-5 py-2 rounded-full text-xs font-black bg-white border-2 border-kawaii-lavenderBorder text-kawaii-textMuted transition-all uppercase tracking-wider">💊 Medical</button>
-                    </div>
-                </div>
-
-                <div class="custom-scroll overflow-y-auto pr-4 flex-grow" id="timeline-body">
-                    <!-- JS Content Injection -->
-                </div>
-            </section>
-
-            <!-- DATA VISUALIZATION -->
-            <section class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div class="bg-white p-8 rounded-4xl border-2 border-kawaii-lavenderBorder hover-bounce">
-                    <h3 class="text-xs font-black text-kawaii-textMuted uppercase tracking-widest mb-6 text-center">Daily Balance</h3>
-                    <div class="chart-container"><canvas id="allocationChart"></canvas></div>
-                </div>
-                <div class="bg-white p-8 rounded-4xl border-2 border-kawaii-lavenderBorder hover-bounce">
-                    <h3 class="text-xs font-black text-kawaii-textMuted uppercase tracking-widest mb-6 text-center">Consistency Goal</h3>
-                    <div class="chart-container"><canvas id="historyChart"></canvas></div>
-                </div>
-            </section>
-        </div>
-
-        <!-- RIGHT PANEL: PT ENGINE -->
-        <div class="lg:col-span-5">
-            <section class="bg-kawaii-lavender p-8 md:p-10 rounded-4xl border-2 border-kawaii-lavenderBorder h-full flex flex-col sticky top-10">
-                
-                <div class="mb-8 text-center">
-                    <h2 class="text-3xl font-black text-kawaii-textDark mb-3">PT Engine</h2>
-                    <p class="text-kawaii-textMuted text-sm font-semibold leading-relaxed mb-4">
-                        Chisel away at your routines during work breaks. Checkboxes save automatically! ✨
-                    </p>
-                    
-                    <!-- Dynamic Day Selector -->
-                    <div class="inline-flex items-center bg-white rounded-full border-2 border-kawaii-lavenderBorder shadow-sm px-4 py-2 hover-bounce">
-                        <span class="text-xs font-black text-kawaii-textMuted uppercase tracking-widest mr-2">Showing:</span>
-                        <select id="day-selector" onchange="changePTDay()" class="bg-transparent text-kawaii-lavenderAccent font-black text-sm outline-none cursor-pointer pr-6">
-                            <option value="1">Monday</option>
-                            <option value="2">Tuesday</option>
-                            <option value="3">Wednesday</option>
-                            <option value="4">Thursday</option>
-                            <option value="5">Friday</option>
-                            <option value="6">Saturday</option>
-                            <option value="0">Sunday</option>
-                        </select>
-                    </div>
-                </div>
-
-                <!-- PROGRESS METER -->
-                <div class="mb-10 bg-white p-8 rounded-4xl border-2 border-kawaii-lavenderBorder hover-bounce">
-                    <div class="flex justify-between items-end mb-4">
-                        <span class="text-xs font-black tracking-widest text-kawaii-textMuted uppercase">Movement Progress</span>
-                        <span class="text-4xl font-black text-kawaii-mintAccent" id="pt-progress-text">0%</span>
-                    </div>
-                    <div class="w-full bg-kawaii-lavender rounded-full h-4 border-2 border-kawaii-lavenderBorder">
-                        <div class="bg-kawaii-mintAccent h-full rounded-full transition-all duration-700 ease-out" id="pt-progress-bar" style="width: 0%"></div>
-                    </div>
-                    <div class="mt-4 flex justify-between text-xs font-extrabold text-kawaii-textMuted uppercase tracking-widest">
-                        <span>Target: 1 Hour</span>
-                        <span><span id="pt-completed-num">0</span> / <span id="pt-total-num">0</span> Done</span>
-                    </div>
-                </div>
-
-                <!-- LIST ENGINE -->
-                <div class="custom-scroll overflow-y-auto pr-4 flex-grow space-y-10" id="pt-checklist-body">
-                    <!-- Dynamic Sections -->
-                </div>
-
-            </section>
-        </div>
+<body>
+<div class="wrap">
+<header class="hdr" style="margin-bottom:20px">
+  <div>
+    <div class="pills">
+      <span class="pill pla">✿ Sophia Yin Protocol</span>
+      <span class="pill pmi">🐶 Timber</span>
+      <span class="pill ppe">💊 PT Engine</span>
     </div>
+    <h1>Jasmine's Life OS</h1>
+    <div class="clkbar"><span class="lbl">Right now:</span><span class="clktime" id="clk">--:-- --</span></div>
+  </div>
+  <button class="btn btn-ghost" onclick="resetDay()">☀️ Reset Today</button>
+</header>
+<div class="pgrid">
+  <div class="lcol">
+    <div class="srow">
+      <div class="sc" style="border-color:var(--pm)"><span class="si">⏱️</span><span class="lbl" style="color:var(--pa)">Fasting</span><span class="sv">8:30 PM – 8:30 AM</span></div>
+      <div class="sc" style="border-color:var(--mm)"><span class="si">🥗</span><span class="lbl" style="color:var(--ma)">Daily Fuel</span><span class="sv">1,700 kcal + Meds</span></div>
+      <div class="sc" id="s3" style="border-color:var(--lm);grid-column:span 2"><span class="si">🔴</span><span class="lbl" style="color:var(--la)">RLT Protocol</span><span class="sv">Red + NIR Daily</span></div>
+    </div>
+    <div class="card fbox">
+      <div class="fhd">
+        <h2>Master Flow ✿</h2>
+        <div class="fg">
+          <button class="btn btn-f on" id="ba" onclick="ftl('all')">All</button>
+          <button class="btn btn-f" id="bp" onclick="ftl('puppy')">🐶 Puppy</button>
+          <button class="btn btn-f" id="bw" onclick="ftl('work')">💻 Work</button>
+          <button class="btn btn-f" id="bm" onclick="ftl('medical')">💊 Medical</button>
+        </div>
+      </div>
+      <div class="tls" id="tlb"></div>
+    </div>
+    <div class="crow">
+      <div class="card" style="padding:16px"><p class="lbl" style="text-align:center;margin-bottom:10px">Daily Balance</p><div class="cb"><canvas id="cA"></canvas></div></div>
+      <div class="card" style="padding:16px"><p class="lbl" style="text-align:center;margin-bottom:10px">Consistency Goal</p><div class="cb"><canvas id="cB"></canvas></div></div>
+    </div>
+  </div>
+  <div>
+    <div class="ptp">
+      <div class="pth">
+        <h2>PT Engine 🌿</h2>
+        <p>Chisel away during work breaks.<br>Saves automatically! ✨</p>
+        <div style="display:flex;justify-content:center">
+          <div class="dw2"><span class="lbl">Showing:</span>
+            <select id="dsel" onchange="chDay()">
+              <option value="1">Monday</option><option value="2">Tuesday</option>
+              <option value="3">Wednesday</option><option value="4">Thursday</option>
+              <option value="5">Friday</option><option value="6">Saturday</option>
+              <option value="0">Sunday</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="pw">
+        <div class="pt2"><span class="lbl">Movement Progress</span><span class="pp" id="ptxt">0%</span></div>
+        <div class="ptr"><div class="pf" id="pbar"></div></div>
+        <div class="pm2"><span>Target: 1 Hour</span><span><span id="dn2">0</span> / <span id="tn">0</span> Done</span></div>
+      </div>
+      <div class="pts" id="ptb"></div>
+    </div>
+  </div>
+</div>
+</div>
+<script>
+const S=[
+ {t:"08:00 AM",e:"08:15 AM",c:"puppy",i:"🚽",h:"Quiet Exit & Potty",
+  steps:["Carry Timber — do NOT let paws touch the floor yet.",
+         "Walk straight outside to his potty spot. Stand still, no talking, no play.",
+         "The moment he finishes: say 'Yes!' and give a high-value treat immediately.",
+         "No potty in 5 min? Bring inside, crate for 10 minutes, then try again."]},
+ {t:"08:15 AM",e:"08:20 AM",c:"puppy",i:"🪢",h:"Tether & Teeth",
+  steps:["Clip Timber's tether leash to your belt loop — he is now attached to you.",
+         "Head to the Guest Bathroom.",
+         "Brush teeth with warm water for 2 full minutes.",
+         "While brushing: do 3 sets of 15 calf raises. Timber sits or sniffs nearby on tether."]},
+ {t:"08:20 AM",e:"08:40 AM",c:"puppy",i:"☀️",h:"Morning Walk — 20 mins",
+  steps:["Clip Timber to a 6-foot leash. Slow, relaxed pace — this is NOT exercise.",
+         "Goal: socialization. Let him sniff freely. Pause every 30 sec if needed.",
+         "Aim for 3–5 new exposures: a stranger, a car, another dog at distance, a new sound or surface.",
+         "Auto-sit at every curb: stop, wait for the sit, treat it, then cross.",
+         "If he pulls: plant feet completely until leash is loose, then resume."]},
+ {t:"08:40 AM",e:"09:00 AM",c:"medical",i:"🟢",h:"Break Fast — Meal + Meds",
+  steps:["Eat your high-protein breakfast. Fasting window ended at 8:30 AM.",
+         "Take Vyvanse with water. Take Glucosamine with food.",
+         "While Timber eats: practice Learn to Earn — ask for a Sit before each handful of kibble.",
+         "Practice handling: touch ears, paws, mouth gently. Reward each touch with a kibble piece.",
+         "Grab the frozen Groov tool from the freezer — needed for crate in ~15 minutes."]},
+ {t:"09:00 AM",e:"10:00 AM",c:"medical",i:"🔴",h:"Stationary RLT + Arm PT — Nap 1",
+  steps:["PUPPY FIRST: Attach frozen Groov tool inside Timber's crate, then secure him inside and latch. This is Nap Block 1.",
+         "Set up Red Light Therapy device. Position 4–6 inches from skin.",
+         "Hips & Cysts: 15 minutes each side. RED + NIR setting.",
+         "Arms: 10 minutes each arm immediately after hips — tissue is warm, ideal window.",
+         "Arm PT: complete your full arm PT sequence right now while tissue is warm.",
+         "Do NOT skip arm PT — this warm-tissue window is optimal for tissue remodeling."]},
+ {t:"10:00 AM",e:"11:00 AM",c:"work",i:"🔄",h:"Work Block 1 — 25/5 Pomodoro",
+  steps:["Start a 25-minute focus timer. Deep work only — close social media.",
+         "When the 25-min timer rings: stand up, do ONE PT exercise from the right-panel checklist.",
+         "Set a 5-min break timer. Do the PT movement, then return and restart the 25-min timer.",
+         "Repeat: 25 min work → 5 min PT. Stack as many cycles as possible.",
+         "Timber is in crate (Nap 1) — do not let him out until 11:00 AM."]},
+ {t:"11:00 AM",e:"11:15 AM",c:"puppy",i:"🚽",h:"Potty then Play — Session 2",
+  steps:["Take Timber out of crate and walk straight outside to potty spot.",
+         "Stand quietly. No play or talking until he goes.",
+         "The moment he finishes: 'Yes!' + treat, then 10 minutes of free yard play or chase-and-sit.",
+         "No potty in 5 min? Back in crate for 15 minutes, retry at 11:15 AM."]},
+ {t:"11:15 AM",e:"12:40 PM",c:"puppy",i:"🪢",h:"Hands-Free Tether — Work Continues",
+  steps:["Clip Timber's tether to your belt loop OR desk leg. He stays within 4 feet at all times.",
+         "Dr. Yin Rule: Every time you stop moving, WAIT. If Timber sits voluntarily — mark 'Yes!' and drop a small kibble. Do NOT ask him to sit; wait for him to offer it himself.",
+         "Jumping or whining? Turn your back, cross arms, say nothing. Resume only when 4 paws are on the floor.",
+         "Continue 25/5 Pomodoro cycles. Use 5-min breaks for PT checklist items on the right.",
+         "He cannot get into trouble on tether — trust the system and keep working."]},
+ {t:"12:40 PM",e:"01:00 PM",c:"medical",i:"🔴",h:"RLT Stomach — Fasted Session",
+  steps:["You are currently fasted — optimal window for abdominal Red Light Therapy.",
+         "Place Timber in his crate or playpen for this 20-minute block.",
+         "Lie down or recline. Position RLT device 4–6 inches from lower abdomen.",
+         "Use RED + NIR setting. 20 minutes total. Stay completely still.",
+         "Do not eat anything during this session."]},
+ {t:"01:00 PM",e:"01:20 PM",c:"puppy",i:"🚽",h:"Potty then Play — Session 3",
+  steps:["Take Timber outside immediately to potty spot.",
+         "If he goes: 'Yes!' + treat, then 15 minutes of off-leash yard play.",
+         "Crate Reset Rule: No potty in 5 minutes? Crate for 15 min, retry at 1:15 PM.",
+         "During play: practice recalls — 'Timber, come!', treat when he arrives, release back to play."]},
+ {t:"01:20 PM",e:"02:00 PM",c:"medical",i:"🍽️",h:"Lunch + Iron Supplement",
+  steps:["Eat your lunch now.",
+         "Take Iron Supplement with food. Do NOT take with dairy — wait 1 hour before coffee.",
+         "Timber is tethered to your waist or desk leg nearby with a safe chew toy.",
+         "Practice Sit to Please: ask for a sit before giving him any pets or attention during your meal."]},
+ {t:"02:00 PM",e:"02:05 PM",c:"puppy",i:"😴",h:"Crate — Nap Block 2",
+  steps:["Place a frozen Kong or frozen ball inside the crate before Timber goes in.",
+         "Calmly guide Timber to his crate. No big fuss or long goodbyes.",
+         "Latch the door and walk away without looking back or speaking to him.",
+         "Whining? Wait for a 3-second pause before returning. Never let him out during active crying."]},
+ {t:"02:05 PM",e:"04:00 PM",c:"work",i:"🔄",h:"Work Block 2 — Sit/Stand Desk",
+  steps:["Toggle desk to standing height to start this block.",
+         "Resume 25/5 Pomodoro cycles.",
+         "Every 5-min break: do 1–2 PT exercises from the right panel. This is how you hit the 1-hour PT goal.",
+         "Switch desk back to sitting every 45–60 minutes to prevent fatigue.",
+         "Timber is napping in crate — do not interact with him until 4:00 PM."]},
+ {t:"04:00 PM",e:"04:15 PM",c:"puppy",i:"🚽",h:"Potty then Play — Session 4",
+  steps:["Take Timber out of crate immediately and go straight outside.",
+         "Same rules: stand at potty spot, no play until he goes.",
+         "Once he potties: reward, then 15 minutes of structured play.",
+         "Try handling practice: hold him on his side for 3 seconds, reward. Repeat 5 times.",
+         "Optional cat greeting: supervised at a distance with Timber on leash. Do not force it."]},
+ {t:"04:15 PM",e:"05:00 PM",c:"work",i:"🪢",h:"Tethered Final Work Hour",
+  steps:["Timber is tethered to your desk leg or belt for this last work hour.",
+         "Finish any remaining urgent tasks.",
+         "Any time he settles calmly near you: quietly mark and reward with a small treat.",
+         "Keep this block low-stimulation — no exciting play — to set him up for the evening walk."]},
+ {t:"05:00 PM",e:"05:30 PM",c:"medical",i:"🦮",h:"Socialization Walk — 30 mins",
+  steps:["Leash Timber. Walk at a relaxed, decompression pace — for both of you.",
+         "Goal: expose Timber to 5 new things (person, bike, sound, another dog at distance, new surface).",
+         "At every curb: stop, wait for auto-sit, treat it, then cross. Every single curb.",
+         "Pulling? Plant your feet. Zero forward movement until leash is loose.",
+         "This walk is also your lymphatic flush — swing your arms, breathe deeply, decompress from work."]},
+ {t:"05:30 PM",e:"06:30 PM",c:"puppy",i:"😴",h:"Nap 3 + Chores + Cat Time",
+  steps:["Secure Timber in his crate. This is Dr. Yin's mandatory rest block — do not skip it.",
+         "Cats now have full house access — give them undivided attention.",
+         "Chores: 15–20 minutes of cleaning (vacuum, dishes, whatever is needed).",
+         "Tulip: active play session with wand toy or laser — she needs it.",
+         "Tigris: offer treats and gentle pets. Let her come to you; don't chase her."]},
+ {t:"06:30 PM",e:"07:30 PM",c:"puppy",i:"🧊",h:"Frozen Treat Prep + Social Time",
+  steps:["Assemble tomorrow's Groov tool: fill with kibble + peanut butter or wet food. Freeze overnight.",
+         "Prep frozen Kongs and any puzzle feeder items for tomorrow.",
+         "Cook dinner and chat with Nathan — your social recharge time.",
+         "Timber is still napping. Resist waking him early."]},
+ {t:"07:30 PM",e:"08:15 PM",c:"puppy",i:"🍽️",h:"Dinner + TV Hour",
+  steps:["Wake Timber. Take him outside immediately for a quick potty trip.",
+         "Back inside: tether Timber to your waist or couch leg.",
+         "Eat your dinner. Every time Timber sits calmly: quietly mark 'Yes' and offer a tiny treat.",
+         "Watch TV or relax. Timber has a safe chew or puzzle feeder. Keep energy calm.",
+         "Impulse control: place a treat on the floor, cover with your hand. Release ONLY when he looks at your face."]},
+ {t:"08:15 PM",e:"08:30 PM",c:"work",i:"🦷",h:"Teeth + Balance — Wind Down",
+  steps:["Head to the Master Bathroom.",
+         "Brush teeth for 2 full minutes.",
+         "While brushing: stand on one leg. Switch at the 1-minute mark. 30 seconds each side.",
+         "This is your daily balance PT — single-leg stance counts toward your PT goal.",
+         "Floss and use mouthwash."]},
+ {t:"08:30 PM",e:"09:00 PM",c:"medical",i:"🔴",h:"Fast Start + Evening RLT",
+  steps:["Kitchen is now CLOSED. Fasting window begins and runs until 8:30 AM tomorrow.",
+         "Set up RLT device.",
+         "Monday / Wednesday / Friday: Face protocol — 10 minutes.",
+         "All other nights: Rotating pain area — hips, lower back, or wherever you need it most.",
+         "RED + NIR setting. 6 inches from skin. Stay completely still for the full duration."]},
+ {t:"09:00 PM",e:"09:30 PM",c:"puppy",i:"🧩",h:"Hobbies + Puzzle Feeders",
+  steps:["Feed the remainder of Timber's daily kibble in puzzle feeders: snuffle mat, Licki Mat, or Kong Wobbler.",
+         "Brain work tires him without burning your energy.",
+         "You: game, craft, Discord, or any hobby. This is YOUR time.",
+         "Timber can be off-tether if behavior has been good — supervised but relaxed."]},
+ {t:"09:30 PM",e:"11:00 PM",c:"puppy",i:"🐕",h:"Handling + Lap Session",
+  steps:["Take Timber outside for a potty trip first.",
+         "Sit on the couch or floor. Let him settle on your lap or at your feet naturally.",
+         "Handling: gently roll onto his side — hold 3 seconds, treat. Repeat 5 times.",
+         "On his back — hold 3 seconds, treat. Hold each paw 3 seconds, treat each one.",
+         "Voice calm and low — this is trust-building, not play. No roughhousing this late."]},
+ {t:"11:00 PM",e:"11:30 PM",c:"puppy",i:"🏠",h:"Puppy Bedtime",
+  steps:["Take Timber outside for his FINAL potty of the night. Wait as long as needed — do not skip.",
+         "Walk him calmly to the Puppy Apartment (crate in bedroom).",
+         "Place him inside, toss in a small treat, latch the door.",
+         "No long goodbyes. Turn lights low and walk away.",
+         "Whining past 5 minutes? Place one finger through crate bars. Do NOT take him out."]},
+ {t:"11:30 PM",e:"11:59 PM",c:"medical",i:"💊",h:"PM Medications + Sleep Prep",
+  steps:["Take Sertraline with water — same time every night is critical for effectiveness.",
+         "Take Sronyx (birth control) — set a recurring phone alarm if helpful.",
+         "Brush teeth if not done earlier.",
+         "Lights out by 12:00 AM to protect your sleep schedule and fasting window."]},
+];
 
-    <script>
-        // --- TIMELINE DATA ---
-        const schedule = [
-            { t: "08:00 AM", h: "Quiet Exit & Potty", d: "Carry Timber outside. No paws on floor. Reward success.", c: "puppy", i: "🚽" },
-            { t: "08:10 AM", h: "Tether & Teeth", d: "Tether first. Guest Bath: Brush + Calf Raises.", c: "puppy", i: "🪢" },
-            { t: "08:15 AM", h: "Morning Walk", d: "20m Socialization. Joint lubrication for user.", c: "puppy", i: "☀️" },
-            { t: "08:40 AM", h: "Break Fast", d: "Meal + Vyvanse/Glucosamine. Grab Groov tool.", c: "medical", i: "🟢" },
-            { t: "09:00 AM", h: "RLT & Work Start", d: "Crate (Nap #1) with Groov. RLT Hips/Arms. Arm PT after.", c: "medical", i: "🔴" },
-            { t: "10:00 AM", h: "25/5 Cycle Start", d: "Focus work. Use 5m breaks for PT Checklist (Right).", c: "work", i: "🔄" },
-            { t: "11:00 AM", h: "Potty then Play", d: "If potty, 10m play. Then Office Playpen.", c: "puppy", i: "🚽" },
-            { t: "12:40 PM", h: "RLT Stomach", d: "Fasted. 20m. RED+NIR. Stay stationary.", c: "medical", i: "🔴" },
-            { t: "01:00 PM", h: "Lymphatic Flush Walk", d: "Remove Timber from crate. 20m walk.", c: "medical", i: "🦮" },
-            { t: "01:20 PM", h: "Lunch & Iron", d: "Eat + Iron Supplement. Timber Tethered.", c: "medical", i: "🍽️" },
-            { t: "02:00 PM", h: "Rest in Crate", d: "Nap #2 with frozen Kong. Secure Timber.", c: "puppy", i: "😴" },
-            { t: "02:05 PM", h: "Sit/Stand Switch", d: "Toggle desk height. PT micro-doses in breaks.", c: "work", i: "🔄" },
-            { t: "04:00 PM", h: "Wake Up Potty", d: "Out immediately. Return to Tether/Umbilical.", c: "puppy", i: "🚽" },
-            { t: "05:00 PM", h: "Work Stop & Walk", d: "20m decompression walk.", c: "work", i: "🦮" },
-            { t: "05:30 PM", h: "Nap & Household", d: "Timber Nap #3. 15m Sweepy. Cat play ritual.", c: "puppy", i: "🧹" },
-            { t: "06:30 PM", h: "Prep & Social", d: "Prep tomorrow's treats. Cook with Nathan.", c: "puppy", i: "🧊" },
-            { t: "07:30 PM", h: "Dinner & TV", d: "Wake Timber. Tethered or Playpen with chew.", c: "puppy", i: "🍽️" },
-            { t: "08:15 PM", h: "Teeth & Balance", d: "Single-leg balance while brushing.", c: "work", i: "🦷" },
-            { t: "08:30 PM", h: "Fast Start & RLT", d: "Face (M/W/F) or Pain Area. RED+NIR.", c: "medical", i: "🔴" },
-            { t: "09:00 PM", h: "Hobbies & Puzzles", d: "Puzzle feeders for Timber. Craft/Game time.", c: "puppy", i: "🧩" },
-            { t: "11:00 PM", h: "Puppy Bedtime", d: "Final potty. Timber to Puppy Apartment.", c: "puppy", i: "🏠" },
-            { t: "11:30 PM", h: "PM Meds", d: "Sertraline + Sronyx.", c: "medical", i: "💊" }
-        ];
+function tm(s){if(!s)return 0;const[hm,p]=s.split(' ');let[h,m]=hm.split(':').map(Number);if(p==='PM'&&h!==12)h+=12;if(p==='AM'&&h===12)h=0;return h*60+m;}
+S.forEach(x=>{x.smin=tm(x.t);x.emin=tm(x.e);});
 
-        // --- DYNAMIC PT DATA (Days Array: 0=Sun, 1=Mon, 2=Tue, 3=Wed, 4=Thu, 5=Fri, 6=Sat) ---
-        const ptData = [
-            { group: "Daily Essentials", items: [
-                { n: "Nerve Glides", d: "10 reps/side", days: [1, 2, 3, 4, 5] },
-                { n: "Plank (Standard)", d: "5 x 30s", days: [1, 2, 3, 4, 5] },
-                { n: "Side Plank (Knees)", d: "2 x 30s", days: [1, 2, 3, 4, 5] },
-                { n: "Anti-Rotation Press", d: "2 x 10", days: [1, 2, 3, 4, 5] },
-                { n: "Standing Clam", d: "3 x 10", days: [1, 2, 3, 4, 5] }
-            ]},
-            { group: "Movement Snacks", items: [
-                { n: "Single Leg Stance", d: "3 x 30s", days: [1, 2, 3, 4, 5] },
-                { n: "Iso Hip Abd (Wall)", d: "2 x 20s", days: [1, 2, 3, 4, 5] },
-                { n: "Around the World", d: "2 x 10", days: [1, 2, 3, 4, 5] },
-                { n: "4-Way Band Walk", d: "10 reps", days: [1, 2, 3, 4, 5] }
-            ]},
-            { group: "Group A (Floor) [M/W/F]", items: [
-                { n: "Supine Bridge", d: "3 x 10", days: [1, 3, 5] }, 
-                { n: "Clamshell", d: "3 x 10", days: [1, 3, 5] },
-                { n: "Inner/Outer Thigh", d: "3 x 10", days: [1, 3, 5] },
-                { n: "Active Leg Raise", d: "3 x 10", days: [1, 3, 5] },
-                { n: "Lower Trunk Rot", d: "3 x 10", days: [1, 3, 5] },
-                { n: "Open Book", d: "3 x 10", days: [1, 3, 5] }
-            ]},
-            { group: "Group B (Floor) [T/Th]", items: [
-                { n: "Bird Dog", d: "3 x 10", days: [2, 4] }, 
-                { n: "Dead Bug", d: "3 x 10", days: [2, 4] },
-                { n: "Prone Hip Extension", d: "3 x 10", days: [2, 4] },
-                { n: "Fire Hydrant", d: "3 x 10", days: [2, 4] },
-                { n: "Child's Pose", d: "3 x 30s", days: [2, 4] }
-            ]}
-        ];
+function getNowMin(){const n=new Date();return n.getHours()*60+n.getMinutes();}
 
-        // --- GLOBALS ---
-        let ptState = [];
-        let currentDayFilter = new Date().getDay(); 
-        let totalPTItemsForToday = 0; // Tracks total items dynamically
+// THE FIX: use the same nowMin across all category views.
+// Find item whose [smin,emin) window contains nowMin.
+// If none active, find the next upcoming. If all past, return last.
+function getNowIdx(list,nowMin){
+  for(let i=0;i<list.length;i++){
+    if(nowMin>=list[i].smin&&nowMin<list[i].emin)return i;
+  }
+  for(let i=0;i<list.length;i++){
+    if(list[i].smin>nowMin)return i;
+  }
+  return list.length-1;
+}
 
-        // --- INITIALIZATION ---
-        function init() {
-            document.getElementById('day-selector').value = currentDayFilter.toString();
-            renderTimeline('all');
-            renderPTChecklist();
-            initCharts();
-        }
+const PT=[
+  {g:"Daily Essentials",items:[
+    {n:"Nerve Glides",d:"10 reps/side",days:[1,2,3,4,5]},
+    {n:"Plank (Standard)",d:"5x30s",days:[1,2,3,4,5]},
+    {n:"Side Plank (Knees)",d:"2x30s",days:[1,2,3,4,5]},
+    {n:"Anti-Rotation Press",d:"2x10",days:[1,2,3,4,5]},
+    {n:"Standing Clam",d:"3x10",days:[1,2,3,4,5]}]},
+  {g:"Movement Snacks",items:[
+    {n:"Single Leg Stance",d:"3x30s",days:[1,2,3,4,5]},
+    {n:"Iso Hip Abd (Wall)",d:"2x20s",days:[1,2,3,4,5]},
+    {n:"Around the World",d:"2x10",days:[1,2,3,4,5]},
+    {n:"4-Way Band Walk",d:"10 reps",days:[1,2,3,4,5]}]},
+  {g:"Group A — Floor (M/W/F)",items:[
+    {n:"Supine Bridge",d:"3x10",days:[1,3,5]},
+    {n:"Clamshell",d:"3x10",days:[1,3,5]},
+    {n:"Inner & Outer Thigh",d:"3x10",days:[1,3,5]},
+    {n:"Active Leg Raise",d:"3x10",days:[1,3,5]},
+    {n:"Lower Trunk Rotation",d:"3x10",days:[1,3,5]},
+    {n:"Open Book",d:"3x10",days:[1,3,5]},
+    {n:"Ham/Glute Ball Set",d:"3x10",days:[1,3,5]}]},
+  {g:"Group B — Standing (T/Th/Sat)",items:[
+    {n:"Wall Squat (Ball)",d:"3x10",days:[2,4,6]},
+    {n:"Single-Leg RDL",d:"2x8",days:[2,4,6]},
+    {n:"Lateral Step-Ups",d:"2x10",days:[2,4,6]},
+    {n:"Slider Lunge (Rev)",d:"3x10",days:[2,4,6]},
+    {n:"3-Way Reach (Band)",d:"3x10",days:[2,4,6]},
+    {n:"Prone Hip Extension",d:"3x10",days:[2,4,6]},
+    {n:"Hip Flex into Ball",d:"3x10s",days:[2,4,6]}]},
+];
 
-        // --- TIMELINE LOGIC ---
-        window.filterTimeline = (filter) => {
-            // Update button styles directly
-            document.querySelectorAll('.filter-btn').forEach(btn => {
-                btn.classList.remove('bg-kawaii-lavenderAccent', 'text-white', 'border-transparent');
-                btn.classList.add('bg-white', 'border-2', 'border-kawaii-lavenderBorder', 'text-kawaii-textMuted');
-            });
-            
-            const activeBtn = document.getElementById(`btn-${filter}`);
-            if (activeBtn) {
-                activeBtn.classList.remove('bg-white', 'border-2', 'border-kawaii-lavenderBorder', 'text-kawaii-textMuted');
-                activeBtn.classList.add('bg-kawaii-lavenderAccent', 'text-white', 'border-transparent');
-            }
+const CL={
+  puppy:  {dot:'dp',card:'tcp',time:'ttp',nb:'nbp',nd:'ndp',sn:'snp'},
+  work:   {dot:'dw',card:'tcw',time:'ttw',nb:'nbw',nd:'ndw',sn:'snw'},
+  medical:{dot:'dm',card:'tcm',time:'ttm',nb:'nbm',nd:'ndm',sn:'snm'},
+};
+let ps=[],cday=new Date().getDay(),tot=0;
 
-            const container = document.getElementById('timeline-body');
-            container.innerHTML = '';
-            
-            schedule.filter(item => filter === 'all' || item.c === filter).forEach((item) => {
-                const row = document.createElement('div');
-                row.className = "flex space-x-6 mb-8 relative animate-fade-in";
-                
-                let colorBg = "bg-kawaii-mint";
-                let colorBorder = "border-kawaii-mintBorder";
-                let colorText = "text-emerald-600";
-                
-                if(item.c === 'puppy') {
-                    colorBg = "bg-kawaii-peach";
-                    colorBorder = "border-kawaii-peachBorder";
-                    colorText = "text-orange-500";
-                }
-                if(item.c === 'medical') {
-                    colorBg = "bg-kawaii-lavender";
-                    colorBorder = "border-kawaii-lavenderBorder";
-                    colorText = "text-purple-500";
-                }
+function updateClock(){const n=new Date();let h=n.getHours(),m=n.getMinutes(),ap=h>=12?'PM':'AM';h=h%12||12;document.getElementById('clk').textContent=`${h}:${String(m).padStart(2,'0')} ${ap}`;}
+setInterval(updateClock,10000);
 
-                row.innerHTML = `
-                    <div class="flex-shrink-0 w-12 flex flex-col items-center">
-                        <div class="w-12 h-12 rounded-full ${colorBg} border-2 ${colorBorder} flex items-center justify-center text-xl font-bold z-10 shadow-sm">${item.i}</div>
-                        <div class="w-1 h-full border-r-2 border-dashed border-kawaii-lavenderBorder mt-2"></div>
-                    </div>
-                    <div class="flex-grow bg-white p-6 rounded-4xl border-2 ${colorBorder} hover-bounce">
-                        <div class="flex flex-col sm:flex-row sm:justify-between sm:items-baseline mb-2">
-                            <h4 class="font-extrabold text-kawaii-textDark text-base tracking-tight">${item.h}</h4>
-                            <span class="text-[11px] font-black ${colorText} uppercase tracking-widest mt-1 sm:mt-0">${item.t}</span>
-                        </div>
-                        <p class="text-sm font-semibold text-kawaii-textMuted leading-relaxed">${item.d}</p>
-                    </div>
-                `;
-                container.appendChild(row);
-            });
-        };
+window.ftl=(f)=>{
+  document.querySelectorAll('.btn-f').forEach(b=>b.classList.remove('on'));
+  document.getElementById({all:'ba',puppy:'bp',work:'bw',medical:'bm'}[f]).classList.add('on');
+  const c=document.getElementById('tlb');c.innerHTML='';
+  const nowMin=getNowMin();
+  const list=S.filter(x=>f==='all'||x.c===f);
+  const ni=getNowIdx(list,nowMin);
+  list.forEach((item,i)=>{
+    const cl=CL[item.c],isNow=i===ni,isPast=i<ni;
+    const d=document.createElement('div');
+    d.className='ti'+(isNow?' now':isPast?' past':'');
+    d.style.animationDelay=`${i*.03}s`;
+    const badge=isNow?`<span class="nbadge ${cl.nb}"><span class="ndot ${cl.nd}"></span>Now</span>`:'';
+    const sh=item.steps.map((s,si)=>`<div class="step"><span class="snum ${cl.sn}">${si+1}</span><span>${s}</span></div>`).join('');
+    d.innerHTML=`<div class="tdc"><div class="tdot ${cl.dot}">${item.i}</div><div class="tln"></div></div><div class="tc ${cl.card}"><div class="thd"><h4>${item.h}${badge}</h4><span class="tt ${cl.time}">${item.t}–${item.e}</span></div><div class="steps">${sh}</div></div>`;
+    c.appendChild(d);
+  });
+  setTimeout(()=>{const el=c.querySelector('.now');if(el)el.scrollIntoView({behavior:'smooth',block:'center'});},180);
+};
 
-        // --- PT CHECKLIST LOGIC ---
-        window.changePTDay = () => {
-            currentDayFilter = parseInt(document.getElementById('day-selector').value);
-            renderPTChecklist();
-        };
-
-        function renderPTChecklist() {
-            const container = document.getElementById('pt-checklist-body');
-            container.innerHTML = '';
-            totalPTItemsForToday = 0;
-            
-            const storageKey = `life_os_pt_kawaii_day_${currentDayFilter}`;
-            const stored = localStorage.getItem(storageKey);
-            ptState = stored ? JSON.parse(stored) : [];
-
-            ptData.forEach((section, sIdx) => {
-                const activeItems = section.items.filter(item => item.days.includes(currentDayFilter));
-                if(activeItems.length === 0) return; // Skips Group A on Tuesdays, Group B on Mon!
-
-                const secDiv = document.createElement('div');
-                secDiv.className = "animate-fade-in";
-                secDiv.innerHTML = `<h5 class="text-[11px] font-black text-kawaii-lavenderAccent uppercase tracking-[0.25em] mb-5 border-b-2 border-kawaii-lavenderBorder pb-2 pl-2">${section.group}</h5>`;
-                
-                const list = document.createElement('div');
-                list.className = "space-y-4 mb-10";
-                
-                activeItems.forEach((item, iIdx) => {
-                    totalPTItemsForToday++;
-                    const id = `pt-d${currentDayFilter}-${sIdx}-${iIdx}`;
-                    const isDone = ptState.includes(id);
-
-                    const itemDiv = document.createElement('div');
-                    itemDiv.className = "flex items-center space-x-5 group bg-white p-4 rounded-3xl border-2 border-kawaii-lavenderBorder hover-bounce";
-                    
-                    itemDiv.innerHTML = `
-                        <input type="checkbox" id="checkbox-${id}" class="pt-checkbox" ${isDone ? 'checked' : ''} onchange="toggleCheckbox('${id}', this)">
-                        <label for="checkbox-${id}" class="cursor-pointer flex-grow flex flex-col select-none">
-                            <span id="label-${id}" class="text-[15px] font-extrabold text-kawaii-textDark transition-all ${isDone ? 'completed-text' : ''}">${item.n}</span>
-                            <span id="desc-${id}" class="text-[11px] text-kawaii-textMuted uppercase tracking-widest font-bold mt-0.5 ${isDone ? 'completed-text' : ''}">${item.d}</span>
-                        </label>
-                    `;
-                    list.appendChild(itemDiv);
-                });
-                secDiv.appendChild(list);
-                container.appendChild(secDiv);
-            });
-
-            if(totalPTItemsForToday === 0) {
-                container.innerHTML = `
-                    <div class="text-center p-8 bg-white rounded-4xl border-2 border-kawaii-lavenderBorder animate-fade-in">
-                        <span class="text-4xl mb-4 block">💤</span>
-                        <h3 class="text-lg font-black text-kawaii-textDark mb-2">Rest Day!</h3>
-                        <p class="text-sm font-semibold text-kawaii-textMuted">No specific PT scheduled today.</p>
-                    </div>
-                `;
-            }
-
-            document.getElementById('pt-total-num').innerText = totalPTItemsForToday;
-            
-            // FIX: This ensures the text renders the correct completed number on load!
-            let loadDoneCount = 0;
-            ptState.forEach(savedId => {
-                if(document.getElementById(`checkbox-${savedId}`)) loadDoneCount++;
-            });
-            document.getElementById('pt-completed-num').innerText = loadDoneCount;
-
-            updatePTProgressUI();
-        }
-
-        // Direct DOM Update to prevent checklist from re-rendering/losing focus
-        window.toggleCheckbox = (id, checkboxElem) => {
-            const storageKey = `life_os_pt_kawaii_day_${currentDayFilter}`;
-            const labelElem = document.getElementById(`label-${id}`);
-            const descElem = document.getElementById(`desc-${id}`);
-
-            if(checkboxElem.checked) {
-                if(!ptState.includes(id)) ptState.push(id);
-                labelElem.classList.add('completed-text');
-                descElem.classList.add('completed-text');
-            } else {
-                ptState = ptState.filter(i => i !== id);
-                labelElem.classList.remove('completed-text');
-                descElem.classList.remove('completed-text');
-            }
-            
-            localStorage.setItem(storageKey, JSON.stringify(ptState));
-            updatePTProgressUI();
-        };
-
-        function updatePTProgressUI() {
-            // Recalculate accurately based on what is currently checked on screen
-            let doneCount = 0;
-            ptState.forEach(savedId => {
-                // Only count items that belong to the current day's active list
-                if(document.getElementById(`checkbox-${savedId}`)) {
-                    doneCount++;
-                }
-            });
-
-            // Fallback guard
-            if (doneCount > totalPTItemsForToday) doneCount = totalPTItemsForToday;
-
-            document.getElementById('pt-completed-num').innerText = doneCount;
-            const pct = totalPTItemsForToday > 0 ? Math.round((doneCount / totalPTItemsForToday) * 100) : 0;
-            document.getElementById('pt-progress-bar').style.width = `${pct}%`;
-            document.getElementById('pt-progress-text').innerText = `${pct}%`;
-        }
-
-        window.resetDailyProgress = () => {
-            if(confirm("Ready for a fresh day? This clears your PT checkboxes! ☀️")) {
-                const storageKey = `life_os_pt_kawaii_day_${currentDayFilter}`;
-                localStorage.removeItem(storageKey);
-                renderPTChecklist();
-            }
-        };
-
-        // --- CHARTS ---
-        function initCharts() {
-            const kawaiiColors = ['#fca5a5', '#6ee7b7', '#d4bcee', '#fde0d9', '#e6dced'];
-            Chart.defaults.font.family = "'Nunito', sans-serif";
-            Chart.defaults.font.weight = "bold";
-            Chart.defaults.color = "#9a8fa8";
-
-            new Chart(document.getElementById('allocationChart'), {
-                type: 'doughnut',
-                data: {
-                    labels: ['Sleep', 'Work', 'PT/Therapy', 'Puppy', 'Unwind'],
-                    datasets: [{
-                        data: [8, 5, 2.5, 4.5, 4],
-                        backgroundColor: kawaiiColors,
-                        borderWidth: 4, borderColor: '#ffffff', hoverOffset: 8
-                    }]
-                },
-                options: { 
-                    responsive: true, maintainAspectRatio: false, cutout: '70%',
-                    plugins: { legend: { display: false }, tooltip: { padding: 12, cornerRadius: 16 } }
-                }
-            });
-
-            new Chart(document.getElementById('historyChart'), {
-                type: 'bar',
-                data: {
-                    labels: ['Feb 02', 'Feb 17', 'Target'],
-                    datasets: [{
-                        data: [3, 0, 7],
-                        backgroundColor: ['#e6dced', '#fca5a5', '#6ee7b7'],
-                        borderRadius: 8, borderSkipped: false
-                    }]
-                },
-                options: {
-                    responsive: true, maintainAspectRatio: false,
-                    scales: { y: { display: false, max: 7 }, x: { grid: { display: false }, border: {display: false} } },
-                    plugins: { legend: { display: false }, tooltip: { padding: 12, cornerRadius: 16 } }
-                }
-            });
-        }
-
-        window.onload = init;
-    </script>
+window.chDay=()=>{cday=parseInt(document.getElementById('dsel').value);renderPT();};
+function renderPT(){
+  const c=document.getElementById('ptb');c.innerHTML='';tot=0;
+  const key=`jlos_${cday}`;
+  try{ps=JSON.parse(localStorage.getItem(key))||[];}catch(e){ps=[];}
+  PT.forEach((sec,si)=>{
+    const act=sec.items.filter(x=>x.days.includes(cday));if(!act.length)return;
+    const blk=document.createElement('div');blk.className='psb';
+    blk.innerHTML=`<div class="psl">${sec.g}</div>`;
+    act.forEach((item,ii)=>{
+      tot++;const id=`d${cday}-${si}-${ii}`;const done=ps.includes(id);
+      const row=document.createElement('div');row.className='pi'+(done?' dn':'');row.id='r-'+id;
+      row.innerHTML=`<input type="checkbox" class="pcb" id="cb-${id}" ${done?'checked':''} onchange="tog('${id}',this)"><label class="pl2" for="cb-${id}"><span class="pn">${item.n}</span><span class="pd">${item.d}</span></label>`;
+      blk.appendChild(row);
+    });c.appendChild(blk);
+  });
+  if(!tot)c.innerHTML=`<div class="rc"><span class="ico">💤</span><h3>Rest Day!</h3><p style="color:var(--tm);margin-top:5px">No PT scheduled today.</p></div>`;
+  document.getElementById('tn').innerText=tot;updP();
+}
+window.tog=(id,el)=>{
+  const row=document.getElementById('r-'+id);
+  if(el.checked){if(!ps.includes(id))ps.push(id);row.classList.add('dn');}
+  else{ps=ps.filter(x=>x!==id);row.classList.remove('dn');}
+  try{localStorage.setItem(`jlos_${cday}`,JSON.stringify(ps));}catch(e){}updP();
+};
+function updP(){
+  let d=0;ps.forEach(id=>{if(document.getElementById('cb-'+id))d++;});
+  d=Math.min(d,tot);const p=tot>0?Math.round(d/tot*100):0;
+  document.getElementById('dn2').innerText=d;
+  document.getElementById('pbar').style.width=p+'%';
+  document.getElementById('ptxt').innerText=p+'%';
+}
+window.resetDay=()=>{if(confirm('Reset PT checkboxes for today? ☀️')){try{localStorage.removeItem(`jlos_${cday}`);}catch(e){}renderPT();}};
+function initCharts(){
+  Chart.defaults.font.family="'Nunito',sans-serif";Chart.defaults.font.weight="bold";Chart.defaults.color="#a396b4";
+  new Chart(document.getElementById('cA'),{type:'doughnut',data:{labels:['Sleep','Work','PT','Puppy','Unwind'],datasets:[{data:[8,5,2.5,4.5,4],backgroundColor:['#ddd0f0','#c2deff','#b8f0d2','#ffd8c8','#fde0d9'],borderWidth:4,borderColor:'#fff',hoverOffset:6}]},options:{responsive:true,maintainAspectRatio:false,cutout:'68%',plugins:{legend:{display:false},tooltip:{padding:9,cornerRadius:10}}}});
+  new Chart(document.getElementById('cB'),{type:'bar',data:{labels:['Feb 02','Feb 17','Target'],datasets:[{data:[3,0,7],backgroundColor:['#ddd0f0','#ffd8c8','#b8f0d2'],borderRadius:8,borderSkipped:false}]},options:{responsive:true,maintainAspectRatio:false,scales:{y:{display:false,max:8},x:{grid:{display:false},border:{display:false}}},plugins:{legend:{display:false},tooltip:{padding:9,cornerRadius:10}}}});
+}
+function fixS3(){const e=document.getElementById('s3');e.style.gridColumn=window.innerWidth>=640?'span 1':'span 2';}
+window.addEventListener('resize',fixS3);
+window.onload=()=>{document.getElementById('dsel').value=String(cday);updateClock();ftl('all');renderPT();initCharts();fixS3();};
+</script>
 </body>
 </html>

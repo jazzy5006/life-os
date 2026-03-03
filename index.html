@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Integrated Life & Health Operating System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Chosen Palette: Warm Neutrals with Soft Contextual Accents (Stone, Sage, Rose, Amber) -->
+    <!-- Application Structure Plan: A two-column dashboard optimized for low-friction daily navigation. The left column presents the high-level health context and the interactive "Master Flow" timeline, which is the "source of truth" for the user's day. The right column is the "PT Execution Engine," featuring a persistent checklist that directly mirrors the user's workout CSV data. This structure is designed as an Information Architecture that separates "Strategy/Planning" (the schedule) from "Execution/Tasks" (the PT checklist), allowing the user to focus on short, 5-minute movement snacks during work breaks without losing their place in the broader day. -->
+    <!-- Visualization & Content Choices: 
+         1. PT Consistency (Bar Chart) -> Goal: Motivation via comparison -> Viz: Chart.js Bar Chart -> Interaction: Hover tooltips -> Justification: Visualizes the performance drop noted in the user's CSV logs (from 3 days/week down to 0) to highlight the need for the new integrated structure. 
+         2. Time Allocation (Doughnut Chart) -> Goal: Information balance -> Viz: Chart.js Doughnut -> Justification: Confirms the puppy 1:2 sleep ratio fits within the 24-hour cycle alongside work and therapy.
+         3. Interactive Timeline -> Goal: Task organization -> Viz: Styled HTML list -> Interaction: Dynamic filters (Puppy, Medical, Work) -> Justification: Reduces cognitive load by letting the user isolate specific responsibilities based on their current "mode." 
+         4. PT Checklist -> Goal: Task completion -> Viz: Interactive Checkboxes with Progress Tracking -> Interaction: LocalStorage persistence -> Justification: Gamifies the 1-hour PT goal and ensures data isn't lost on page refresh. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            background-color: #fafaf9; /* Tailwind stone-50 */
+            color: #292524; /* stone-800 */
+            overflow-x: hidden;
+        }
+
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 100%;
+            margin-left: auto;
+            margin-right: auto;
+            height: 250px;
+            max-height: 280px;
+        }
+
+        .custom-scroll::-webkit-scrollbar { width: 6px; }
+        .custom-scroll::-webkit-scrollbar-track { background: #f5f5f4; border-radius: 8px;}
+        .custom-scroll::-webkit-scrollbar-thumb { background: #d6d3d1; border-radius: 8px; }
+        
+        .pt-checkbox {
+            appearance: none;
+            width: 1.25rem;
+            height: 1.25rem;
+            border: 2px solid #a8a29e;
+            border-radius: 0.25rem;
+            outline: none;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.2s;
+            background-color: #fff;
+        }
+        .pt-checkbox:checked {
+            background-color: #10b981; /* emerald-500 */
+            border-color: #10b981;
+        }
+        .pt-checkbox:checked::after {
+            content: '✓';
+            position: absolute;
+            color: white;
+            font-size: 0.85rem;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-weight: bold;
+        }
+        .completed-text { text-decoration: line-through; opacity: 0.4; }
+        
+        .timeline-item {
+            transition: all 0.3s ease-in-out;
+        }
+    </style>
+</head>
+<body class="antialiased min-h-screen p-4 md:p-6 lg:p-10">
+
+    <div class="w-full max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8">
+        
+        <!-- Header -->
+        <header class="lg:col-span-12 border-b border-stone-200 pb-8 flex flex-col md:flex-row md:items-end justify-between gap-4">
+            <div>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-stone-800 tracking-tight">Life & Health OS</h1>
+                <p class="text-stone-500 text-lg mt-1">Research • Sophia Yin Puppy Protocol • PT Execution</p>
+            </div>
+            <div class="flex items-center gap-3">
+                <button onclick="resetDailyPT()" class="bg-stone-200 hover:bg-stone-300 text-stone-700 text-xs font-bold py-2 px-4 rounded-lg transition-colors border border-stone-300 uppercase tracking-tighter">
+                    Reset Daily Progress
+                </button>
+            </div>
+        </header>
+
+        <!-- LEFT COLUMN: Timeline & Metrics -->
+        <div class="lg:col-span-7 space-y-8">
+            
+            <!-- Key Health Targets -->
+            <section class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                <div class="bg-white p-5 rounded-2xl shadow-sm border border-stone-200 border-l-4 border-l-stone-400">
+                    <p class="text-[10px] font-bold text-stone-400 uppercase tracking-widest mb-1">Fasting Status</p>
+                    <p class="text-base font-semibold text-stone-800">8:30PM - 8:30AM</p>
+                </div>
+                <div class="bg-white p-5 rounded-2xl shadow-sm border border-stone-200 border-l-4 border-l-emerald-400">
+                    <p class="text-[10px] font-bold text-stone-400 uppercase tracking-widest mb-1">Fuel & Iron</p>
+                    <p class="text-base font-semibold text-stone-800">1.7k kcal • Iron • Meds</p>
+                </div>
+                <div class="bg-white p-5 rounded-2xl shadow-sm border border-stone-200 border-l-4 border-l-rose-400 col-span-2 md:col-span-1">
+                    <p class="text-[10px] font-bold text-stone-400 uppercase tracking-widest mb-1">RLT Protocol</p>
+                    <p class="text-base font-semibold text-stone-800">Both Lights (Red+NIR)</p>
+                </div>
+            </section>
+
+            <!-- Interactive Timeline -->
+            <section class="bg-white p-6 rounded-3xl shadow-sm border border-stone-200 flex flex-col h-[650px]">
+                <div class="mb-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <h2 class="text-xl font-bold text-stone-800">Master Flow</h2>
+                    <div class="flex flex-wrap gap-1.5" id="timeline-filters">
+                        <button data-filter="all" class="filter-btn px-3 py-1 rounded-full text-[10px] font-bold bg-stone-800 text-white transition-all uppercase tracking-tighter">All</button>
+                        <button data-filter="puppy" class="filter-btn px-3 py-1 rounded-full text-[10px] font-bold bg-stone-100 text-stone-500 hover:bg-amber-100 transition-all uppercase tracking-tighter">🐶 Puppy</button>
+                        <button data-filter="work" class="filter-btn px-3 py-1 rounded-full text-[10px] font-bold bg-stone-100 text-stone-500 hover:bg-sky-100 transition-all uppercase tracking-tighter">💻 Work</button>
+                        <button data-filter="medical" class="filter-btn px-3 py-1 rounded-full text-[10px] font-bold bg-stone-100 text-stone-500 hover:bg-rose-100 transition-all uppercase tracking-tighter">💊 Medical</button>
+                    </div>
+                </div>
+
+                <div class="custom-scroll overflow-y-auto pr-3 flex-grow" id="timeline-body">
+                    <!-- Dynamic Items -->
+                </div>
+            </section>
+
+            <!-- Insight Charts -->
+            <section class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="bg-white p-6 rounded-3xl shadow-sm border border-stone-200">
+                    <h3 class="text-xs font-bold text-stone-400 uppercase tracking-widest mb-4">Daily Balance</h3>
+                    <div class="chart-container"><canvas id="allocationChart"></canvas></div>
+                </div>
+                <div class="bg-white p-6 rounded-3xl shadow-sm border border-stone-200">
+                    <h3 class="text-xs font-bold text-stone-400 uppercase tracking-widest mb-4">Consistency Goal</h3>
+                    <div class="chart-container"><canvas id="historyChart"></canvas></div>
+                </div>
+            </section>
+        </div>
+
+        <!-- RIGHT COLUMN: PT ENGINE -->
+        <div class="lg:col-span-5">
+            <section class="bg-stone-800 text-stone-100 p-8 rounded-3xl shadow-xl border border-stone-700 h-full flex flex-col sticky top-8">
+                
+                <div class="mb-8">
+                    <h2 class="text-2xl font-bold mb-2">PT Execution Engine</h2>
+                    <p class="text-stone-400 text-sm leading-relaxed">
+                        Chisel away at your routines during work breaks. Checkboxes save automatically to your browser storage.
+                    </p>
+                </div>
+
+                <!-- Progress Meter -->
+                <div class="mb-10 bg-stone-900/40 p-6 rounded-2xl border border-stone-700">
+                    <div class="flex justify-between items-end mb-3">
+                        <span class="text-xs font-bold tracking-widest text-stone-400 uppercase">Daily PT Progress</span>
+                        <span class="text-3xl font-bold text-emerald-400" id="pt-progress-text">0%</span>
+                    </div>
+                    <div class="w-full bg-stone-700 rounded-full h-3">
+                        <div class="bg-emerald-500 h-3 rounded-full transition-all duration-700 ease-in-out" id="pt-progress-bar" style="width: 0%"></div>
+                    </div>
+                    <div class="mt-3 flex justify-between text-[10px] font-bold text-stone-500 uppercase tracking-widest">
+                        <span>Movement Target: 1 Hour</span>
+                        <span><span id="pt-completed-num">0</span> / <span id="pt-total-num">0</span> Done</span>
+                    </div>
+                </div>
+
+                <!-- Checklist -->
+                <div class="custom-scroll overflow-y-auto pr-3 flex-grow space-y-8" id="pt-checklist-body">
+                    <!-- Dynamic Sections -->
+                </div>
+
+            </section>
+        </div>
+    </div>
+
+    <script>
+        // --- DATA OBJECTS ---
+        const masterTimeline = [
+            { t: "08:00 AM", h: "Quiet Exit & Potty", d: "Carry Timber outside. No paws on floor. Reward success.", c: "puppy", i: "🚽" },
+            { t: "08:10 AM", h: "Tether & Teeth", d: "Tether Timber first. Guest Bath: Brush + Calf Raises.", c: "puppy", i: "🪢" },
+            { t: "08:15 AM", h: "Morning Walk", d: "20m Socialization. Joint lubrication for user.", c: "puppy", i: "☀️" },
+            { t: "08:40 AM", h: "Break Fast", d: "Meal + Vyvanse/Glucosamine. Grab Groov tool.", c: "medical", i: "🟢" },
+            { t: "09:00 AM", h: "RLT & Work Start", d: "Crate (Nap #1) with Groov tool. RLT Hips/Arms. Arm PT after.", c: "medical", i: "🔴" },
+            { t: "10:00 AM", h: "25/5 Cycle Start", d: "Focus work. Use 5m breaks for PT Checklist (Right).", c: "work", i: "🔄" },
+            { t: "11:00 AM", h: "Potty then Play", d: "If potty, 10m play. Then Office Playpen.", c: "puppy", i: "🚽" },
+            { t: "12:40 PM", h: "RLT Stomach", d: "Fasted. 20m. RED+NIR. Stay stationary.", c: "medical", i: "🔴" },
+            { t: "01:00 PM", h: "Lymphatic Flush Walk", d: "Remove Timber from crate. 20m walk.", c: "medical", i: "🦮" },
+            { t: "01:20 PM", h: "Lunch & Iron", d: "Eat + Iron Supplement. Timber Tethered.", c: "medical", i: "🍽️" },
+            { t: "02:00 PM", h: "Rest in Crate", d: "Nap #2 with frozen Kong/Ball. Secure Timber.", c: "puppy", i: "😴" },
+            { t: "02:05 PM", h: "Sit/Stand Switch", d: "Toggle desk height. PT snacks in work breaks.", c: "work", i: "🔄" },
+            { t: "04:00 PM", h: "Wake Up Potty", d: "Out immediately. Return to Tether/Umbilical.", c: "puppy", i: "🚽" },
+            { t: "05:00 PM", h: "Work Stop & Walk", d: "20m decompression walk.", c: "work", i: "🦮" },
+            { t: "05:30 PM", h: "Nap & Household", d: "Timber Nap #3. 15m Sweepy tasks. Cat play ritual.", c: "puppy", i: "🧹" },
+            { t: "06:30 PM", h: "Prep & Social", d: "Prep tomorrow's treats. Cook with Nathan.", c: "puppy", i: "🧊" },
+            { t: "07:30 PM", h: "Dinner & TV", d: "Wake Timber. Tethered or Playpen with chew.", c: "puppy", i: "🍽️" },
+            { t: "08:15 PM", h: "Teeth & Balance", d: "Single-leg balance while brushing.", c: "work", i: "🦷" },
+            { t: "08:30 PM", h: "Fast Start & RLT", d: "Face (M/W/F) or Pain Area. RED+NIR.", c: "medical", i: "🔴" },
+            { t: "09:00 PM", h: "Hobbies & Puzzles", d: "Puzzle feeders for Timber. Craft/Game time.", c: "puppy", i: "🧩" },
+            { t: "11:00 PM", h: "Puppy Bedtime", d: "Final potty. Timber to Puppy Apartment.", c: "puppy", i: "🏠" },
+            { t: "11:30 PM", h: "PM Meds", d: "Sertraline + Sronyx.", c: "medical", i: "💊" }
+        ];
+
+        const ptRoutines = [
+            { group: "Daily Essentials", items: [
+                { n: "Nerve Glides", d: "10 reps/side" },
+                { n: "Plank (Standard)", d: "5 x 30s" },
+                { n: "Side Plank (Knees)", d: "2 x 30s" },
+                { n: "Anti-Rotation Press", d: "2 x 10" },
+                { n: "Standing Clam", d: "3 x 10" }
+            ]},
+            { group: "Movement Snacks", items: [
+                { n: "Single Leg Stance", d: "3 x 30s" },
+                { n: "Iso Hip Abd (Wall)", d: "2 x 20s" },
+                { n: "Around the World", d: "2 x 10" },
+                { n: "4-Way Band Walk", d: "10 reps" }
+            ]},
+            { group: "Floor Routine (A)", items: [
+                { n: "Supine Bridge", d: "3 x 10" },
+                { n: "Clamshell", d: "3 x 10" },
+                { n: "Inner/Outer Thigh", d: "3 x 10" },
+                { n: "Active Leg Raise", d: "3 x 10" },
+                { n: "Lower Trunk Rot", d: "3 x 10" },
+                { n: "Open Book", d: "3 x 10" }
+            ]}
+        ];
+
+        // --- CORE LOGIC ---
+        let ptState = [];
+
+        function init() {
+            renderTimeline('all');
+            renderPTChecklist();
+            initCharts();
+            
+            // Filter Handlers
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.filter-btn').forEach(b => {
+                        b.classList.replace('bg-stone-800', 'bg-stone-100');
+                        b.classList.replace('text-white', 'text-stone-500');
+                    });
+                    btn.classList.replace('bg-stone-100', 'bg-stone-800');
+                    btn.classList.replace('text-stone-500', 'text-white');
+                    renderTimeline(btn.dataset.filter);
+                });
+            });
+        }
+
+        function renderTimeline(filter) {
+            const container = document.getElementById('timeline-body');
+            container.innerHTML = '';
+            
+            masterTimeline.filter(item => filter === 'all' || item.c === filter).forEach((item, idx) => {
+                const row = document.createElement('div');
+                row.className = "flex space-x-4 mb-6 relative timeline-item";
+                
+                let colorClass = "bg-stone-100 text-stone-600";
+                if(item.c === 'puppy') colorClass = "bg-amber-100 text-amber-700";
+                if(item.c === 'medical') colorClass = "bg-rose-100 text-rose-700";
+                if(item.c === 'work') colorClass = "bg-sky-100 text-sky-700";
+
+                row.innerHTML = `
+                    <div class="flex-shrink-0 w-10 flex flex-col items-center">
+                        <div class="w-8 h-8 rounded-full ${colorClass} flex items-center justify-center text-sm font-bold z-10">${item.i}</div>
+                        <div class="w-0.5 h-full bg-stone-100 mt-2"></div>
+                    </div>
+                    <div class="flex-grow bg-stone-50/50 p-4 rounded-2xl border border-stone-100 hover:border-stone-200 transition-all">
+                        <div class="flex justify-between items-baseline mb-1">
+                            <h4 class="font-bold text-stone-800 text-sm tracking-tight">${item.h}</h4>
+                            <span class="text-[10px] font-black text-stone-400 uppercase tracking-tighter">${item.t}</span>
+                        </div>
+                        <p class="text-xs text-stone-500 leading-relaxed">${item.d}</p>
+                    </div>
+                `;
+                container.appendChild(row);
+            });
+        }
+
+        function renderPTChecklist() {
+            const container = document.getElementById('pt-checklist-body');
+            container.innerHTML = '';
+            
+            const stored = localStorage.getItem('life_os_pt_v2');
+            ptState = stored ? JSON.parse(stored) : [];
+
+            let total = 0;
+            let done = 0;
+
+            ptRoutines.forEach((section, sIdx) => {
+                const secDiv = document.createElement('div');
+                secDiv.innerHTML = `<h5 class="text-[10px] font-black text-stone-500 uppercase tracking-[0.2em] mb-4 border-b border-stone-700 pb-2">${section.group}</h5>`;
+                
+                const list = document.createElement('div');
+                list.className = "space-y-4 mb-8";
+                
+                section.items.forEach((item, iIdx) => {
+                    total++;
+                    const id = `pt-${sIdx}-${iIdx}`;
+                    const isDone = ptState.includes(id);
+                    if(isDone) done++;
+
+                    const itemDiv = document.createElement('div');
+                    itemDiv.className = "flex items-start space-x-4 group";
+                    itemDiv.innerHTML = `
+                        <input type="checkbox" id="${id}" class="pt-checkbox mt-0.5" ${isDone ? 'checked' : ''} onchange="updatePTStatus('${id}')">
+                        <label for="${id}" class="cursor-pointer">
+                            <p class="text-sm font-bold text-stone-200 group-hover:text-white transition-colors ${isDone ? 'completed-text' : ''}">${item.n}</p>
+                            <p class="text-[10px] text-stone-500 uppercase tracking-wider font-bold ${isDone ? 'completed-text' : ''}">${item.d}</p>
+                        </label>
+                    `;
+                    list.appendChild(itemDiv);
+                });
+                secDiv.appendChild(list);
+                container.appendChild(secDiv);
+            });
+
+            document.getElementById('pt-total-num').innerText = total;
+            document.getElementById('pt-completed-num').innerText = done;
+            const pct = total > 0 ? Math.round((done/total) * 100) : 0;
+            document.getElementById('pt-progress-bar').style.width = `${pct}%`;
+            document.getElementById('pt-progress-text').innerText = `${pct}%`;
+        }
+
+        window.updatePTStatus = (id) => {
+            if(ptState.includes(id)) {
+                ptState = ptState.filter(i => i !== id);
+            } else {
+                ptState.push(id);
+            }
+            localStorage.setItem('life_os_pt_v2', JSON.stringify(ptState));
+            renderPTChecklist();
+        };
+
+        window.resetDailyPT = () => {
+            if(confirm("New day? This will clear your PT progress.")) {
+                localStorage.removeItem('life_os_pt_v2');
+                renderPTChecklist();
+            }
+        };
+
+        function initCharts() {
+            // Doughnut: Time Balance
+            new Chart(document.getElementById('allocationChart'), {
+                type: 'doughnut',
+                data: {
+                    labels: ['Sleep', 'Work', 'Therapy/PT', 'Puppy', 'Unwind'],
+                    datasets: [{
+                        data: [8, 5, 2.5, 4.5, 4],
+                        backgroundColor: ['#e7e5e4', '#7dd3fc', '#fda4af', '#fcd34d', '#a8a29e'],
+                        borderWidth: 0
+                    }]
+                },
+                options: { 
+                    responsive: true, maintainAspectRatio: false, cutout: '75%',
+                    plugins: { legend: { display: false } }
+                }
+            });
+
+            // Bar: Motivation / History
+            new Chart(document.getElementById('historyChart'), {
+                type: 'bar',
+                data: {
+                    labels: ['Feb 02', 'Feb 17', 'Target'],
+                    datasets: [{
+                        data: [3, 0, 7],
+                        backgroundColor: ['#d6d3d1', '#f87171', '#34d399'],
+                        borderRadius: 4
+                    }]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    scales: { y: { display: false }, x: { grid: { display: false } } },
+                    plugins: { legend: { display: false } }
+                }
+            });
+        }
+
+        window.onload = init;
+    </script>
+</body>
+</html>

@@ -34,6 +34,24 @@ body, .card, .top-nav, .tab-bar, .tc, .sc, .desk-sc, .desk-pt {
 html{scroll-behavior:smooth}
 body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--tb);min-height:100vh;overflow-x:hidden;padding-bottom:env(safe-area-inset-bottom)}
 
+/* ── CUTE DECORATION ── */
+.cute-tape {
+  height: 14px;
+  width: 100%;
+  background: repeating-linear-gradient(
+    45deg,
+    var(--ll),
+    var(--ll) 10px,
+    var(--ml) 10px,
+    var(--ml) 20px,
+    var(--pl) 20px,
+    var(--pl) 30px,
+    var(--sl) 30px,
+    var(--sl) 40px
+  );
+  border-bottom: 2px solid var(--lm);
+}
+
 /* ── TYPOGRAPHY ── */
 h1{font-size:1.6rem;font-weight:900;color:var(--td);letter-spacing:-.03em;line-height:1.1}
 h2{font-size:1.1rem;font-weight:800;color:var(--td)}
@@ -191,10 +209,8 @@ select{appearance:none;background:transparent;border:none;outline:none;font-fami
    DESKTOP LAYOUT (≥ 768px)
 ════════════════════════════════════════ */
 @media(min-width:768px){
-  /* Hide mobile tab bar and mobile pages */
-  .tab-bar{display:none}
-  .page{display:none !important}
-  .fab-now{display:none !important;}
+  /* Hide mobile tab bar and mobile pages AND mobile headers */
+  .tab-bar, .page, .fab-now, .top-nav, .pills-row { display:none !important; }
 
   /* Show desktop layout */
   .desktop-layout{display:flex !important;flex-direction:column;min-height:100vh;padding:24px 24px 32px}
@@ -250,6 +266,8 @@ select{appearance:none;background:transparent;border:none;outline:none;font-fami
 </style>
 </head>
 <body>
+
+<div class="cute-tape"></div>
 
 <nav class="top-nav" id="topNav">
   <div class="nav-brand">
@@ -314,14 +332,23 @@ select{appearance:none;background:transparent;border:none;outline:none;font-fami
       <div class="sc" style="border-color:var(--mm)"><span class="si">🥗</span><span class="lbl" style="color:var(--ma)">Daily Fuel</span><span class="sv">1,700 kcal</span></div>
       <div class="sc wide" style="border-color:var(--lm)"><span class="si">🔴</span><span class="lbl" style="color:var(--la)">RLT Protocol</span><span class="sv">Red + NIR Daily</span></div>
     </div>
-    <div class="card">
-      <p class="lbl" style="text-align:center;margin-bottom:4px">Daily Balance</p>
-      <div class="cb"><canvas id="mChA"></canvas></div>
-      <div class="chart-legend" id="mLegA"></div>
+    <div class="card" style="margin-bottom:14px">
+      <h3 class="lbl" style="text-align:center">🐶 Puppy Pickup Checklist</h3>
+      <div class="steps" style="margin-top:10px">
+        <div class="step"><span>✅ Crate + Snuggle Puppy</span></div>
+        <div class="step"><span>✅ Grooming Kit + Puppy Shampoo</span></div>
+        <div class="step"><span>✅ High-Value Treats (Freeze Dried Liver)</span></div>
+        <div class="step"><span>✅ Enzyme Cleaner (Nature's Miracle)</span></div>
+      </div>
     </div>
     <div class="card">
-      <p class="lbl" style="text-align:center;margin-bottom:4px">Consistency Goal</p>
-      <div class="cb"><canvas id="mChB"></canvas></div>
+      <h3 class="lbl" style="text-align:center">📓 Hobonichi Idea List</h3>
+      <div class="steps" style="margin-top:10px">
+        <div class="step"><span>💡 Timber's Growth Milestones</span></div>
+        <div class="step"><span>💡 100 Movies to Watch (Safdie Bros Marathon)</span></div>
+        <div class="step"><span>💡 Weekly PT Consistency Log</span></div>
+        <div class="step"><span>💡 German Phrases for Trip</span></div>
+      </div>
     </div>
   </div>
 </div>
@@ -454,49 +481,44 @@ function toggleDeskCollapse(cardId, bodyId, iconId) {
 
 // ─── DATA ────────────────────────────────────────────────────────
 const S=[
- {t:"08:00 AM",e:"08:15 AM",c:"puppy",i:"🚽",h:"Quiet Exit & Potty",
+ {t:"08:00 AM",e:"08:20 AM",c:"puppy",i:"🚽",h:"Quiet Exit & Potty",
   steps:["Apply Vitamin C serum and sunscreen before getting Timber.",
          "Carry Timber — do NOT let paws touch the floor yet.",
          "Walk straight outside to his potty spot. Stand still, no talking, no play.",
          "The moment he finishes: say 'Yes!' and give a high-value treat immediately.",
          "No potty in 5 min? Bring inside, crate for 10 minutes, then try again."]},
- {t:"08:15 AM",e:"08:20 AM",c:"puppy",i:"🪢",h:"Tether & Teeth",
-  steps:["Clip Timber's tether to your belt loop — he is now attached to you.",
-         "Head to the Guest Bathroom.",
-         "Brush teeth with warm water for 2 full minutes.",
-         "While brushing: do 3 sets of 15 calf raises. Timber sits or sniffs nearby on tether."]},
  {t:"08:20 AM",e:"08:40 AM",c:"puppy",i:"☀️",h:"Morning Walk — 20 mins",
   steps:["Clip Timber to a 6-foot leash. Slow, relaxed pace — this is NOT exercise.",
          "Goal: socialization. Let him sniff freely. Pause every 30 sec if needed.",
          "Aim for 3–5 new exposures: a stranger, a car, another dog at distance, a new sound or surface.",
          "Auto-sit at every curb: stop, wait for the sit, treat it, then cross.",
          "If he pulls: plant feet completely until leash is loose, then resume."]},
- {t:"08:40 AM",e:"09:00 AM",c:"medical",i:"🟢",h:"Break Fast — Meal + Meds",
+ {t:"08:40 AM",e:"09:20 AM",c:"medical",i:"🟢",h:"Break Fast — Meal + Meds",
   steps:["Eat your high-protein breakfast. Fasting window ended at 8:30 AM.",
          "Log this meal in <a href='https://cronometer.com' target='_blank'>Cronometer</a> and your pain/symptoms in <a href='https://guavahealth.com' target='_blank'>Guava</a>.",
          "Take Vyvanse with water. Take Glucosamine with food.",
          "While Timber eats: practice Learn to Earn — ask for a Sit before each handful of kibble.",
          "Practice handling: touch ears, paws, mouth gently. Reward each touch with kibble.",
          "Grab the frozen Groov tool from the freezer — needed for crate in ~15 minutes."]},
- {t:"09:00 AM",e:"10:00 AM",c:"medical",i:"🔴",h:"Stationary RLT + Arm PT — Nap 1",
+ {t:"09:20 AM",e:"10:00 AM",c:"medical",i:"🔴",h:"Stationary RLT + Arm PT — Nap 1",
   steps:["PUPPY FIRST: Attach frozen Groov tool inside Timber's crate, secure him inside and latch. This is Nap Block 1.",
          "Set up Red Light Therapy device. Position 4–6 inches from skin.",
          "Hips & Cysts: 15 minutes each side. RED + NIR setting.",
          "Arms: 10 minutes each arm immediately after hips — tissue is warm, ideal window.",
          "Arm PT: complete your full arm PT sequence right now while tissue is warm.",
          "Do NOT skip arm PT — warm-tissue window is optimal for tissue remodeling."]},
- {t:"10:00 AM",e:"11:00 AM",c:"work",i:"🔄",h:"Work Block 1 — 25/5 Pomodoro",
+ {t:"10:00 AM",e:"11:20 AM",c:"work",i:"🔄",h:"Work Block 1 — 25/5 Pomodoro",
   steps:["Start a 25-minute focus timer. Deep work only — close social media.",
          "When the 25-min timer rings: stand up, do ONE PT exercise from the PT panel.",
          "Set a 5-min break timer. Do the PT movement, then return and restart the 25-min timer.",
          "Repeat: 25 min work → 5 min PT. Stack as many cycles as possible.",
-         "Timber is in crate (Nap 1) — do not let him out until 11:00 AM."]},
- {t:"11:00 AM",e:"11:15 AM",c:"puppy",i:"🚽",h:"Potty then Play — Session 2",
+         "Timber is in crate (Nap 1) — do not let him out until 11:20 AM."]},
+ {t:"11:20 AM",e:"11:40 AM",c:"puppy",i:"🚽",h:"Potty then Play — Session 2",
   steps:["Take Timber out of crate and walk straight outside to potty spot.",
          "Stand quietly. No play or talking until he goes.",
          "The moment he finishes: 'Yes!' + treat, then 10 minutes of free yard play or chase-and-sit.",
          "No potty in 5 min? Back in crate for 15 minutes, retry at 11:15 AM."]},
- {t:"11:15 AM",e:"12:40 PM",c:"puppy",i:"🪢",h:"Hands-Free Tether — Work Continues",
+ {t:"11:40 AM",e:"12:40 PM",c:"puppy",i:"🪢",h:"Hands-Free Tether — Work Continues",
   steps:["Clip Timber's tether to your belt loop OR desk leg. He stays within 4 feet at all times.",
          "Dr. Yin Rule: Every time you stop moving, WAIT. If Timber sits voluntarily — mark 'Yes!' and drop a small kibble. Do NOT ask him to sit; wait for him to offer it.",
          "Jumping or whining? Turn your back, cross arms, say nothing. Resume only when 4 paws are on the floor.",
@@ -508,84 +530,78 @@ const S=[
          "Lie down or recline. Position RLT device 4–6 inches from lower abdomen.",
          "Use RED + NIR setting. 20 minutes total. Stay completely still.",
          "Do not eat anything during this session."]},
- {t:"01:00 PM",e:"01:20 PM",c:"puppy",i:"🚽",h:"Potty then Play — Session 3",
+ {t:"01:00 PM",e:"01:25 PM",c:"puppy",i:"🚽",h:"Potty then Play — Session 3",
   steps:["Take Timber outside immediately to potty spot.",
          "If he goes: 'Yes!' + treat, then 15 minutes of off-leash yard play.",
          "Crate Reset Rule: No potty in 5 minutes? Crate for 15 min, retry at 1:15 PM.",
          "During play: practice recalls — 'Timber, come!', treat when he arrives, release back to play."]},
- {t:"01:20 PM",e:"02:00 PM",c:"medical",i:"🍽️",h:"Lunch + Iron Supplement",
+ {t:"01:25 PM",e:"02:05 PM",c:"medical",i:"🍽️",h:"Lunch + Iron Supplement",
   steps:["Eat your lunch now.",
          "Log lunch in <a href='https://cronometer.com' target='_blank'>Cronometer</a> and update pain/symptoms in <a href='https://guavahealth.com' target='_blank'>Guava</a>.",
          "Take Iron Supplement with food. Do NOT take with dairy — wait 1 hour before coffee.",
          "Timber is tethered to your waist or desk leg nearby with a safe chew toy.",
          "Practice Sit to Please: ask for a sit before giving him any pets or attention."]},
- {t:"02:00 PM",e:"02:05 PM",c:"puppy",i:"😴",h:"Crate — Nap Block 2",
-  steps:["Place a frozen Kong or frozen ball inside the crate before Timber goes in.",
-         "Calmly guide Timber to his crate. No big fuss or long goodbyes.",
-         "Latch the door and walk away without looking back or speaking to him.",
-         "Whining? Wait for a 3-second pause before returning. Never let him out during active crying."]},
  {t:"02:05 PM",e:"04:00 PM",c:"work",i:"🔄",h:"Work Block 2 — Sit/Stand Desk",
-  steps:["Toggle desk to standing height to start this block.",
-         "Resume 25/5 Pomodoro cycles.",
-         "Every 5-min break: do 1–2 PT exercises from the PT panel. This is how you hit the 1-hour PT goal.",
-         "Switch desk back to sitting every 45–60 minutes to prevent fatigue.",
+  steps:["Place a frozen Kong or frozen ball inside the crate before Timber goes in.",
+         "Calmly guide Timber to his crate. Latch the door and walk away.",
+         "Toggle desk to standing height to start this block.",
+         "Resume 25/5 Pomodoro cycles. Switch desk back to sitting every 45–60 minutes.",
          "Timber is napping in crate — do not interact with him until 4:00 PM."]},
- {t:"04:00 PM",e:"04:15 PM",c:"puppy",i:"🚽",h:"Potty then Play — Session 4",
+ {t:"04:00 PM",e:"04:30 PM",c:"puppy",i:"🚽",h:"Potty + Play + Cats",
   steps:["Take Timber out of crate immediately and go straight outside.",
          "Same rules: stand at potty spot, no play until he goes.",
          "Once he potties: reward, then 15 minutes of structured play.",
          "Try handling practice: hold him on his side for 3 seconds, reward. Repeat 5 times.",
          "Optional cat greeting: supervised at a distance with Timber on leash. Do not force it."]},
- {t:"04:15 PM",e:"05:00 PM",c:"work",i:"🪢",h:"Tethered Final Work Hour",
+ {t:"04:30 PM",e:"05:15 PM",c:"work",i:"🪢",h:"Tethered Final Work Hour",
   steps:["Timber is tethered to your desk leg or belt for this last work hour.",
          "Finish any remaining urgent tasks.",
          "Any time he settles calmly near you: quietly mark and reward with a small treat.",
          "Keep this block low-stimulation — no exciting play — to set him up for the evening walk."]},
- {t:"05:00 PM",e:"05:30 PM",c:"medical",i:"🦮",h:"Socialization Walk — 30 mins",
+ {t:"05:15 PM",e:"05:45 PM",c:"medical",i:"🦮",h:"Socialization Walk — 30 mins",
   steps:["Leash Timber. Walk at a relaxed, decompression pace — for both of you.",
          "Goal: expose Timber to 5 new things (person, bike, sound, another dog at distance, new surface).",
          "At every curb: stop, wait for auto-sit, treat it, then cross. Every single curb.",
          "Pulling? Plant your feet. Zero forward movement until leash is loose.",
          "This walk is also your lymphatic flush — swing your arms, breathe deeply, decompress from work."]},
- {t:"05:30 PM",e:"06:30 PM",c:"puppy",i:"😴",h:"Nap 3 + Chores + Cat Time",
+ {t:"05:45 PM",e:"06:45 PM",c:"puppy",i:"😴",h:"Nap 3 + Chores + Cat Time",
   steps:["Secure Timber in his crate. This is Dr. Yin's mandatory rest block — do not skip it.",
          "Cats now have full house access — give them undivided attention.",
          "Chores: Check the <a href='sweepy://' target='_blank'>Sweepy</a> app for today's specific tasks and do 15–20 minutes of cleaning.",
          "Tulip: active play session with wand toy or laser — she needs it.",
          "Tigris: offer treats and gentle pets. Let her come to you; don't chase her."]},
- {t:"06:30 PM",e:"07:30 PM",c:"puppy",i:"🧊",h:"Frozen Treat Prep + Social Time",
+ {t:"06:45 PM",e:"07:30 PM",c:"puppy",i:"🧊",h:"Frozen Treat Prep + Human Dinner",
   steps:["Assemble tomorrow's Groov tool: fill with kibble + peanut butter or wet food. Freeze overnight.",
          "Prep frozen Kongs and any puzzle feeder items for tomorrow.",
          "Cook dinner and chat with Nathan — your social recharge time.",
          "Timber is still napping. Resist waking him early."]},
- {t:"07:30 PM",e:"08:15 PM",c:"puppy",i:"🍽️",h:"Dinner + TV Hour",
+ {t:"07:30 PM",e:"08:30 PM",c:"puppy",i:"🍽️",h:"Dinner + TV Hour",
   steps:["Wake Timber. Take him outside immediately for a quick potty trip.",
          "Back inside: tether Timber to your waist or couch leg.",
          "Eat your dinner and log it in <a href='https://cronometer.com' target='_blank'>Cronometer</a>.",
          "Watch TV or relax. Timber has a safe chew or puzzle feeder. Keep energy calm.",
          "Impulse control: place a treat on the floor, cover with your hand. Release ONLY when he looks at your face."]},
- {t:"08:15 PM",e:"08:30 PM",c:"work",i:"🦷",h:"Teeth + Balance — Wind Down",
-  steps:["Take your evening shower.",
-         "Head to the Master Bathroom.",
-         "Brush teeth for 2 full minutes.",
-         "While brushing: stand on one leg. Switch at the 1-minute mark. 30 seconds each side.",
-         "This is your daily balance PT — single-leg stance counts toward your PT goal.",
+ {t:"08:30 PM",e:"09:00 PM",c:"work",i:"🦷",h:"Shower + Dental + Balance",
+  steps:["Guide Timber to the Puppy Apartment (office). Give a treat and latch.",
+         "Take your evening shower (30-minute window for full routine).",
+         "Brush teeth for 2 full minutes + 2 mins Single Leg Balance.",
          "Floss and use mouthwash."]},
- {t:"08:30 PM",e:"09:00 PM",c:"medical",i:"🔴",h:"Fast Start + Evening RLT",
-  steps:["Kitchen is now CLOSED. Fasting window begins and runs until 8:30 AM tomorrow.",
+ {t:"09:00 PM",e:"09:30 PM",c:"medical",i:"🔴",h:"Fast Start + Evening RLT",
+  steps:["Kitchen is now CLOSED. Fasting window begins.",
          "Set up RLT device.",
          "Monday / Wednesday / Friday: Face protocol — 10 minutes.",
          "All other nights: Rotating pain area — hips, lower back, or wherever you need it most.",
-         "RED + NIR setting. 6 inches from skin. Stay completely still for the full duration.",
+         "RED + NIR setting. 6 inches from skin. Stay completely still.",
          "Apply Vitamin A serum, face lotion, and body oil.",
          "Log final pain/symptoms in <a href='https://guavahealth.com' target='_blank'>Guava</a>."]},
- {t:"09:00 PM",e:"09:30 PM",c:"puppy",i:"🧩",h:"Hobbies + Puzzle Feeders",
-  steps:["Feed remainder of Timber's daily kibble in puzzle feeders: snuffle mat, Licki Mat, or Kong Wobbler.",
+ {t:"09:30 PM",e:"10:00 PM",c:"puppy",i:"🧩",h:"Hobbies + Hobonichi",
+  steps:["Retrieve Timber from his Apartment in the Office.",
+         "Feed remainder of Timber's daily kibble in puzzle feeders: snuffle mat, Licki Mat, or Kong Wobbler.",
          "Brain work tires him without burning your energy.",
          "You: game, craft, Discord, or any hobby. This is YOUR time.",
          "Fill out your 'My 100' page or track habits in your Hobonichi planner.",
          "Timber can be off-tether if behavior has been good today — supervised but relaxed."]},
- {t:"09:30 PM",e:"11:00 PM",c:"puppy",i:"🐕",h:"Handling + Lap Session",
+ {t:"10:00 PM",e:"11:00 PM",c:"puppy",i:"🐕",h:"Handling + Lap Session",
   steps:["Take Timber outside for a potty trip first.",
          "Sit on the couch or floor. Let him settle on your lap or at your feet naturally.",
          "Handling: gently roll onto his side — hold 3 seconds, treat. Repeat 5 times.",
@@ -593,7 +609,7 @@ const S=[
          "Voice calm and low — this is trust-building, not play. No roughhousing this late."]},
  {t:"11:00 PM",e:"11:30 PM",c:"puppy",i:"🏠",h:"Puppy Bedtime",
   steps:["Take Timber outside for his FINAL potty of the night. Wait as long as needed — do not skip.",
-         "Walk him calmly to the Puppy Apartment (crate in bedroom).",
+         "Walk him calmly to the Puppy Apartment (office setup).",
          "Place him inside, toss in a small treat, latch the door.",
          "No long goodbyes. Turn lights low and walk away.",
          "Whining past 5 minutes? Place one finger through crate bars. Do NOT take him out."]},

@@ -926,16 +926,16 @@ body.timer-active .desktop-layout{padding-top:70px}
     <div class="de-module" id="deModule">
       <div class="de-header">
         <div>
-          <p class="lbl" style="color:var(--ga);margin-bottom:2px">🇩🇪 Germany Trip — March 30</p>
-          <h3 style="color:var(--td)">Countdown to Departure</h3>
+          <p class="lbl" id="deModuleTitle" style="color:var(--ga);margin-bottom:2px">🇩🇪 Germany Trip — March 28</p>
+          <h3 id="deModuleSub" style="color:var(--td)">Countdown to Departure</h3>
         </div>
-        <div class="de-countdown">
+        <div class="de-countdown" id="deCountdown">
           <div class="de-unit"><span class="de-num" id="mDeD">--</span><span class="de-ulbl">days</span></div>
           <div class="de-unit"><span class="de-num" id="mDeH">--</span><span class="de-ulbl">hrs</span></div>
           <div class="de-unit"><span class="de-num" id="mDeM">--</span><span class="de-ulbl">min</span></div>
         </div>
       </div>
-      <div class="de-phrase">
+      <div class="de-phrase" id="dePhrase">
         <span style="font-size:1.1rem">💬</span>
         <div style="flex:1">
           <div class="de-phrase-de" id="dePhraseDE">Wo ist die nächste U-Bahn?</div>
@@ -944,7 +944,7 @@ body.timer-active .desktop-layout{padding-top:70px}
         </div>
         <button class="de-phrase-btn" onclick="nextPhrase()" title="Next phrase">🔀</button>
       </div>
-      <a href="https://wanderlog.com" target="_blank" rel="noopener" class="wanderlog-btn">
+      <a href="https://wanderlog.com" target="_blank" rel="noopener" class="wanderlog-btn" id="deWanderlog">
         🗺️ Open Wanderlog Itinerary
       </a>
     </div>
@@ -1363,19 +1363,19 @@ body.timer-active .desktop-layout{padding-top:70px}
           <p style="text-align:center;font-size:.58rem;color:var(--tm);margin-bottom:9px">% completed each day</p>
           <div class="desk-cb"><canvas id="dChWeek"></canvas></div>
         </div>
-        <div class="de-module">
+        <div class="de-module" id="deskDeModule">
           <div class="de-header">
             <div>
-              <p class="lbl" style="color:var(--ga);margin-bottom:2px">🇩🇪 Germany — March 30</p>
-              <h3 style="color:var(--td)">Countdown</h3>
+              <p class="lbl" id="deskDeModuleTitle" style="color:var(--ga);margin-bottom:2px">🇩🇪 Germany — March 28</p>
+              <h3 id="deskDeModuleSub" style="color:var(--td)">Countdown</h3>
             </div>
-            <div class="de-countdown">
+            <div class="de-countdown" id="deskDeCountdown">
               <div class="de-unit"><span class="de-num" id="dDeD">--</span><span class="de-ulbl">days</span></div>
               <div class="de-unit"><span class="de-num" id="dDeH">--</span><span class="de-ulbl">hrs</span></div>
               <div class="de-unit"><span class="de-num" id="dDeM">--</span><span class="de-ulbl">min</span></div>
             </div>
           </div>
-          <div class="de-phrase">
+          <div class="de-phrase" id="deskDePhrase">
             <span style="font-size:1rem">💬</span>
             <div style="flex:1">
               <div class="de-phrase-de" id="dDePhraseDE">Wo ist die nächste U-Bahn?</div>
@@ -1384,7 +1384,7 @@ body.timer-active .desktop-layout{padding-top:70px}
             </div>
             <button class="de-phrase-btn" onclick="nextPhrase()" title="Next phrase">🔀</button>
           </div>
-          <a href="https://wanderlog.com" target="_blank" rel="noopener" class="wanderlog-btn">🗺️ Open Wanderlog</a>
+          <a href="https://wanderlog.com" target="_blank" rel="noopener" class="wanderlog-btn" id="deskDeWanderlog">🗺️ Open Wanderlog</a>
         </div>
         <div class="card">
           <h3 class="lbl" style="text-align:center;margin-bottom:8px">🔴 RLT Protocol</h3>
@@ -1560,7 +1560,8 @@ body.timer-active .desktop-layout{padding-top:70px}
 
 <script>
 // ─── CONSTANTS ────────────────────────────────────────────────────────────────
-const GERMANY_DATE = new Date('2026-03-30T06:00:00');
+const GERMANY_DATE = new Date('2026-03-28T06:00:00'); // departure — drop off Timber
+const RETURN_DATE  = new Date('2026-04-11T12:00:00'); // back home — pick up Timber
 
 const DE_PHRASES = [
   {de:'Wo ist die nächste U-Bahn?',        en:'Where is the nearest subway?',         pr:'voh ist dee NEKH-steh oo-BAHN?'},
@@ -1595,159 +1596,221 @@ const RLT_DAY = {
 // Day-specific blocks are tagged with days[] — only shown on matching weekday
 // RLT rotating block is handled dynamically
 const S=[
- {t:"08:00 AM",e:"08:20 AM",i:"🌅",h:"Morning Routine & Potty",steps:[
-   {c:"wellness",txt:"Apply skincare — Vitamin C serum + sunscreen."},
-   {c:"timber",  txt:"Check litter box or take Timber to potty spot."},
-   {c:"timber",  txt:"Treat immediately the moment he goes."},
-   {c:"timber",  txt:"Load Timber into the stroller."},
+ // ── OVERNIGHT ──────────────────────────────────────────────────────────────
+ {t:"04:00 AM",e:"04:15 AM",i:"🌙",h:"Timber Potty — Night Trip",steps:[
+   {c:"timber",txt:"Pick Timber up from crate immediately — no walking.",note:"Carrying prevents accidents in transit. His bladder is full and urgency is real at this age."},
+   {c:"timber",txt:"Carry downstairs. Wait for sit at back door. Open. Out to pee spot."},
+   {c:"timber",txt:"Praise the moment he goes. Back inside. Straight to crate."},
+   {c:"timber",txt:"Lights low. No talking beyond what's needed. Back to bed."},
  ]},
- {t:"08:20 AM",e:"08:40 AM",i:"☀️",h:"Stroller Walk — 20 min",steps:[
-   {c:"timber",  txt:"Paws off ground — keep him fully in the stroller.",note:"Prevents ground contact while he's still in the Sophia Yin socialization protocol."},
-   {c:"timber",  txt:"Push at a relaxed pace. Pause at anything interesting."},
-   {c:"wellness",txt:"Swing your arms, breathe deeply — your morning movement."},
-   {c:"timber",  txt:"Treat for calm, quiet observation."},
+
+ // ── MORNING ────────────────────────────────────────────────────────────────
+ {t:"08:00 AM",e:"08:15 AM",i:"🌅",h:"Timber Wake + Potty #1",steps:[
+   {c:"timber",txt:"Pick Timber up from crate immediately."},
+   {c:"timber",txt:"Carry downstairs. Wait for sit at back door. Open. Out to pee spot.",note:"The sit at the door threshold is the Learn to Earn moment — the door opening is the reward. Keep this consistent every single trip."},
+   {c:"timber",txt:"Praise heavily the moment he goes. This is the most important praise of the day."},
+   {c:"timber",txt:"Back upstairs to office."},
  ]},
- {t:"08:40 AM",e:"09:10 AM",i:"🍳",h:"Break Fast + Meds",steps:[
-   {c:"timber",  txt:"Place Timber in Living Room Playpen."},
-   {c:"timber",  txt:"Scatter 5–10 kibbles in pen for enrichment."},
-   {c:"wellness",txt:"Eat high-protein breakfast + Vyvanse & Glucosamine.",note:"Glucosamine absorbs better with food. Vyvanse taken fasted can feel harsh — food buffer helps."},
-   {c:"wellness",txt:"Log meal in Cronometer + symptoms in Guava."},
-   {c:"timber",  txt:"Prep a frozen Groov/Kong for his nap."},
+ {t:"08:15 AM",e:"08:45 AM",i:"🎓",h:"Timber Breakfast Training (Learn to Earn)",steps:[
+   {c:"timber",txt:"Use full breakfast portion as training rewards — no bowl.",note:"Learn to Earn: every piece of food is earned through engagement. This builds focus, impulse control, and a working relationship simultaneously."},
+   {c:"timber",txt:"Work on: sit, eye contact, name recognition, come."},
+   {c:"timber",txt:"Keep sessions short and positive. End before he loses interest."},
+   {c:"timber",txt:"Remaining food → puzzle feeder if training reps are done."},
+   {c:"timber",txt:"Timber tethered to you the entire time."},
  ]},
- {t:"09:10 AM",e:"09:35 AM",i:"💪",h:"Arm PT — 5lb Weights",statsTarget:'armpt',steps:[
-   {c:"timber",  txt:"Move Timber to Office Apartment for Nap 1. Frozen Kong inside."},
-   {c:"wellness",txt:"Scaption — 3×12. Arms in a V shape, thumbs up.",note:"Targets supraspinatus safely. Builds shoulder stabilizers without impingement risk — essential for hypermobility."},
-   {c:"wellness",txt:"External Rotations — 3×15. Elbow pinned, rotate out.",note:"Strengthens rotator cuff. Hypermobile joints need muscle tension to compensate for lax ligaments."},
-   {c:"wellness",txt:"Hammer Press — 3×10. Palms face each other.",note:"Neutral grip avoids shoulder impingement common with hypermobility."},
+ {t:"08:45 AM",e:"09:00 AM",i:"🍳",h:"Your Breakfast + Vyvanse",steps:[
+   {c:"wellness",txt:"Eat high-protein breakfast. Take Vyvanse.",note:"Vyvanse with food reduces harsh onset. Protein breakfast supports sustained focus through the morning work block."},
+   {c:"wellness",txt:"Log breakfast in Cronometer."},
+   {c:"timber",  txt:"Timber plays tethered beside you while you eat."},
+ ]},
+ {t:"08:50 AM",e:"09:00 AM",i:"🚽",h:"Timber Potty #2 → Crate Nap #1",steps:[
+   {c:"timber",txt:"Post-meal urgency window — take him out now.",note:"Puppies typically need to eliminate 15–30 minutes after eating. This trip is non-negotiable."},
+   {c:"timber",txt:"Carry downstairs. Sit at door. Out. Praise. Back upstairs."},
+   {c:"timber",txt:"Into crate. Cover on. Walk away calmly — no long goodbye."},
+ ]},
+ {t:"09:00 AM",e:"09:10 AM",i:"🧹",h:"Sweepy — Daily Clean",steps:[
+   {c:"wellness",txt:"Open Sweepy app. Run today's 10-min cleaning task.",note:"Daily cleaning is essential with a puppy in the house. Accidents are easier to manage when the baseline is clean."},
+   {c:"wellness",txt:"Focus on office and any accident spots from this morning."},
+ ]},
+
+ // ── WORK BLOCK 1 ───────────────────────────────────────────────────────────
+ {t:"09:10 AM",e:"10:30 AM",i:"🔄",h:"Focus Block 1 — Pomodoro",steps:[
+   {c:"focus",   txt:"25 min deep work. Timer on."},
+   {c:"wellness",txt:"5-min break: one PT exercise from your Movement list."},
+   {c:"focus",   txt:"Repeat cycles. Timber is crated — guard this block.",note:"Timber is safely napping. This is your first clean focus window of the day. Protect it."},
+ ]},
+ {t:"10:30 AM",e:"10:45 AM",i:"🚽",h:"Timber Wake + Potty #3",steps:[
+   {c:"timber",txt:"Pick up from crate. Carry downstairs."},
+   {c:"timber",txt:"Sit at door. Out. Praise. Back upstairs."},
+   {c:"timber",txt:"Timber tethered to desk. Awake window begins."},
+ ]},
+ {t:"10:45 AM",e:"11:00 AM",i:"🪢",h:"Tethered Desk Time — Awake Window",steps:[
+   {c:"timber",txt:"Timber clipped to desk leg or belt loop.",note:"When he's not in his crate he's either tethered to you or directly supervised. No unsupervised access to any room at this age."},
+   {c:"timber",txt:"Reward any calm sitting or lying down with a quiet marker and kibble."},
+   {c:"focus",  txt:"Continue Pomodoro cycles. 25/5."},
+ ]},
+ {t:"11:00 AM",e:"11:10 AM",i:"🚽",h:"Timber Potty #4",steps:[
+   {c:"timber",txt:"Carry downstairs. Sit at door. Out. Praise. Back upstairs."},
+   {c:"timber",txt:"Tethered desk time continues."},
+ ]},
+
+ // ── MIDDAY ─────────────────────────────────────────────────────────────────
+ {t:"12:00 PM",e:"12:15 PM",i:"🚽",h:"Timber Potty #5 → Crate Nap #2",steps:[
+   {c:"timber",txt:"Carry downstairs. Sit at door. Out. Praise. Back upstairs."},
+   {c:"timber",txt:"Into crate. Cover on. Nap #2 begins."},
+ ]},
+ {t:"12:00 PM",e:"12:15 PM",i:"🍽️",h:"Your Lunch + Iron",steps:[
+   {c:"wellness",txt:"Eat lunch. Take iron supplement with food.",note:"Iron with food reduces stomach upset. Lunch timing gives the 8-hour buffer before evening RLT session — iron can amplify oxidative stress during photobiomodulation."},
+   {c:"wellness",txt:"Log in Cronometer + Guava."},
+ ]},
+ {t:"12:15 PM",e:"01:00 PM",i:"💪",h:"PT — Floor Exercises",statsTarget:'armpt',steps:[
+   {c:"wellness",txt:"Timber is crated — use this window for exercises that need floor space and more than 5 minutes.",note:"One dedicated PT slot for the exercises that can't fit in Pomodoro breaks. Protect this window."},
+   {c:"wellness",txt:"Scaption — 3×12. Arms in V, thumbs up."},
+   {c:"wellness",txt:"External Rotations — 3×15. Elbow pinned, rotate out."},
+   {c:"wellness",txt:"Hammer Press — 3×10. Palms face each other."},
    {c:"wellness",txt:"Bent-Over Rows — 3×12. Squeeze shoulder blades."},
  ]},
- {t:"09:35 AM",e:"11:20 AM",i:"🔄",h:"Focus Block 1 — Pomodoro ×2",steps:[
-   {c:"focus",   txt:"Sit at desk. 25-min timer. Deep work only."},
-   {c:"wellness",txt:"5-min break: one PT exercise from your Movement list."},
-   {c:"focus",   txt:"Repeat for second cycle."},
-   {c:"timber",  txt:"Timber stays resting. Don't tether during focus blocks.",note:"Tethering while distracted reduces your ability to read his signals. Nap time = trust time."},
+ // Wednesday-only pre-meeting potty trip
+ {t:"12:50 PM",e:"01:00 PM",i:"⚠️",h:"Pre-Meeting Potty Trip (Wed only)",days:[3],steps:[
+   {c:"timber",txt:"Wednesday: potty trip before 1 PM meeting.",note:"Covers both 1 PM and 2 PM Wednesday meetings. Take him now so you're not interrupted mid-call."},
+   {c:"timber",txt:"Carry downstairs. Sit at door. Out. Praise. Back upstairs. Crate."},
  ]},
- {t:"11:20 AM",e:"11:45 AM",i:"🚽",h:"Potty + Play — Session 2",timers:[{label:"Potty",mins:5,emoji:"🚽"},{label:"Play",mins:10,emoji:"🎾"},{label:"Play",mins:15,emoji:"🎾"}],steps:[
-   {c:"timber",  txt:"Potty check — litter box or potty spot."},
-   {c:"timber",  txt:"Treat immediately for going."},
-   {c:"timber",  txt:"10 min structured play — fetch, chase, tug."},
-   {c:"timber",  txt:"No potty in 5 min? Back in Apartment, try again in 15."},
+ {t:"01:30 PM",e:"01:45 PM",i:"🚽",h:"Timber Wake + Potty #6",steps:[
+   {c:"timber",txt:"Pick up from crate. Carry downstairs."},
+   {c:"timber",txt:"Sit at door. Out. Praise. Back upstairs."},
+   {c:"timber",txt:"Tethered to desk. Awake window."},
  ]},
- {t:"11:45 AM",e:"12:40 PM",i:"🪢",h:"Hands-Free Tether — Desk",steps:[
-   {c:"timber",  txt:"Clip him to desk leg or belt loop."},
-   {c:"timber",  txt:"Reward any voluntary calm sitting with a kibble.",note:"Sophia Yin's Learn to Earn: reward the behavior you want. Ignore jumping or whining entirely."},
-   {c:"focus",   txt:"Pomodoro 25/5 cycles."},
-   {c:"timber",  txt:"Moving floors or doing chores? Unclip → playpen first."},
+
+ // ── WORK BLOCK 2 ───────────────────────────────────────────────────────────
+ {t:"01:30 PM",e:"03:00 PM",i:"🔄",h:"Focus Block 2 — Pomodoro",steps:[
+   {c:"focus",  txt:"25 min deep work. Timber tethered beside you."},
+   {c:"wellness",txt:"5-min break: PT movement. Stand, stretch, one exercise."},
+   {c:"timber", txt:"Reward calm settled behaviour during your focus cycles."},
  ]},
- {t:"12:40 PM",e:"01:00 PM",i:"🔴",h:"RLT — Fasted Stomach (20 min)",steps:[
-   {c:"timber",  txt:"Tether Timber near desk or move to Apartment."},
-   {c:"wellness",txt:"MitoPRO panel at 6 inches, abdomen, RED + NIR.",note:"Fasted RLT causes adipocytes to release lipids. The walk immediately after ensures those lipids are burned, not re-stored."},
-   {c:"wellness",txt:"20-min timer. Can read or do light work."},
-   {c:"wellness",txt:"Wipe stomach first if any oils migrated there."},
+ {t:"02:00 PM",e:"02:10 PM",i:"🚽",h:"Timber Potty #7",steps:[
+   {c:"timber",txt:"Carry downstairs. Sit at door. Out. Praise. Back upstairs."},
+   {c:"timber",txt:"Tethered desk time continues."},
  ]},
- {t:"01:00 PM",e:"01:25 PM",i:"🚶",h:"Potty Walk + Metabolic Follow-Through",timers:[{label:"Potty",mins:5,emoji:"🚽"},{label:"Walk",mins:15,emoji:"🚶"}],steps:[
-   {c:"timber",  txt:"Potty check — reward heavily."},
-   {c:"timber",  txt:"15 min walk or active play.",note:"This IS the metabolic follow-through. Lipids released by RLT are circulating now — movement ensures they're burned. Don't skip this."},
-   {c:"timber",  txt:"Practice recalls — 'Timber, come!' Treat on arrival."},
+ // Thursday 3 PM meeting — pre-meeting potty
+ {t:"02:50 PM",e:"03:00 PM",i:"⚠️",h:"Pre-Meeting Potty Trip (Thu only)",days:[4],steps:[
+   {c:"timber",txt:"Thursday: potty before 3 PM meeting.",note:"Take him now so you're free for the call."},
+   {c:"timber",txt:"Carry downstairs. Sit at door. Out. Praise. Crate for meeting."},
  ]},
- {t:"01:25 PM",e:"01:55 PM",i:"🍽️",h:"Lunch + Iron",steps:[
-   {c:"wellness",txt:"Eat lunch."},
-   {c:"wellness",txt:"Take Iron supplement with food.",note:"Lunch iron = 8-hour buffer before 9 PM RLT. High systemic iron can amplify oxidative stress during photobiomodulation."},
-   {c:"wellness",txt:"Log in Cronometer + Guava."},
-   {c:"timber",  txt:"Timber tethered nearby. Sit to Please practice."},
+ {t:"03:00 PM",e:"03:15 PM",i:"🚽",h:"Timber Potty #8 → Crate Nap #3",steps:[
+   {c:"timber",txt:"Carry downstairs. Sit at door. Out. Praise. Back upstairs."},
+   {c:"timber",txt:"Into crate. Cover on. Nap #3 begins."},
  ]},
- {t:"01:55 PM",e:"04:00 PM",i:"🔄",h:"Focus Block 2 — Sit/Stand Desk",steps:[
-   {c:"timber",  txt:"Frozen Kong in Apartment. Guide Timber in for Nap 2."},
-   {c:"focus",   txt:"Toggle desk to standing height to start."},
-   {c:"focus",   txt:"Pomodoro cycles. Sit/stand every ~45 min."},
-   {c:"focus",   txt:"Longest uninterrupted focus window. Guard it.",note:"Timber is napping and fed — this is your best deep work window of the day."},
+ {t:"03:00 PM",e:"04:30 PM",i:"🔄",h:"Focus Block 3 — Deep Work",steps:[
+   {c:"focus",  txt:"Timber crated — longest uninterrupted focus window.",note:"Protect this block. Timber is napping and fed. This is your best deep work window of the afternoon."},
+   {c:"focus",  txt:"Pomodoro cycles. Sit/stand desk if you have one."},
+   {c:"wellness",txt:"5-min breaks: PT movement."},
  ]},
- {t:"04:00 PM",e:"04:30 PM",i:"🚽",h:"Potty + Play + Cats",timers:[{label:"Potty",mins:5,emoji:"🚽"},{label:"Play",mins:15,emoji:"🎾"},{label:"Cat Time",mins:10,emoji:"🐱"}],steps:[
-   {c:"timber",  txt:"Immediate potty check. Reward."},
-   {c:"timber",  txt:"15 min structured play."},
-   {c:"timber",  txt:"Optional: supervised distant cat greeting."},
-   {c:"timber",  txt:"Doing chores? Use playpen — do NOT tether on stairs."},
+
+ // ── LATE AFTERNOON ─────────────────────────────────────────────────────────
+ {t:"04:30 PM",e:"04:45 PM",i:"🚽",h:"Timber Wake + Potty #9",steps:[
+   {c:"timber",txt:"Pick up from crate. Carry downstairs."},
+   {c:"timber",txt:"Sit at door. Out. Praise. Back upstairs."},
+   {c:"timber",txt:"Tethered awake window — socialization time."},
  ]},
- {t:"04:30 PM",e:"05:15 PM",i:"🪢",h:"Tethered Wind-Down Focus",steps:[
-   {c:"timber",  txt:"Clip Timber to desk leg."},
-   {c:"focus",   txt:"Finish urgent CTA wrap-up tasks."},
-   {c:"timber",  txt:"Mark and treat quietly when he settles."},
-   {c:"focus",   txt:"Keep stimulation low — winding toward evening."},
+ {t:"04:30 PM",e:"05:00 PM",i:"🪢",h:"Tethered Play + Socialization",steps:[
+   {c:"timber",txt:"Tethered beside you. This is his afternoon socialization window.",note:"9 weeks is peak socialization period — closes around 12–14 weeks. Calm exposure to sights, sounds, textures counts."},
+   {c:"timber",txt:"Optional: supervised cat greeting if the cat is willing."},
+   {c:"timber",txt:"Short training reps if you have capacity — 5 minutes max."},
  ]},
- {t:"05:15 PM",e:"05:45 PM",i:"🦮",h:"Evening Stroller Walk — 30 min",steps:[
-   {c:"timber",  txt:"Load Timber into stroller."},
-   {c:"timber",  txt:"Expose to 5 new sights or sounds."},
-   {c:"wellness",txt:"Swing arms, breathe deeply — decompress from work."},
-   {c:"timber",  txt:"Treat for calm world observation."},
+ {t:"05:00 PM",e:"05:10 PM",i:"🚽",h:"Timber Potty #10",steps:[
+   {c:"timber",txt:"Carry downstairs. Sit at door. Out. Praise. Back upstairs."},
  ]},
- {t:"05:45 PM",e:"06:45 PM",i:"😴",h:"Timber Nap 3 + Chores + Cats",steps:[
-   {c:"timber",  txt:"Secure Timber in Apartment for mandatory rest.",note:"Puppies need 16–18 hrs sleep/day. Skipping naps causes overtired biting and regression. Nap enforcement IS training."},
-   {c:"wellness",txt:"Undivided cat time — wand toy or laser for Tulip."},
-   {c:"wellness",txt:"Check Sweepy app. 15–20 min cleaning."},
-   {c:"wellness",txt:"Stairs are yours — move freely."},
+ {t:"05:30 PM",e:"05:45 PM",i:"🎓",h:"Timber Dinner Training (Learn to Earn)",steps:[
+   {c:"timber",txt:"Use dinner portion as training rewards. 10 minutes max.",note:"Three timed meals anchors his digestive rhythm — makes potty timing predictable. Dinner at 5:30 gives a full buffer before the overnight stretch."},
+   {c:"timber",txt:"Work on: sit, stay, down, come. Keep it positive."},
+   {c:"timber",txt:"Remainder in puzzle feeder if reps are done."},
  ]},
- {t:"06:45 PM",e:"07:30 PM",i:"🧊",h:"Dinner Prep + Kong Prep",steps:[
-   {c:"timber",  txt:"Assemble tomorrow's Groov tools and Kongs. Freeze now.",note:"Frozen enrichment takes ~4 hours. Prepping tonight = ready for tomorrow's nap blocks."},
-   {c:"wellness",txt:"Cook dinner and chat with your partner."},
-   {c:"timber",  txt:"Timber still napping — resist waking early."},
+ {t:"05:50 PM",e:"06:00 PM",i:"🚽",h:"Timber Potty #11 → Crate Nap #4",steps:[
+   {c:"timber",txt:"Post-meal urgency window. Carry downstairs."},
+   {c:"timber",txt:"Sit at door. Out. Praise. Into crate. Cover on.",note:"He goes down while you and your partner cook. This is deliberate — he learns that crate time happens even when the house is lively."},
  ]},
- {t:"07:30 PM",e:"08:30 PM",i:"📺",h:"Dinner + TV + Meds (Playpen)",steps:[
-   {c:"timber",  txt:"Wake Timber. Immediate potty check."},
-   {c:"timber",  txt:"Place him in Living Room Playpen with a chew."},
-   {c:"wellness",txt:"Eat dinner — log in Cronometer."},
-   {c:"wellness",txt:"Take Sertraline + Sronyx with dinner.",note:"Taking SSRIs and contraceptives with food reduces nausea and stomach upset. Consistent evening timing maintains steady serum levels."},
-   {c:"wellness",txt:"Watch TV. No tethering needed."},
+
+ // ── EVENING ────────────────────────────────────────────────────────────────
+ {t:"05:30 PM",e:"06:00 PM",i:"🏠",h:"Your Work Day Ends",steps:[
+   {c:"wellness",txt:"Close work. Step away from desk."},
+   {c:"wellness",txt:"Transition intentionally — work is done for today."},
  ]},
- {t:"08:30 PM",e:"09:00 PM",i:"🚿",h:"Shower + Quick Grooming",steps:[
-   {c:"timber",  txt:"Guide Timber back to Office Apartment."},
-   {c:"wellness",txt:"Shower — no oils or lotions. Bare skin for RLT.",note:"Oils, sunscreen, and moisturizers form a reflective barrier. Photons scatter before reaching tissue. Bare skin = full dose."},
-   {c:"timber",  txt:"Slicker brush 30 sec + dog toothpaste lick."},
-   {c:"wellness",txt:"Brush teeth + 2 min Single Leg Balance + floss."},
+ {t:"06:00 PM",e:"07:30 PM",i:"🍳",h:"Cook Dinner Together",steps:[
+   {c:"wellness",txt:"Cook with your partner. Timber is crated — this is your time.",note:"The evening nap is the one most likely to get disrupted by a well-meaning partner who just got home. Brief him: no letting Timber out early, even if he whines."},
+   {c:"wellness",txt:"Prep tomorrow's frozen Kongs or puzzle feeders now while you cook.",},
+   {c:"wellness",txt:"Take Sertraline + Sronyx with dinner.",note:"SSRIs and contraceptives taken with food reduce nausea. Consistent evening timing maintains steady serum levels."},
  ]},
- {t:"09:00 PM",e:"09:10 PM",i:"🔴",h:"RLT — Face (10 min)",statsTarget:'rlt',steps:[
+ {t:"07:30 PM",e:"07:45 PM",i:"🚽",h:"Timber Wake + Potty #12",steps:[
+   {c:"timber",txt:"Pick up from crate. Carry downstairs."},
+   {c:"timber",txt:"Sit at door. Out. Praise. Back upstairs."},
+   {c:"timber",txt:"Tethered near dining area. Calm presence during dinner."},
+ ]},
+ {t:"07:30 PM",e:"08:30 PM",i:"🍽️",h:"Dinner + Survivor",steps:[
+   {c:"wellness",txt:"Eat dinner together. Log in Cronometer."},
+   {c:"timber",  txt:"Timber tethered near you — calm supervised presence.",note:"Evening tethering during TV is natural socialization. He learns that calm behaviour is the norm when the family is together."},
+   {c:"wellness",txt:"Watch Survivor. Wind down together."},
+ ]},
+ {t:"09:00 PM",e:"09:15 PM",i:"🚽",h:"Timber Potty #13 → Crate Nap #5",steps:[
+   {c:"timber",txt:"Carry downstairs. Sit at door. Out. Praise. Back upstairs.",note:"This is the critical nap. He goes down before the overtired wall hits — which is what caused the 11 PM wired behaviour. Hold this time firm."},
+   {c:"timber",txt:"Into crate. Cover on. Walk away. He is done for the evening."},
+ ]},
+
+ // ── NIGHT ROUTINE ──────────────────────────────────────────────────────────
+ {t:"09:00 PM",e:"09:20 PM",i:"🚿",h:"Shower",steps:[
+   {c:"wellness",txt:"Shower immediately after Timber goes into crate.",note:"Bare skin for RLT — no oils, no moisturiser, no sunscreen. Shower anchors the RLT sequence every night."},
+   {c:"wellness",txt:"No products on skin until after RLT is complete."},
+ ]},
+ {t:"09:20 PM",e:"09:30 PM",i:"🔴",h:"RLT — Face (10 min)",statsTarget:'rlt',steps:[
    {c:"wellness",txt:"Panel 6 inches. RED + NIR. Eyes closed or goggles."},
    {c:"wellness",txt:"10-min timer.",note:"Collagen remodeling, anti-inflammatory, circadian support via facial photoreceptors."},
  ]},
- {t:"09:10 PM",e:"09:30 PM",i:"🔴",h:"RLT — Hips (10 min each side)",steps:[
+ {t:"09:30 PM",e:"09:50 PM",i:"🔴",h:"RLT — Hips (10 min each side)",steps:[
    {c:"wellness",txt:"Left hip — panel flush to skin. 10 min."},
-   {c:"wellness",txt:"Right hip — panel flush to skin. 10 min."},
-   {c:"wellness",txt:"Phone alarm for each switch.",note:"Nightly hip dosing: NIR penetrates to bursa/joint capsule level. Reduces cyst fluid accumulation, stimulates collagen cross-linking in hypermobile tissue."},
+   {c:"wellness",txt:"Right hip — panel flush to skin. 10 min.",note:"Nightly hip dosing: NIR penetrates to bursa and joint capsule level. Reduces cyst fluid accumulation, stimulates collagen cross-linking in hypermobile tissue."},
  ]},
- // RLT rotating block — steps injected dynamically based on today's day
- {t:"09:30 PM",e:"09:40 PM",i:"🔴",h:"RLT — Rotating Target (10 min)",isRltRotating:true,steps:[]},
- // Arm PT — only on Mon/Wed/Fri (days 1,3,5)
- {t:"09:40 PM",e:"10:05 PM",i:"💪",h:"ATP Window — Arm PT",days:[1,3,5],statsTarget:'armpt',steps:[
-   {c:"wellness",txt:"Scaption — 3×12 slow reps."},
-   {c:"wellness",txt:"External Rotations — 3×15."},
-   {c:"wellness",txt:"Hammer Press — 3×10."},
-   {c:"wellness",txt:"Bent-Over Rows — 3×12."},
-   {c:"wellness",txt:"ATP from RLT peaks now — best window for collagen remodeling.",note:"Photobiomodulation elevates cellular ATP 5–10 min post-session. Doing resistance work in this window maximizes collagen synthesis and muscle adaptation."},
- ]},
- {t:"10:05 PM",e:"10:15 PM",i:"✨",h:"Skincare — Post-RLT",statsTarget:'rlt',steps:[
+ {t:"09:50 PM",e:"10:00 PM",i:"🔴",h:"RLT — Rotating Target (10 min)",isRltRotating:true,steps:[]},
+ {t:"10:00 PM",e:"10:15 PM",i:"✨",h:"Skincare — Post-RLT",statsTarget:'rlt',steps:[
    {c:"wellness",txt:"Apply Vitamin A / retinol to face.",note:"RLT upregulates cellular receptors and increases local blood flow. Vitamin A absorption is enhanced immediately post-session."},
    {c:"wellness",txt:"Collagen oils on hips and target areas."},
    {c:"wellness",txt:"Never apply before RLT — oils block photons."},
  ]},
- {t:"10:15 PM",e:"10:35 PM",i:"🐕",h:"Timber Wind-Down — 20 min",timers:[{label:"Wind-Down",mins:20,emoji:"🐕"}],steps:[
-   {c:"timber",  txt:"Scatter last kibble in puzzle feeder.",note:"20 min of calm, structured bonding > 60 min unstructured. Quality over duration."},
-   {c:"timber",  txt:"Lap time — low lights. Let him settle naturally."},
-   {c:"timber",  txt:"Keep voice low. No stimulating play."},
+ // Arm PT — Mon/Wed/Fri only
+ {t:"10:00 PM",e:"10:20 PM",i:"💪",h:"ATP Window — Arm PT",days:[1,3,5],statsTarget:'armpt',steps:[
+   {c:"wellness",txt:"Scaption — 3×12 slow reps."},
+   {c:"wellness",txt:"External Rotations — 3×15."},
+   {c:"wellness",txt:"Hammer Press — 3×10."},
+   {c:"wellness",txt:"Bent-Over Rows — 3×12.",note:"ATP from RLT peaks 5–10 min post-session. Resistance work in this window maximises collagen synthesis and muscle adaptation."},
  ]},
- {t:"10:35 PM",e:"10:50 PM",i:"🏠",h:"Timber's Bedtime",steps:[
-   {c:"timber",  txt:"Final litter box check."},
-   {c:"timber",  txt:"Guide into Apartment, treat inside, latch door."},
-   {c:"timber",  txt:"Lights low. Walk away. No long goodbyes.",note:"Prolonged goodbyes signal departure is an event worth anxiety. Calm and brief = confident puppy."},
+ {t:"10:15 PM",e:"11:00 PM",i:"🎮",h:"Gaming + Discord Wind-Down",steps:[
+   {c:"wellness",txt:"PC gaming with Discord friends. Timber crated in office beside you.",note:"You are present without managing him. He hears your voice and knows you are here — this builds calm independence gradually."},
+   {c:"wellness",txt:"Keep lights dim. Wind down naturally."},
+   {c:"wellness",txt:"One line reflection in Hobonichi if you feel like it."},
  ]},
- {t:"10:50 PM",e:"11:10 PM",i:"🧩",h:"Hobbies + Hobonichi",steps:[
-   {c:"wellness",txt:"Game, craft, sketch, Discord, or Hobonichi."},
-   {c:"wellness",txt:"One line reflection — what went well today?"},
-   {c:"wellness",txt:"Dim screens — blue light delays melatonin."},
+ {t:"11:00 PM",e:"11:15 PM",i:"🚽",h:"Timber Wake + Potty #14",steps:[
+   {c:"timber",txt:"Pick up from crate. Carry downstairs."},
+   {c:"timber",txt:"Sit at door. Out. Praise. Back upstairs."},
+   {c:"timber",txt:"Very short calm wind-down only. No play, no excitement."},
  ]},
- {t:"11:10 PM",e:"11:25 PM",i:"💊",h:"Lights Out",steps:[
-   {c:"wellness",txt:"Final Guava log — pain levels + any notes."},
-   {c:"wellness",txt:"Lights out.",note:"Glucosamine incorporates into cartilage during deep sleep. Consistent sleep timing regulates cortisol — directly impacts hypermobility-related inflammation."},
+ {t:"11:15 PM",e:"11:30 PM",i:"💊",h:"Wind-Down + Meds",steps:[
+   {c:"wellness",txt:"Final Guava log — pain levels and any notes."},
+   {c:"wellness",txt:"Dim all screens. Brush teeth."},
+   {c:"timber",  txt:"Timber tethered quietly. Low stimulation only."},
+ ]},
+ {t:"11:30 PM",e:"11:35 PM",i:"🏠",h:"Timber Potty #15 → Crate for Night",steps:[
+   {c:"timber",txt:"Final carry downstairs. Sit at door. Out. Praise.",note:"Calm and brief. No long goodbyes — prolonged farewells signal that departure is an event worth anxiety."},
+   {c:"timber",txt:"Into crate. Cover on. Walk away. This is your bedtime too."},
+ ]},
+ {t:"11:30 PM",e:"11:35 PM",i:"🌙",h:"Your Bedtime",steps:[
+   {c:"wellness",txt:"Lights out. Timber is settled. You have done enough today."},
+   {c:"wellness",txt:"Glucosamine incorporates into cartilage during deep sleep.",note:"Consistent sleep timing regulates cortisol — directly impacts hypermobility-related inflammation."},
+ ]},
+ // Partner's trip — 1 AM (reminder only, he sets his own alarm)
+ {t:"01:00 AM",e:"01:10 AM",i:"🌙",h:"Timber Potty — Partner's Trip",steps:[
+   {c:"timber",txt:"Partner takes this trip. He sets his own alarm.",note:"As Timber matures over the next 3–4 weeks, this trip gets dropped first when his bladder can hold the full overnight stretch."},
+   {c:"timber",txt:"Same routine: carry, sit at door, out, praise, crate. Lights low."},
  ]},
 ];
+
 
 // ─── TIME HELPERS ─────────────────────────────────────────────────────────────
 function tm(s){if(!s)return 0;const[hm,p]=s.split(' ');let[h,m]=hm.split(':').map(Number);if(p==='PM'&&h!==12)h+=12;if(p==='AM'&&h===12)h=0;return h*60+m;}
@@ -1831,13 +1894,32 @@ setInterval(updateClock,10000);
 
 // ─── GERMANY COUNTDOWN ────────────────────────────────────────────────────────
 function updateGermany(){
-  const now=new Date(),diff=GERMANY_DATE-now;
-  if(diff<=0){
-    ['mDeDays','dDeDays'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent='✈️';});
-    ['mDeD','dDeD'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent='✈️';});
+  const now=new Date();
+  const diffTrip=GERMANY_DATE-now, diffReturn=RETURN_DATE-now;
+
+  // STATE 3: Back home — Timber schedule review reminder
+  if(diffReturn<=0){
+    ['mDeDays','dDeDays'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent='🐾';});
+    ['deModule','deskDeModule'].forEach(id=>{const el=document.getElementById(id);if(!el)return;el.style.background='var(--ll)';el.style.borderColor='var(--lm)';});
+    ['deModuleTitle','deskDeModuleTitle'].forEach(id=>{const el=document.getElementById(id);if(!el)return;el.textContent='🐾 Welcome home! Time to rebuild Timber\'s schedule.';el.style.color='var(--la)';});
+    ['deModuleSub','deskDeModuleSub'].forEach(id=>{const el=document.getElementById(id);if(!el)return;el.textContent='Timber is now 14–15 weeks old. His bladder has matured, tethering can loosen, and the overnight schedule can extend. Open a new Claude chat, upload your OS file, and say: "It\'s time to rebuild Timber\'s schedule — he is now 15 weeks old."';el.style.color='var(--td)';el.style.fontSize='.72rem';el.style.fontWeight='700';el.style.lineHeight='1.6';});
+    ['deCountdown','deskDeCountdown'].forEach(id=>{const el=document.getElementById(id);if(!el)return;el.innerHTML='<div style="font-size:1.8rem;text-align:center;padding:8px 0">🐶✨</div>';});
+    ['dePhrase','deskDePhrase','deWanderlog','deskDeWanderlog'].forEach(id=>{const el=document.getElementById(id);if(el)el.style.display='none';});
     return;
   }
-  const d=Math.floor(diff/86400000),hr=Math.floor((diff%86400000)/3600000),mn=Math.floor((diff%3600000)/60000);
+
+  // STATE 2: In Germany
+  if(diffTrip<=0){
+    ['mDeDays','dDeDays'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent='✈️';});
+    ['deModuleTitle','deskDeModuleTitle'].forEach(id=>{const el=document.getElementById(id);if(!el)return;el.textContent='🇩🇪 You\'re in Germany!';el.style.color='var(--ga)';});
+    const daysLeft=Math.ceil(diffReturn/86400000);
+    ['deModuleSub','deskDeModuleSub'].forEach(id=>{const el=document.getElementById(id);if(!el)return;el.textContent='Back home in '+daysLeft+' day'+(daysLeft===1?'':'s')+' — April 11. Timber is being looked after. 🐾';});
+    ['deCountdown','deskDeCountdown'].forEach(id=>{const el=document.getElementById(id);if(!el)return;el.innerHTML='<div style="font-size:1.8rem;text-align:center;padding:8px 0">🥨🍺🏰</div>';});
+    return;
+  }
+
+  // STATE 1: Pre-trip countdown
+  const d=Math.floor(diffTrip/86400000),hr=Math.floor((diffTrip%86400000)/3600000),mn=Math.floor((diffTrip%3600000)/60000);
   ['mDeDays','dDeDays'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=d;});
   [['mDeD','dDeD',d],['mDeH','dDeH',hr],['mDeM','dDeM',mn]].forEach(([a,b,v])=>{
     [a,b].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=String(v).padStart(2,'0');});

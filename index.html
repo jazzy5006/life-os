@@ -107,11 +107,13 @@ p{font-size:.8rem;font-weight:600;color:var(--tb);line-height:1.6}
 /* ── PAGES ── */
 .page{display:none;flex-direction:column;padding:12px 12px calc(var(--tab-h) + 12px + env(safe-area-inset-bottom));min-height:calc(100vh - var(--nav-h))}
 .page.active{display:flex}
-.filter-row{display:flex;gap:6px;margin-bottom:10px}
+.filter-row{display:flex;gap:6px;margin-bottom:10px;position:sticky;top:0;z-index:50;background:var(--bgp);padding:8px 0 6px;margin-left:-14px;margin-right:-14px;padding-left:14px;padding-right:14px;border-bottom:1.5px solid var(--ll)}
 
 /* FAB */
 .fab-now{position:fixed;bottom:calc(var(--tab-h) + 14px);right:14px;z-index:90;background:var(--la);color:#fff;border:none;border-radius:var(--rf);padding:9px 16px;font-family:'Nunito',sans-serif;font-weight:900;font-size:.62rem;letter-spacing:.08em;text-transform:uppercase;box-shadow:0 6px 16px rgba(184,157,224,.4);cursor:pointer;transition:transform .2s;display:none;align-items:center;gap:5px}
 .fab-now:active{transform:scale(.92)}
+.fab-top{position:fixed;bottom:calc(var(--tab-h) + 58px);right:14px;z-index:89;background:var(--bgc);color:var(--la);border:2px solid var(--lm);border-radius:var(--rf);padding:7px 12px;font-family:'Nunito',sans-serif;font-weight:900;font-size:.62rem;letter-spacing:.08em;text-transform:uppercase;box-shadow:0 3px 10px rgba(184,157,224,.25);cursor:pointer;transition:transform .2s,opacity .2s;display:none;align-items:center;gap:4px}
+.fab-top:active{transform:scale(.92)}
 
 /* ── WHAT'S NEXT ── */
 .whats-next{background:var(--bgp);border:2px solid var(--lm);border-radius:var(--rlg);padding:10px 12px;margin-bottom:12px;display:flex;align-items:center;gap:9px}
@@ -130,11 +132,73 @@ p{font-size:.8rem;font-weight:600;color:var(--tb);line-height:1.6}
 .thd{display:flex;justify-content:space-between;align-items:flex-start;gap:4px;margin-bottom:5px;flex-wrap:wrap}
 .ttime{font-size:.52rem;font-weight:900;letter-spacing:.08em;color:var(--tm);white-space:nowrap;margin-top:2px}
 
+/* Override block states */
+.ti.ov-skipped>.tc{background:var(--bgp);border-color:var(--lm);opacity:.55}
+.ti.ov-skipped>.tc h4{text-decoration:line-through;color:var(--tm)}
+.ti.ov-skipped>.tdc>.tdot{opacity:.4}
+.ti.ov-compressed>.tc{background:linear-gradient(135deg,var(--bgc),rgba(255,216,200,.18));border-color:var(--pm)}
+.ti.ov-moved>.tc{background:linear-gradient(135deg,var(--bgc),rgba(194,222,255,.18));border-color:var(--sm)}
+.ov-badge{display:inline-flex;align-items:center;gap:3px;font-size:.44rem;font-weight:900;letter-spacing:.1em;text-transform:uppercase;padding:2px 7px;border-radius:var(--rf);margin-left:5px;vertical-align:middle;cursor:pointer;flex-shrink:0}
+.ov-badge.skipped{background:var(--lm);color:var(--tm)}
+.ov-badge.compressed{background:var(--pl);color:var(--pa)}
+.ov-badge.moved{background:var(--sl);color:var(--sa)}
+
 /* now highlight */
 .ti.now .tdot{transform:scale(1.12);border-width:3px;border-color:var(--la);box-shadow:0 0 0 4px var(--ll)}
 .ti.now .tc{border-color:var(--la);box-shadow:0 0 0 3px var(--ll),0 8px 20px rgba(184,157,224,.15)}
 .ti.past .tdot{opacity:.5}
 .ti.past .tc{opacity:.65}
+
+/* Today's Shape card */
+.shape-card{background:var(--bgc);border:2px solid var(--lm);border-radius:var(--rlg);margin-top:8px;overflow:hidden}
+.shape-hd{display:flex;align-items:center;justify-content:space-between;padding:11px 13px;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.shape-hd-left{display:flex;align-items:center;gap:7px}
+.shape-title{font-size:.75rem;font-weight:900;color:var(--td)}
+.shape-subtitle{font-size:.58rem;color:var(--tm);font-weight:700}
+.shape-arrow{font-size:.7rem;color:var(--tm);transition:transform .25s;flex-shrink:0}
+.shape-card.open .shape-arrow{transform:rotate(180deg)}
+.shape-body{display:none;padding:0 13px 13px;border-top:1.5px solid var(--ll)}
+.shape-card.open .shape-body{display:block}
+/* Meeting chips from calendar */
+.shape-cal-section{margin-top:10px}
+.shape-cal-lbl{font-size:.55rem;font-weight:900;letter-spacing:.1em;text-transform:uppercase;color:var(--sa);margin-bottom:5px}
+.shape-meetings{display:flex;flex-direction:column;gap:4px}
+.shape-meeting-chip{display:flex;align-items:center;gap:7px;padding:6px 9px;background:var(--sl);border:1.5px solid var(--sm);border-radius:10px}
+.shape-meeting-time{font-size:.58rem;font-weight:900;color:var(--sa);min-width:52px}
+.shape-meeting-title{font-size:.7rem;font-weight:700;color:var(--td);flex:1}
+.shape-meeting-dur{font-size:.55rem;color:var(--tm)}
+/* Context note */
+.shape-context-lbl{font-size:.55rem;font-weight:900;letter-spacing:.1em;text-transform:uppercase;color:var(--la);margin:10px 0 4px}
+.shape-context-ta{width:100%;background:var(--bgp);border:2px solid var(--lm);border-radius:var(--rf);padding:8px 11px;font-family:'Nunito',sans-serif;font-size:.76rem;font-weight:600;color:var(--td);outline:none;resize:none;line-height:1.55;box-sizing:border-box;transition:border-color .2s}
+.shape-context-ta:focus{border-color:var(--la)}
+.shape-context-ta::placeholder{color:var(--tm)}
+/* AI suggestion */
+.shape-suggest-btn{width:100%;margin-top:9px;background:linear-gradient(135deg,var(--la),var(--sa));color:#fff;border:none;border-radius:var(--rf);padding:10px;font-family:'Nunito',sans-serif;font-size:.65rem;font-weight:900;text-transform:uppercase;letter-spacing:.08em;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:transform .15s,opacity .15s}
+.shape-suggest-btn:active{transform:scale(.96)}
+.shape-suggest-btn:disabled{opacity:.5}
+.shape-ai-result{margin-top:9px;background:var(--ll);border:1.5px solid var(--lm);border-radius:12px;padding:11px 12px;display:none}
+.shape-ai-result.visible{display:block}
+.shape-ai-result-hd{font-size:.55rem;font-weight:900;letter-spacing:.1em;text-transform:uppercase;color:var(--la);margin-bottom:6px}
+.shape-suggestion-item{display:flex;align-items:flex-start;gap:7px;padding:6px 0;border-bottom:1px solid var(--lm)}
+.shape-suggestion-item:last-child{border-bottom:none;padding-bottom:0}
+.shape-sug-text{font-size:.72rem;font-weight:700;color:var(--td);flex:1;line-height:1.45}
+.shape-sug-accept{background:var(--la);color:#fff;border:none;border-radius:8px;padding:4px 10px;font-family:'Nunito',sans-serif;font-size:.52rem;font-weight:900;cursor:pointer;white-space:nowrap;flex-shrink:0;-webkit-tap-highlight-color:transparent}
+.shape-sug-accept:active{transform:scale(.92)}
+.shape-sug-accept.done{background:var(--ma);pointer-events:none}
+.shape-cal-empty{font-size:.68rem;color:var(--tm);font-style:italic;padding:4px 0}
+/* Override count badge on card header */
+.shape-ov-count{background:var(--pa);color:#fff;font-size:.48rem;font-weight:900;border-radius:8px;padding:1px 6px;margin-left:4px}
+/* Bottom sheet override section */
+.sheet-override-section{margin-top:10px;padding-top:10px;border-top:1.5px solid var(--ll)}
+.sheet-override-lbl{font-size:.55rem;font-weight:900;letter-spacing:.1em;text-transform:uppercase;color:var(--tm);margin-bottom:6px}
+.sheet-override-btns{display:flex;gap:6px}
+.sheet-ov-btn{flex:1;padding:8px 4px;border-radius:10px;border:2px solid transparent;font-family:'Nunito',sans-serif;font-size:.62rem;font-weight:900;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:transform .15s,border-color .15s;text-align:center}
+.sheet-ov-btn:active{transform:scale(.93)}
+.sheet-ov-btn.ov-skip{background:var(--bgp);border-color:var(--lm);color:var(--tm)}
+.sheet-ov-btn.ov-compress{background:var(--pl);border-color:var(--pm);color:var(--pa)}
+.sheet-ov-btn.ov-move{background:var(--sl);border-color:var(--sm);color:var(--sa)}
+.sheet-ov-btn.ov-clear{background:var(--ml);border-color:var(--mm);color:var(--ma)}
+.sheet-ov-btn.active-state{transform:scale(.96);opacity:.7}
 
 /* now badge */
 .nbadge{display:inline-flex;align-items:center;gap:3px;font-size:.48rem;font-weight:900;letter-spacing:.14em;text-transform:uppercase;padding:2px 7px;border-radius:var(--rf);margin-left:4px;background:var(--lm);color:var(--td)}
@@ -444,6 +508,31 @@ body.timer-active .desktop-layout{padding-top:70px}
 
 /* ── LIFE TAB — CONNECTION HEARTBEAT + BATTERY ── */
 .page-life{padding-bottom:calc(var(--tab-h) + 16px)}
+/* ── CALENDAR ── */
+.cal-setup-card{background:var(--bgc);border:2px solid var(--lm);border-radius:var(--rlg);padding:16px;margin-top:12px}
+.cal-setup-title{font-size:.78rem;font-weight:900;color:var(--td);margin-bottom:8px}
+.cal-setup-sub{font-size:.68rem;color:var(--tm);font-weight:600;line-height:1.6;margin-bottom:10px}
+.cal-url-input{width:100%;background:var(--bgp);border:2px solid var(--lm);border-radius:var(--rf);padding:8px 11px;font-family:'Nunito',sans-serif;font-size:.72rem;font-weight:600;color:var(--td);outline:none;box-sizing:border-box}
+.cal-url-input:focus{border-color:var(--sa)}
+.cal-save-btn{margin-top:8px;background:var(--sa);color:#fff;border:none;border-radius:var(--rf);padding:8px 18px;font-family:'Nunito',sans-serif;font-size:.62rem;font-weight:900;text-transform:uppercase;letter-spacing:.08em;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:transform .15s}
+.cal-save-btn:active{transform:scale(.95)}
+.cal-status{font-size:.62rem;color:var(--tm);font-weight:700;margin-left:10px}
+.cal-card{background:var(--bgc);border:2px solid var(--lm);border-radius:var(--rlg);padding:14px;margin-top:10px}
+.cal-card-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.cal-card-title{font-size:.75rem;font-weight:900;color:var(--td)}
+.cal-refresh-btn{background:none;border:1.5px solid var(--lm);border-radius:8px;padding:3px 9px;font-family:'Nunito',sans-serif;font-size:.55rem;font-weight:900;color:var(--tm);cursor:pointer;-webkit-tap-highlight-color:transparent}
+.cal-refresh-btn:active{transform:scale(.93)}
+.cal-day-group{margin-bottom:10px}
+.cal-day-label{font-size:.58rem;font-weight:900;letter-spacing:.1em;text-transform:uppercase;color:var(--la);margin-bottom:4px}
+.cal-event{display:flex;align-items:flex-start;gap:8px;padding:7px 9px;background:var(--bgp);border-radius:10px;border-left:3px solid var(--la);margin-bottom:5px}
+.cal-event-time{font-size:.6rem;font-weight:900;color:var(--tm);min-width:48px;padding-top:1px}
+.cal-event-title{font-size:.74rem;font-weight:700;color:var(--td);line-height:1.4}
+.cal-event-loc{font-size:.6rem;color:var(--tm);margin-top:1px}
+.cal-event.allday{border-left-color:var(--sa)}
+.cal-event.allday .cal-event-time{color:var(--sa)}
+.cal-empty{font-size:.72rem;color:var(--tm);font-style:italic;text-align:center;padding:12px 0}
+.cal-loading{font-size:.72rem;color:var(--tm);text-align:center;padding:16px 0;animation:bl 1s ease-in-out infinite}
+.cal-error{font-size:.7rem;color:var(--pa);font-weight:700;padding:10px;background:var(--pl);border-radius:8px;border:1.5px solid var(--pm)}
 /* Birthday banner */
 .bday-banner{background:linear-gradient(135deg,var(--pl),var(--sl));border:2px solid var(--pm);border-radius:var(--rlg);padding:14px 16px;text-align:center;margin-top:12px;animation:bday-glow 2s ease-in-out infinite alternate}
 @keyframes bday-glow{from{box-shadow:0 0 8px rgba(184,157,224,.3)}to{box-shadow:0 0 22px rgba(184,157,224,.7)}}
@@ -699,6 +788,7 @@ body.timer-active .desktop-layout{padding-top:70px}
 </div>
 
 <button id="jumpNowBtn" class="fab-now" onclick="jumpToNow()">🎯 Now</button>
+<button id="jumpTopBtn" class="fab-top" onclick="scrollToTop()">↑ Top</button>
 
 <!-- FLOW PAGE -->
 <div class="page active" id="page-flow">
@@ -721,13 +811,51 @@ body.timer-active .desktop-layout{padding-top:70px}
     </div>
     <div class="tomorrow-peek-body" id="tomorrowBody"></div>
   </div>
+
+  <!-- Today's Shape — override mode -->
+  <div class="shape-card" id="shapeCard">
+    <div class="shape-hd" onclick="toggleShapeCard()">
+      <div class="shape-hd-left">
+        <span style="font-size:1rem">🗂️</span>
+        <div>
+          <div class="shape-title">Today's Shape <span class="shape-ov-count" id="shapeOvCount" style="display:none">0</span></div>
+          <div class="shape-subtitle" id="shapeSubtitle">Tap to plan around meetings or adjust your day</div>
+        </div>
+      </div>
+      <span class="shape-arrow">▾</span>
+    </div>
+    <div class="shape-body" id="shapeBody">
+      <!-- Calendar events (auto-pulled) -->
+      <div class="shape-cal-section">
+        <div class="shape-cal-lbl">📅 From your calendar today</div>
+        <div class="shape-meetings" id="shapeMeetings">
+          <div class="shape-cal-empty">Loading calendar…</div>
+        </div>
+      </div>
+      <!-- Context note -->
+      <div class="shape-context-lbl">✏️ Add context or nuance</div>
+      <textarea class="shape-context-ta" id="shapeContextNote" rows="2"
+        placeholder="e.g. The 10am will run ~2hrs. The 2pm I might skip. Working from office today."
+        oninput="saveShapeContext()"></textarea>
+      <!-- AI suggest button -->
+      <button class="shape-suggest-btn" id="shapeSuggestBtn" onclick="runShapeSuggest()">
+        ✨ Suggest what to compress or skip
+      </button>
+      <!-- AI result with accept buttons -->
+      <div class="shape-ai-result" id="shapeAiResult">
+        <div class="shape-ai-result-hd">✨ Gemini's suggestions — tap to apply</div>
+        <div id="shapeAiSuggestions"></div>
+      </div>
+    </div>
+  </div>
+
   <!-- Lab synthesis scratch pad -->
   <div class="lab-card">
     <div class="lab-hd">
-      <span class="lab-title">🧪 Lab — Today's Notes</span>
+      <span class="lab-title">💭 Brain Dump</span>
       <button class="lab-sort-btn" id="labSortBtn" onclick="event.stopPropagation();labSynthesize()">✨ Sort this</button>
     </div>
-    <textarea class="lab-ta" id="scratchPad" placeholder="Dump anything here — thoughts, adjustments, what Timber did, how you're feeling…" oninput="saveScratch()" rows="3"></textarea>
+    <textarea class="lab-ta" id="scratchPad" placeholder="Anything on your mind… Timber moments, how you're feeling, things to remember, stuff for later. Just let it out 💜" oninput="saveScratch()" rows="3"></textarea>
     <div class="lab-results" id="labResults"></div>
   </div>
   <div class="filter-row">
@@ -947,10 +1075,10 @@ body.timer-active .desktop-layout{padding-top:70px}
         <span style="font-size:.58rem;color:var(--tm);font-weight:700;margin-left:auto">tap to log a moment</span>
       </div>
       <div class="orbits-wrap" id="orbitsWrap">
-        <div class="orbit-person" onclick="openConnModal('Nathan','💙')">
-          <div class="orbit-ring warm" id="orbit-Nathan" style="width:76px;height:76px">💙</div>
-          <div class="orbit-name">Nathan</div>
-          <div class="orbit-days" id="orbitDays-Nathan">—</div>
+        <div class="orbit-person" onclick="openConnModal('Partner','💙')">
+          <div class="orbit-ring warm" id="orbit-Partner" style="width:76px;height:76px">💙</div>
+          <div class="orbit-name">Partner</div>
+          <div class="orbit-days" id="orbitDays-Partner">—</div>
         </div>
         <div class="orbit-person" onclick="openConnModal('Mom','💗')">
           <div class="orbit-ring warm" id="orbit-Mom" style="width:66px;height:66px">💗</div>
@@ -975,7 +1103,7 @@ body.timer-active .desktop-layout{padding-top:70px}
   <div class="conn-modal-box">
     <div class="conn-modal-handle"></div>
     <div class="conn-modal-person" id="connModalEmoji">💙</div>
-    <div class="conn-modal-name" id="connModalName">Nathan</div>
+    <div class="conn-modal-name" id="connModalName">Partner</div>
     <div class="conn-types" id="connTypes">
       <button class="conn-type-btn sel" data-type="called">📞 Called</button>
       <button class="conn-type-btn" data-type="texted">💬 Texted</button>
@@ -1019,11 +1147,41 @@ body.timer-active .desktop-layout{padding-top:70px}
 </div>
 
 <!-- TAB BAR -->
+<!-- CALENDAR PAGE -->
+<div class="page" id="page-cal">
+  <div style="margin-top:12px;display:flex;flex-direction:column;gap:0">
+    <div id="calSetupCard" class="cal-setup-card" style="display:none">
+      <div class="cal-setup-title">📅 Connect Google Calendar</div>
+      <div class="cal-setup-sub">
+        Paste your private Google Calendar iCal link. Read-only — the app never modifies your calendar.<br><br>
+        <strong>How to get it:</strong><br>
+        1. Open Google Calendar → Settings → your calendar → Scroll to "Secret address in iCal format"<br>
+        2. Copy that link and paste it below
+      </div>
+      <input class="cal-url-input" id="calUrlInput" type="url" placeholder="https://calendar.google.com/calendar/ical/…">
+      <div style="display:flex;align-items:center;margin-top:8px">
+        <button class="cal-save-btn" onclick="saveCalUrl()">Connect Calendar</button>
+        <span class="cal-status" id="calStatus"></span>
+      </div>
+    </div>
+    <div class="cal-card" id="calEventsCard">
+      <div class="cal-card-hd">
+        <span class="cal-card-title">📅 Next 7 Days</span>
+        <button class="cal-refresh-btn" onclick="loadCalendar()">↻ Refresh</button>
+      </div>
+      <div id="calEventsList"><div class="cal-loading">Loading your calendar…</div></div>
+      <div style="text-align:center;margin-top:8px">
+        <button onclick="toggleCalSetup()" style="background:none;border:none;font-size:.6rem;font-weight:900;color:var(--tm);cursor:pointer;text-decoration:underline">⚙️ Change calendar URL</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <nav class="tab-bar">
   <button class="tab active" id="tab-flow"  onclick="switchTab('flow')"><span class="tab-icon">🗓️</span><span class="tab-label">Flow</span></button>
   <button class="tab"        id="tab-pt"    onclick="switchTab('pt')"  ><span class="tab-icon">💪</span><span class="tab-label">Move</span></button>
   <button class="tab"        id="tab-life"  onclick="switchTab('life')"><span class="tab-icon">💜</span><span class="tab-label">Life</span></button>
-  <button class="tab"        id="tab-stats" onclick="switchTab('stats')"><span class="tab-icon">📊</span><span class="tab-label">Stats <span onclick="event.stopPropagation();switchTab('stats');toggleApiSettings()" style="font-size:.65rem;opacity:.7">⚙️</span></span></button>
+  <button class="tab"        id="tab-cal"   onclick="switchTab('cal')" ><span class="tab-icon">📅</span><span class="tab-label">Cal</span></button>
   <button class="tab"        id="tab-mem"   onclick="switchTab('mem')" ><span class="tab-icon">🐶</span><span class="tab-label">Timber</span></button>
 </nav>
 
@@ -1087,15 +1245,6 @@ body.timer-active .desktop-layout{padding-top:70px}
         </div>
       </div>
 
-      <div class="card" style="padding:14px">
-        <div class="chart-head-wrap" onclick="toggleDeskCollapse(null,'deskChartBody','deskChartIcon')">
-          <p class="lbl" style="text-align:center;margin-bottom:3px;display:flex;justify-content:center;align-items:center;gap:5px">📅 Weekly PT Consistency <span class="collapse-icon" id="deskChartIcon">▼</span></p>
-          <p style="text-align:center;font-size:.58rem;color:var(--tm);margin-bottom:7px">% completed each day</p>
-        </div>
-        <div class="collapsible-body" id="deskChartBody">
-          <div class="desk-cb"><canvas id="dChWeek"></canvas></div>
-        </div>
-      </div>
     </div>
 
     <!-- RIGHT: tabbed panel -->
@@ -1103,6 +1252,7 @@ body.timer-active .desktop-layout{padding-top:70px}
       <div class="desk-tabs">
         <button class="desk-tab active" id="dtab-pt"    onclick="deskSwitchPanel('pt')"   >💪 Movement</button>
         <button class="desk-tab"        id="dtab-life"  onclick="deskSwitchPanel('life')"  >💜 Life</button>
+        <button class="desk-tab"        id="dtab-cal"   onclick="deskSwitchPanel('cal')"   >📅 Calendar</button>
         <button class="desk-tab"        id="dtab-stats" onclick="deskSwitchPanel('stats')">📊 Stats</button>
         <button class="desk-tab"        id="dtab-mem"   onclick="deskSwitchPanel('mem')"  >🐶 Timber</button>
       </div>
@@ -1170,10 +1320,10 @@ body.timer-active .desktop-layout{padding-top:70px}
             <span style="font-size:.6rem;color:var(--tm);font-weight:700;margin-left:auto">tap a person to log</span>
           </div>
           <div class="orbits-wrap">
-            <div class="orbit-person" onclick="openConnModal('Nathan','💙')">
-              <div class="orbit-ring warm" id="deskOrbit-Nathan" style="width:72px;height:72px">💙</div>
-              <div class="orbit-name">Nathan</div>
-              <div class="orbit-days" id="deskOrbitDays-Nathan">—</div>
+            <div class="orbit-person" onclick="openConnModal('Partner','💙')">
+              <div class="orbit-ring warm" id="deskOrbit-Partner" style="width:72px;height:72px">💙</div>
+              <div class="orbit-name">Partner</div>
+              <div class="orbit-days" id="deskOrbitDays-Partner">—</div>
             </div>
             <div class="orbit-person" onclick="openConnModal('Mom','💗')">
               <div class="orbit-ring warm" id="deskOrbit-Mom" style="width:64px;height:64px">💗</div>
@@ -1206,6 +1356,12 @@ body.timer-active .desktop-layout{padding-top:70px}
             </div>
             <p class="api-note" style="margin-top:5px">Get a free key at <strong>aistudio.google.com</strong>. Stored only in your browser's localStorage.</p>
           </div>
+        </div>
+        <!-- Weekly PT chart -->
+        <div class="card" style="padding:14px">
+          <p class="lbl" style="text-align:center;margin-bottom:3px">📅 Weekly PT Consistency</p>
+          <p style="text-align:center;font-size:.58rem;color:var(--tm);margin-bottom:9px">% completed each day</p>
+          <div class="desk-cb"><canvas id="dChWeek"></canvas></div>
         </div>
         <div class="de-module">
           <div class="de-header">
@@ -1246,9 +1402,31 @@ body.timer-active .desktop-layout{padding-top:70px}
             <p style="font-size:.58rem;color:var(--tm);text-align:center;margin-top:2px">Iron at lunch = 8hr buffer ✓</p>
           </div>
         </div>
-        <div class="card" style="padding:14px">
-          <p class="lbl" style="text-align:center;margin-bottom:7px">Weekly PT Consistency</p>
-          <div class="desk-cb"><canvas id="dChWeekAlt"></canvas></div>
+      </div>
+
+      <!-- Calendar panel -->
+      <div class="desk-panel" id="dpanel-cal">
+        <div id="deskCalSetupCard" class="cal-setup-card" style="display:none">
+          <div class="cal-setup-title">📅 Connect Google Calendar</div>
+          <div class="cal-setup-sub">
+            Paste your private Google Calendar iCal link. Read-only — the app never modifies your calendar.<br><br>
+            <strong>How to get it:</strong> Google Calendar → Settings → your calendar → "Secret address in iCal format"
+          </div>
+          <input class="cal-url-input" id="deskCalUrlInput" type="url" placeholder="https://calendar.google.com/calendar/ical/…">
+          <div style="display:flex;align-items:center;margin-top:8px">
+            <button class="cal-save-btn" onclick="saveCalUrl()">Connect Calendar</button>
+            <span class="cal-status" id="deskCalStatus"></span>
+          </div>
+        </div>
+        <div class="cal-card">
+          <div class="cal-card-hd">
+            <span class="cal-card-title">📅 Next 7 Days</span>
+            <button class="cal-refresh-btn" onclick="loadCalendar()">↻ Refresh</button>
+          </div>
+          <div id="deskCalEventsList"><div class="cal-loading">Loading your calendar…</div></div>
+          <div style="text-align:center;margin-top:8px">
+            <button onclick="toggleCalSetup()" style="background:none;border:none;font-size:.6rem;font-weight:900;color:var(--tm);cursor:pointer;text-decoration:underline">⚙️ Change calendar URL</button>
+          </div>
         </div>
       </div>
 
@@ -1304,6 +1482,16 @@ body.timer-active .desktop-layout{padding-top:70px}
     <button class="sheet-btn" id="sheetUndoBtn" onclick="undoShift()" style="background:var(--pl);color:var(--pa);border-color:var(--pm);display:none">
       ↩ Undo Shift — Restore Original Plan
     </button>
+    <!-- Per-block override section — shown when a specific block is tapped -->
+    <div class="sheet-override-section" id="sheetOverrideSection" style="display:none">
+      <div class="sheet-override-lbl">Override this block</div>
+      <div class="sheet-override-btns">
+        <button class="sheet-ov-btn ov-compress" id="ovBtnCompress" onclick="applyBlockOverride('compressed')">⏩ Compress</button>
+        <button class="sheet-ov-btn ov-skip"     id="ovBtnSkip"     onclick="applyBlockOverride('skipped')">✗ Skip</button>
+        <button class="sheet-ov-btn ov-move"     id="ovBtnMove"     onclick="applyBlockOverride('moved')">↕ Move later</button>
+        <button class="sheet-ov-btn ov-clear"    id="ovBtnClear"    onclick="applyBlockOverride(null)">↺ Clear</button>
+      </div>
+    </div>
     <button class="sheet-btn sheet-btn-gemini" onclick="copyGeminiPrompt()">
       ✨ Copy Gemini Prompt (Clipboard)
     </button>
@@ -1500,7 +1688,7 @@ const S=[
  ]},
  {t:"06:45 PM",e:"07:30 PM",i:"🧊",h:"Dinner Prep + Kong Prep",steps:[
    {c:"timber",  txt:"Assemble tomorrow's Groov tools and Kongs. Freeze now.",note:"Frozen enrichment takes ~4 hours. Prepping tonight = ready for tomorrow's nap blocks."},
-   {c:"wellness",txt:"Cook dinner and chat with Nathan."},
+   {c:"wellness",txt:"Cook dinner and chat with your partner."},
    {c:"timber",  txt:"Timber still napping — resist waking early."},
  ]},
  {t:"07:30 PM",e:"08:30 PM",i:"📺",h:"Dinner + TV + Meds (Playpen)",steps:[
@@ -1610,7 +1798,7 @@ const PT=[
 ];
 
 let ps=[],cday=new Date().getDay(),tot=0;
-let weekChartM=null,weekChartD=null,weekChartAlt=null;
+let weekChartM=null,weekChartD=null;
 
 // ─── PWA ──────────────────────────────────────────────────────────────────────
 const ICON_SVG=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><rect width="512" height="512" rx="110" fill="#f7f2fb"/><ellipse cx="256" cy="156" rx="38" ry="72" fill="#ffd8c8" opacity=".95"/><ellipse cx="256" cy="356" rx="38" ry="72" fill="#ffd8c8" opacity=".95"/><ellipse cx="156" cy="256" rx="72" ry="38" fill="#c2deff" opacity=".95"/><ellipse cx="356" cy="256" rx="72" ry="38" fill="#c2deff" opacity=".95"/><ellipse cx="190" cy="190" rx="38" ry="72" fill="#ddd0f0" opacity=".9" transform="rotate(-45 190 190)"/><ellipse cx="322" cy="190" rx="38" ry="72" fill="#b8f0d2" opacity=".9" transform="rotate(45 322 190)"/><ellipse cx="190" cy="322" rx="38" ry="72" fill="#b8f0d2" opacity=".9" transform="rotate(45 190 322)"/><ellipse cx="322" cy="322" rx="38" ry="72" fill="#ddd0f0" opacity=".9" transform="rotate(-45 322 322)"/><circle cx="256" cy="256" r="58" fill="#f79a7a"/><circle cx="256" cy="256" r="42" fill="#fff4ee"/><circle cx="242" cy="250" r="5" fill="#f79a7a"/><circle cx="270" cy="250" r="5" fill="#f79a7a"/><path d="M240 266 Q256 280 272 266" stroke="#f79a7a" stroke-width="4" fill="none" stroke-linecap="round"/></svg>`;
@@ -1713,13 +1901,25 @@ function updateWhatsNext(){
 }
 setInterval(updateWhatsNext,60000);
 
-// ─── NOW BUTTON ───────────────────────────────────────────────────────────────
+// ─── NOW BUTTON + SCROLL TO TOP ───────────────────────────────────────────────
 window.jumpToNow=()=>{
   buildTL('all','mTlb','mb');
   updateWhatsNext();
   updateOffsetBadge();
   setTimeout(()=>document.querySelector('#mTlb .now')?.scrollIntoView({behavior:'smooth',block:'center'}),80);
 };
+
+window.scrollToTop=()=>{
+  window.scrollTo({top:0,behavior:'smooth'});
+};
+
+// Show ↑ Top button once user has scrolled down past ~200px (only on Flow tab)
+window.addEventListener('scroll',()=>{
+  const topBtn = document.getElementById('jumpTopBtn');
+  if(!topBtn) return;
+  const onFlow = document.getElementById('page-flow')?.classList.contains('active');
+  topBtn.style.display = (onFlow && window.scrollY > 220) ? 'flex' : 'none';
+}, {passive:true});
 
 // ─── TAB SWITCHING ────────────────────────────────────────────────────────────
 window.switchTab=(tab)=>{
@@ -1730,6 +1930,7 @@ window.switchTab=(tab)=>{
   document.getElementById('jumpNowBtn').style.display=tab==='flow'?'flex':'none';
   if(tab==='mem')renderMemories('memList2');
   if(tab==='life'){renderOrbits();renderBattery();}
+  if(tab==='cal')loadCalendar();
 };
 
 window.deskSwitchPanel=(panel)=>{
@@ -1739,6 +1940,7 @@ window.deskSwitchPanel=(panel)=>{
   document.getElementById('dtab-'+panel).classList.add('active');
   if(panel==='mem')renderMemories('memListD');
   if(panel==='life'){renderOrbits();renderBattery();}
+  if(panel==='cal')loadCalendar();
 };
 
 // ─── SCHEDULE FILTER (day-aware) ──────────────────────────────────────────────
@@ -1798,6 +2000,12 @@ function buildTL(f,containerId,btnPrefix){
     d.className='ti'+(isNow?' now':isPast?' past':'')+(isAnchor?' im-here':'');
     d.style.animationDelay=`${i*.02}s`;
 
+    // Override state — apply class and build badge
+    const ov = getBlockOverride(item);
+    if(ov) d.classList.add(`ov-${ov.status}`);
+    const ovLabel = {compressed:'⏩ compressed', skipped:'✗ skipped', moved:'↕ moved'};
+    const ovBadge = ov ? `<span class="ov-badge ${ov.status}" onclick="event.stopPropagation();openSheet(${origIdx})">${ovLabel[ov.status]} ✕</span>` : '';
+
     const badge=isNow?`<span class="nbadge"><span class="ndot"></span>Now</span>`:'';
     const rltBadge=item.isRltRotating?`<span class="rlt-day-badge">🔴 ${RLT_DAY[new Date().getDay()].target}</span>`:'';
     const statsLink=item.statsTarget?`<button class="stats-link" onclick="event.stopPropagation();navToStats('${item.statsTarget}')">📊 Ref</button>`:'';
@@ -1822,7 +2030,7 @@ function buildTL(f,containerId,btnPrefix){
           ${item.timers.map((t,ti)=>`<button class="timer-launch" onclick="launchTimer('${t.label}',${t.mins},'${t.emoji}',${i})">${t.emoji} ${t.label} ${t.mins}m</button>`).join('')}
         </div>` : '';
 
-    d.innerHTML=`<div class="tdc"><div class="tdot">${item.i}</div><div class="tln"></div></div><div class="tc" onclick="openSheet(${origIdx})"><div class="thd"><h4>${item.h}${badge}${rltBadge}${statsLink}</h4><span class="ttime">${dispT}–${dispE}${shiftedDot}</span></div><div class="steps">${stepsHtml}</div>${timerRow}</div>`;
+    d.innerHTML=`<div class="tdc"><div class="tdot">${item.i}</div><div class="tln"></div></div><div class="tc" onclick="openSheet(${origIdx})"><div class="thd"><h4>${item.h}${badge}${ovBadge}${rltBadge}${statsLink}</h4><span class="ttime">${dispT}–${dispE}${shiftedDot}</span></div><div class="steps">${stepsHtml}</div>${timerRow}</div>`;
     c.appendChild(d);
   });
 
@@ -1902,6 +2110,9 @@ window.tog=(id,el,cid)=>{
   }
   try{localStorage.setItem(`jlos_${cday}`,JSON.stringify(ps));}catch(e){}
   updatePTUI();refreshWeeklyChart();
+  // Sync PT to Gist (debounced)
+  clearTimeout(window._ptPushTimer);
+  window._ptPushTimer = setTimeout(()=>{ if(typeof gistPush==='function'&&_getGistToken()) gistPush(); }, 1500);
 };
 
 function updatePTUI(){
@@ -1916,7 +2127,9 @@ function updatePTUI(){
 
 window.resetDay=()=>{
   if(confirm('Reset PT for today? ☀️')){
-    try{localStorage.removeItem(`jlos_${cday}`);}catch(e){}renderPT();refreshWeeklyChart();
+    try{localStorage.removeItem(`jlos_${cday}`);}catch(e){}
+    renderPT();refreshWeeklyChart();
+    if(typeof gistPush==='function'&&_getGistToken()) setTimeout(gistPush,800);
   }
 };
 
@@ -2015,6 +2228,8 @@ window.openSheet = (blockIdx) => {
 
   document.getElementById('sheet').classList.add('open');
   document.getElementById('sheetOverlay').classList.add('open');
+  // Show block override controls when a specific block is tapped
+  renderSheetOverrideSection(blockIdx);
 };
 
 window.closeSheet = () => {
@@ -2681,11 +2896,25 @@ async function gistPush(){
   _setGistStatus('syncing','Syncing…');
   try{
     const memories = loadMemories();
-    const content = JSON.stringify({memories, updated: new Date().toISOString()}, null, 2);
+    // Collect all 7 PT day arrays (jlos_0 … jlos_6)
+    const ptDays = {};
+    for(let d=0;d<7;d++){
+      try{ ptDays[d] = JSON.parse(localStorage.getItem(`jlos_${d}`))||[]; }catch(e){ ptDays[d]=[]; }
+    }
+    // Battery and connection logs
+    const battery = loadBatteryLog();
+    const connections = loadConnLog();
+    const content = JSON.stringify({
+      memories,
+      ptDays,
+      battery,
+      connections,
+      updated: new Date().toISOString()
+    }, null, 2);
     const gistId = _getGistId();
     let url = 'https://api.github.com/gists';
     let method = 'POST';
-    let body = { description:"Life OS — Timber Memories", public:false, files:{ [GIST_FILE]:{content} } };
+    let body = { description:"Life OS — Sync Data", public:false, files:{ [GIST_FILE]:{content} } };
     if(gistId){
       url = `https://api.github.com/gists/${gistId}`;
       method = 'PATCH';
@@ -2703,7 +2932,7 @@ async function gistPush(){
   } finally { _gistSyncing = false; }
 }
 
-// Pull memories from Gist (replaces local if Gist is newer)
+// Pull all data from Gist
 async function gistPull(){
   const token = _getGistToken(), gistId = _getGistId();
   if(!token || !gistId) return;
@@ -2716,12 +2945,38 @@ async function gistPull(){
     const raw = data.files?.[GIST_FILE]?.content;
     if(raw){
       const parsed = JSON.parse(raw);
+      let pulled = [];
+      // Memories
       if(parsed.memories){
-        saveMemories(parsed.memories);
+        try{ localStorage.setItem('timber_memories', JSON.stringify(parsed.memories)); }catch(e){}
         renderAllMemories();
-        _setGistStatus('synced','Synced ✓');
-        showToast('☁️ Memories synced from cloud', 2000);
+        pulled.push('memories');
       }
+      // PT days (jlos_0 … jlos_6)
+      if(parsed.ptDays){
+        for(let d=0;d<7;d++){
+          if(Array.isArray(parsed.ptDays[d])){
+            try{ localStorage.setItem(`jlos_${d}`, JSON.stringify(parsed.ptDays[d])); }catch(e){}
+          }
+        }
+        renderPT();
+        refreshWeeklyChart();
+        pulled.push('PT');
+      }
+      // Battery log
+      if(parsed.battery && Array.isArray(parsed.battery)){
+        saveBatteryLog(parsed.battery);
+        renderBattery();
+        pulled.push('energy');
+      }
+      // Connection log
+      if(parsed.connections && typeof parsed.connections === 'object'){
+        saveConnLog(parsed.connections);
+        renderOrbits();
+        pulled.push('connections');
+      }
+      _setGistStatus('synced','Synced ✓');
+      if(pulled.length) showToast(`☁️ Synced: ${pulled.join(', ')}`, 2500);
     }
   } catch(e){
     _setGistStatus('error','Sync error');
@@ -3002,7 +3257,7 @@ window.runCapacityScaler = async () => {
   ids.forEach(id => { const el=document.getElementById(id);if(el){el.textContent='⚡ Analysing…';el.className='battery-compress-result visible';} });
   const nowMin = getNowMin();
   const remaining = getFilteredSchedule('all').filter(item=>(isShifted?item.smin+offsetMin:item.smin)>nowMin).map(item=>`• ${item.h} at ${fmtMin12(item.smin)}`).slice(0,10).join('\n');
-  const prompt = `Battery: ${todayEntry?emojis[todayEntry.level]:'unknown'}\nLast 3 days: ${log.slice(-3).map(e=>`${emojis[e.level]||'?'}`).join(', ')}\n\nRemaining tasks:\n${remaining}\n\nSuggest 3 specific things to shorten or skip to protect my emotional bandwidth for Nathan, Mom, and Sister. Be warm and brief.`;
+  const prompt = `Battery: ${todayEntry?emojis[todayEntry.level]:'unknown'}\nLast 3 days: ${log.slice(-3).map(e=>`${emojis[e.level]||'?'}`).join(', ')}\n\nRemaining tasks:\n${remaining}\n\nSuggest 3 specific things to shorten or skip to protect my emotional bandwidth for my partner, Mom, and Sister. Be warm and brief.`;
   if(!key){ ids.forEach(id=>{const el=document.getElementById(id);if(el)el.textContent='⚙️ Add your Gemini key in Stats → ⚙️';}); return; }
   try{
     const {GoogleGenerativeAI} = await import('https://esm.run/@google/generative-ai');
@@ -3016,7 +3271,7 @@ window.runCapacityScaler = async () => {
 // ─── CONNECTION HEARTBEAT ─────────────────────────────────────────────────────
 const CONN_KEY = 'jlos_connections';
 const CONN_PEOPLE = [
-  {name:'Nathan',emoji:'💙',thresholds:[1,3,7]},
+  {name:'Partner',emoji:'💙',thresholds:[1,3,7]},
   {name:'Mom',   emoji:'💗',thresholds:[2,5,10]},
   {name:'Sister',emoji:'🌸',thresholds:[2,5,10]},
 ];
@@ -3124,14 +3379,449 @@ function initCharts(){
   Chart.defaults.font.family="'Nunito',sans-serif";Chart.defaults.font.weight="bold";Chart.defaults.color="#a396b4";
   const wd=buildWeeklyData();
   const mk=(id)=>{const el=document.getElementById(id);return el?new Chart(el,{type:'bar',data:{labels:wd.labels,datasets:[{data:wd.data,backgroundColor:wd.bgColors,borderRadius:10,borderSkipped:false}]},options:WEEK_OPTS}):null;};
-  weekChartM=mk('mChWeek');weekChartD=mk('dChWeek');weekChartAlt=mk('dChWeekAlt');
+  weekChartM=mk('mChWeek');weekChartD=mk('dChWeek');
 }
 function refreshWeeklyChart(){
   const wd=buildWeeklyData();
-  [weekChartM,weekChartD,weekChartAlt].forEach(ch=>{
+  [weekChartM,weekChartD].forEach(ch=>{
     if(!ch)return;
     ch.data.labels=wd.labels;ch.data.datasets[0].data=wd.data;ch.data.datasets[0].backgroundColor=wd.bgColors;ch.update('none');
   });
+}
+
+// ─── TODAY'S SHAPE — OVERRIDE ENGINE ─────────────────────────────────────────
+const SHAPE_KEY = () => `jlos_shape_${new Date().toDateString()}`;
+
+function loadShape(){
+  try{
+    const raw = localStorage.getItem(SHAPE_KEY());
+    if(raw) return JSON.parse(raw);
+  }catch(e){}
+  return { overrides:{}, contextNote:'', aiSuggestion:null, date: new Date().toDateString() };
+}
+
+function saveShape(shape){
+  try{ localStorage.setItem(SHAPE_KEY(), JSON.stringify(shape)); }catch(e){}
+  // Also purge yesterday's key to keep localStorage tidy
+  try{
+    const yesterday = new Date(); yesterday.setDate(yesterday.getDate()-1);
+    localStorage.removeItem(`jlos_shape_${yesterday.toDateString()}`);
+  }catch(e){}
+}
+
+// Get override for a block by its schedule item key (h + smin as stable id)
+function blockKey(item){ return `${item.smin}_${item.h.replace(/\s+/g,'_').slice(0,20)}`; }
+
+function getBlockOverride(item){
+  return loadShape().overrides[blockKey(item)] || null;
+}
+
+// Apply or clear an override for the currently-anchored block
+window.applyBlockOverride = (status) => {
+  const allItems = getFilteredSchedule('all');
+  if(anchoredBlockIdx === null || !allItems[anchoredBlockIdx]){ closeSheet(); return; }
+  const item = allItems[anchoredBlockIdx];
+  const key = blockKey(item);
+  const shape = loadShape();
+  if(status === null){
+    delete shape.overrides[key];
+  } else {
+    shape.overrides[key] = { status, blockName: item.h };
+  }
+  saveShape(shape);
+  updateShapeHeader();
+  buildTL('all','mTlb','mb');
+  buildTL('all','dTlb','db');
+  const labels = { compressed:'⏩ Compressed', skipped:'✗ Skipped', moved:'↕ Moved later' };
+  if(status) showToast(`${labels[status]}: ${item.h}`, 2000);
+  else showToast(`↺ Cleared: ${item.h}`, 1500);
+  closeSheet();
+};
+
+// Update the shape card header subtitle and count badge
+function updateShapeHeader(){
+  const shape = loadShape();
+  const count = Object.keys(shape.overrides).length;
+  const countEl = document.getElementById('shapeOvCount');
+  const subEl   = document.getElementById('shapeSubtitle');
+  if(countEl){ countEl.textContent = count; countEl.style.display = count ? 'inline' : 'none'; }
+  if(subEl){
+    if(count === 0) subEl.textContent = 'Tap to plan around meetings or adjust your day';
+    else {
+      const skipped   = Object.values(shape.overrides).filter(o=>o.status==='skipped').length;
+      const compressed= Object.values(shape.overrides).filter(o=>o.status==='compressed').length;
+      const moved     = Object.values(shape.overrides).filter(o=>o.status==='moved').length;
+      const parts = [];
+      if(skipped)    parts.push(`${skipped} skipped`);
+      if(compressed) parts.push(`${compressed} compressed`);
+      if(moved)      parts.push(`${moved} moved`);
+      subEl.textContent = parts.join(' · ');
+    }
+  }
+}
+
+// Toggle the shape card open/closed
+window.toggleShapeCard = () => {
+  const card = document.getElementById('shapeCard');
+  if(!card) return;
+  const opening = !card.classList.contains('open');
+  card.classList.toggle('open', opening);
+  if(opening) initShapeCard();
+};
+
+// Populate shape card with today's calendar events and restore saved context
+function initShapeCard(){
+  // Restore context note
+  const shape = loadShape();
+  const ta = document.getElementById('shapeContextNote');
+  if(ta && shape.contextNote) ta.value = shape.contextNote;
+  // Restore cached AI result if present
+  if(shape.aiSuggestion) renderShapeAiResult(shape.aiSuggestion, false);
+  // Pull today's calendar events
+  populateShapeMeetings();
+}
+
+// Pull today's events from iCal cache / live
+function populateShapeMeetings(){
+  const el = document.getElementById('shapeMeetings');
+  if(!el) return;
+  const url = getCalUrl();
+  if(!url){
+    el.innerHTML = '<div class="shape-cal-empty">No calendar connected — <button onclick="switchTab(\'cal\')" style="background:none;border:none;color:var(--sa);font-weight:900;cursor:pointer;font-size:.68rem;text-decoration:underline">connect one in Cal tab</button></div>';
+    return;
+  }
+  el.innerHTML = '<div class="shape-cal-empty">Loading today\'s events…</div>';
+  const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`;
+  fetch(proxyUrl)
+    .then(r=>r.json())
+    .then(json=>{
+      const ical = json.contents;
+      if(!ical || !ical.includes('BEGIN:VCALENDAR')) throw new Error('bad ical');
+      const events = parseICal(ical);
+      const todayStr = new Date().toDateString();
+      const todayEvents = events.filter(e => e.start.toDateString() === todayStr)
+                                .sort((a,b) => a.start - b.start);
+      if(!todayEvents.length){
+        el.innerHTML = '<div class="shape-cal-empty">Nothing on the calendar today 🌸</div>';
+        return;
+      }
+      const fmt12 = (d) => {
+        let h=d.getHours(),m=d.getMinutes(),ap=h>=12?'PM':'AM';
+        h=h%12||12; return `${h}:${String(m).padStart(2,'0')} ${ap}`;
+      };
+      const durMin = (e) => {
+        if(!e.end||e.allDay) return null;
+        return Math.round((e.end - e.start)/60000);
+      };
+      el.innerHTML = todayEvents.map(e=>{
+        const dur = durMin(e);
+        return `<div class="shape-meeting-chip">
+          <span class="shape-meeting-time">${e.allDay?'All day':fmt12(e.start)}</span>
+          <span class="shape-meeting-title">${e.summary}</span>
+          ${dur?`<span class="shape-meeting-dur">${dur}m</span>`:''}
+        </div>`;
+      }).join('');
+    })
+    .catch(()=>{
+      el.innerHTML = '<div class="shape-cal-empty">Could not load calendar — check Cal tab</div>';
+    });
+}
+
+window.saveShapeContext = () => {
+  const shape = loadShape();
+  shape.contextNote = document.getElementById('shapeContextNote')?.value || '';
+  saveShape(shape);
+};
+
+// Ask Gemini to suggest block overrides
+window.runShapeSuggest = async () => {
+  const key = getGeminiKey();
+  const btn = document.getElementById('shapeSuggestBtn');
+  const resultEl = document.getElementById('shapeAiResult');
+  if(!key){
+    showToast('⚙️ Add your Gemini key in Stats → ⚙️', 3000);
+    return;
+  }
+  if(btn){ btn.disabled=true; btn.textContent='✨ Thinking…'; }
+  if(resultEl){ resultEl.classList.remove('visible'); }
+
+  // Gather context
+  const contextNote = document.getElementById('shapeContextNote')?.value?.trim() || '';
+  const battery = loadBatteryLog().find(e=>e.date===new Date().toDateString());
+  const battEmoji = battery ? ['','🪫','😔','😐','😊','🌟'][battery.level] : 'not logged';
+
+  // Today's schedule blocks
+  const nowMin = getNowMin();
+  const allBlocks = getFilteredSchedule('all');
+  const remaining = allBlocks
+    .filter(b => b.smin > nowMin - 30)
+    .map(b => `• ${b.h} (${b.t}–${b.e})`)
+    .slice(0, 12).join('\n');
+
+  // Calendar meetings text
+  const meetingEl = document.getElementById('shapeMeetings');
+  const meetingText = meetingEl?.innerText?.replace(/\n+/g,' ') || 'none';
+
+  const prompt = `Today's schedule (remaining blocks):
+${remaining}
+
+Calendar events today: ${meetingText}
+
+Context from user: ${contextNote || 'none'}
+
+Energy today: ${battEmoji}
+
+Suggest exactly 3–5 specific schedule blocks to compress, skip, or move — to protect energy and make room for the meetings/context above. For each suggestion, reply with ONLY this exact JSON array (no markdown, no preamble):
+[
+  {"block":"exact block name from schedule","action":"compressed|skipped|moved","reason":"one short sentence"},
+  ...
+]`;
+
+  try{
+    const {GoogleGenerativeAI} = await import('https://esm.run/@google/generative-ai');
+    const genAI = new GoogleGenerativeAI(key);
+    const model = genAI.getGenerativeModel({model:'gemini-1.5-flash', systemInstruction:{role:'system',parts:[{text:'You are a compassionate ADHD coach. Return ONLY a valid JSON array as specified. No markdown, no explanation.'}]}});
+    const result = await model.generateContent(prompt);
+    const raw = result.response.text().replace(/```json|```/g,'').trim();
+    const suggestions = JSON.parse(raw);
+    // Cache in shape data
+    const shape = loadShape();
+    shape.aiSuggestion = suggestions;
+    saveShape(shape);
+    renderShapeAiResult(suggestions, true);
+  } catch(err){
+    if(resultEl){
+      resultEl.innerHTML = `<div class="shape-ai-result-hd">✨ Gemini's suggestions</div><div style="font-size:.72rem;color:var(--pa)">⚠️ ${err.message||'Could not get suggestions'}</div>`;
+      resultEl.classList.add('visible');
+    }
+  } finally {
+    if(btn){ btn.disabled=false; btn.textContent='✨ Suggest what to compress or skip'; }
+  }
+};
+
+function renderShapeAiResult(suggestions, animate){
+  const resultEl = document.getElementById('shapeAiResult');
+  const sugEl    = document.getElementById('shapeAiSuggestions');
+  if(!resultEl || !sugEl) return;
+  const actionLabel = { compressed:'⏩ Compress', skipped:'✗ Skip', moved:'↕ Move later' };
+  const allItems = getFilteredSchedule('all');
+
+  sugEl.innerHTML = suggestions.map((s,i) => {
+    // Try to match suggestion to a real block by name similarity
+    const matchIdx = allItems.findIndex(item =>
+      item.h.toLowerCase().includes(s.block.toLowerCase().slice(0,12)) ||
+      s.block.toLowerCase().includes(item.h.toLowerCase().slice(0,12))
+    );
+    const hasMatch = matchIdx >= 0;
+    return `<div class="shape-suggestion-item" id="shapeS-${i}">
+      <div class="shape-sug-text">
+        <strong>${actionLabel[s.action]||s.action}:</strong> ${s.block}<br>
+        <span style="font-size:.65rem;color:var(--tm);font-weight:600">${s.reason}</span>
+      </div>
+      ${hasMatch
+        ? `<button class="shape-sug-accept" onclick="acceptShapeSuggestion(${i},${matchIdx},'${s.action}')">Apply</button>`
+        : `<span style="font-size:.58rem;color:var(--tm);font-style:italic">no match</span>`
+      }
+    </div>`;
+  }).join('');
+
+  resultEl.classList.add('visible');
+}
+
+window.acceptShapeSuggestion = (sugIdx, blockIdx, action) => {
+  const allItems = getFilteredSchedule('all');
+  if(!allItems[blockIdx]) return;
+  const item = allItems[blockIdx];
+  const key = blockKey(item);
+  const shape = loadShape();
+  shape.overrides[key] = { status: action, blockName: item.h };
+  saveShape(shape);
+  // Mark the button as done
+  const btn = document.querySelector(`#shapeS-${sugIdx} .shape-sug-accept`);
+  if(btn){ btn.textContent = '✓ Applied'; btn.classList.add('done'); }
+  updateShapeHeader();
+  buildTL('all','mTlb','mb');
+  buildTL('all','dTlb','db');
+};
+
+// Show override controls in bottom sheet for the current block
+function renderSheetOverrideSection(blockIdx){
+  const section = document.getElementById('sheetOverrideSection');
+  if(!section) return;
+  if(blockIdx === null){ section.style.display='none'; return; }
+  section.style.display = 'block';
+  // Highlight active state
+  const allItems = getFilteredSchedule('all');
+  const item = allItems[blockIdx];
+  if(!item) return;
+  const current = getBlockOverride(item);
+  ['ovBtnCompress','ovBtnSkip','ovBtnMove','ovBtnClear'].forEach(id=>{
+    document.getElementById(id)?.classList.remove('active-state');
+  });
+  if(current){
+    const map = { compressed:'ovBtnCompress', skipped:'ovBtnSkip', moved:'ovBtnMove' };
+    if(map[current.status]) document.getElementById(map[current.status])?.classList.add('active-state');
+  }
+}
+
+// ─── TODAY'S SHAPE — OVERRIDE ENGINE
+const CAL_URL_KEY = 'jlos_cal_url';
+function getCalUrl(){ try{ return localStorage.getItem(CAL_URL_KEY)||''; }catch(e){ return ''; } }
+function setCalUrl(u){ try{ localStorage.setItem(CAL_URL_KEY,u); }catch(e){} }
+
+window.saveCalUrl = () => {
+  // Try both mobile and desktop input
+  const u = (document.getElementById('calUrlInput')?.value||document.getElementById('deskCalUrlInput')?.value||'').trim();
+  if(!u){ showToast('Paste your iCal URL first',2000); return; }
+  setCalUrl(u);
+  ['calStatus','deskCalStatus'].forEach(id=>{
+    const el=document.getElementById(id); if(el){ el.textContent='Saved! Loading…'; el.style.color='var(--ma)'; }
+  });
+  toggleCalSetup(false);
+  loadCalendar();
+};
+
+window.toggleCalSetup = (forceOpen) => {
+  ['calSetupCard','deskCalSetupCard'].forEach(id=>{
+    const el=document.getElementById(id); if(!el) return;
+    const open = forceOpen !== undefined ? forceOpen : el.style.display==='none';
+    el.style.display = open ? 'block' : 'none';
+    const url = getCalUrl();
+    const inp = id==='calSetupCard' ? document.getElementById('calUrlInput') : document.getElementById('deskCalUrlInput');
+    if(inp && url) inp.value = url;
+  });
+};
+
+// Parse iCal text into event objects
+function parseICal(text){
+  const events = [];
+  const vevents = text.split('BEGIN:VEVENT').slice(1);
+  vevents.forEach(block => {
+    const get = (key) => {
+      const re = new RegExp(`${key}[^:]*:([^\\r\\n]+(?:\\r?\\n[ \\t][^\\r\\n]+)*)`, 'i');
+      const m = block.match(re);
+      return m ? m[1].replace(/\r?\n[ \t]/g,'').trim() : '';
+    };
+    const unescape = s => s.replace(/\\n/g,'\n').replace(/\\,/g,',').replace(/\\;/g,';').replace(/\\\\/g,'\\');
+    const parseDate = (s) => {
+      if(!s) return null;
+      // Strip TZID prefix if present e.g. TZID=America/New_York:20260305T090000
+      const clean = s.includes(':') ? s.split(':').pop() : s;
+      if(clean.length===8){ // all-day: YYYYMMDD
+        const y=+clean.slice(0,4),mo=+clean.slice(4,6)-1,d=+clean.slice(6,8);
+        return {date:new Date(y,mo,d), allDay:true};
+      }
+      // datetime: YYYYMMDDTHHmmssZ or local
+      const y=+clean.slice(0,4),mo=+clean.slice(4,6)-1,d=+clean.slice(6,8);
+      const h=+clean.slice(9,11),mi=+clean.slice(11,13);
+      const utc = clean.endsWith('Z');
+      const date = utc ? new Date(Date.UTC(y,mo,d,h,mi)) : new Date(y,mo,d,h,mi);
+      return {date, allDay:false};
+    };
+    const dtstart = get('DTSTART');
+    const dtend   = get('DTEND');
+    const summary = unescape(get('SUMMARY'));
+    const location = unescape(get('LOCATION'));
+    if(!dtstart || !summary) return;
+    const start = parseDate(dtstart);
+    const end   = parseDate(dtend);
+    if(!start) return;
+    events.push({ summary, location, start:start.date, end:end?.date||null, allDay:start.allDay });
+  });
+  return events;
+}
+
+// Fetch via CORS proxy, parse, and render
+window.loadCalendar = async () => {
+  const url = getCalUrl();
+  const listEls = ['calEventsList','deskCalEventsList'];
+  listEls.forEach(id=>{ const el=document.getElementById(id); if(el) el.innerHTML='<div class="cal-loading">Fetching your calendar…</div>'; });
+
+  if(!url){
+    toggleCalSetup(true);
+    listEls.forEach(id=>{ const el=document.getElementById(id); if(el) el.innerHTML='<div class="cal-empty">Connect your Google Calendar above to see your events here.</div>'; });
+    return;
+  }
+
+  // Use allorigins CORS proxy to fetch the iCal URL
+  const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`;
+  try{
+    const r = await fetch(proxyUrl);
+    if(!r.ok) throw new Error(`HTTP ${r.status}`);
+    const json = await r.json();
+    const ical = json.contents;
+    if(!ical || !ical.includes('BEGIN:VCALENDAR')) throw new Error('Invalid iCal data');
+
+    const events = parseICal(ical);
+    const now = new Date();
+    const sevenDays = new Date(now.getTime() + 7*24*60*60*1000);
+
+    // Filter to next 7 days
+    const upcoming = events
+      .filter(e => e.start >= new Date(now.toDateString()) && e.start <= sevenDays)
+      .sort((a,b) => a.start - b.start);
+
+    if(!upcoming.length){
+      listEls.forEach(id=>{ const el=document.getElementById(id); if(el) el.innerHTML='<div class="cal-empty">No events in the next 7 days 🌸</div>'; });
+      return;
+    }
+
+    // Group by day
+    const grouped = {};
+    upcoming.forEach(e => {
+      const key = e.start.toDateString();
+      if(!grouped[key]) grouped[key]=[];
+      grouped[key].push(e);
+    });
+
+    const fmt12 = (d) => {
+      let h=d.getHours(),m=d.getMinutes(),ap=h>=12?'PM':'AM';
+      h=h%12||12;
+      return `${h}:${String(m).padStart(2,'0')} ${ap}`;
+    };
+    const dayLabel = (dateStr) => {
+      const d = new Date(dateStr);
+      const today = new Date().toDateString();
+      const tom = new Date(Date.now()+86400000).toDateString();
+      if(d.toDateString()===today) return 'Today';
+      if(d.toDateString()===tom) return 'Tomorrow';
+      return d.toLocaleDateString('en',{weekday:'long',month:'short',day:'numeric'});
+    };
+
+    const html = Object.entries(grouped).map(([dateStr, evts]) => `
+      <div class="cal-day-group">
+        <div class="cal-day-label">${dayLabel(dateStr)}</div>
+        ${evts.map(e=>`
+          <div class="cal-event${e.allDay?' allday':''}">
+            <div class="cal-event-time">${e.allDay?'All day':fmt12(e.start)}</div>
+            <div>
+              <div class="cal-event-title">${e.summary}</div>
+              ${e.location?`<div class="cal-event-loc">📍 ${e.location}</div>`:''}
+            </div>
+          </div>`).join('')}
+      </div>`).join('');
+
+    listEls.forEach(id=>{ const el=document.getElementById(id); if(el) el.innerHTML=html; });
+  } catch(err){
+    const msg = err.message.includes('Failed to fetch')
+      ? '⚠️ Could not reach your calendar. Check your internet connection or iCal URL.'
+      : `⚠️ ${err.message}`;
+    listEls.forEach(id=>{ const el=document.getElementById(id); if(el) el.innerHTML=`<div class="cal-error">${msg}<br><br><button onclick="toggleCalSetup(true)" style="background:none;border:none;cursor:pointer;color:var(--la);font-weight:900;font-size:.7rem;text-decoration:underline">Re-enter calendar URL</button></div>`; });
+  }
+};
+
+function initCalendar(){
+  const url = getCalUrl();
+  if(url){
+    loadCalendar();
+  } else {
+    // Show setup prompt, hide events card until connected
+    toggleCalSetup(true);
+    ['calEventsList','deskCalEventsList'].forEach(id=>{
+      const el=document.getElementById(id);
+      if(el) el.innerHTML='<div class="cal-empty">Connect your Google Calendar above ☝️</div>';
+    });
+  }
 }
 
 // ─── INIT ─────────────────────────────────────────────────────────────────────
@@ -3151,7 +3841,14 @@ window.onload=()=>{
   buildTomorrowPeek();
   renderBattery();
   renderOrbits();
+  initCalendar();
+  updateShapeHeader();
   document.getElementById('jumpNowBtn').style.display='flex';
+  // Midnight override reset — purge any stale shape keys from yesterday
+  try{
+    const yesterday = new Date(); yesterday.setDate(yesterday.getDate()-1);
+    localStorage.removeItem(`jlos_shape_${yesterday.toDateString()}`);
+  }catch(e){}
   // rotate phrases every 5 min
   setInterval(nextPhrase,300000);
 };

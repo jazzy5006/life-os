@@ -381,7 +381,31 @@ body.timer-active .desktop-layout{padding-top:70px}
 .notif-item:last-child{border-bottom:none}
 .notif-item-label{font-size:.72rem;font-weight:700;color:var(--td)}
 .notif-item-time{font-size:.58rem;color:var(--tm)}
-/* ── ASK CLAUDE PANEL ── */
+/* ── GEMINI ELEMENTS ── */
+.sheet-btn-gemini-native{background:var(--sl);color:var(--sa);border-color:var(--sm)}
+.gemini-panel{display:none;margin-top:10px;background:var(--sl);border:2px solid var(--sm);border-radius:var(--rlg);overflow:hidden}
+.gemini-panel.open{display:block}
+.gemini-response{padding:13px 14px;font-size:.8rem;font-weight:600;color:var(--td);line-height:1.7;max-height:280px;overflow-y:auto;white-space:pre-wrap}
+.gemini-response.thinking{color:var(--sa);font-style:italic;display:flex;align-items:center;gap:8px}
+.gemini-thinking-dots{display:inline-flex;gap:4px}
+.gemini-thinking-dots span{width:6px;height:6px;border-radius:50%;background:var(--sa);animation:gdot 1.2s ease-in-out infinite}
+.gemini-thinking-dots span:nth-child(2){animation-delay:.2s}
+.gemini-thinking-dots span:nth-child(3){animation-delay:.4s}
+@keyframes gdot{0%,80%,100%{transform:scale(.7);opacity:.5}40%{transform:scale(1);opacity:1}}
+/* Gear / API settings */
+.api-gear-btn{background:none;border:none;cursor:pointer;font-size:1rem;padding:3px;opacity:.55;transition:opacity .15s,transform .3s;-webkit-tap-highlight-color:transparent;flex-shrink:0}
+.api-gear-btn:hover,.api-gear-btn:active{opacity:1}
+.api-gear-btn.spinning{animation:gear-spin 1.5s linear infinite}
+@keyframes gear-spin{to{transform:rotate(360deg)}}
+.api-settings-panel{display:none;background:var(--bgp);border:2px solid var(--sm);border-radius:var(--rlg);padding:14px;margin-top:10px}
+.api-settings-panel.open{display:flex;flex-direction:column;gap:9px}
+.api-key-input{background:var(--bgc);border:2px solid var(--lm);border-radius:var(--rf);padding:8px 12px;font-family:'Nunito',sans-serif;font-size:.76rem;font-weight:700;color:var(--td);outline:none;transition:border-color .2s;width:100%}
+.api-key-input:focus{border-color:var(--sa)}
+.api-save-row{display:flex;gap:7px;align-items:center}
+.api-save-btn{background:var(--sa);color:#fff;border:none;border-radius:var(--rf);padding:7px 16px;font-family:'Nunito',sans-serif;font-size:.6rem;font-weight:900;text-transform:uppercase;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:transform .15s}
+.api-save-btn:active{transform:scale(.93)}
+.api-status-lbl{font-size:.62rem;font-weight:800;color:var(--sa)}
+.api-note{font-size:.58rem;color:var(--tm);line-height:1.55}
 .claude-panel{display:none;margin-top:10px;background:var(--bgp);border:2px solid var(--lm);border-radius:var(--rlg);overflow:hidden}
 .claude-panel.open{display:block}
 .claude-presets{display:flex;gap:5px;flex-wrap:wrap;padding:8px 12px 0}
@@ -616,6 +640,28 @@ body.timer-active .desktop-layout{padding-top:70px}
 <div class="page" id="page-stats">
   <div style="margin-top:12px;display:flex;flex-direction:column;gap:12px">
 
+  <!-- API Settings Panel (hidden by default) -->
+  <div class="api-settings-panel" id="apiSettingsPanel">
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+      <h3 style="font-size:.82rem">⚙️ AI Integration Keys</h3>
+      <button onclick="toggleApiSettings()" style="background:none;border:none;cursor:pointer;color:var(--tm);font-size:.9rem;padding:2px">✕</button>
+    </div>
+    <!-- Gemini -->
+    <div>
+      <p class="lbl" style="color:var(--sa);margin-bottom:5px">🔵 Google Gemini API Key</p>
+      <input class="api-key-input" id="geminiKeyInput" type="password" placeholder="AIzaSy…" autocomplete="off">
+      <div class="api-save-row" style="margin-top:6px">
+        <button class="api-save-btn" onclick="saveGeminiKey()">Save Key</button>
+        <span class="api-status-lbl" id="geminiKeyStatus"></span>
+      </div>
+      <p class="api-note" style="margin-top:5px">Get a free key at <strong>aistudio.google.com</strong> → Create API Key. Stored only in your browser's localStorage — never leaves your device except to Google's API.</p>
+    </div>
+    <div style="border-top:1.5px solid var(--lm);padding-top:9px">
+      <p class="lbl" style="color:var(--la);margin-bottom:3px">🤖 Claude API (optional)</p>
+      <p class="api-note">Claude integration uses the built-in proxy when running inside claude.ai. No key needed here.</p>
+    </div>
+  </div>
+
     <!-- Germany Module -->
     <div class="de-module" id="deModule">
       <div class="de-header">
@@ -758,7 +804,7 @@ body.timer-active .desktop-layout{padding-top:70px}
 <nav class="tab-bar">
   <button class="tab active" id="tab-flow"  onclick="switchTab('flow')"><span class="tab-icon">🗓️</span><span class="tab-label">Flow</span></button>
   <button class="tab"        id="tab-pt"    onclick="switchTab('pt')"  ><span class="tab-icon">💪</span><span class="tab-label">Move</span></button>
-  <button class="tab"        id="tab-stats" onclick="switchTab('stats')"><span class="tab-icon">📊</span><span class="tab-label">Stats</span></button>
+  <button class="tab"        id="tab-stats" onclick="switchTab('stats')"><span class="tab-icon">📊</span><span class="tab-label">Stats <span onclick="event.stopPropagation();switchTab('stats');toggleApiSettings()" style="font-size:.65rem;opacity:.7">⚙️</span></span></button>
   <button class="tab"        id="tab-mem"   onclick="switchTab('mem')" ><span class="tab-icon">🐶</span><span class="tab-label">Timber</span></button>
 </nav>
 
@@ -963,8 +1009,18 @@ body.timer-active .desktop-layout{padding-top:70px}
       ↩ Undo Shift — Restore Original Plan
     </button>
     <button class="sheet-btn sheet-btn-gemini" onclick="copyGeminiPrompt()">
-      ✨ Copy Gemini Priority Prompt
+      ✨ Copy Gemini Prompt (Clipboard)
     </button>
+    <button class="sheet-btn sheet-btn-gemini-native" onclick="replanWithGemini()">
+      🚀 Replan with Gemini — In-App AI
+    </button>
+    <!-- Gemini response panel -->
+    <div class="gemini-panel" id="geminiPanel">
+      <div class="gemini-response thinking" id="geminiResponse">
+        <span class="gemini-thinking-dots"><span></span><span></span><span></span></span>
+        <span>Gemini is thinking…</span>
+      </div>
+    </div>
     <button class="sheet-btn sheet-btn-claude" onclick="toggleClaudePanel()">
       🤖 Ask Claude — Get AI Prioritization
     </button>
@@ -2319,7 +2375,116 @@ function initGistSync(){
   else { _setGistStatus('','Sync'); }
 }
 
-// ─── WEEKLY CHART ─────────────────────────────────────────────────────────────
+// ─── GEMINI API ENGINE ────────────────────────────────────────────────────────
+const GEMINI_KEY_STORAGE = 'jlos_gemini_key';
+
+function getGeminiKey(){ try{ return localStorage.getItem(GEMINI_KEY_STORAGE)||''; }catch(e){ return ''; } }
+
+window.saveGeminiKey = () => {
+  const val = document.getElementById('geminiKeyInput')?.value.trim();
+  if(!val){ showToast('Paste your API key first', 2000); return; }
+  try{ localStorage.setItem(GEMINI_KEY_STORAGE, val); }catch(e){}
+  const st = document.getElementById('geminiKeyStatus');
+  if(st){ st.textContent = '✓ Saved'; }
+  showToast('🔵 Gemini key saved — ready to use!', 2500);
+};
+
+window.toggleApiSettings = () => {
+  const panel = document.getElementById('apiSettingsPanel');
+  panel.classList.toggle('open');
+  if(panel.classList.contains('open')){
+    // Pre-fill if key exists
+    const key = getGeminiKey();
+    const inp = document.getElementById('geminiKeyInput');
+    if(inp && key) inp.value = key;
+    const st = document.getElementById('geminiKeyStatus');
+    if(st) st.textContent = key ? '✓ Key saved' : '';
+    // Scroll to settings
+    setTimeout(()=>panel.scrollIntoView({behavior:'smooth',block:'start'}), 80);
+  }
+};
+
+window.replanWithGemini = async () => {
+  const key = getGeminiKey();
+  if(!key){
+    showToast('⚙️ Add your Gemini key in Stats → ⚙️ first', 3500);
+    // Open settings
+    switchTab('stats');
+    setTimeout(()=>{ toggleApiSettings(); closeSheet(); }, 200);
+    return;
+  }
+
+  const panel  = document.getElementById('geminiPanel');
+  const respEl = document.getElementById('geminiResponse');
+  panel.classList.add('open');
+  respEl.className = 'gemini-response thinking';
+  respEl.innerHTML = `<span class="gemini-thinking-dots"><span></span><span></span><span></span></span><span>Gemini is thinking…</span>`;
+
+  // Build context identical to Claude engine
+  const nowMin = getNowMin();
+  const dayItems = getFilteredSchedule('all');
+  const now = new Date();
+  const h12 = now.getHours()%12||12, ap = now.getHours()>=12?'PM':'AM';
+  const timeStr = `${h12}:${String(now.getMinutes()).padStart(2,'0')} ${ap}`;
+  const abs = Math.abs(offsetMin);
+  const shiftStr = offsetMin > 2 ? `${abs} minutes behind schedule`
+    : offsetMin < -2 ? `${abs} minutes ahead of schedule`
+    : 'on schedule';
+
+  const remaining = [];
+  dayItems.forEach(item => {
+    const eff = isShifted ? item.smin + offsetMin : item.smin;
+    if(eff > nowMin){
+      const steps = item.isRltRotating ? getRltRotatingSteps() : item.steps;
+      const priority = steps.filter(s => s.c === 'timber' || s.c === 'wellness');
+      if(priority.length){
+        const cats = [...new Set(priority.map(s => s.c === 'timber' ? 'Puppy' : 'Medical'))].join('/');
+        remaining.push(`• [${cats}] ${item.h} at ${fmtMin12(eff)}`);
+      }
+    }
+  });
+
+  const userPrompt =
+    `Current time: ${timeStr}\n` +
+    `Schedule status: ${shiftStr}\n` +
+    `Remaining priority tasks (Medical & Puppy care):\n${remaining.slice(0,12).join('\n')}\n\n` +
+    `What is the smartest way to compress or reorder these tasks to protect my 12:00 AM sleep goal and my 8:30 AM fasting window?`;
+
+  const systemInstruction =
+    `You are a productivity expert for a scientist with hypermobility and a young puppy named Timber. ` +
+    `Your goal is to help her compress or skip non-essential tasks to protect her 12:00 AM sleep goal and her 8:30 AM fasting window. ` +
+    `Tasks tagged [Puppy] are non-negotiable — Timber's feeding, potty, and sleep schedule must be honoured. ` +
+    `Tasks tagged [Medical] are high priority — RLT, PT, and medications should not be skipped unless absolutely necessary. ` +
+    `Be concise, warm, and practical. Use bullet points. Max 200 words.`;
+
+  try{
+    // Dynamic import of Google GenAI SDK via ESM
+    const { GoogleGenerativeAI } = await import('https://esm.run/@google/generative-ai');
+    const genAI = new GoogleGenerativeAI(key);
+    const model = genAI.getGenerativeModel({
+      model: 'gemini-2.0-flash',
+      systemInstruction
+    });
+    const result = await model.generateContent(userPrompt);
+    const text = result.response.text();
+    respEl.className = 'gemini-response';
+    respEl.textContent = text;
+  } catch(err){
+    respEl.className = 'gemini-response';
+    const msg = err.message || String(err);
+    if(msg.includes('API_KEY') || msg.includes('400') || msg.includes('403')){
+      respEl.textContent = '⚠️ Invalid API key. Go to Stats → ⚙️ and re-enter your key from aistudio.google.com';
+    } else {
+      respEl.textContent = `⚠️ Gemini error: ${msg}\n\nTry the clipboard prompt instead.`;
+    }
+  }
+};
+
+function initGeminiKey(){
+  const key = getGeminiKey();
+  const st = document.getElementById('geminiKeyStatus');
+  if(key && st) st.textContent = '✓ Key saved';
+}
 function initCharts(){
   Chart.defaults.font.family="'Nunito',sans-serif";Chart.defaults.font.weight="bold";Chart.defaults.color="#a396b4";
   const wd=buildWeeklyData();
@@ -2346,6 +2511,7 @@ window.onload=()=>{
   initNotifications();
   initGistSync();
   initClaudeInput();
+  initGeminiKey();
   document.getElementById('jumpNowBtn').style.display='flex';
   // rotate phrases every 5 min
   setInterval(nextPhrase,300000);

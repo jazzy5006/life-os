@@ -72,6 +72,8 @@ A daily 10-minute Sweepy task is built into the 9:00 AM block right after Timber
 
 **Getting your Gemini key:** Go to [aistudio.google.com](https://aistudio.google.com) → Create API Key. Free tier is sufficient. Enter it in Stats → ⚙️.
 
+**Model:** `gemini-3.1-flash-lite-preview` — fastest Gemini 3 model, free tier, with `thinkingLevel: minimal` for near-instant responses.
+
 ---
 
 ## ☁️ Cloud Sync (GitHub Gist)
@@ -147,7 +149,7 @@ Timers inside the app use absolute end timestamps so they survive screen lock be
 | Logic | Vanilla JavaScript (ES6+) |
 | Charts | Chart.js |
 | Typography | Google Fonts (Nunito) |
-| AI (Gemini) | @google/generative-ai via esm.run |
+| AI (Gemini) | @google/genai via esm.run (Gemini 3 SDK) |
 | Calendar | iCal feed via allorigins.win CORS proxy |
 | Storage | Browser localStorage + GitHub Gist |
 
@@ -231,7 +233,6 @@ Your data is safe — it lives in localStorage and your Gist, not in the HTML fi
 | Memories disappeared | If Gist connected: tap Sync to pull. If not: they were localStorage only. |
 | Calendar not loading | Check your iCal URL in the Cal tab. May need to regenerate in Google Calendar settings. |
 | Today's Shape missing calendar | Open the Cal tab first to let it load, then return to Flow. |
-| Notifications not firing | Allow notifications in browser settings. Use phone native alarms for Timber's schedule. |
 | Timers stop when screen locks | Expected behaviour in browser. Use phone native alarms for anything time-critical. |
 | Wrong day in PT | Use the Day selector in the Move tab. |
 | Override badges cleared | Overrides reset at midnight — this is intentional. Fresh start every day. |
@@ -243,6 +244,6 @@ Your data is safe — it lives in localStorage and your Gist, not in the HTML fi
 
 If Claude loses context, paste this:
 
-> *"Quick context: this is a single-file HTML personal Life OS. It includes a Timber puppy schedule (9-week-old miniature poodle, crate training, Learn to Earn, Sophia Yin protocol), a daily schedule with AI replan and per-block override mode, PT tracker, battery/connection tracking, Google Calendar iCal integration, and Gemini + Claude AI integration. The design is minimalist kawaii pastel. The goal is reducing cognitive overhead, not productivity. Please keep changes minimal and targeted."*
+> *"Quick context: this is a single-file HTML personal Life OS. It includes a Timber puppy schedule (9-week-old miniature poodle, crate training, Learn to Earn, Sophia Yin protocol), a daily schedule with AI replan and per-block override mode, PT tracker, battery/connection tracking, Google Calendar iCal integration, and Gemini + Claude AI integration. The design is minimalist kawaii pastel. AI features use gemini-3.1-flash-lite-preview via the @google/genai SDK (Gemini 3 series). The goal is reducing cognitive overhead, not productivity. Please keep changes minimal and targeted."*
 
 </details>

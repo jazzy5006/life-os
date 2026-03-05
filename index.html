@@ -442,6 +442,103 @@ body.timer-active .desktop-layout{padding-top:70px}
 .gist-save-btn{flex:1;background:var(--la);color:#fff;border:none;border-radius:var(--rf);padding:11px;font-family:'Nunito',sans-serif;font-size:.68rem;font-weight:900;text-transform:uppercase;cursor:pointer;-webkit-tap-highlight-color:transparent}
 .gist-cancel-btn{background:var(--bgc);color:var(--tm);border:2px solid var(--lm);border-radius:var(--rf);padding:11px 16px;font-family:'Nunito',sans-serif;font-size:.68rem;font-weight:900;cursor:pointer}
 
+/* ── LIFE TAB — CONNECTION HEARTBEAT + BATTERY ── */
+.page-life{padding-bottom:calc(var(--tab-h) + 16px)}
+/* Birthday banner */
+.bday-banner{background:linear-gradient(135deg,var(--pl),var(--sl));border:2px solid var(--pm);border-radius:var(--rlg);padding:14px 16px;text-align:center;margin-top:12px;animation:bday-glow 2s ease-in-out infinite alternate}
+@keyframes bday-glow{from{box-shadow:0 0 8px rgba(184,157,224,.3)}to{box-shadow:0 0 22px rgba(184,157,224,.7)}}
+.bday-title{font-size:1.1rem;font-weight:900;color:var(--la);margin-bottom:3px}
+.bday-sub{font-size:.72rem;color:var(--tb);font-weight:700}
+/* Life header */
+.life-header{text-align:center;padding:16px 0 6px}
+.life-header-title{font-size:1rem;font-weight:900;color:var(--td);margin-bottom:3px}
+.life-header-sub{font-size:.65rem;color:var(--tm);font-weight:700;line-height:1.5}
+/* Tomorrow peek */
+.tomorrow-peek{background:var(--bgp);border:2px solid var(--lm);border-radius:var(--rlg);padding:11px 13px;margin-top:12px;cursor:pointer;transition:border-color .2s;-webkit-tap-highlight-color:transparent}
+.tomorrow-peek:active{border-color:var(--la)}
+.tomorrow-peek-hd{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.tomorrow-peek-lbl{font-size:.58rem;font-weight:900;letter-spacing:.1em;text-transform:uppercase;color:var(--sa)}
+.tomorrow-peek-arrow{font-size:.7rem;color:var(--tm);transition:transform .25s}
+.tomorrow-peek.open .tomorrow-peek-arrow{transform:rotate(180deg)}
+.tomorrow-peek-summary{font-size:.78rem;font-weight:700;color:var(--td);flex:1;padding:0 8px}
+.tomorrow-peek-body{display:none;margin-top:9px;border-top:1.5px solid var(--ll);padding-top:9px}
+.tomorrow-peek.open .tomorrow-peek-body{display:block}
+.tmr-item{display:flex;align-items:center;gap:7px;padding:4px 0;font-size:.74rem;font-weight:700;color:var(--td)}
+.tmr-time{font-size:.62rem;color:var(--tm);min-width:52px;font-weight:700}
+/* Battery card — warm, visual */
+.battery-card{background:var(--bgc);border:2px solid var(--lm);border-radius:var(--rlg);padding:14px;margin-top:10px}
+.battery-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.battery-title{font-size:.75rem;font-weight:900;color:var(--td)}
+.battery-time{font-size:.58rem;color:var(--tm);font-weight:700}
+/* Emoji selector — horizontal strip */
+.battery-emojis{display:flex;gap:0;justify-content:stretch;margin-bottom:10px;border:2px solid var(--lm);border-radius:14px;overflow:hidden}
+.battery-emoji-btn{flex:1;font-size:1.55rem;background:none;border:none;border-right:1.5px solid var(--lm);padding:8px 2px;cursor:pointer;transition:background .15s,transform .12s;-webkit-tap-highlight-color:transparent;line-height:1;display:flex;align-items:center;justify-content:center}
+.battery-emoji-btn:last-child{border-right:none}
+.battery-emoji-btn.sel{background:var(--ll)}
+.battery-emoji-btn:active{transform:scale(.9)}
+/* Energy dot arc — 7-day history visualised as growing dots */
+.energy-arc-wrap{display:flex;align-items:flex-end;justify-content:center;gap:5px;height:48px;margin:2px 4px 8px}
+.energy-dot{flex:1;border-radius:6px;background:var(--lm);transition:height .5s cubic-bezier(.34,1.4,.64,1),background .35s;min-height:5px}
+.energy-dot.e5{background:#4EA37D}.energy-dot.e4{background:#7BB5E8}.energy-dot.e3{background:#C0B8D0}.energy-dot.e2{background:#D4A800}.energy-dot.e1{background:#F0856A}
+.battery-compress-btn{width:100%;margin-top:6px;background:var(--pl);color:var(--pa);border:1.5px solid var(--pm);border-radius:var(--rf);padding:9px;font-family:'Nunito',sans-serif;font-size:.65rem;font-weight:900;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:transform .15s}
+.battery-compress-btn:active{transform:scale(.96)}
+.battery-compress-result{font-size:.76rem;font-weight:600;color:var(--td);line-height:1.7;margin-top:8px;padding:11px 13px;background:var(--pl);border-radius:12px;border:1.5px solid var(--pm);white-space:pre-wrap;display:none}
+.battery-compress-result.visible{display:block}
+/* Connection orbits */
+.connection-card{background:var(--bgc);border:2px solid var(--lm);border-radius:var(--rlg);padding:14px;margin-top:10px}
+.connection-title{font-size:.75rem;font-weight:900;color:var(--td);margin-bottom:12px;display:flex;align-items:center;gap:6px}
+.orbits-wrap{display:flex;justify-content:space-around;align-items:flex-end;gap:8px;margin-bottom:12px}
+.orbit-person{display:flex;flex-direction:column;align-items:center;gap:5px;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.orbit-ring{border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.5rem;transition:all .4s;position:relative;flex-shrink:0}
+.orbit-ring::after{content:'';position:absolute;inset:-4px;border-radius:50%;border:3px solid transparent;transition:all .4s}
+.orbit-ring.warm{background:radial-gradient(circle,#d8f5e8,#a8e6c0);border:2.5px solid #4EA37D}
+.orbit-ring.warm::after{border-color:#4EA37D;opacity:.3;animation:orbit-pulse 2.5s ease-in-out infinite}
+.orbit-ring.cool{background:radial-gradient(circle,var(--sl),var(--sm));border:2.5px solid var(--sa)}
+.orbit-ring.cool::after{border-color:var(--sa);opacity:.3}
+.orbit-ring.distant{background:radial-gradient(circle,var(--gl),var(--gm));border:2.5px solid var(--ga)}
+.orbit-ring.distant::after{border-color:var(--ga);opacity:.4;animation:orbit-pulse 1.5s ease-in-out infinite}
+.orbit-ring.overdue{background:radial-gradient(circle,var(--pl),var(--pm));border:2.5px solid var(--pa)}
+.orbit-ring.overdue::after{border-color:var(--pa);opacity:.5;animation:orbit-pulse .9s ease-in-out infinite}
+@keyframes orbit-pulse{0%,100%{transform:scale(1);opacity:.3}50%{transform:scale(1.12);opacity:.6}}
+.orbit-name{font-size:.62rem;font-weight:900;color:var(--td);text-align:center}
+.orbit-days{font-size:.55rem;color:var(--tm);text-align:center;margin-top:1px}
+/* Connection nudge — gentler */
+.conn-nudge-wrap{background:var(--sl);border:1.5px solid var(--sm);border-radius:10px;padding:8px 11px;margin-top:6px;font-size:.7rem;font-weight:700;color:var(--sa);text-align:center;display:none}
+/* Log connection modal */
+.conn-modal{display:none;position:fixed;inset:0;z-index:400;background:rgba(0,0,0,.45);align-items:flex-end;justify-content:center}
+.conn-modal.open{display:flex}
+.conn-modal-box{background:var(--bgc);border-radius:24px 24px 0 0;border-top:2px solid var(--lm);padding:20px 18px calc(32px + env(safe-area-inset-bottom));width:100%;max-width:520px}
+.conn-modal-handle{width:38px;height:4px;background:var(--lm);border-radius:var(--rf);margin:0 auto 14px}
+.conn-modal-person{font-size:1.4rem;text-align:center;margin-bottom:4px}
+.conn-modal-name{font-size:1rem;font-weight:900;color:var(--td);text-align:center;margin-bottom:12px}
+.conn-types{display:flex;flex-wrap:wrap;gap:7px;justify-content:center;margin-bottom:12px}
+.conn-type-btn{background:var(--bgp);border:2px solid var(--lm);border-radius:var(--rf);padding:7px 13px;font-family:'Nunito',sans-serif;font-size:.65rem;font-weight:900;color:var(--tm);cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .15s}
+.conn-type-btn.sel{background:var(--ll);border-color:var(--la);color:var(--la)}
+.conn-note-input{width:100%;background:var(--bgp);border:2px solid var(--lm);border-radius:var(--rf);padding:8px 12px;font-family:'Nunito',sans-serif;font-size:.78rem;font-weight:700;color:var(--td);outline:none;margin-bottom:10px;transition:border-color .2s}
+.conn-note-input:focus{border-color:var(--la)}
+.conn-log-btn{width:100%;background:var(--la);color:#fff;border:none;border-radius:var(--rf);padding:12px;font-family:'Nunito',sans-serif;font-size:.68rem;font-weight:900;text-transform:uppercase;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.conn-history{border-top:1.5px solid var(--ll);margin-top:12px;padding-top:10px}
+.conn-hist-item{display:flex;align-items:center;gap:8px;padding:5px 0;font-size:.72rem;font-weight:700;color:var(--td);border-bottom:1px solid var(--ll)}
+.conn-hist-item:last-child{border-bottom:none}
+.conn-hist-date{font-size:.6rem;color:var(--tm);min-width:68px}
+/* Lab synthesis */
+.lab-card{background:var(--bgc);border:2px solid var(--lm);border-radius:var(--rlg);padding:13px 14px;margin-top:12px}
+.lab-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.lab-title{font-size:.78rem;font-weight:900;color:var(--td)}
+.lab-sort-btn{background:var(--sa);color:#fff;border:none;border-radius:var(--rf);padding:5px 12px;font-family:'Nunito',sans-serif;font-size:.55rem;font-weight:900;text-transform:uppercase;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:transform .15s}
+.lab-sort-btn:active{transform:scale(.93)}
+.lab-sort-btn:disabled{opacity:.45}
+.lab-ta{width:100%;background:var(--bgp);border:2px solid var(--lm);border-radius:var(--rf);padding:9px 12px;font-family:'Nunito',sans-serif;font-size:.8rem;font-weight:600;color:var(--td);outline:none;resize:none;transition:border-color .2s,height .2s;min-height:72px;line-height:1.6}
+.lab-ta:focus{border-color:var(--sa)}
+.lab-results{margin-top:10px;display:flex;flex-direction:column;gap:7px}
+.lab-chip{border-radius:var(--rlg);padding:9px 12px;font-size:.74rem;font-weight:700;color:var(--td);line-height:1.55}
+.lab-chip-hd{font-size:.58rem;font-weight:900;letter-spacing:.1em;text-transform:uppercase;margin-bottom:3px}
+.lab-chip.puppy{background:var(--pl);border:1.5px solid var(--pm)}.lab-chip.puppy .lab-chip-hd{color:var(--pa)}
+.lab-chip.health{background:var(--ml);border:1.5px solid var(--mm)}.lab-chip.health .lab-chip-hd{color:var(--ma)}
+.lab-chip.connection{background:var(--sl);border:1.5px solid var(--sm)}.lab-chip.connection .lab-chip-hd{color:var(--sa)}
+.lab-chip.work{background:var(--gl);border:1.5px solid var(--gm)}.lab-chip.work .lab-chip-hd{color:var(--ga)}
+.lab-chip.thinking{background:var(--bgp);border:1.5px solid var(--lm);color:var(--tm);font-style:italic}
+
 @media(min-width:1024px){
   .tab-bar,.page,.fab-now,.top-nav,.pills-row{display:none!important}
   .desktop-layout{display:flex!important;flex-direction:column;min-height:100vh;padding:22px 24px 28px}
@@ -615,10 +712,23 @@ body.timer-active .desktop-layout{padding-top:70px}
     <div class="wn-text" style="flex:1"><h4 id="mWnTitle">Loading…</h4><p id="mWnDesc"></p></div>
     <span id="offsetBadge" class="offset-badge synced" onclick="openSheet(null)" style="display:none">✓ Synced</span>
   </div>
-  <!-- Today's scratch pad -->
-  <div class="scratch-wrap">
-    <div class="scratch-lbl"><span style="font-size:.9rem">📝</span><span class="lbl">Today's Notes</span></div>
-    <textarea class="scratch-ta" id="scratchPad" placeholder="Quick thoughts, adjustments, reminders for today…" oninput="saveScratch()" rows="2"></textarea>
+  <!-- Tomorrow peek — 48hr horizon -->
+  <div class="tomorrow-peek" id="tomorrowPeek" onclick="toggleTomorrowPeek()" style="margin-top:8px">
+    <div class="tomorrow-peek-hd">
+      <span class="tomorrow-peek-lbl">☀️ Tomorrow</span>
+      <span class="tomorrow-peek-summary" id="tomorrowSummary">Loading…</span>
+      <span class="tomorrow-peek-arrow">▾</span>
+    </div>
+    <div class="tomorrow-peek-body" id="tomorrowBody"></div>
+  </div>
+  <!-- Lab synthesis scratch pad -->
+  <div class="lab-card">
+    <div class="lab-hd">
+      <span class="lab-title">🧪 Lab — Today's Notes</span>
+      <button class="lab-sort-btn" id="labSortBtn" onclick="event.stopPropagation();labSynthesize()">✨ Sort this</button>
+    </div>
+    <textarea class="lab-ta" id="scratchPad" placeholder="Dump anything here — thoughts, adjustments, what Timber did, how you're feeling…" oninput="saveScratch()" rows="3"></textarea>
+    <div class="lab-results" id="labResults"></div>
   </div>
   <div class="filter-row">
     <button class="btn btn-f on"         id="mba" onclick="ftl('all','m')">All</button>
@@ -794,6 +904,91 @@ body.timer-active .desktop-layout{padding-top:70px}
   </div>
 </div>
 
+<!-- LIFE PAGE -->
+<div class="page page-life" id="page-life">
+  <div style="display:flex;flex-direction:column;gap:0">
+
+    <!-- Birthday banner (shown only on March 15) -->
+    <div class="bday-banner" id="bdayBanner" style="display:none">
+      <div class="bday-title">🎂 Happy 31st Birthday, Jasmine! 🎂</div>
+      <div class="bday-sub">You've built something beautiful this year. Here's to healing, love, and Timber. 💜</div>
+    </div>
+
+    <!-- Life tab welcome header -->
+    <div class="life-header">
+      <div class="life-header-title">💜 Your World</div>
+      <div class="life-header-sub">How you're feeling · Who you've connected with · What matters today</div>
+    </div>
+
+    <!-- Battery logger -->
+    <div class="battery-card">
+      <div class="battery-hd">
+        <span class="battery-title">🔋 Today's Energy</span>
+        <span class="battery-time" id="batteryTime">Not logged today</span>
+      </div>
+      <div class="battery-emojis" id="batteryEmojis">
+        <button class="battery-emoji-btn" onclick="logBattery(5)" title="Fully charged">🌟</button>
+        <button class="battery-emoji-btn" onclick="logBattery(4)" title="Good">😊</button>
+        <button class="battery-emoji-btn" onclick="logBattery(3)" title="Okay">😐</button>
+        <button class="battery-emoji-btn" onclick="logBattery(2)" title="Low">😔</button>
+        <button class="battery-emoji-btn" onclick="logBattery(1)" title="Running on empty">🪫</button>
+      </div>
+      <!-- 7-day energy arc -->
+      <div class="energy-arc-wrap" id="batteryHistory"></div>
+      <button class="battery-compress-btn" id="batteryCompressBtn" onclick="runCapacityScaler()" style="display:none">
+        ⚡ Battery low — ask Gemini for Ruthless Compression
+      </button>
+      <div class="battery-compress-result" id="batteryCompressResult"></div>
+    </div>
+
+    <!-- Connection orbits -->
+    <div class="connection-card">
+      <div class="connection-title">💜 Connection Heartbeat
+        <span style="font-size:.58rem;color:var(--tm);font-weight:700;margin-left:auto">tap to log a moment</span>
+      </div>
+      <div class="orbits-wrap" id="orbitsWrap">
+        <div class="orbit-person" onclick="openConnModal('Nathan','💙')">
+          <div class="orbit-ring warm" id="orbit-Nathan" style="width:76px;height:76px">💙</div>
+          <div class="orbit-name">Nathan</div>
+          <div class="orbit-days" id="orbitDays-Nathan">—</div>
+        </div>
+        <div class="orbit-person" onclick="openConnModal('Mom','💗')">
+          <div class="orbit-ring warm" id="orbit-Mom" style="width:66px;height:66px">💗</div>
+          <div class="orbit-name">Mom</div>
+          <div class="orbit-days" id="orbitDays-Mom">—</div>
+        </div>
+        <div class="orbit-person" onclick="openConnModal('Sister','🌸')">
+          <div class="orbit-ring warm" id="orbit-Sister" style="width:66px;height:66px">🌸</div>
+          <div class="orbit-name">Sister</div>
+          <div class="orbit-days" id="orbitDays-Sister">—</div>
+        </div>
+      </div>
+      <!-- Gentle nudge -->
+      <div class="conn-nudge-wrap" id="connNudge"></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- CONNECTION LOG MODAL -->
+<div class="conn-modal" id="connModal">
+  <div class="conn-modal-box">
+    <div class="conn-modal-handle"></div>
+    <div class="conn-modal-person" id="connModalEmoji">💙</div>
+    <div class="conn-modal-name" id="connModalName">Nathan</div>
+    <div class="conn-types" id="connTypes">
+      <button class="conn-type-btn sel" data-type="called">📞 Called</button>
+      <button class="conn-type-btn" data-type="texted">💬 Texted</button>
+      <button class="conn-type-btn" data-type="quality">🫂 Quality time</button>
+      <button class="conn-type-btn" data-type="checkin">💜 Check-in</button>
+      <button class="conn-type-btn" data-type="moment">✨ Meaningful moment</button>
+    </div>
+    <input class="conn-note-input" id="connNoteInput" type="text" placeholder="Optional note…" maxlength="100">
+    <button class="conn-log-btn" onclick="logConnection()">💜 Log Connection</button>
+    <div class="conn-history" id="connHistory"></div>
+  </div>
+</div>
+
 <!-- MEMORIES PAGE (mobile only) -->
 <div class="page" id="page-mem">
   <div style="margin-top:12px;display:flex;flex-direction:column;gap:12px">
@@ -827,6 +1022,7 @@ body.timer-active .desktop-layout{padding-top:70px}
 <nav class="tab-bar">
   <button class="tab active" id="tab-flow"  onclick="switchTab('flow')"><span class="tab-icon">🗓️</span><span class="tab-label">Flow</span></button>
   <button class="tab"        id="tab-pt"    onclick="switchTab('pt')"  ><span class="tab-icon">💪</span><span class="tab-label">Move</span></button>
+  <button class="tab"        id="tab-life"  onclick="switchTab('life')"><span class="tab-icon">💜</span><span class="tab-label">Life</span></button>
   <button class="tab"        id="tab-stats" onclick="switchTab('stats')"><span class="tab-icon">📊</span><span class="tab-label">Stats <span onclick="event.stopPropagation();switchTab('stats');toggleApiSettings()" style="font-size:.65rem;opacity:.7">⚙️</span></span></button>
   <button class="tab"        id="tab-mem"   onclick="switchTab('mem')" ><span class="tab-icon">🐶</span><span class="tab-label">Timber</span></button>
 </nav>
@@ -905,9 +1101,10 @@ body.timer-active .desktop-layout{padding-top:70px}
     <!-- RIGHT: tabbed panel -->
     <div class="desk-right">
       <div class="desk-tabs">
-        <button class="desk-tab active" id="dtab-pt"   onclick="deskSwitchPanel('pt')"   >💪 Movement</button>
+        <button class="desk-tab active" id="dtab-pt"    onclick="deskSwitchPanel('pt')"   >💪 Movement</button>
+        <button class="desk-tab"        id="dtab-life"  onclick="deskSwitchPanel('life')"  >💜 Life</button>
         <button class="desk-tab"        id="dtab-stats" onclick="deskSwitchPanel('stats')">📊 Stats</button>
-        <button class="desk-tab"        id="dtab-mem"  onclick="deskSwitchPanel('mem')"  >🐶 Timber</button>
+        <button class="desk-tab"        id="dtab-mem"   onclick="deskSwitchPanel('mem')"  >🐶 Timber</button>
       </div>
 
       <!-- PT panel -->
@@ -942,6 +1139,57 @@ body.timer-active .desktop-layout{padding-top:70px}
       </div>
 
       <!-- Stats panel -->
+      <!-- Life panel (desktop) -->
+      <div class="desk-panel" id="dpanel-life">
+        <div id="deskBdayBanner" class="bday-banner" style="display:none">
+          <div class="bday-title">🎂 Happy 31st Birthday, Jasmine! 🎂</div>
+          <div class="bday-sub">You've built something beautiful this year. Here's to healing, love, and Timber. 💜</div>
+        </div>
+        <!-- Battery -->
+        <div class="battery-card" style="margin-top:0">
+          <div class="battery-hd">
+            <span class="battery-title">🔋 Today's Battery</span>
+            <span class="battery-time" id="deskBatteryTime">Not logged today</span>
+          </div>
+          <div class="battery-emojis" id="deskBatteryEmojis">
+            <button class="battery-emoji-btn" onclick="logBattery(5)">🌟</button>
+            <button class="battery-emoji-btn" onclick="logBattery(4)">😊</button>
+            <button class="battery-emoji-btn" onclick="logBattery(3)">😐</button>
+            <button class="battery-emoji-btn" onclick="logBattery(2)">😔</button>
+            <button class="battery-emoji-btn" onclick="logBattery(1)">🪫</button>
+          </div>
+          <div class="energy-arc-wrap" id="deskBatteryHistory"></div>
+          <button class="battery-compress-btn" id="deskBatteryCompressBtn" onclick="runCapacityScaler()" style="display:none">
+            ⚡ My battery is low — suggest Ruthless Compression
+          </button>
+          <div class="battery-compress-result" id="deskBatteryCompressResult"></div>
+        </div>
+        <!-- Connections -->
+        <div class="connection-card">
+          <div class="connection-title">💜 Connection Heartbeat
+            <span style="font-size:.6rem;color:var(--tm);font-weight:700;margin-left:auto">tap a person to log</span>
+          </div>
+          <div class="orbits-wrap">
+            <div class="orbit-person" onclick="openConnModal('Nathan','💙')">
+              <div class="orbit-ring warm" id="deskOrbit-Nathan" style="width:72px;height:72px">💙</div>
+              <div class="orbit-name">Nathan</div>
+              <div class="orbit-days" id="deskOrbitDays-Nathan">—</div>
+            </div>
+            <div class="orbit-person" onclick="openConnModal('Mom','💗')">
+              <div class="orbit-ring warm" id="deskOrbit-Mom" style="width:64px;height:64px">💗</div>
+              <div class="orbit-name">Mom</div>
+              <div class="orbit-days" id="deskOrbitDays-Mom">—</div>
+            </div>
+            <div class="orbit-person" onclick="openConnModal('Sister','🌸')">
+              <div class="orbit-ring warm" id="deskOrbit-Sister" style="width:64px;height:64px">🌸</div>
+              <div class="orbit-name">Sister</div>
+              <div class="orbit-days" id="deskOrbitDays-Sister">—</div>
+            </div>
+          </div>
+          <div class="conn-nudge-wrap" id="deskConnNudge"></div>
+        </div>
+      </div>
+
       <div class="desk-panel" id="dpanel-stats">
         <!-- Desktop API Settings (toggled by gear in header) -->
         <div class="api-settings-panel" id="deskApiSettingsPanel">
@@ -1481,6 +1729,7 @@ window.switchTab=(tab)=>{
   document.getElementById('tab-'+tab).classList.add('active');
   document.getElementById('jumpNowBtn').style.display=tab==='flow'?'flex':'none';
   if(tab==='mem')renderMemories('memList2');
+  if(tab==='life'){renderOrbits();renderBattery();}
 };
 
 window.deskSwitchPanel=(panel)=>{
@@ -1489,6 +1738,7 @@ window.deskSwitchPanel=(panel)=>{
   document.getElementById('dpanel-'+panel).classList.add('active');
   document.getElementById('dtab-'+panel).classList.add('active');
   if(panel==='mem')renderMemories('memListD');
+  if(panel==='life'){renderOrbits();renderBattery();}
 };
 
 // ─── SCHEDULE FILTER (day-aware) ──────────────────────────────────────────────
@@ -2659,6 +2909,217 @@ function initGeminiKey(){
   const dSt = document.getElementById('deskGeminiKeyStatus');
   if(dSt) dSt.textContent = '✓ Key saved';
 }
+// ─── TOMORROW PEEK ────────────────────────────────────────────────────────────
+window.toggleTomorrowPeek = () => {
+  document.getElementById('tomorrowPeek')?.classList.toggle('open');
+};
+
+function buildTomorrowPeek(){
+  const tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  const tomorrowDay = tomorrow.getDay();
+  const items = S.filter(item => {
+    if(item.days && !item.days.includes(tomorrowDay)) return false;
+    return true;
+  });
+  const timber = items.filter(i => i.steps?.some(s => s.c==='timber')).length;
+  const wellness = items.filter(i => i.steps?.some(s => s.c==='wellness')).length;
+  const summaryEl = document.getElementById('tomorrowSummary');
+  if(summaryEl) summaryEl.textContent = `${items.length} blocks · 🐾×${timber} · 🌿×${wellness}`;
+  const bodyEl = document.getElementById('tomorrowBody');
+  if(!bodyEl) return;
+  bodyEl.innerHTML = items.slice(0,8).map(item =>
+    `<div class="tmr-item"><span class="tmr-time">${fmtMin12(item.smin)}</span><span>${item.i||''} ${item.h}</span></div>`
+  ).join('') + (items.length > 8 ? `<div class="tmr-item" style="color:var(--tm)">…and ${items.length-8} more</div>` : '');
+}
+
+// ─── BIRTHDAY ─────────────────────────────────────────────────────────────────
+function checkBirthday(){
+  const now = new Date();
+  const isBday = now.getMonth() === 2 && now.getDate() === 15;
+  ['bdayBanner','deskBdayBanner'].forEach(id => {
+    const el = document.getElementById(id); if(el) el.style.display = isBday ? 'block' : 'none';
+  });
+}
+
+// ─── BATTERY / CAPACITY SCALER ────────────────────────────────────────────────
+const BATTERY_KEY = 'jlos_battery';
+function loadBatteryLog(){ try{ return JSON.parse(localStorage.getItem(BATTERY_KEY)||'[]'); }catch(e){ return []; } }
+function saveBatteryLog(log){ try{ localStorage.setItem(BATTERY_KEY, JSON.stringify(log)); }catch(e){} }
+
+window.logBattery = (level) => {
+  const log = loadBatteryLog();
+  const today = new Date().toDateString();
+  const idx = log.findIndex(e => e.date === today);
+  const entry = { date:today, level, time:new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}) };
+  if(idx >= 0) log[idx] = entry; else log.push(entry);
+  while(log.length > 14) log.shift();
+  saveBatteryLog(log);
+  renderBattery();
+  if(typeof gistPush === 'function') setTimeout(gistPush, 800);
+};
+
+function renderBattery(){
+  const log = loadBatteryLog();
+  const today = new Date().toDateString();
+  const todayEntry = log.find(e => e.date === today);
+  const emojis = ['','🪫','😔','😐','😊','🌟'];
+  const colors = ['','e1','e2','e3','e4','e5'];
+  const heightPct = ['','18%','32%','50%','72%','100%'];
+  ['batteryTime','deskBatteryTime'].forEach(id => {
+    const el = document.getElementById(id);
+    if(el) el.textContent = todayEntry ? `${emojis[todayEntry.level]} ${todayEntry.time}` : 'Not logged today';
+  });
+  ['batteryEmojis','deskBatteryEmojis'].forEach(id => {
+    const wrap = document.getElementById(id); if(!wrap) return;
+    wrap.querySelectorAll('.battery-emoji-btn').forEach((btn,i) => {
+      btn.classList.toggle('sel', todayEntry?.level === (5-i));
+    });
+  });
+  // Build 7-day energy arc
+  const last7 = [];
+  for(let i=6;i>=0;i--){ const d=new Date();d.setDate(d.getDate()-i);last7.push(log.find(e=>e.date===d.toDateString())||null); }
+  ['batteryHistory','deskBatteryHistory'].forEach(id => {
+    const el = document.getElementById(id); if(!el) return;
+    el.innerHTML = last7.map((e,i) => {
+      const isToday = i === 6;
+      const h = e ? heightPct[e.level] : '10%';
+      const cls = e ? colors[e.level] : '';
+      const todayStyle = isToday ? 'outline:2px solid var(--la);outline-offset:2px;' : '';
+      return `<div class="energy-dot ${cls}" style="height:${h};${todayStyle}" title="${e ? emojis[e.level] : 'no log'}"></div>`;
+    }).join('');
+  });
+  const isLow = todayEntry && todayEntry.level <= 2;
+  ['batteryCompressBtn','deskBatteryCompressBtn'].forEach(id => { const el=document.getElementById(id);if(el)el.style.display=isLow?'block':'none'; });
+}
+
+window.runCapacityScaler = async () => {
+  const key = getGeminiKey();
+  const log = loadBatteryLog();
+  const todayEntry = log.find(e => e.date === new Date().toDateString());
+  const emojis = ['','🪫 Running on empty','😔 Low','😐 Okay','😊 Good','🌟 Fully charged'];
+  const ids = ['batteryCompressResult','deskBatteryCompressResult'];
+  ids.forEach(id => { const el=document.getElementById(id);if(el){el.textContent='⚡ Analysing…';el.className='battery-compress-result visible';} });
+  const nowMin = getNowMin();
+  const remaining = getFilteredSchedule('all').filter(item=>(isShifted?item.smin+offsetMin:item.smin)>nowMin).map(item=>`• ${item.h} at ${fmtMin12(item.smin)}`).slice(0,10).join('\n');
+  const prompt = `Battery: ${todayEntry?emojis[todayEntry.level]:'unknown'}\nLast 3 days: ${log.slice(-3).map(e=>`${emojis[e.level]||'?'}`).join(', ')}\n\nRemaining tasks:\n${remaining}\n\nSuggest 3 specific things to shorten or skip to protect my emotional bandwidth for Nathan, Mom, and Sister. Be warm and brief.`;
+  if(!key){ ids.forEach(id=>{const el=document.getElementById(id);if(el)el.textContent='⚙️ Add your Gemini key in Stats → ⚙️';}); return; }
+  try{
+    const {GoogleGenerativeAI} = await import('https://esm.run/@google/generative-ai');
+    const genAI = new GoogleGenerativeAI(key);
+    const model = genAI.getGenerativeModel({model:'gemini-1.5-flash',systemInstruction:{role:'system',parts:[{text:'You are a compassionate coach for a scientist with ADHD and hypermobility. Protect her emotional bandwidth for the people she loves. Be warm, never clinical. Max 3 bullets.'}]}});
+    const result = await model.generateContent(prompt);
+    ids.forEach(id=>{const el=document.getElementById(id);if(el){el.textContent=result.response.text();el.className='battery-compress-result visible';}});
+  }catch(err){ ids.forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=`⚠️ ${err.message||'Error'}`;}); }
+};
+
+// ─── CONNECTION HEARTBEAT ─────────────────────────────────────────────────────
+const CONN_KEY = 'jlos_connections';
+const CONN_PEOPLE = [
+  {name:'Nathan',emoji:'💙',thresholds:[1,3,7]},
+  {name:'Mom',   emoji:'💗',thresholds:[2,5,10]},
+  {name:'Sister',emoji:'🌸',thresholds:[2,5,10]},
+];
+let _connModalPerson = null;
+function loadConnLog(){ try{return JSON.parse(localStorage.getItem(CONN_KEY)||'{}');}catch(e){return {};} }
+function saveConnLog(log){ try{localStorage.setItem(CONN_KEY,JSON.stringify(log));}catch(e){} }
+function daysSince(dateStr){ if(!dateStr)return 999; return Math.floor((new Date()-new Date(dateStr))/(1000*60*60*24)); }
+
+function renderOrbits(){
+  const log = loadConnLog();
+  const nudges = [];
+  CONN_PEOPLE.forEach(person => {
+    const entries = log[person.name]||[];
+    const last = entries[entries.length-1];
+    const days = daysSince(last?.date);
+    const [nudge,warn,overdue] = person.thresholds;
+    let ringClass = days>=overdue?'overdue':days>=warn?'distant':days>=nudge?'cool':'warm';
+    const daysLabel = days===0?'today 💜':days===999?'not yet logged':`${days}d ago`;
+    if(days>=overdue) nudges.push(`${person.emoji} ${person.name}`);
+    [`orbit-${person.name}`,`deskOrbit-${person.name}`].forEach(id=>{const el=document.getElementById(id);if(el)el.className=`orbit-ring ${ringClass}`;});
+    [`orbitDays-${person.name}`,`deskOrbitDays-${person.name}`].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=daysLabel;});
+  });
+  // Gentle nudge — warm and low-pressure
+  const nudgeTxt = nudges.length
+    ? `A gentle reminder to reach out 💜  ${nudges.join('  ·  ')}`
+    : '';
+  ['connNudge','deskConnNudge'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(!el) return;
+    el.textContent = nudgeTxt;
+    el.style.display = nudges.length ? 'block' : 'none';
+  });
+}
+
+window.openConnModal = (name, emoji) => {
+  _connModalPerson = {name,emoji};
+  document.getElementById('connModalEmoji').textContent = emoji;
+  document.getElementById('connModalName').textContent = name;
+  const inp = document.getElementById('connNoteInput'); if(inp) inp.value='';
+  document.querySelectorAll('.conn-type-btn').forEach((btn,i)=>btn.classList.toggle('sel',i===0));
+  const log = loadConnLog();
+  const entries = (log[name]||[]).slice(-5).reverse();
+  const histEl = document.getElementById('connHistory');
+  if(histEl) histEl.innerHTML = entries.length
+    ? '<p style="font-size:.6rem;font-weight:900;color:var(--tm);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px">Recent</p>'
+      + entries.map(e=>`<div class="conn-hist-item"><span class="conn-hist-date">${new Date(e.date).toLocaleDateString('en',{month:'short',day:'numeric'})}</span><span>${e.type||'check-in'}${e.note?' — '+e.note:''}</span></div>`).join('')
+    : `<p style="font-size:.72rem;color:var(--tm);font-style:italic;margin-top:8px">No connections logged yet for ${name}</p>`;
+  document.getElementById('connModal').classList.add('open');
+};
+
+// Type button selection
+document.addEventListener('click', e => {
+  const btn = e.target.closest('.conn-type-btn');
+  if(!btn) return;
+  document.querySelectorAll('.conn-type-btn').forEach(b=>b.classList.remove('sel'));
+  btn.classList.add('sel');
+});
+
+window.logConnection = () => {
+  if(!_connModalPerson) return;
+  const type = document.querySelector('.conn-type-btn.sel')?.dataset.type||'check-in';
+  const note = document.getElementById('connNoteInput')?.value.trim()||'';
+  const log = loadConnLog();
+  if(!log[_connModalPerson.name]) log[_connModalPerson.name]=[];
+  log[_connModalPerson.name].push({date:new Date().toISOString(),type,note});
+  if(log[_connModalPerson.name].length>30) log[_connModalPerson.name].shift();
+  saveConnLog(log);
+  document.getElementById('connModal').classList.remove('open');
+  renderOrbits();
+  showToast(`💜 ${_connModalPerson.name} — ${type} logged`,2000);
+  if(typeof gistPush==='function') setTimeout(gistPush,800);
+};
+
+document.getElementById('connModal')?.addEventListener('click',e=>{
+  if(e.target===document.getElementById('connModal')) document.getElementById('connModal').classList.remove('open');
+});
+
+// ─── LAB SYNTHESIS ────────────────────────────────────────────────────────────
+window.labSynthesize = async () => {
+  const text = document.getElementById('scratchPad')?.value.trim();
+  if(!text){ showToast('Write some notes first',1800); return; }
+  const key = getGeminiKey();
+  const resultsEl = document.getElementById('labResults');
+  const btn = document.getElementById('labSortBtn');
+  if(btn) btn.disabled=true;
+  if(resultsEl) resultsEl.innerHTML='<div class="lab-chip thinking">✨ Sorting your notes…</div>';
+  if(!key){ if(resultsEl) resultsEl.innerHTML='<div class="lab-chip work">⚙️ Add your Gemini key in Stats → ⚙️ to use Lab Synthesis.</div>'; if(btn)btn.disabled=false; return; }
+  const sys=`Categorise notes into Puppy, Health, Connection, or Work. Return ONLY valid JSON array: [{"cat":"Puppy","items":["action"]},{"cat":"Health","items":["action"]}]. No markdown, no preamble.`;
+  try{
+    const {GoogleGenerativeAI}=await import('https://esm.run/@google/generative-ai');
+    const genAI=new GoogleGenerativeAI(key);
+    const model=genAI.getGenerativeModel({model:'gemini-1.5-flash',systemInstruction:{role:'system',parts:[{text:sys}]}});
+    const result=await model.generateContent(`Categorise:\n${text}`);
+    const raw=result.response.text().replace(/```json|```/g,'').trim();
+    const parsed=JSON.parse(raw);
+    const catColor={Puppy:'puppy',Health:'health',Connection:'connection',Work:'work'};
+    const catEmoji={Puppy:'🐾',Health:'💚',Connection:'💜',Work:'💻'};
+    if(resultsEl) resultsEl.innerHTML=parsed.map(g=>`<div class="lab-chip ${catColor[g.cat]||'work'}"><div class="lab-chip-hd">${catEmoji[g.cat]||'•'} ${g.cat}</div>${g.items.map(i=>`<div>• ${i}</div>`).join('')}</div>`).join('');
+  }catch(err){
+    if(resultsEl) resultsEl.innerHTML=`<div class="lab-chip work">⚠️ ${err.message||'Could not sort notes'}</div>`;
+  }finally{ if(btn) btn.disabled=false; }
+};
+
 function initCharts(){
   Chart.defaults.font.family="'Nunito',sans-serif";Chart.defaults.font.weight="bold";Chart.defaults.color="#a396b4";
   const wd=buildWeeklyData();
@@ -2686,6 +3147,10 @@ window.onload=()=>{
   initGistSync();
   initClaudeInput();
   initGeminiKey();
+  checkBirthday();
+  buildTomorrowPeek();
+  renderBattery();
+  renderOrbits();
   document.getElementById('jumpNowBtn').style.display='flex';
   // rotate phrases every 5 min
   setInterval(nextPhrase,300000);

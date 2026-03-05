@@ -773,7 +773,6 @@ body.timer-active .desktop-layout{padding-top:70px}
       <span class="de-days" id="mDeDays">--</span>
       <span class="de-lbl">days</span>
     </div>
-    <button class="notif-btn" id="notifBell" onclick="toggleNotifications()" title="Schedule notifications">🔔</button>
     <div class="gist-bar" id="gistBar" onclick="openGistModal()" title="Cloud sync">
       <span class="gist-dot" id="gistDot"></span>
       <span class="gist-bar-txt" id="gistBarTxt">Sync</span>
@@ -1212,7 +1211,6 @@ body.timer-active .desktop-layout{padding-top:70px}
         <span class="de-days" id="dDeDays">--</span>
         <span class="de-lbl">days</span>
       </div>
-      <button class="notif-btn" id="deskNotifBell" onclick="toggleNotifications()" title="Schedule notifications">🔔</button>
       <div class="gist-bar" id="deskGistBar" onclick="openGistModal()" title="Cloud sync — Timber memories">
         <span class="gist-dot" id="deskGistDot"></span>
         <span class="gist-bar-txt" id="deskGistBarTxt">Sync</span>
@@ -3016,10 +3014,26 @@ async function gistPush(){
 
 // Pull all data from Gist
 async function gistPull(){
-  const token = _getGistToken(), gistId = _getGistId();
-  if(!token || !gistId) return;
+  const token = _getGistToken();
+  if(!token) return;
+  let gistId = _getGistId();
   _setGistStatus('syncing','Pulling…');
   try{
+    // If no gistId saved locally, search existing gists for the Life OS file
+    if(!gistId){
+      const listR = await fetch('https://api.github.com/gists?per_page=100',{headers:{'Authorization':'token '+token}});
+      if(listR.status===401){ _handleExpiredToken(); return; }
+      if(listR.ok){
+        const gists = await listR.json();
+        const match = gists.find(g=>g.files&&g.files[GIST_FILE]);
+        if(match){
+          gistId = match.id;
+          try{ localStorage.setItem(GIST_ID_KEY, gistId); }catch(e){}
+          showToast('☁️ Found existing Gist — pulling data…', 2000);
+        }
+      }
+    }
+    if(!gistId){ _setGistStatus('','Sync'); return; }
     const r = await fetch(`https://api.github.com/gists/${gistId}`,{headers:{'Authorization':'token '+token}});
     if(r.status === 401) { _handleExpiredToken(); return; }
     if(!r.ok) throw new Error('Pull failed');

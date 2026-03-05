@@ -433,19 +433,19 @@ body.timer-active .desktop-layout{padding-top:70px}
 .timer-pick-opt:active{background:var(--pm)}
 
 /* ── NOTIFICATION BELL ── */
-.notif-btn{background:none;border:none;cursor:pointer;font-size:1.1rem;padding:3px;opacity:.6;transition:opacity .15s;-webkit-tap-highlight-color:transparent;flex-shrink:0}
-.notif-btn.enabled{opacity:1;filter:drop-shadow(0 0 4px rgba(184,157,224,.6))}
-.notif-setup{background:var(--bgp);border:2px solid var(--lm);border-radius:var(--rlg);padding:12px 14px;margin-bottom:10px}
-.notif-row{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:6px}
-.notif-toggle{appearance:none;width:38px;height:22px;border-radius:var(--rf);background:var(--lm);cursor:pointer;position:relative;transition:background .2s;flex-shrink:0;border:none}
+
+
+
+
+
 .notif-toggle:checked{background:var(--la)}
 .notif-toggle::after{content:'';position:absolute;width:16px;height:16px;border-radius:50%;background:#fff;top:3px;left:3px;transition:left .2s;box-shadow:0 1px 4px rgba(0,0,0,.15)}
 .notif-toggle:checked::after{left:19px}
-.notif-list{display:flex;flex-direction:column;gap:5px;margin-top:8px}
-.notif-item{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:5px 0;border-bottom:1px solid var(--ll)}
+
+
 .notif-item:last-child{border-bottom:none}
-.notif-item-label{font-size:.72rem;font-weight:700;color:var(--td)}
-.notif-item-time{font-size:.58rem;color:var(--tm)}
+
+
 /* ── GEMINI ELEMENTS ── */
 .sheet-btn-gemini-native{background:var(--sl);color:var(--sa);border-color:var(--sm)}
 .gemini-panel{display:none;margin-top:10px;background:var(--sl);border:2px solid var(--sm);border-radius:var(--rlg);overflow:hidden}
@@ -687,8 +687,8 @@ body.timer-active .desktop-layout{padding-top:70px}
   /* api settings in desktop stats panel */
   .api-settings-panel{max-width:100%}
   /* notif bell visible on desktop */
-  .notif-btn{opacity:.55}
-  .notif-btn.enabled{opacity:1}
+  
+  
 }
 
 /* ── TABLET (768–1023px) ── */
@@ -913,7 +913,7 @@ body.timer-active .desktop-layout{padding-top:70px}
         <button class="api-save-btn" onclick="saveGeminiKey()">Save Key</button>
         <span class="api-status-lbl" id="geminiKeyStatus"></span>
       </div>
-      <p class="api-note" style="margin-top:5px">Get a free key at <strong>aistudio.google.com</strong> → Create API Key. Stored only in your browser's localStorage — never leaves your device except to Google's API.</p>
+      <p class="api-note" style="margin-top:5px">Get a free key at <strong>aistudio.google.com</strong> → Create API Key. Uses <strong>gemini-3.1-flash-lite-preview</strong> — fastest Gemini 3 model, free tier. Stored only in your browser — never leaves your device except to Google's API.</p>
     </div>
     <div style="border-top:1.5px solid var(--lm);padding-top:9px">
       <p class="lbl" style="color:var(--la);margin-bottom:3px">🤖 Claude API (optional)</p>
@@ -2451,7 +2451,6 @@ function _selCatBtn(btn, rowId){
 }
 
 function loadMemories(){try{return JSON.parse(localStorage.getItem('timber_memories'))||[];}catch(e){return[];}}
-function saveMemories(m){try{localStorage.setItem('timber_memories',JSON.stringify(m));}catch(e){}}
 
 // Format a date for display
 function fmtMemDate(dtStr){
@@ -2692,87 +2691,6 @@ function _fireTimerDone(label, emoji){
   showToast(`${emoji} ${label} done! ✓`, 6000);
 }
 
-// ─── NOTIFICATION SYSTEM ──────────────────────────────────────────────────────
-const NOTIF_EVENTS = [
-  {key:'nap1end',  label:'Wake Timber — Nap 1 ends',    time:'11:20', emoji:'🐾'},
-  {key:'lunch',    label:'Lunch break + Iron',           time:'13:25', emoji:'🍽️'},
-  {key:'nap2end',  label:'Wake Timber — Nap 2 ends',    time:'16:00', emoji:'🐾'},
-  {key:'walk',     label:'Evening Stroller Walk',        time:'17:15', emoji:'🦮'},
-  {key:'nap3end',  label:'Wake Timber — Nap 3 ends',    time:'18:45', emoji:'🐾'},
-  {key:'dinner',   label:'Dinner + Meds time',           time:'19:30', emoji:'📺'},
-  {key:'shower',   label:'Shower — bare skin for RLT',  time:'20:30', emoji:'🚿'},
-  {key:'rlt',      label:'RLT session — 9:00 PM',       time:'21:00', emoji:'🔴'},
-  {key:'winddown', label:'Timber Wind-Down time',        time:'22:15', emoji:'🐕'},
-  {key:'bedtime',  label:"Timber's Bedtime",             time:'22:35', emoji:'🏠'},
-];
-
-let notifEnabled = false;
-let _notifTimers = [];
-
-window.toggleNotifications = async () => {
-  if(!('Notification' in window)){
-    showToast('Notifications not supported here', 3000); return;
-  }
-  if(notifEnabled){
-    notifEnabled = false;
-    _notifTimers.forEach(t=>clearTimeout(t)); _notifTimers = [];
-    document.getElementById('notifBell')?.classList.remove('enabled');
-    try{ localStorage.setItem('jlos_notif','off'); }catch(e){}
-    showToast('🔕 Notifications off', 2000); return;
-  }
-  const perm = await Notification.requestPermission();
-  if(perm !== 'granted'){
-    showToast('⚠️ Allow notifications in your browser to enable this', 3500); return;
-  }
-  notifEnabled = true;
-  document.getElementById('notifBell')?.classList.add('enabled');
-  _scheduleAllNotifs();
-  try{ localStorage.setItem('jlos_notif','on'); }catch(e){}
-  showToast('🔔 Notifications on — key Timber transitions will ping you', 3200);
-};
-
-function _scheduleAllNotifs(){
-  _notifTimers.forEach(t=>clearTimeout(t)); _notifTimers = [];
-  const now = new Date();
-  const midnight = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-  NOTIF_EVENTS.forEach(ev=>{
-    const [hh,mm] = ev.time.split(':').map(Number);
-    let fireMs = midnight.getTime() + (hh*60+mm)*60000;
-    if(isShifted) fireMs += offsetMin * 60000;
-    const msUntil = fireMs - now.getTime();
-    if(msUntil > 0){
-      const tid = setTimeout(()=>{
-        if(!notifEnabled) return;
-        try{
-          new Notification(`${ev.emoji} ${ev.label}`, {
-            body: 'Life OS reminder',
-            icon: ICON_URL,
-            tag: ev.key,
-            requireInteraction: false
-          });
-        }catch(e){}
-        if(navigator.vibrate) navigator.vibrate(200);
-      }, msUntil);
-      _notifTimers.push(tid);
-    }
-  });
-}
-
-// Re-schedule notifs when shift changes
-const _baseApplyShift = window.applyShift;
-window.applyShift = function(){ _baseApplyShift(); if(notifEnabled) _scheduleAllNotifs(); };
-const _baseUndoShift = window.undoShift;
-window.undoShift = function(){ _baseUndoShift(); if(notifEnabled) _scheduleAllNotifs(); };
-
-function initNotifications(){
-  try{
-    if(localStorage.getItem('jlos_notif')==='on' && Notification.permission==='granted'){
-      notifEnabled = true;
-      document.getElementById('notifBell')?.classList.add('enabled');
-      _scheduleAllNotifs();
-    }
-  }catch(e){}
-}
 
 // ─── ASK CLAUDE ───────────────────────────────────────────────────────────────
 window.toggleClaudePanel = () => {
@@ -3190,20 +3108,18 @@ window.replanWithGemini = async () => {
 
   try{
     // Dynamic import of Google GenAI SDK
-    const { GoogleGenerativeAI } = await import('https://esm.run/@google/generative-ai');
-    const genAI = new GoogleGenerativeAI(key);
+    const { GoogleGenAI } = await import('https://esm.run/@google/genai');
+    const ai = new GoogleGenAI({ apiKey: key });
 
-    // FIX: Use stable model string and wrap system instruction properly
-    const model = genAI.getGenerativeModel({
-      model: 'gemini-1.5-flash',
-      systemInstruction: {
-        role: 'system',
-        parts: [{ text: systemInstruction }]
+    const result = await ai.models.generateContent({
+      model: 'gemini-3.1-flash-lite-preview',
+      contents: userPrompt,
+      config: {
+        systemInstruction: systemInstruction,
+        thinkingConfig: { thinkingLevel: 'minimal' }
       }
     });
-
-    const result = await model.generateContent(userPrompt);
-    const text = result.response.text();
+    const text = result.text;
     respEl.className = 'gemini-response';
     respEl.textContent = text;
   } catch(err){
@@ -3356,11 +3272,17 @@ window.runCapacityScaler = async () => {
   const prompt = `Battery: ${todayEntry?emojis[todayEntry.level]:'unknown'}\nLast 3 days: ${log.slice(-3).map(e=>`${emojis[e.level]||'?'}`).join(', ')}\n\nRemaining tasks:\n${remaining}\n\nSuggest 3 specific things to shorten or skip to protect my emotional bandwidth for my partner, Mom, and Sister. Be warm and brief.`;
   if(!key){ ids.forEach(id=>{const el=document.getElementById(id);if(el)el.textContent='⚙️ Add your Gemini key in Stats → ⚙️';}); return; }
   try{
-    const {GoogleGenerativeAI} = await import('https://esm.run/@google/generative-ai');
-    const genAI = new GoogleGenerativeAI(key);
-    const model = genAI.getGenerativeModel({model:'gemini-1.5-flash',systemInstruction:{role:'system',parts:[{text:'You are a compassionate coach for a scientist with ADHD and hypermobility. Protect her emotional bandwidth for the people she loves. Be warm, never clinical. Max 3 bullets.'}]}});
-    const result = await model.generateContent(prompt);
-    ids.forEach(id=>{const el=document.getElementById(id);if(el){el.textContent=result.response.text();el.className='battery-compress-result visible';}});
+    const {GoogleGenAI} = await import('https://esm.run/@google/genai');
+    const ai = new GoogleGenAI({ apiKey: key });
+    const result = await ai.models.generateContent({
+      model: 'gemini-3.1-flash-lite-preview',
+      contents: prompt,
+      config: {
+        systemInstruction: 'You are a compassionate coach for a scientist with ADHD and hypermobility. Protect her emotional bandwidth for the people she loves. Be warm, never clinical. Max 3 bullets.',
+        thinkingConfig: { thinkingLevel: 'minimal' }
+      }
+    });
+    ids.forEach(id=>{const el=document.getElementById(id);if(el){el.textContent=result.text;el.className='battery-compress-result visible';}});
   }catch(err){ ids.forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=`⚠️ ${err.message||'Error'}`;}); }
 };
 
@@ -3457,11 +3379,14 @@ window.labSynthesize = async () => {
   if(!key){ if(resultsEl) resultsEl.innerHTML='<div class="lab-chip work">⚙️ Add your Gemini key in Stats → ⚙️ to use Lab Synthesis.</div>'; if(btn)btn.disabled=false; return; }
   const sys=`Categorise notes into Puppy, Health, Connection, or Work. Return ONLY valid JSON array: [{"cat":"Puppy","items":["action"]},{"cat":"Health","items":["action"]}]. No markdown, no preamble.`;
   try{
-    const {GoogleGenerativeAI}=await import('https://esm.run/@google/generative-ai');
-    const genAI=new GoogleGenerativeAI(key);
-    const model=genAI.getGenerativeModel({model:'gemini-1.5-flash',systemInstruction:{role:'system',parts:[{text:sys}]}});
-    const result=await model.generateContent(`Categorise:\n${text}`);
-    const raw=result.response.text().replace(/```json|```/g,'').trim();
+    const {GoogleGenAI}=await import('https://esm.run/@google/genai');
+    const ai=new GoogleGenAI({ apiKey: key });
+    const result=await ai.models.generateContent({
+      model:'gemini-3.1-flash-lite-preview',
+      contents:`Categorise:\n${text}`,
+      config:{ systemInstruction:sys, thinkingConfig:{ thinkingLevel:'minimal' } }
+    });
+    const raw=result.text.replace(/```json|```/g,'').trim();
     const parsed=JSON.parse(raw);
     const catColor={Puppy:'puppy',Health:'health',Connection:'connection',Work:'work'};
     const catEmoji={Puppy:'🐾',Health:'💚',Connection:'💜',Work:'💻'};
@@ -3674,11 +3599,17 @@ Suggest exactly 3–5 specific schedule blocks to compress, skip, or move — to
 ]`;
 
   try{
-    const {GoogleGenerativeAI} = await import('https://esm.run/@google/generative-ai');
-    const genAI = new GoogleGenerativeAI(key);
-    const model = genAI.getGenerativeModel({model:'gemini-1.5-flash', systemInstruction:{role:'system',parts:[{text:'You are a compassionate ADHD coach. Return ONLY a valid JSON array as specified. No markdown, no explanation.'}]}});
-    const result = await model.generateContent(prompt);
-    const raw = result.response.text().replace(/```json|```/g,'').trim();
+    const {GoogleGenAI} = await import('https://esm.run/@google/genai');
+    const ai = new GoogleGenAI({ apiKey: key });
+    const result = await ai.models.generateContent({
+      model: 'gemini-3.1-flash-lite-preview',
+      contents: prompt,
+      config: {
+        systemInstruction: 'You are a compassionate ADHD coach. Return ONLY a valid JSON array as specified. No markdown, no explanation.',
+        thinkingConfig: { thinkingLevel: 'minimal' }
+      }
+    });
+    const raw = result.text.replace(/```json|```/g,'').trim();
     const suggestions = JSON.parse(raw);
     // Cache in shape data
     const shape = loadShape();
@@ -3929,7 +3860,6 @@ window.onload=()=>{
   renderPT();initCharts();renderAllMemories();
   initDatetimeInputs();
   loadScratch();
-  initNotifications();
   initGistSync();
   initClaudeInput();
   initGeminiKey();

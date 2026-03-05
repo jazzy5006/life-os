@@ -491,6 +491,18 @@ body.timer-active .desktop-layout{padding-top:70px}
   .desk-tab.active{background:var(--la);color:#fff}
   .desk-panel{display:none;flex-direction:column;gap:12px}
   .desk-panel.active{display:flex}
+  /* timer bar offset for desktop (no tab bar) */
+  .timer-bar{padding:10px 24px}
+  .timer-countdown{font-size:2rem}
+  body.timer-active .desktop-layout{padding-top:68px}
+  /* gist modal centered on desktop */
+  .gist-modal{align-items:center}
+  .gist-modal-box{border-radius:24px;max-width:480px;padding:24px 24px 28px}
+  /* api settings in desktop stats panel */
+  .api-settings-panel{max-width:100%}
+  /* notif bell visible on desktop */
+  .notif-btn{opacity:.55}
+  .notif-btn.enabled{opacity:1}
 }
 
 /* ── TABLET (768–1023px) ── */
@@ -502,7 +514,7 @@ body.timer-active .desktop-layout{padding-top:70px}
   .desk-pills{display:flex;gap:6px;margin-bottom:4px;flex-wrap:wrap}
   .desk-wn-wrap{flex:1;display:flex;justify-content:center;padding:0 12px}
   .desk-wn-wrap .whats-next{margin-bottom:0;max-width:340px;width:100%}
-  .desk-header-right{display:flex;align-items:center;gap:8px;flex-shrink:0}
+  .desk-header-right{display:flex;align-items:center;gap:8px;flex-shrink:0;flex-wrap:wrap}
   /* tablet: single column, right panel goes below */
   .desk-grid{display:flex;flex-direction:column;gap:14px}
   .desk-right{display:grid;grid-template-columns:1fr 1fr;gap:14px}
@@ -534,6 +546,13 @@ body.timer-active .desktop-layout{padding-top:70px}
   .desk-tab.active{background:var(--la);color:#fff}
   .desk-panel{display:none;flex-direction:column;gap:10px}
   .desk-panel.active{display:flex}
+  /* timer bar full width on tablet */
+  .timer-bar{padding:10px 18px}
+  .timer-countdown{font-size:1.8rem}
+  /* gist modal full bottom sheet on tablet */
+  .gist-modal-box{max-width:600px;border-radius:28px 28px 0 0}
+  /* api settings panel wider */
+  .api-settings-panel.open{max-width:100%}
 }
 .desktop-layout{display:none}
 </style>
@@ -573,7 +592,6 @@ body.timer-active .desktop-layout{padding-top:70px}
       <span class="gist-dot" id="gistDot"></span>
       <span class="gist-bar-txt" id="gistBarTxt">Sync</span>
     </div>
-    <button class="btn btn-ghost" style="font-size:.52rem;padding:6px 10px" onclick="resetDay()">☀️</button>
   </div>
 </nav>
 
@@ -632,6 +650,9 @@ body.timer-active .desktop-layout{padding-top:70px}
       <div class="pt2"><span class="lbl">Movement Progress</span><span class="pp" id="mPtxt">0%</span></div>
       <div class="ptr"><div class="pf" id="mPbar"></div></div>
       <div class="pm2"><span>Target: 1 Hour</span><span><span id="mDn">0</span>/<span id="mTn">0</span> Done</span></div>
+      <div style="text-align:right;margin-top:8px">
+        <button onclick="resetDay()" style="background:none;border:1.5px solid var(--lm);border-radius:var(--rf);padding:4px 12px;font-family:'Nunito',sans-serif;font-size:.55rem;font-weight:900;color:var(--tm);cursor:pointer;-webkit-tap-highlight-color:transparent">↺ Reset Today's PT</button>
+      </div>
     </div>
     <div id="mPtb"></div>
   </div>
@@ -837,8 +858,12 @@ body.timer-active .desktop-layout{padding-top:70px}
         <span class="de-days" id="dDeDays">--</span>
         <span class="de-lbl">days</span>
       </div>
+      <button class="notif-btn" id="deskNotifBell" onclick="toggleNotifications()" title="Schedule notifications">🔔</button>
+      <div class="gist-bar" id="deskGistBar" onclick="openGistModal()" title="Cloud sync — Timber memories">
+        <span class="gist-dot" id="deskGistDot"></span>
+        <span class="gist-bar-txt" id="deskGistBarTxt">Sync</span>
+      </div>
       <button class="api-gear-btn" onclick="deskSwitchPanel('stats');setTimeout(toggleDeskApiSettings,80)" title="AI API Settings">⚙️</button>
-      <button class="btn btn-ghost" onclick="resetDay()">☀️ Reset</button>
     </div>
   </header>
 
@@ -907,6 +932,9 @@ body.timer-active .desktop-layout{padding-top:70px}
               <div class="pt2"><span class="lbl">Movement Progress</span><span class="pp" id="dPtxt">0%</span></div>
               <div class="ptr"><div class="pf" id="dPbar"></div></div>
               <div class="pm2"><span>Target: 1 Hour</span><span><span id="dDn">0</span>/<span id="dTn">0</span> Done</span></div>
+              <div style="text-align:right;margin-top:8px">
+                <button onclick="resetDay()" style="background:none;border:1.5px solid var(--lm);border-radius:var(--rf);padding:4px 12px;font-family:'Nunito',sans-serif;font-size:.55rem;font-weight:900;color:var(--tm);cursor:pointer">↺ Reset Today's PT</button>
+              </div>
             </div>
             <div class="desk-pts" id="dPtb"></div>
           </div>
@@ -1068,13 +1096,17 @@ body.timer-active .desktop-layout{padding-top:70px}
   <div class="gist-modal-box">
     <div class="gist-modal-handle"></div>
     <h2 style="margin-bottom:10px">☁️ GitHub Gist Sync</h2>
-    <p class="gist-step">Your Timber memories sync to a private GitHub Gist — accessible from any device.<br><br>
+    <p class="gist-step">Your Timber memories sync to a private GitHub Gist — accessible from any device you connect.<br><br>
       <strong>Setup (2 min):</strong><br>
-      1. Go to <a href="https://github.com/settings/tokens/new" target="_blank">github.com/settings/tokens/new</a><br>
-      2. Name it "Life OS", check <strong>gist</strong> scope only, click Generate<br>
-      3. Copy the token and paste it below
+      1. Go to <a href="https://github.com/settings/tokens/new" target="_blank" rel="noopener">github.com/settings/tokens/new</a><br>
+      2. Name it "Life OS"<br>
+      3. Under <strong>Select scopes</strong>, check <strong>gist</strong> only — nothing else<br>
+      4. Click <strong>Generate token</strong>, copy it, paste below<br><br>
+      <strong>The gist scope only lets this token create/edit Gists.</strong> It cannot access your repos, profile, or any other GitHub data.
     </p>
     <input class="gist-token-input" id="gistTokenInput" type="password" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" autocomplete="off">
+    <!-- Expiry status — shown when token exists -->
+    <div id="gistExpiryStatus" style="display:none;font-size:.7rem;font-weight:700;color:var(--td);padding:8px 11px;border-radius:10px;border:1.5px solid var(--lm);margin-bottom:10px;line-height:1.55"></div>
     <p style="font-size:.62rem;color:var(--tm);margin-bottom:12px">Token stays on your device only. Never sent anywhere except GitHub's API.</p>
     <div id="gistStatusMsg" style="font-size:.7rem;color:var(--ma);margin-bottom:10px;display:none"></div>
     <div class="gist-modal-actions">
@@ -2278,6 +2310,7 @@ function initClaudeInput(){
 // Syncs timber_memories to/from a private GitHub Gist
 const GIST_TOKEN_KEY = 'jlos_gist_token';
 const GIST_ID_KEY    = 'jlos_gist_id';
+const GIST_SAVED_DATE_KEY = 'jlos_gist_saved_date';
 const GIST_FILE      = 'lifeos-timber-memories.json';
 let _gistSyncing = false;
 
@@ -2285,10 +2318,40 @@ function _getGistToken(){ try{ return localStorage.getItem(GIST_TOKEN_KEY)||''; 
 function _getGistId()   { try{ return localStorage.getItem(GIST_ID_KEY)||''; }catch(e){ return ''; }}
 
 function _setGistStatus(state, txt){
-  const dot = document.getElementById('gistDot');
-  const bar = document.getElementById('gistBarTxt');
-  if(dot){ dot.className = 'gist-dot ' + state; }
-  if(bar){ bar.textContent = txt; }
+  // Update both mobile and desktop gist bars
+  ['gistDot','deskGistDot'].forEach(id=>{
+    const el = document.getElementById(id);
+    if(el) el.className = 'gist-dot' + (state ? ' '+state : '');
+  });
+  ['gistBarTxt','deskGistBarTxt'].forEach(id=>{
+    const el = document.getElementById(id);
+    if(el) el.textContent = txt;
+  });
+}
+
+// Token expiry helpers
+function _getTokenDaysLeft(){
+  try{
+    const saved = localStorage.getItem(GIST_SAVED_DATE_KEY);
+    if(!saved) return null;
+    const savedDate = new Date(saved);
+    const expiryDate = new Date(savedDate.getTime() + 90 * 24 * 60 * 60 * 1000);
+    const daysLeft = Math.ceil((expiryDate - new Date()) / (24 * 60 * 60 * 1000));
+    return daysLeft;
+  }catch(e){ return null; }
+}
+
+function _handleExpiredToken(){
+  _setGistStatus('error','Token expired');
+  // Show persistent warning toast
+  showToast('🔑 GitHub token expired — tap Sync to renew', 8000);
+  // Also update the gist bar text to be more descriptive
+  ['gistBarTxt','deskGistBarTxt'].forEach(id=>{
+    const el = document.getElementById(id);
+    if(el) el.textContent = 'Renew';
+  });
+  // Flag in localStorage so modal shows warning on next open
+  try{ localStorage.setItem('jlos_gist_expired','1'); }catch(e){}
 }
 
 window.openGistModal = () => {
@@ -2297,6 +2360,36 @@ window.openGistModal = () => {
   if(inp && token) inp.value = token;
   const disc = document.getElementById('gistDisconnectWrap');
   if(disc) disc.style.display = token ? 'block' : 'none';
+
+  // Show expiry status in modal
+  const expiryEl = document.getElementById('gistExpiryStatus');
+  if(expiryEl){
+    const isExpired = localStorage.getItem('jlos_gist_expired') === '1';
+    const daysLeft = _getTokenDaysLeft();
+    if(isExpired || daysLeft !== null && daysLeft <= 0){
+      expiryEl.style.display = 'block';
+      expiryEl.style.background = 'var(--pl)';
+      expiryEl.style.borderColor = 'var(--pm)';
+      expiryEl.innerHTML = `⚠️ <strong>Token expired.</strong> Generate a new one below and paste it in.<br>
+        <a href="https://github.com/settings/tokens/new" target="_blank" rel="noopener" style="color:var(--la)">→ github.com/settings/tokens/new</a>`;
+    } else if(daysLeft !== null && daysLeft <= 14){
+      expiryEl.style.display = 'block';
+      expiryEl.style.background = 'var(--gl)';
+      expiryEl.style.borderColor = 'var(--gm)';
+      expiryEl.innerHTML = `⏰ <strong>Token expires in ${daysLeft} day${daysLeft===1?'':'s'}.</strong> Consider renewing soon.<br>
+        <a href="https://github.com/settings/tokens/new" target="_blank" rel="noopener" style="color:var(--la)">→ Generate a new token</a>`;
+    } else if(daysLeft !== null){
+      expiryEl.style.display = 'block';
+      expiryEl.style.background = 'var(--ml)';
+      expiryEl.style.borderColor = 'var(--mm)';
+      expiryEl.innerHTML = `✓ Token valid — <strong>${daysLeft} days remaining</strong>`;
+    } else {
+      expiryEl.style.display = token ? 'block' : 'none';
+      expiryEl.style.background = 'var(--bgp)';
+      expiryEl.style.borderColor = 'var(--lm)';
+      expiryEl.innerHTML = token ? '✓ Token connected' : '';
+    }
+  }
   document.getElementById('gistModal').classList.add('open');
 };
 window.closeGistModal = () => {
@@ -2315,10 +2408,13 @@ window.saveGistToken = async () => {
   const msg = document.getElementById('gistStatusMsg');
   if(msg){ msg.style.display='block'; msg.textContent='Testing token…'; msg.style.color='var(--tm)'; }
   try{
-    // Verify token works
     const r = await fetch('https://api.github.com/user',{headers:{'Authorization':'token '+token}});
-    if(!r.ok) throw new Error('Invalid token');
-    try{ localStorage.setItem(GIST_TOKEN_KEY, token); }catch(e){}
+    if(!r.ok) throw new Error('Invalid token — check you copied it fully');
+    try{
+      localStorage.setItem(GIST_TOKEN_KEY, token);
+      localStorage.setItem(GIST_SAVED_DATE_KEY, new Date().toISOString());
+      localStorage.removeItem('jlos_gist_expired');
+    }catch(e){}
     if(msg){ msg.textContent='✓ Connected! Syncing…'; msg.style.color='var(--ma)'; }
     closeGistModal();
     await gistPush();
@@ -2346,6 +2442,7 @@ async function gistPush(){
       body = { files:{ [GIST_FILE]:{content} } };
     }
     const r = await fetch(url,{ method, headers:{'Authorization':'token '+token,'Content-Type':'application/json'}, body:JSON.stringify(body) });
+    if(r.status === 401) { _handleExpiredToken(); return; }
     if(!r.ok) throw new Error('Push failed: '+r.status);
     const data = await r.json();
     if(!gistId) try{ localStorage.setItem(GIST_ID_KEY, data.id); }catch(e){}
@@ -2363,6 +2460,7 @@ async function gistPull(){
   _setGistStatus('syncing','Pulling…');
   try{
     const r = await fetch(`https://api.github.com/gists/${gistId}`,{headers:{'Authorization':'token '+token}});
+    if(r.status === 401) { _handleExpiredToken(); return; }
     if(!r.ok) throw new Error('Pull failed');
     const data = await r.json();
     const raw = data.files?.[GIST_FILE]?.content;
@@ -2392,8 +2490,19 @@ function saveMemories(m){
 
 function initGistSync(){
   const token = _getGistToken();
-  if(token){ _setGistStatus('synced','Synced ✓'); gistPull(); }
-  else { _setGistStatus('','Sync'); }
+  if(token){
+    _setGistStatus('synced','Synced ✓');
+    gistPull();
+    // Proactive expiry warning on load
+    const daysLeft = _getTokenDaysLeft();
+    if(daysLeft !== null && daysLeft <= 14 && daysLeft > 0){
+      setTimeout(()=>{
+        showToast(`⏰ GitHub token expires in ${daysLeft} days — tap Sync to renew`, 6000);
+      }, 3000); // delay so it doesn't fire before the app loads
+    }
+  } else {
+    _setGistStatus('','Sync');
+  }
 }
 
 // ─── GEMINI API ENGINE ────────────────────────────────────────────────────────

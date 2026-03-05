@@ -214,6 +214,7 @@ select{appearance:none;background:transparent;border:none;outline:none;font-fami
 .de-phrase{background:var(--bgc);border-radius:10px;padding:8px 11px;display:flex;align-items:center;gap:8px}
 .de-phrase-de{font-size:.82rem;font-weight:800;color:var(--td)}
 .de-phrase-en{font-size:.7rem;color:var(--tm);font-style:italic}
+.de-phrase-pr{font-size:.66rem;color:var(--sa);font-weight:700;margin-top:1px;letter-spacing:.01em}
 .de-phrase-btn{background:none;border:none;cursor:pointer;font-size:.9rem;padding:2px;flex-shrink:0}
 .wanderlog-btn{display:flex;align-items:center;justify-content:center;gap:6px;background:var(--ga);color:#fff;border:none;border-radius:var(--rf);padding:8px 16px;font-family:'Nunito',sans-serif;font-size:.6rem;font-weight:900;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;text-decoration:none;transition:transform .2s}
 .wanderlog-btn:active{transform:scale(.95)}
@@ -680,6 +681,7 @@ body.timer-active .desktop-layout{padding-top:70px}
         <div style="flex:1">
           <div class="de-phrase-de" id="dePhraseDE">Wo ist die nächste U-Bahn?</div>
           <div class="de-phrase-en" id="dePhraseEN">Where is the nearest subway?</div>
+          <div class="de-phrase-pr" id="dePhrasePR">voh ist dee NEKH-steh oo-BAHN?</div>
         </div>
         <button class="de-phrase-btn" onclick="nextPhrase()" title="Next phrase">🔀</button>
       </div>
@@ -835,6 +837,7 @@ body.timer-active .desktop-layout{padding-top:70px}
         <span class="de-days" id="dDeDays">--</span>
         <span class="de-lbl">days</span>
       </div>
+      <button class="api-gear-btn" onclick="deskSwitchPanel('stats');setTimeout(toggleDeskApiSettings,80)" title="AI API Settings">⚙️</button>
       <button class="btn btn-ghost" onclick="resetDay()">☀️ Reset</button>
     </div>
   </header>
@@ -912,6 +915,22 @@ body.timer-active .desktop-layout{padding-top:70px}
 
       <!-- Stats panel -->
       <div class="desk-panel" id="dpanel-stats">
+        <!-- Desktop API Settings (toggled by gear in header) -->
+        <div class="api-settings-panel" id="deskApiSettingsPanel">
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+            <h3 style="font-size:.82rem">⚙️ AI Integration Keys</h3>
+            <button onclick="toggleDeskApiSettings()" style="background:none;border:none;cursor:pointer;color:var(--tm);font-size:.9rem;padding:2px">✕</button>
+          </div>
+          <div>
+            <p class="lbl" style="color:var(--sa);margin-bottom:5px">🔵 Google Gemini API Key</p>
+            <input class="api-key-input" id="deskGeminiKeyInput" type="password" placeholder="AIzaSy…" autocomplete="off">
+            <div class="api-save-row" style="margin-top:6px">
+              <button class="api-save-btn" onclick="saveDeskGeminiKey()">Save Key</button>
+              <span class="api-status-lbl" id="deskGeminiKeyStatus"></span>
+            </div>
+            <p class="api-note" style="margin-top:5px">Get a free key at <strong>aistudio.google.com</strong>. Stored only in your browser's localStorage.</p>
+          </div>
+        </div>
         <div class="de-module">
           <div class="de-header">
             <div>
@@ -929,6 +948,7 @@ body.timer-active .desktop-layout{padding-top:70px}
             <div style="flex:1">
               <div class="de-phrase-de" id="dDePhraseDE">Wo ist die nächste U-Bahn?</div>
               <div class="de-phrase-en" id="dDePhraseEN">Where is the nearest subway?</div>
+              <div class="de-phrase-pr" id="dDePhrasePR">voh ist dee NEKH-steh oo-BAHN?</div>
             </div>
             <button class="de-phrase-btn" onclick="nextPhrase()" title="Next phrase">🔀</button>
           </div>
@@ -1075,18 +1095,18 @@ body.timer-active .desktop-layout{padding-top:70px}
 const GERMANY_DATE = new Date('2026-03-30T06:00:00');
 
 const DE_PHRASES = [
-  {de:'Wo ist die nächste U-Bahn?',        en:'Where is the nearest subway?'},
-  {de:'Ich hätte gerne ein Wasser, bitte.', en:'I would like a water, please.'},
-  {de:'Wie viel kostet das?',              en:'How much does that cost?'},
-  {de:'Entschuldigung, ich spreche kein Deutsch.',en:'Excuse me, I don\'t speak German.'},
-  {de:'Können Sie mir helfen?',            en:'Can you help me?'},
-  {de:'Wo ist das nächste WC?',            en:'Where is the nearest restroom?'},
-  {de:'Ich bin allergisch gegen…',         en:'I am allergic to…'},
-  {de:'Einmal hin und zurück, bitte.',     en:'One return ticket, please.'},
-  {de:'Sprechen Sie Englisch?',            en:'Do you speak English?'},
-  {de:'Das ist sehr schön!',               en:'That is very beautiful!'},
-  {de:'Wo ist der Bahnhof?',               en:'Where is the train station?'},
-  {de:'Einen Tisch für zwei, bitte.',      en:'A table for two, please.'},
+  {de:'Wo ist die nächste U-Bahn?',        en:'Where is the nearest subway?',         pr:'voh ist dee NEKH-steh oo-BAHN?'},
+  {de:'Ich hätte gerne ein Wasser, bitte.', en:'I would like a water, please.',         pr:'ikh HET-teh GAIR-neh ayn VAS-ser, BIT-teh'},
+  {de:'Wie viel kostet das?',              en:'How much does that cost?',               pr:'vee feel KOS-tet das?'},
+  {de:'Entschuldigung, ich spreche kein Deutsch.',en:'Excuse me, I don\'t speak German.',pr:'ent-SHOOL-di-goong, ikh SHPREKH-eh kyne doytch'},
+  {de:'Können Sie mir helfen?',            en:'Can you help me?',                       pr:'KER-nen zee meer HEL-fen?'},
+  {de:'Wo ist das nächste WC?',            en:'Where is the nearest restroom?',         pr:'voh ist das NEKH-steh veh-TSAY?'},
+  {de:'Ich bin allergisch gegen…',         en:'I am allergic to…',                      pr:'ikh bin al-LAIR-gish GAY-gen'},
+  {de:'Einmal hin und zurück, bitte.',     en:'One return ticket, please.',             pr:'AYN-mal hin oont tsoo-RYOOK, BIT-teh'},
+  {de:'Sprechen Sie Englisch?',            en:'Do you speak English?',                  pr:'SHPREKH-en zee ENG-lish?'},
+  {de:'Das ist sehr schön!',               en:'That is very beautiful!',                pr:'das ist zair SHERN!'},
+  {de:'Wo ist der Bahnhof?',               en:'Where is the train station?',            pr:'voh ist dair BAHN-hof?'},
+  {de:'Einen Tisch für zwei, bitte.',      en:'A table for two, please.',               pr:'AYN-en tish fyoor tsvay, BIT-teh'},
 ];
 let phraseIdx = Math.floor(Math.random() * DE_PHRASES.length);
 
@@ -1362,6 +1382,7 @@ window.nextPhrase=()=>{
   const p=DE_PHRASES[phraseIdx];
   ['dePhraseDE','dDePhraseDE'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=p.de;});
   ['dePhraseEN','dDePhraseEN'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=p.en;});
+  ['dePhrasePR','dDePhrasePR'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=p.pr;});
 };
 
 // ─── RLT DAY AWARENESS ────────────────────────────────────────────────────────
@@ -2458,13 +2479,19 @@ window.replanWithGemini = async () => {
     `Be concise, warm, and practical. Use bullet points. Max 200 words.`;
 
   try{
-    // Dynamic import of Google GenAI SDK via ESM
+    // Dynamic import of Google GenAI SDK
     const { GoogleGenerativeAI } = await import('https://esm.run/@google/generative-ai');
     const genAI = new GoogleGenerativeAI(key);
+
+    // FIX: Use stable model string and wrap system instruction properly
     const model = genAI.getGenerativeModel({
-      model: 'gemini-2.0-flash',
-      systemInstruction
+      model: 'gemini-1.5-flash',
+      systemInstruction: {
+        role: 'system',
+        parts: [{ text: systemInstruction }]
+      }
     });
+
     const result = await model.generateContent(userPrompt);
     const text = result.response.text();
     respEl.className = 'gemini-response';
@@ -2474,16 +2501,54 @@ window.replanWithGemini = async () => {
     const msg = err.message || String(err);
     if(msg.includes('API_KEY') || msg.includes('400') || msg.includes('403')){
       respEl.textContent = '⚠️ Invalid API key. Go to Stats → ⚙️ and re-enter your key from aistudio.google.com';
+    } else if(msg.includes('429')){
+      respEl.textContent = '⚠️ Rate limit hit (429). Visit Google AI Studio and click "Set up billing" to verify your identity — you can stay on the free tier, it just unlocks the quota.';
     } else {
       respEl.textContent = `⚠️ Gemini error: ${msg}\n\nTry the clipboard prompt instead.`;
     }
   }
 };
 
+window.toggleDeskApiSettings = () => {
+  const panel = document.getElementById('deskApiSettingsPanel');
+  if(!panel) return;
+  panel.classList.toggle('open');
+  if(panel.classList.contains('open')){
+    const key = getGeminiKey();
+    const inp = document.getElementById('deskGeminiKeyInput');
+    if(inp && key) inp.value = key;
+    const st = document.getElementById('deskGeminiKeyStatus');
+    if(st) st.textContent = key ? '✓ Key saved' : '';
+    setTimeout(()=>panel.scrollIntoView({behavior:'smooth',block:'start'}), 80);
+  }
+};
+
+window.saveDeskGeminiKey = () => {
+  const val = document.getElementById('deskGeminiKeyInput')?.value.trim();
+  if(!val){ showToast('Paste your API key first', 2000); return; }
+  try{ localStorage.setItem(GEMINI_KEY_STORAGE, val); }catch(e){}
+  // sync to mobile panel too
+  const mInp = document.getElementById('geminiKeyInput');
+  if(mInp) mInp.value = val;
+  const st = document.getElementById('deskGeminiKeyStatus');
+  if(st) st.textContent = '✓ Saved';
+  const mSt = document.getElementById('geminiKeyStatus');
+  if(mSt) mSt.textContent = '✓ Key saved';
+  showToast('🔵 Gemini key saved — ready to use!', 2500);
+};
+
 function initGeminiKey(){
   const key = getGeminiKey();
-  const st = document.getElementById('geminiKeyStatus');
-  if(key && st) st.textContent = '✓ Key saved';
+  if(!key) return;
+  // Pre-fill both panels
+  const mInp = document.getElementById('geminiKeyInput');
+  if(mInp) mInp.value = key;
+  const dInp = document.getElementById('deskGeminiKeyInput');
+  if(dInp) dInp.value = key;
+  const mSt = document.getElementById('geminiKeyStatus');
+  if(mSt) mSt.textContent = '✓ Key saved';
+  const dSt = document.getElementById('deskGeminiKeyStatus');
+  if(dSt) dSt.textContent = '✓ Key saved';
 }
 function initCharts(){
   Chart.defaults.font.family="'Nunito',sans-serif";Chart.defaults.font.weight="bold";Chart.defaults.color="#a396b4";

@@ -4,46 +4,56 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Jasmine's Life OS ✿</title>
-
-<!-- PWA: fullscreen + splash screen on Android -->
 <meta name="theme-color" content="#f7f2fb">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Life OS">
 <link rel="manifest" id="pwaManifest">
-
-<!-- Kawaii pastel flower icon (SVG → data URI, generated inline) -->
 <link rel="icon" id="faviconLink" type="image/svg+xml">
 <link rel="apple-touch-icon" id="appleIconLink">
-
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
+/* ── TOKENS ── */
 :root{
   --bg:#fdf8f4;--bgc:#fff;--bgp:#f7f2fb;--td:#4a4060;--tb:#6b5f7a;--tm:#a396b4;
   --ll:#f0ebf8;--lm:#ddd0f0;--la:#b89de0;
   --ml:#edfaf3;--mm:#b8f0d2;--ma:#5dd9a0;
   --pl:#fff4ee;--pm:#ffd8c8;--pa:#f79a7a;
   --sl:#eef6ff;--sm:#c2deff;--sa:#7bb8f5;
+  --gl:#fff8e8;--gm:#ffe8a0;--ga:#d4a800;
   --rmd:16px;--rlg:22px;--rxl:32px;--rf:999px;
   --nav-h:60px;--tab-h:56px;
+  --col-r:360px;/* right panel width */
 }
-body.night-mode{
+@media(prefers-color-scheme:dark){:root{
   --bg:#2f2b36;--bgc:#393441;--bgp:#332f3c;
   --td:#e2dceb;--tb:#b6aec4;--tm:#8c839c;
   --ll:#483f55;--lm:#5e546e;--la:#9c85c2;
   --ml:#2d4239;--mm:#3a614e;--ma:#4ea37d;
   --pl:#47342d;--pm:#6e4536;--pa:#ba6a50;
   --sl:#2c3a4a;--sm:#3b5673;--sa:#5e94cc;
+  --gl:#3a3220;--gm:#6b5700;--ga:#f0c800;
+}}
+/* manual override still works */
+body.force-dark{
+  --bg:#2f2b36;--bgc:#393441;--bgp:#332f3c;
+  --td:#e2dceb;--tb:#b6aec4;--tm:#8c839c;
+  --ll:#483f55;--lm:#5e546e;--la:#9c85c2;
+  --ml:#2d4239;--mm:#3a614e;--ma:#4ea37d;
+  --pl:#47342d;--pm:#6e4536;--pa:#ba6a50;
+  --sl:#2c3a4a;--sm:#3b5673;--sa:#5e94cc;
+  --gl:#3a3220;--gm:#6b5700;--ga:#f0c800;
 }
 body,.card,.top-nav,.tab-bar,.tc,.sc,.desk-sc,.desk-pt{
-  transition:background-color 1.5s ease,border-color 1.5s ease,color 1.5s ease;
+  transition:background-color .4s,border-color .4s,color .4s;
 }
+
+/* ── RESET & BASE ── */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
 body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--tb);min-height:100vh;overflow-x:hidden;padding-bottom:env(safe-area-inset-bottom)}
-.cute-tape{height:14px;width:100%;background:repeating-linear-gradient(45deg,var(--ll),var(--ll) 10px,var(--ml) 10px,var(--ml) 20px,var(--pl) 20px,var(--pl) 30px,var(--sl) 30px,var(--sl) 40px);border-bottom:2px solid var(--lm)}
 h1{font-size:1.6rem;font-weight:900;color:var(--td);letter-spacing:-.03em;line-height:1.1}
 h2{font-size:1.1rem;font-weight:800;color:var(--td)}
 h3{font-size:.9rem;font-weight:800;color:var(--td)}
@@ -51,6 +61,8 @@ h4{font-size:.83rem;font-weight:800;color:var(--td);line-height:1.3}
 p{font-size:.8rem;font-weight:600;color:var(--tb);line-height:1.6}
 .lbl{font-size:.56rem;font-weight:900;letter-spacing:.18em;text-transform:uppercase;color:var(--tm)}
 .card{background:var(--bgc);border-radius:var(--rlg);border:2px solid var(--lm);padding:16px}
+
+/* ── BUTTONS ── */
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:5px;padding:8px 16px;border-radius:var(--rf);border:2px solid transparent;font-family:'Nunito',sans-serif;font-size:.62rem;font-weight:900;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;transition:transform .2s cubic-bezier(.34,1.56,.64,1);white-space:nowrap;-webkit-tap-highlight-color:transparent}
 .btn:active{transform:scale(.94)}
 .btn-ghost{background:var(--bgc);border-color:var(--lm);color:var(--la)}
@@ -59,209 +71,527 @@ p{font-size:.8rem;font-weight:600;color:var(--tb);line-height:1.6}
 .btn-f.on.f-timber{background:var(--pa);border-color:var(--pa)}
 .btn-f.on.f-focus{background:var(--sa);border-color:var(--sa)}
 .btn-f.on.f-wellness{background:var(--la);border-color:var(--la)}
-.top-nav{position:sticky;top:0;z-index:100;background:var(--bgc);border-bottom:2px solid var(--lm);padding:12px 16px 10px;display:flex;align-items:center;justify-content:space-between}
+
+/* ── TAPE ── */
+.cute-tape{height:14px;width:100%;background:repeating-linear-gradient(45deg,var(--ll),var(--ll) 10px,var(--ml) 10px,var(--ml) 20px,var(--pl) 20px,var(--pl) 30px,var(--sl) 30px,var(--sl) 40px);border-bottom:2px solid var(--lm)}
+
+/* ── MOBILE NAV ── */
+.top-nav{position:sticky;top:0;z-index:100;background:var(--bgc);border-bottom:2px solid var(--lm);padding:10px 14px 8px;display:flex;align-items:center;justify-content:space-between;gap:8px}
 .nav-brand{display:flex;flex-direction:column;gap:1px}
-.nav-brand h1{font-size:1.2rem}
-.clkbadge{display:inline-flex;align-items:center;gap:5px;margin-top:2px}
-.clktime{font-size:.78rem;font-weight:900;color:var(--td)}
-.pills-row{display:flex;gap:6px;padding:10px 16px 0;overflow-x:auto;scrollbar-width:none}
+.nav-brand h1{font-size:1.1rem}
+.clkbadge{display:inline-flex;align-items:center;gap:5px;margin-top:1px}
+.clktime{font-size:.75rem;font-weight:900;color:var(--td)}
+.nav-actions{display:flex;align-items:center;gap:6px;flex-shrink:0}
+
+/* Germany mini-badge in nav */
+.de-badge{display:inline-flex;align-items:center;gap:4px;background:var(--gl);border:1.5px solid var(--gm);border-radius:var(--rf);padding:4px 9px;cursor:pointer;flex-shrink:0}
+.de-badge .de-days{font-size:.75rem;font-weight:900;color:var(--ga);line-height:1}
+.de-badge .de-lbl{font-size:.42rem;font-weight:900;letter-spacing:.12em;text-transform:uppercase;color:var(--ga)}
+
+.pills-row{display:flex;gap:6px;padding:8px 14px 0;overflow-x:auto;scrollbar-width:none}
 .pills-row::-webkit-scrollbar{display:none}
-.pill{display:inline-flex;align-items:center;padding:3px 10px;border-radius:var(--rf);font-size:.54rem;font-weight:900;letter-spacing:.1em;text-transform:uppercase;white-space:nowrap;flex-shrink:0}
+.pill{display:inline-flex;align-items:center;padding:3px 9px;border-radius:var(--rf);font-size:.52rem;font-weight:900;letter-spacing:.1em;text-transform:uppercase;white-space:nowrap;flex-shrink:0}
 .pla{background:var(--ll);color:var(--la);border:1.5px solid var(--lm)}
 .pmi{background:var(--ml);color:var(--ma);border:1.5px solid var(--mm)}
 .ppe{background:var(--pl);color:var(--pa);border:1.5px solid var(--pm)}
+
+/* ── TAB BAR ── */
 .tab-bar{display:flex;position:fixed;bottom:0;left:0;right:0;z-index:100;background:var(--bgc);border-top:2px solid var(--lm);padding-bottom:env(safe-area-inset-bottom)}
-.tab{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:8px 4px;cursor:pointer;gap:3px;border:none;background:none;font-family:'Nunito',sans-serif;-webkit-tap-highlight-color:transparent;transition:background .15s}
+.tab{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:7px 4px;cursor:pointer;gap:2px;border:none;background:none;font-family:'Nunito',sans-serif;-webkit-tap-highlight-color:transparent;transition:background .15s}
 .tab:active{background:var(--ll)}
-.tab-icon{font-size:1.2rem;line-height:1}
-.tab-label{font-size:.5rem;font-weight:900;letter-spacing:.1em;text-transform:uppercase;color:var(--tm);transition:color .2s}
+.tab-icon{font-size:1.15rem;line-height:1}
+.tab-label{font-size:.46rem;font-weight:900;letter-spacing:.1em;text-transform:uppercase;color:var(--tm);transition:color .2s}
 .tab.active .tab-label{color:var(--la)}
 .tab.active .tab-icon{filter:drop-shadow(0 0 4px rgba(184,157,224,.5))}
-.page{display:none;flex-direction:column;padding:14px 14px calc(var(--tab-h) + 14px + env(safe-area-inset-bottom));min-height:calc(100vh - var(--nav-h))}
+
+/* ── PAGES ── */
+.page{display:none;flex-direction:column;padding:12px 12px calc(var(--tab-h) + 12px + env(safe-area-inset-bottom));min-height:calc(100vh - var(--nav-h))}
 .page.active{display:flex}
-.fab-now{position:fixed;bottom:calc(var(--tab-h) + 16px);right:16px;z-index:90;background:var(--la);color:#fff;border:none;border-radius:var(--rf);padding:10px 18px;font-family:'Nunito',sans-serif;font-weight:900;font-size:.65rem;letter-spacing:.08em;text-transform:uppercase;box-shadow:0 6px 16px rgba(184,157,224,.4);cursor:pointer;transition:transform .2s;display:none;align-items:center;gap:6px}
+.filter-row{display:flex;gap:6px;margin-bottom:10px}
+
+/* FAB */
+.fab-now{position:fixed;bottom:calc(var(--tab-h) + 14px);right:14px;z-index:90;background:var(--la);color:#fff;border:none;border-radius:var(--rf);padding:9px 16px;font-family:'Nunito',sans-serif;font-weight:900;font-size:.62rem;letter-spacing:.08em;text-transform:uppercase;box-shadow:0 6px 16px rgba(184,157,224,.4);cursor:pointer;transition:transform .2s;display:none;align-items:center;gap:5px}
 .fab-now:active{transform:scale(.92)}
 
-/* What's Next */
-.whats-next{background:var(--bgp);border:2px solid var(--lm);border-radius:var(--rlg);padding:12px 14px;margin-bottom:14px;display:flex;align-items:center;gap:10px}
-.wn-icon{font-size:1.4rem;flex-shrink:0}
-.wn-text h4{font-size:.82rem;margin-bottom:2px}
-.wn-text p{font-size:.68rem;color:var(--tm);line-height:1.4}
+/* ── WHAT'S NEXT ── */
+.whats-next{background:var(--bgp);border:2px solid var(--lm);border-radius:var(--rlg);padding:10px 12px;margin-bottom:12px;display:flex;align-items:center;gap:9px}
+.wn-icon{font-size:1.3rem;flex-shrink:0}
+.wn-text h4{font-size:.8rem;margin-bottom:1px}
+.wn-text p{font-size:.65rem;color:var(--tm);line-height:1.4}
 
-.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
-.sc{padding:14px 10px;border-radius:var(--rlg);border:2px solid;display:flex;flex-direction:column;align-items:center;text-align:center;gap:3px;background:var(--bgc)}
-.sc.wide{grid-column:span 2}
-.si{font-size:1rem;margin-bottom:1px}
-.sv{font-size:.78rem;font-weight:800;color:var(--td)}
-.filter-row{display:flex;gap:7px;margin-bottom:12px}
-
-/* Timeline */
+/* ── TIMELINE ── */
 .tl-wrap{flex:1}
-.ti{display:flex;gap:11px;margin-bottom:14px;animation:fs .28s ease-out both}
+.ti{display:flex;gap:10px;margin-bottom:12px;animation:fs .28s ease-out both}
 @keyframes fs{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
-.tdc{display:flex;flex-direction:column;align-items:center;flex-shrink:0;width:34px}
-.tdot{width:34px;height:34px;border-radius:50%;background:var(--bgp);border:2px solid var(--lm);display:flex;align-items:center;justify-content:center;font-size:.85rem;flex-shrink:0;transition:transform .25s ease}
-.tln{width:2px;flex:1;border-left:2px dashed var(--lm);margin-top:3px}
-.tc{flex:1;background:var(--bgc);border-radius:var(--rmd);border:2px solid var(--lm);padding:11px 13px}
-.thd{display:flex;justify-content:space-between;align-items:flex-start;gap:4px;margin-bottom:6px;flex-wrap:wrap}
-.ttime{font-size:.56rem;font-weight:900;letter-spacing:.1em;text-transform:uppercase;color:var(--tm)}
-
-/* Steps — per-step category coloring */
-.steps{display:flex;flex-direction:column;gap:4px;margin-top:2px}
-.step{display:flex;gap:7px;align-items:flex-start;font-size:.75rem;font-weight:700;color:var(--tb);line-height:1.45;padding:4px 7px;border-radius:8px;transition:background .2s}
-.step.s-timber  {background:rgba(247,154,122,.1)}
-.step.s-focus   {background:rgba(123,184,245,.1)}
-.step.s-wellness{background:rgba(184,157,224,.1)}
-
-/* step number badge — colored per category */
-.snum{min-width:17px;height:17px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.54rem;font-weight:900;color:#fff;flex-shrink:0;margin-top:2px}
-.sn-timber  {background:var(--pa)}
-.sn-focus   {background:var(--sa)}
-.sn-wellness{background:var(--la)}
-
-/* tiny inline category pill shown in all-mode */
-.step-cat{display:inline-flex;align-items:center;font-size:.43rem;font-weight:900;letter-spacing:.12em;text-transform:uppercase;padding:1px 5px;border-radius:var(--rf);margin-left:5px;flex-shrink:0;white-space:nowrap;vertical-align:middle;line-height:1.8}
-.sc-timber  {background:var(--pm);color:var(--td)}
-.sc-focus   {background:var(--sm);color:var(--td)}
-.sc-wellness{background:var(--lm);color:var(--td)}
+.tdc{display:flex;flex-direction:column;align-items:center;flex-shrink:0;width:32px}
+.tdot{width:32px;height:32px;border-radius:50%;border:2px solid var(--lm);background:var(--bgp);display:flex;align-items:center;justify-content:center;font-size:.8rem;flex-shrink:0;transition:transform .25s ease}
+.tln{width:2px;flex:1;border-left:2px dashed var(--lm);margin-top:3px;min-height:12px}
+.tc{flex:1;background:var(--bgc);border-radius:var(--rmd);border:2px solid var(--lm);padding:10px 12px}
+.thd{display:flex;justify-content:space-between;align-items:flex-start;gap:4px;margin-bottom:5px;flex-wrap:wrap}
+.ttime{font-size:.52rem;font-weight:900;letter-spacing:.08em;color:var(--tm);white-space:nowrap;margin-top:2px}
 
 /* now highlight */
-.ti.now .tdot{transform:scale(1.12);border-width:3px;border-color:var(--la);box-shadow:0 0 0 3px rgba(184,157,224,.18)}
-.ti.now .tc{border-color:var(--la);box-shadow:0 0 0 4px var(--ll),0 8px 20px rgba(184,157,224,.15)}
-.nbadge{display:inline-flex;align-items:center;gap:3px;font-size:.5rem;font-weight:900;letter-spacing:.14em;text-transform:uppercase;padding:2px 8px;border-radius:var(--rf);margin-left:4px;flex-shrink:0;line-height:1.8;background:var(--lm);color:var(--td)}
-.ndot{width:5px;height:5px;border-radius:50%;background:var(--la);flex-shrink:0;animation:bl 1.4s ease-in-out infinite}
-@keyframes bl{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.25;transform:scale(1.8)}}
-.ti.past .tc{opacity:.45}.ti.past .tdot{opacity:.45}
+.ti.now .tdot{transform:scale(1.12);border-width:3px;border-color:var(--la);box-shadow:0 0 0 4px var(--ll)}
+.ti.now .tc{border-color:var(--la);box-shadow:0 0 0 3px var(--ll),0 8px 20px rgba(184,157,224,.15)}
+.ti.past .tdot{opacity:.5}
+.ti.past .tc{opacity:.65}
 
-/* PT Engine */
-.pt-header{background:var(--bgp);border-radius:var(--rlg);border:2px solid var(--lm);padding:16px;margin-bottom:14px;text-align:center}
-.pt-header h2{margin-bottom:4px}
-.pt-header p{font-size:.74rem;color:var(--tm);margin-bottom:12px}
-.dw2{display:inline-flex;align-items:center;gap:6px;background:var(--bgc);border:2px solid var(--lm);border-radius:var(--rf);padding:7px 14px}
-select{appearance:none;background:transparent;border:none;outline:none;font-family:'Nunito',sans-serif;font-size:.72rem;font-weight:900;color:var(--la);cursor:pointer;padding-right:18px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23b89de0' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 0 center;background-size:14px}
-.prog-card{background:var(--bgc);border-radius:var(--rlg);border:2px solid var(--lm);padding:15px 16px;margin-bottom:14px}
-.pt2{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:8px}
-.pp{font-size:1.8rem;font-weight:900;color:var(--ma);line-height:1}
+/* now badge */
+.nbadge{display:inline-flex;align-items:center;gap:3px;font-size:.48rem;font-weight:900;letter-spacing:.14em;text-transform:uppercase;padding:2px 7px;border-radius:var(--rf);margin-left:4px;background:var(--lm);color:var(--td)}
+.ndot{width:5px;height:5px;border-radius:50%;background:var(--la);animation:bl 1.4s ease-in-out infinite}
+@keyframes bl{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.25;transform:scale(1.8)}}
+
+/* ── STEPS ── */
+.steps{display:flex;flex-direction:column;gap:3px;margin-top:2px}
+.step{display:flex;gap:7px;align-items:flex-start;font-size:.74rem;font-weight:700;color:var(--tb);line-height:1.45;padding:3px 6px;border-radius:8px}
+.s-timber {background:rgba(247,154,122,.07)}
+.s-focus  {background:rgba(123,184,245,.07)}
+.s-wellness{background:rgba(184,157,224,.07)}
+.snum{min-width:16px;height:16px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.5rem;font-weight:900;color:#fff;flex-shrink:0;margin-top:2px}
+.sn-timber {background:var(--pa)}
+.sn-focus  {background:var(--sa)}
+.sn-wellness{background:var(--la)}
+.step-cat{display:inline-flex;align-items:center;font-size:.42rem;font-weight:900;letter-spacing:.12em;text-transform:uppercase;padding:1px 5px;border-radius:var(--rf);margin-left:4px;flex-shrink:0;white-space:nowrap;vertical-align:middle;line-height:1.8}
+.sc-timber {background:var(--pl);color:var(--pa)}
+.sc-focus  {background:var(--sl);color:var(--sa)}
+.sc-wellness{background:var(--ll);color:var(--la)}
+
+/* "why" note button */
+.note-btn{display:inline-flex;align-items:center;gap:3px;margin-left:5px;padding:2px 6px;border-radius:var(--rf);border:1.5px solid var(--lm);background:transparent;color:var(--tm);font-family:'Nunito',sans-serif;font-size:.46rem;font-weight:900;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;white-space:nowrap;flex-shrink:0;vertical-align:middle;-webkit-tap-highlight-color:transparent;transition:background .15s}
+.note-btn:hover,.note-btn.open{background:var(--lm);color:var(--td)}
+.note-btn .nb-arr{transition:transform .2s;display:inline-block}
+.note-btn.open .nb-arr{transform:rotate(180deg)}
+.note-panel{display:none;margin-top:5px;margin-left:23px;padding:6px 10px;background:var(--bgp);border-left:3px solid var(--lm);border-radius:0 8px 8px 0;font-size:.68rem;font-weight:600;color:var(--tm);line-height:1.55;font-style:italic}
+.note-panel.open{display:block}
+
+/* ── RLT day badge on blocks ── */
+.rlt-day-badge{display:inline-flex;align-items:center;gap:4px;background:var(--pl);border:1.5px solid var(--pm);border-radius:var(--rf);padding:2px 8px;font-size:.5rem;font-weight:900;letter-spacing:.1em;text-transform:uppercase;color:var(--pa);margin-left:6px;flex-shrink:0}
+
+/* ── STATS ── */
+.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:12px}
+.sc{padding:13px 9px;border-radius:var(--rlg);border:2px solid;display:flex;flex-direction:column;align-items:center;text-align:center;gap:3px;background:var(--bgc)}
+.sc.wide{grid-column:span 2}
+.si{font-size:.95rem;margin-bottom:1px}
+.sv{font-size:.75rem;font-weight:800;color:var(--td)}
+
+/* ── PT ── */
+.pt-header{background:var(--bgp);border-radius:var(--rlg);border:2px solid var(--lm);padding:14px;margin-bottom:12px;text-align:center}
+.dw2{display:inline-flex;align-items:center;gap:6px;background:var(--bgc);border:2px solid var(--lm);border-radius:var(--rf);padding:6px 13px}
+select{appearance:none;background:transparent;border:none;outline:none;font-family:'Nunito',sans-serif;font-size:.72rem;font-weight:900;color:var(--la);cursor:pointer;padding-right:16px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23b89de0' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 0 center;background-size:13px}
+.prog-card{background:var(--bgc);border-radius:var(--rlg);border:2px solid var(--lm);padding:13px 14px;margin-bottom:12px}
+.pt2{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:7px}
+.pp{font-size:1.7rem;font-weight:900;color:var(--ma);line-height:1}
 .ptr{height:9px;background:var(--ll);border-radius:var(--rf);border:1.5px solid var(--lm);overflow:hidden}
 .pf{height:100%;background:linear-gradient(90deg,var(--ma),#7ce8b5);border-radius:var(--rf);transition:width .6s cubic-bezier(.34,1.56,.64,1);width:0%}
-.pm2{display:flex;justify-content:space-between;margin-top:6px;font-size:.56rem;font-weight:900;letter-spacing:.12em;text-transform:uppercase;color:var(--tm)}
-.psl{font-size:.54rem;font-weight:900;letter-spacing:.2em;text-transform:uppercase;color:var(--la);padding-bottom:5px;margin-bottom:7px;border-bottom:2px solid var(--lm)}
-.pi{display:flex;align-items:center;gap:10px;background:var(--bgc);border-radius:var(--rmd);border:2px solid var(--lm);padding:10px 12px;margin-bottom:6px;transition:border-color .2s;animation:fs .3s ease-out both}
-.pi:active{background:var(--ll)}
-.pcb{appearance:none;width:20px;height:20px;min-width:20px;border:2px solid var(--lm);border-radius:50%;cursor:pointer;position:relative;transition:all .25s cubic-bezier(.34,1.56,.64,1);background:var(--bg)}
+.pm2{display:flex;justify-content:space-between;margin-top:5px;font-size:.54rem;font-weight:900;letter-spacing:.12em;text-transform:uppercase;color:var(--tm)}
+.pi{display:flex;align-items:center;gap:9px;background:var(--bgc);border-radius:var(--rmd);border:2px solid var(--lm);padding:9px 11px;margin-bottom:5px;transition:border-color .2s;animation:fs .3s ease-out both}
+.pcb{appearance:none;width:19px;height:19px;min-width:19px;border:2px solid var(--lm);border-radius:50%;cursor:pointer;position:relative;transition:all .25s cubic-bezier(.34,1.56,.64,1);background:var(--bg)}
 .pcb:checked{background:var(--mm);border-color:var(--ma);transform:scale(1.08)}
-.pcb:checked::after{content:'✓';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:.68rem;font-weight:900;color:#fff}
+.pcb:checked::after{content:'✓';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:.65rem;font-weight:900;color:#fff}
 .pl2{flex:1;cursor:pointer}
-.pn{font-size:.8rem;font-weight:800;color:var(--td);display:block}
-.pd{font-size:.58rem;font-weight:900;letter-spacing:.1em;text-transform:uppercase;color:var(--tm);margin-top:1px;display:block}
+.pn{font-size:.78rem;font-weight:800;color:var(--td);display:block}
+.pd{font-size:.56rem;font-weight:900;letter-spacing:.1em;text-transform:uppercase;color:var(--tm);margin-top:1px;display:block}
 .dn .pn{text-decoration:line-through;opacity:.35}
 .dn .pd{opacity:.3}
-.psb{margin-bottom:16px}
-.rc{text-align:center;padding:28px 16px;background:var(--bgc);border-radius:var(--rlg);border:2px dashed var(--lm)}
-.rc .ico{font-size:1.8rem;display:block;margin-bottom:8px}
+.psb{margin-bottom:14px}
+.psl{font-size:.52rem;font-weight:900;letter-spacing:.2em;text-transform:uppercase;color:var(--la);padding-bottom:5px;margin-bottom:7px;border-bottom:2px solid var(--lm)}
+.rc{text-align:center;padding:24px 14px;background:var(--bgc);border-radius:var(--rlg);border:2px dashed var(--lm)}
+.rc .ico{font-size:1.7rem;display:block;margin-bottom:7px}
 
-/* Collapsible */
+/* ── COLLAPSIBLE ── */
 .collapsible-body{transition:max-height .4s ease-out,opacity .3s ease;overflow:hidden;opacity:1}
-.collapsible-body.collapsed{max-height:0;opacity:0;pointer-events:none}
+.collapsible-body.collapsed{max-height:0!important;opacity:0;pointer-events:none}
 .collapse-icon{font-size:.8rem;color:var(--tm);transition:transform .3s ease}
 .collapse-icon.collapsed{transform:rotate(-90deg)}
 
-/* ── DESKTOP ── */
-@media(min-width:768px){
-  .tab-bar,.page,.fab-now,.top-nav,.pills-row{display:none !important}
-  .desktop-layout{display:flex !important;flex-direction:column;min-height:100vh;padding:24px 24px 32px}
+/* ── GERMANY MODULE ── */
+.de-module{background:var(--gl);border:2px solid var(--gm);border-radius:var(--rlg);padding:16px;display:flex;flex-direction:column;gap:10px}
+.de-header{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.de-countdown{display:flex;gap:8px}
+.de-unit{display:flex;flex-direction:column;align-items:center;background:var(--bgc);border-radius:10px;padding:6px 10px;min-width:48px}
+.de-num{font-size:1.3rem;font-weight:900;color:var(--ga);line-height:1}
+.de-ulbl{font-size:.42rem;font-weight:900;letter-spacing:.14em;text-transform:uppercase;color:var(--tm);margin-top:1px}
+.de-phrase{background:var(--bgc);border-radius:10px;padding:8px 11px;display:flex;align-items:center;gap:8px}
+.de-phrase-de{font-size:.82rem;font-weight:800;color:var(--td)}
+.de-phrase-en{font-size:.7rem;color:var(--tm);font-style:italic}
+.de-phrase-btn{background:none;border:none;cursor:pointer;font-size:.9rem;padding:2px;flex-shrink:0}
+.wanderlog-btn{display:flex;align-items:center;justify-content:center;gap:6px;background:var(--ga);color:#fff;border:none;border-radius:var(--rf);padding:8px 16px;font-family:'Nunito',sans-serif;font-size:.6rem;font-weight:900;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;text-decoration:none;transition:transform .2s}
+.wanderlog-btn:active{transform:scale(.95)}
 
-  .desk-header{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-bottom:20px;margin-bottom:20px;border-bottom:2px solid var(--lm);flex-wrap:wrap}
+/* ── TIMBER MEMORIES ── */
+.mem-add{display:flex;gap:7px;margin-bottom:10px}
+.mem-input{flex:1;background:var(--bgc);border:2px solid var(--lm);border-radius:var(--rf);padding:8px 13px;font-family:'Nunito',sans-serif;font-size:.78rem;font-weight:700;color:var(--td);outline:none;transition:border-color .2s}
+.mem-input:focus{border-color:var(--la)}
+.mem-input::placeholder{color:var(--tm)}
+.mem-add-btn{background:var(--pa);color:#fff;border:none;border-radius:var(--rf);padding:8px 14px;font-family:'Nunito',sans-serif;font-size:.62rem;font-weight:900;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;white-space:nowrap;-webkit-tap-highlight-color:transparent;transition:transform .2s}
+.mem-add-btn:active{transform:scale(.93)}
+.mem-emoji-row{display:flex;gap:5px;margin-bottom:8px;flex-wrap:wrap}
+.mem-emoji-btn{background:var(--bgc);border:2px solid var(--lm);border-radius:8px;padding:4px 8px;font-size:1rem;cursor:pointer;transition:border-color .15s,transform .15s;-webkit-tap-highlight-color:transparent}
+.mem-emoji-btn.sel{border-color:var(--pa);transform:scale(1.15)}
+.mem-list{display:flex;flex-direction:column;gap:6px;max-height:320px;overflow-y:auto}
+.mem-item{display:flex;align-items:center;gap:9px;background:var(--bgc);border:2px solid var(--lm);border-radius:var(--rmd);padding:8px 11px;animation:fs .25s ease-out}
+.mem-item-emoji{font-size:1.1rem;flex-shrink:0}
+.mem-item-text{flex:1}
+.mem-item-title{font-size:.78rem;font-weight:800;color:var(--td)}
+.mem-item-date{font-size:.54rem;font-weight:700;color:var(--tm);letter-spacing:.06em;margin-top:1px}
+.mem-del{background:none;border:none;cursor:pointer;color:var(--tm);font-size:.85rem;padding:2px;opacity:.5;transition:opacity .15s;-webkit-tap-highlight-color:transparent}
+.mem-del:hover{opacity:1}
+.mem-empty{text-align:center;padding:20px;color:var(--tm);font-size:.75rem;font-style:italic}
+
+/* ── TEMPORAL OFFSET BADGE ── */
+.offset-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:var(--rf);font-size:.55rem;font-weight:900;letter-spacing:.1em;text-transform:uppercase;white-space:nowrap;cursor:pointer;border:1.5px solid transparent;transition:transform .15s}
+.offset-badge:active{transform:scale(.93)}
+.offset-badge.behind{background:var(--pl);border-color:var(--pm);color:var(--pa)}
+.offset-badge.ahead{background:var(--ml);border-color:var(--mm);color:var(--ma)}
+.offset-badge.synced{background:var(--ll);border-color:var(--lm);color:var(--la)}
+.offset-badge.live{animation:pulse-offset 2.5s ease-in-out infinite}
+@keyframes pulse-offset{0%,100%{box-shadow:0 0 0 0 rgba(247,154,122,.35)}50%{box-shadow:0 0 0 7px rgba(247,154,122,0)}}
+
+/* ── I'M HERE TAP ── */
+.ti.im-here>.tc{border-color:var(--pa)!important;box-shadow:0 0 0 3px var(--pl),0 6px 18px rgba(247,154,122,.2)!important}
+.ti.im-here>.tdc>.tdot{border-color:var(--pa)!important;box-shadow:0 0 0 4px var(--pl)!important}
+.ti>.tc{cursor:pointer;-webkit-tap-highlight-color:transparent}
+.ti>.tc:active{background:var(--bgp)!important}
+
+/* ── BOTTOM SHEET ── */
+.sheet-overlay{position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.38);opacity:0;pointer-events:none;transition:opacity .22s}
+.sheet-overlay.open{opacity:1;pointer-events:all}
+.sheet{position:fixed;bottom:0;left:0;right:0;z-index:201;background:var(--bgc);border-radius:24px 24px 0 0;border-top:2px solid var(--lm);padding:0 18px calc(28px + env(safe-area-inset-bottom));transform:translateY(102%);transition:transform .32s cubic-bezier(.22,1,.36,1);max-height:86vh;overflow-y:auto}
+.sheet.open{transform:translateY(0)}
+.sheet-handle{width:38px;height:4px;background:var(--lm);border-radius:var(--rf);margin:12px auto 16px}
+.sheet-title{font-size:.95rem;font-weight:900;color:var(--td);margin-bottom:3px}
+.sheet-sub{font-size:.68rem;color:var(--tm);margin-bottom:14px;line-height:1.55}
+.sheet-offset-display{display:flex;align-items:center;justify-content:center;gap:12px;background:var(--bgp);border:2px solid var(--lm);border-radius:var(--rlg);padding:14px 16px;margin-bottom:14px}
+.sheet-offset-num{font-size:2.4rem;font-weight:900;line-height:1}
+.sheet-offset-num.behind{color:var(--pa)}
+.sheet-offset-num.ahead{color:var(--ma)}
+.sheet-offset-num.synced{color:var(--la)}
+.sheet-offset-meta{display:flex;flex-direction:column;gap:2px}
+.sheet-offset-label{font-size:.55rem;font-weight:900;letter-spacing:.14em;text-transform:uppercase;color:var(--tm)}
+.sheet-offset-dir{font-size:.7rem;font-weight:900;color:var(--td)}
+.sheet-actions{display:flex;flex-direction:column;gap:8px}
+.sheet-btn{display:flex;align-items:center;justify-content:center;gap:7px;width:100%;padding:13px;border-radius:var(--rlg);border:2px solid transparent;font-family:'Nunito',sans-serif;font-size:.7rem;font-weight:900;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;transition:transform .2s cubic-bezier(.34,1.56,.64,1);-webkit-tap-highlight-color:transparent}
+.sheet-btn:active{transform:scale(.97)}
+.sheet-btn-shift{background:var(--la);color:#fff;border-color:var(--la)}
+.sheet-btn-shift.is-shifted{background:var(--ma);border-color:var(--ma)}
+.sheet-btn-gemini{background:var(--gl);color:var(--ga);border-color:var(--gm)}
+.sheet-btn-cancel{background:var(--bgc);color:var(--tm);border-color:var(--lm)}
+
+/* ── TOAST ── */
+.toast{position:fixed;bottom:calc(var(--tab-h) + 72px);left:50%;transform:translateX(-50%) translateY(8px);z-index:300;background:var(--td);color:var(--bgc);padding:8px 18px;border-radius:var(--rf);font-family:'Nunito',sans-serif;font-size:.68rem;font-weight:800;white-space:nowrap;opacity:0;transition:opacity .18s,transform .18s;pointer-events:none}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* ── STATS DEEP-LINK BADGE ── */
+.stats-link{display:inline-flex;align-items:center;gap:3px;margin-left:5px;padding:2px 7px;border-radius:var(--rf);border:1.5px solid var(--mm);background:var(--ml);color:var(--ma);font-family:'Nunito',sans-serif;font-size:.44rem;font-weight:900;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;white-space:nowrap;flex-shrink:0;vertical-align:middle;-webkit-tap-highlight-color:transparent;transition:background .15s}
+.stats-link:hover,.stats-link:active{background:var(--mm)}
+
+/* ── MEMORY EDITABLE DATETIME ── */
+.mem-datetime{background:var(--bgc);border:2px solid var(--lm);border-radius:8px;padding:5px 9px;font-family:'Nunito',sans-serif;font-size:.7rem;font-weight:700;color:var(--td);outline:none;transition:border-color .2s;width:100%;margin-bottom:8px;cursor:pointer}
+.mem-datetime:focus{border-color:var(--la)}
+.mem-edit-row{display:none;flex-direction:column;gap:5px;margin-top:6px;padding:8px;background:var(--bgp);border-radius:10px}
+.mem-edit-row.open{display:flex}
+.mem-edit-actions{display:flex;gap:6px}
+.mem-edit-input{flex:1;background:var(--bgc);border:2px solid var(--lm);border-radius:var(--rf);padding:6px 10px;font-family:'Nunito',sans-serif;font-size:.75rem;font-weight:700;color:var(--td);outline:none}
+.mem-edit-input:focus{border-color:var(--la)}
+.mem-save-btn{background:var(--ma);color:#fff;border:none;border-radius:var(--rf);padding:6px 12px;font-family:'Nunito',sans-serif;font-size:.58rem;font-weight:900;text-transform:uppercase;cursor:pointer}
+.mem-cancel-btn{background:var(--bgc);color:var(--tm);border:2px solid var(--lm);border-radius:var(--rf);padding:6px 10px;font-family:'Nunito',sans-serif;font-size:.58rem;font-weight:900;text-transform:uppercase;cursor:pointer}
+
+/* ── MEMORY PRESETS ── */
+.mem-presets{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px}
+.mem-preset{background:var(--bgc);border:1.5px solid var(--lm);border-radius:var(--rf);padding:4px 9px;font-family:'Nunito',sans-serif;font-size:.52rem;font-weight:900;color:var(--tm);cursor:pointer;white-space:nowrap;-webkit-tap-highlight-color:transparent;transition:border-color .15s,background .15s}
+.mem-preset:active{background:var(--ll);border-color:var(--la)}
+
+/* ── INLINE DELETE CONFIRM ── */
+.mem-del-wrap{display:flex;align-items:center;gap:4px;flex-shrink:0}
+.mem-del{background:none;border:none;cursor:pointer;color:var(--tm);font-size:.85rem;padding:3px;opacity:.5;transition:opacity .15s;-webkit-tap-highlight-color:transparent;border-radius:6px}
+.mem-del:hover,.mem-del:active{opacity:1;background:var(--pl);color:var(--pa)}
+.mem-del-confirm{display:none;align-items:center;gap:3px}
+.mem-del-confirm.show{display:flex}
+.mem-del-yes{background:var(--pa);color:#fff;border:none;border-radius:var(--rf);padding:3px 8px;font-family:'Nunito',sans-serif;font-size:.5rem;font-weight:900;text-transform:uppercase;cursor:pointer}
+.mem-del-no{background:var(--bgc);color:var(--tm);border:1.5px solid var(--lm);border-radius:var(--rf);padding:3px 7px;font-family:'Nunito',sans-serif;font-size:.5rem;font-weight:900;text-transform:uppercase;cursor:pointer}
+
+/* ── SCRATCH PAD ── */
+.scratch-wrap{position:relative;margin-bottom:10px}
+.scratch-ta{width:100%;background:var(--bgp);border:2px solid var(--lm);border-radius:var(--rlg);padding:10px 12px;font-family:'Nunito',sans-serif;font-size:.78rem;font-weight:600;color:var(--td);resize:none;outline:none;line-height:1.5;min-height:52px;transition:border-color .2s,min-height .3s}
+.scratch-ta:focus{border-color:var(--la);min-height:88px}
+.scratch-ta::placeholder{color:var(--tm)}
+.scratch-lbl{display:flex;align-items:center;gap:5px;margin-bottom:4px}
+
+/* ── SHIFT UNDO BANNER ── */
+.shift-undo-bar{display:none;align-items:center;justify-content:space-between;gap:8px;background:var(--pl);border:2px solid var(--pm);border-radius:var(--rlg);padding:8px 12px;margin-bottom:8px}
+.shift-undo-bar.visible{display:flex}
+.shift-undo-txt{font-size:.68rem;font-weight:800;color:var(--pa)}
+.shift-undo-btn{background:var(--bgc);border:2px solid var(--pm);border-radius:var(--rf);padding:5px 12px;font-family:'Nunito',sans-serif;font-size:.56rem;font-weight:900;letter-spacing:.1em;text-transform:uppercase;color:var(--pa);cursor:pointer;white-space:nowrap;-webkit-tap-highlight-color:transparent;transition:transform .15s}
+.shift-undo-btn:active{transform:scale(.93)}
+
+/* ── MEMORY CATEGORIES (replaces emoji picker) ── */
+.mem-cats{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:6px;margin-bottom:10px}
+.mem-cat-btn{padding:8px 4px;border-radius:12px;border:2px solid var(--lm);background:var(--bgc);font-family:'Nunito',sans-serif;font-size:.48rem;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:var(--tm);cursor:pointer;text-align:center;transition:all .15s;-webkit-tap-highlight-color:transparent;display:flex;flex-direction:column;align-items:center;gap:3px}
+.mem-cat-btn .cat-icon{font-size:.95rem;line-height:1}
+.mem-cat-btn.sel.cat-soc  {background:var(--sa);border-color:var(--sa);color:#fff}
+.mem-cat-btn.sel.cat-home {background:var(--pa);border-color:var(--pa);color:#fff}
+.mem-cat-btn.sel.cat-health{background:var(--ma);border-color:var(--ma);color:#fff}
+.mem-cat-btn.sel.cat-train{background:var(--la);border-color:var(--la);color:#fff}
+.mem-item-cat{display:inline-flex;align-items:center;font-size:.44rem;font-weight:900;letter-spacing:.1em;text-transform:uppercase;padding:2px 7px;border-radius:var(--rf);flex-shrink:0;white-space:nowrap}
+.mem-item-cat.cat-soc  {background:var(--sl);color:var(--sa)}
+.mem-item-cat.cat-home {background:var(--pl);color:var(--pa)}
+.mem-item-cat.cat-health{background:var(--ml);color:var(--ma)}
+.mem-item-cat.cat-train{background:var(--ll);color:var(--la)}
+
+/* ── FLOATING TIMER BAR ── */
+.timer-bar{position:fixed;top:0;left:0;right:0;z-index:500;background:var(--pa);color:#fff;padding:10px 16px 10px calc(16px + env(safe-area-inset-left));display:none;align-items:center;justify-content:space-between;gap:10px;box-shadow:0 4px 16px rgba(247,154,122,.35)}
+.timer-bar.active{display:flex}
+.timer-bar.urgent{background:#e05252;animation:timer-pulse .8s ease-in-out infinite}
+.timer-bar.done{background:var(--ma)}
+@keyframes timer-pulse{0%,100%{opacity:1}50%{opacity:.7}}
+.timer-left{display:flex;align-items:center;gap:9px}
+.timer-emoji{font-size:1.3rem;line-height:1}
+.timer-info{display:flex;flex-direction:column;gap:1px}
+.timer-label{font-size:.52rem;font-weight:900;letter-spacing:.12em;text-transform:uppercase;opacity:.85}
+.timer-countdown{font-size:1.5rem;font-weight:900;line-height:1;letter-spacing:-.03em}
+.timer-right{display:flex;align-items:center;gap:7px}
+.timer-stop{background:rgba(255,255,255,.25);border:1.5px solid rgba(255,255,255,.4);border-radius:var(--rf);padding:5px 12px;font-family:'Nunito',sans-serif;font-size:.58rem;font-weight:900;letter-spacing:.1em;text-transform:uppercase;color:#fff;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.timer-stop:active{background:rgba(255,255,255,.4)}
+.timer-add{background:rgba(255,255,255,.15);border:1.5px solid rgba(255,255,255,.3);border-radius:var(--rf);padding:5px 10px;font-family:'Nunito',sans-serif;font-size:.58rem;font-weight:900;color:#fff;cursor:pointer;-webkit-tap-highlight-color:transparent}
+
+/* push content down when timer bar is showing */
+body.timer-active .cute-tape{margin-top:48px}
+body.timer-active .top-nav{top:48px}
+body.timer-active .desktop-layout{padding-top:70px}
+
+/* ── TIMER LAUNCH BUTTONS on timeline blocks ── */
+.timer-launch{display:inline-flex;align-items:center;gap:3px;margin-left:5px;padding:2px 7px;border-radius:var(--rf);border:1.5px solid var(--pm);background:var(--pl);color:var(--pa);font-family:'Nunito',sans-serif;font-size:.44rem;font-weight:900;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;white-space:nowrap;flex-shrink:0;vertical-align:middle;-webkit-tap-highlight-color:transparent;transition:background .15s}
+.timer-launch:hover,.timer-launch:active{background:var(--pm)}
+.timer-pick{display:none;position:absolute;z-index:50;background:var(--bgc);border:2px solid var(--lm);border-radius:14px;padding:8px;box-shadow:0 8px 24px rgba(74,64,96,.15);flex-direction:column;gap:5px;min-width:130px}
+.timer-pick.open{display:flex}
+.timer-pick-opt{background:var(--pl);border:1.5px solid var(--pm);border-radius:var(--rf);padding:6px 12px;font-family:'Nunito',sans-serif;font-size:.62rem;font-weight:900;color:var(--pa);cursor:pointer;text-align:center;-webkit-tap-highlight-color:transparent;transition:background .15s}
+.timer-pick-opt:active{background:var(--pm)}
+
+/* ── NOTIFICATION BELL ── */
+.notif-btn{background:none;border:none;cursor:pointer;font-size:1.1rem;padding:3px;opacity:.6;transition:opacity .15s;-webkit-tap-highlight-color:transparent;flex-shrink:0}
+.notif-btn.enabled{opacity:1;filter:drop-shadow(0 0 4px rgba(184,157,224,.6))}
+.notif-setup{background:var(--bgp);border:2px solid var(--lm);border-radius:var(--rlg);padding:12px 14px;margin-bottom:10px}
+.notif-row{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:6px}
+.notif-toggle{appearance:none;width:38px;height:22px;border-radius:var(--rf);background:var(--lm);cursor:pointer;position:relative;transition:background .2s;flex-shrink:0;border:none}
+.notif-toggle:checked{background:var(--la)}
+.notif-toggle::after{content:'';position:absolute;width:16px;height:16px;border-radius:50%;background:#fff;top:3px;left:3px;transition:left .2s;box-shadow:0 1px 4px rgba(0,0,0,.15)}
+.notif-toggle:checked::after{left:19px}
+.notif-list{display:flex;flex-direction:column;gap:5px;margin-top:8px}
+.notif-item{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:5px 0;border-bottom:1px solid var(--ll)}
+.notif-item:last-child{border-bottom:none}
+.notif-item-label{font-size:.72rem;font-weight:700;color:var(--td)}
+.notif-item-time{font-size:.58rem;color:var(--tm)}
+/* ── ASK CLAUDE PANEL ── */
+.claude-panel{display:none;margin-top:10px;background:var(--bgp);border:2px solid var(--lm);border-radius:var(--rlg);overflow:hidden}
+.claude-panel.open{display:block}
+.claude-presets{display:flex;gap:5px;flex-wrap:wrap;padding:8px 12px 0}
+.claude-preset-q{background:var(--bgc);border:1.5px solid var(--lm);border-radius:var(--rf);padding:4px 9px;font-family:'Nunito',sans-serif;font-size:.52rem;font-weight:900;color:var(--tm);cursor:pointer;white-space:nowrap;-webkit-tap-highlight-color:transparent}
+.claude-preset-q:active{background:var(--ll);border-color:var(--la)}
+.claude-input-row{display:flex;gap:7px;padding:10px 12px;border-top:2px solid var(--ll)}
+.claude-input{flex:1;background:var(--bgc);border:2px solid var(--lm);border-radius:var(--rf);padding:7px 11px;font-family:'Nunito',sans-serif;font-size:.78rem;font-weight:700;color:var(--td);outline:none;transition:border-color .2s}
+.claude-input:focus{border-color:var(--la)}
+.claude-send-btn{background:var(--la);color:#fff;border:none;border-radius:var(--rf);padding:7px 14px;font-family:'Nunito',sans-serif;font-size:.6rem;font-weight:900;text-transform:uppercase;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:transform .15s}
+.claude-send-btn:active{transform:scale(.93)}
+.claude-send-btn:disabled{opacity:.45;cursor:default}
+.claude-response{padding:12px 14px;font-size:.79rem;font-weight:600;color:var(--td);line-height:1.65;max-height:260px;overflow-y:auto;white-space:pre-wrap;border-top:2px solid var(--ll)}
+.claude-response.thinking{color:var(--tm);font-style:italic}
+.sheet-btn-claude{background:linear-gradient(135deg,var(--la),var(--sa));color:#fff;border-color:transparent}
+
+/* ── GIST SYNC ── */
+.gist-bar{display:flex;align-items:center;gap:8px;background:var(--bgp);border:2px solid var(--lm);border-radius:var(--rf);padding:6px 10px;cursor:pointer;flex-shrink:0;-webkit-tap-highlight-color:transparent}
+.gist-dot{width:7px;height:7px;border-radius:50%;background:var(--tm);flex-shrink:0;transition:background .3s}
+.gist-dot.synced{background:var(--ma)}
+.gist-dot.syncing{background:var(--ga);animation:bl 1s ease-in-out infinite}
+.gist-dot.error{background:var(--pa)}
+.gist-bar-txt{font-size:.5rem;font-weight:900;letter-spacing:.1em;text-transform:uppercase;color:var(--tm)}
+/* Gist setup modal */
+.gist-modal{display:none;position:fixed;inset:0;z-index:400;background:rgba(0,0,0,.45);align-items:flex-end;justify-content:center}
+.gist-modal.open{display:flex}
+.gist-modal-box{background:var(--bgc);border-radius:24px 24px 0 0;border-top:2px solid var(--lm);padding:20px 18px calc(32px + env(safe-area-inset-bottom));width:100%;max-width:520px}
+.gist-modal-handle{width:38px;height:4px;background:var(--lm);border-radius:var(--rf);margin:0 auto 16px}
+.gist-step{font-size:.76rem;font-weight:700;color:var(--tb);line-height:1.65;margin-bottom:12px}
+.gist-step a{color:var(--la)}
+.gist-token-input{width:100%;background:var(--bgp);border:2px solid var(--lm);border-radius:10px;padding:9px 12px;font-family:'Nunito',sans-serif;font-size:.78rem;font-weight:700;color:var(--td);outline:none;margin-bottom:10px;transition:border-color .2s}
+.gist-token-input:focus{border-color:var(--la)}
+.gist-modal-actions{display:flex;gap:8px}
+.gist-save-btn{flex:1;background:var(--la);color:#fff;border:none;border-radius:var(--rf);padding:11px;font-family:'Nunito',sans-serif;font-size:.68rem;font-weight:900;text-transform:uppercase;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.gist-cancel-btn{background:var(--bgc);color:var(--tm);border:2px solid var(--lm);border-radius:var(--rf);padding:11px 16px;font-family:'Nunito',sans-serif;font-size:.68rem;font-weight:900;cursor:pointer}
+
+@media(min-width:1024px){
+  .tab-bar,.page,.fab-now,.top-nav,.pills-row{display:none!important}
+  .desktop-layout{display:flex!important;flex-direction:column;min-height:100vh;padding:22px 24px 28px}
+  .desk-header{display:flex;align-items:center;justify-content:space-between;gap:14px;padding-bottom:18px;margin-bottom:18px;border-bottom:2px solid var(--lm);flex-wrap:wrap}
   .desk-brand{display:flex;flex-direction:column;gap:4px;flex-shrink:0}
-  .desk-brand h1{font-size:2rem}
-  .desk-pills{display:flex;gap:7px;margin-bottom:6px}
-
-  /* centered what's-next on desktop */
-  .desk-wn-wrap{flex:1;display:flex;justify-content:center;padding:0 20px}
-  .desk-wn-wrap .whats-next{margin-bottom:0;max-width:420px;width:100%}
-
-  .desk-grid{display:grid;grid-template-columns:1fr 360px;gap:20px;flex:1}
-  .desk-left{display:flex;flex-direction:column;gap:16px}
-  .desk-right{display:flex;flex-direction:column;gap:16px}
-
-  .desk-stat-row{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
-  .desk-sc{padding:18px 12px;border-radius:var(--rlg);border:2px solid;display:flex;flex-direction:column;align-items:center;text-align:center;gap:3px;background:var(--bgc);transition:transform .25s cubic-bezier(.34,1.56,.64,1)}
+  .desk-brand h1{font-size:1.9rem}
+  .desk-pills{display:flex;gap:7px;margin-bottom:4px;flex-wrap:wrap}
+  .desk-wn-wrap{flex:1;display:flex;justify-content:center;padding:0 16px}
+  .desk-wn-wrap .whats-next{margin-bottom:0;max-width:400px;width:100%}
+  .desk-header-right{display:flex;align-items:center;gap:10px;flex-shrink:0}
+  .desk-grid{display:grid;grid-template-columns:1fr var(--col-r);gap:18px;flex:1;align-items:start}
+  .desk-left{display:flex;flex-direction:column;gap:14px}
+  .desk-right{display:flex;flex-direction:column;gap:14px}
+  .desk-stat-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+  .desk-sc{padding:16px 10px;border-radius:var(--rlg);border:2px solid;display:flex;flex-direction:column;align-items:center;text-align:center;gap:3px;background:var(--bgc);transition:transform .25s cubic-bezier(.34,1.56,.64,1)}
   .desk-sc:hover{transform:translateY(-3px)}
-
-  .desk-flow{display:flex;flex-direction:column;height:580px;transition:height .4s ease}
+  .desk-flow{display:flex;flex-direction:column;height:560px;transition:height .4s ease}
   .desk-flow.collapsed{height:auto}
-  .desk-fhd{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-bottom:12px;margin-bottom:12px;border-bottom:2px solid var(--ll);cursor:pointer}
-  .desk-fg{display:flex;gap:7px}
-  .desk-btn-f{background:var(--bgc);border-color:var(--lm);color:var(--tm);flex:none;padding:8px 16px;font-size:.62rem}
+  .desk-fhd{display:flex;align-items:center;justify-content:space-between;gap:10px;padding-bottom:10px;margin-bottom:10px;border-bottom:2px solid var(--ll);cursor:pointer}
+  .desk-fg{display:flex;gap:6px}
+  .desk-btn-f{background:var(--bgc);border-color:var(--lm);color:var(--tm);flex:none;padding:7px 14px;font-size:.6rem}
   .desk-btn-f.on{background:var(--la);border-color:var(--la);color:#fff}
   .desk-btn-f.on.f-timber{background:var(--pa);border-color:var(--pa)}
   .desk-btn-f.on.f-focus{background:var(--sa);border-color:var(--sa)}
   .desk-btn-f.on.f-wellness{background:var(--la);border-color:var(--la)}
-  .desk-tls{overflow-y:auto;flex:1;padding-right:8px}
+  .desk-tls{overflow-y:auto;flex:1;padding-right:7px}
   .desk-tls::-webkit-scrollbar{width:5px}
   .desk-tls::-webkit-scrollbar-thumb{background:var(--lm);border-radius:20px}
-
-  .desk-charts{display:flex;flex-direction:column;gap:14px}
-  .desk-cb{position:relative;height:160px}
+  .desk-charts{display:flex;flex-direction:column;gap:12px}
+  .desk-cb{position:relative;height:150px}
   .chart-head-wrap{cursor:pointer}
-
-  .desk-pt{background:var(--bgp);border-radius:var(--rxl);border:2px solid var(--lm);padding:22px 18px;display:flex;flex-direction:column;position:sticky;top:20px;max-height:calc(100vh - 40px)}
-  .desk-pt-head{text-align:center;margin-bottom:16px;cursor:pointer}
-  .desk-pt-head h2{font-size:1.3rem;margin-bottom:4px;display:flex;align-items:center;justify-content:center;gap:8px}
-  .desk-pt-head p{font-size:.72rem;color:var(--tm);margin-bottom:10px}
+  .desk-pt{background:var(--bgp);border-radius:var(--rxl);border:2px solid var(--lm);padding:20px 16px;display:flex;flex-direction:column;position:sticky;top:18px;max-height:calc(100vh - 36px)}
+  .desk-pt-head{text-align:center;margin-bottom:14px;cursor:pointer}
+  .desk-pt-head h2{font-size:1.2rem;margin-bottom:3px;display:flex;align-items:center;justify-content:center;gap:7px}
+  .desk-pt-head p{font-size:.7rem;color:var(--tm);margin-bottom:9px}
   .desk-pts{overflow-y:auto;flex:1;padding-right:4px}
   .desk-pts::-webkit-scrollbar{width:5px}
   .desk-pts::-webkit-scrollbar-thumb{background:var(--lm);border-radius:20px}
-
   .card{transition:transform .25s cubic-bezier(.34,1.56,.64,1),box-shadow .25s ease}
-  .card:hover{transform:translateY(-3px);box-shadow:0 10px 24px rgba(184,157,224,.13)}
+  .card:hover{transform:translateY(-2px);box-shadow:0 8px 22px rgba(184,157,224,.12)}
   .pi:hover{border-color:var(--la)}
   .pi:active{background:var(--bgc)}
+  /* desktop tabs */
+  .desk-tabs{display:flex;gap:0;border:2px solid var(--lm);border-radius:var(--rf);overflow:hidden;margin-bottom:14px}
+  .desk-tab{flex:1;padding:8px 6px;border:none;background:var(--bgc);font-family:'Nunito',sans-serif;font-size:.56rem;font-weight:900;letter-spacing:.1em;text-transform:uppercase;color:var(--tm);cursor:pointer;transition:background .15s,color .15s;border-right:2px solid var(--lm)}
+  .desk-tab:last-child{border-right:none}
+  .desk-tab.active{background:var(--la);color:#fff}
+  .desk-panel{display:none;flex-direction:column;gap:12px}
+  .desk-panel.active{display:flex}
+}
+
+/* ── TABLET (768–1023px) ── */
+@media(min-width:768px) and (max-width:1023px){
+  .tab-bar,.page,.fab-now,.top-nav,.pills-row{display:none!important}
+  .desktop-layout{display:flex!important;flex-direction:column;min-height:100vh;padding:18px 18px 24px}
+  .desk-header{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-bottom:16px;margin-bottom:16px;border-bottom:2px solid var(--lm);flex-wrap:wrap}
+  .desk-brand h1{font-size:1.5rem}
+  .desk-pills{display:flex;gap:6px;margin-bottom:4px;flex-wrap:wrap}
+  .desk-wn-wrap{flex:1;display:flex;justify-content:center;padding:0 12px}
+  .desk-wn-wrap .whats-next{margin-bottom:0;max-width:340px;width:100%}
+  .desk-header-right{display:flex;align-items:center;gap:8px;flex-shrink:0}
+  /* tablet: single column, right panel goes below */
+  .desk-grid{display:flex;flex-direction:column;gap:14px}
+  .desk-right{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .desk-stat-row{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
+  .desk-sc{padding:14px 9px;border-radius:var(--rlg);border:2px solid;display:flex;flex-direction:column;align-items:center;text-align:center;gap:3px;background:var(--bgc)}
+  .desk-flow{display:flex;flex-direction:column;height:500px}
+  .desk-fhd{display:flex;align-items:center;justify-content:space-between;gap:9px;padding-bottom:9px;margin-bottom:9px;border-bottom:2px solid var(--ll);cursor:pointer}
+  .desk-fg{display:flex;gap:5px;flex-wrap:wrap}
+  .desk-btn-f{background:var(--bgc);border-color:var(--lm);color:var(--tm);flex:none;padding:6px 11px;font-size:.56rem}
+  .desk-btn-f.on{background:var(--la);border-color:var(--la);color:#fff}
+  .desk-btn-f.on.f-timber{background:var(--pa);border-color:var(--pa)}
+  .desk-btn-f.on.f-focus{background:var(--sa);border-color:var(--sa)}
+  .desk-btn-f.on.f-wellness{background:var(--la);border-color:var(--la)}
+  .desk-tls{overflow-y:auto;flex:1;padding-right:6px}
+  .desk-tls::-webkit-scrollbar{width:4px}
+  .desk-tls::-webkit-scrollbar-thumb{background:var(--lm);border-radius:20px}
+  .desk-charts{display:flex;flex-direction:column;gap:10px}
+  .desk-cb{position:relative;height:140px}
+  .chart-head-wrap{cursor:pointer}
+  .desk-pt{background:var(--bgp);border-radius:var(--rxl);border:2px solid var(--lm);padding:16px 14px;display:flex;flex-direction:column}
+  .desk-pt-head{text-align:center;margin-bottom:12px;cursor:pointer}
+  .desk-pt-head h2{font-size:1.1rem;margin-bottom:3px;display:flex;align-items:center;justify-content:center;gap:6px}
+  .desk-pts{overflow-y:auto;max-height:300px;padding-right:4px}
+  .desk-pts::-webkit-scrollbar{width:4px}
+  .desk-pts::-webkit-scrollbar-thumb{background:var(--lm);border-radius:20px}
+  .desk-tabs{display:flex;gap:0;border:2px solid var(--lm);border-radius:var(--rf);overflow:hidden;margin-bottom:12px}
+  .desk-tab{flex:1;padding:8px 4px;border:none;background:var(--bgc);font-family:'Nunito',sans-serif;font-size:.52rem;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:var(--tm);cursor:pointer;transition:background .15s,color .15s;border-right:2px solid var(--lm)}
+  .desk-tab:last-child{border-right:none}
+  .desk-tab.active{background:var(--la);color:#fff}
+  .desk-panel{display:none;flex-direction:column;gap:10px}
+  .desk-panel.active{display:flex}
 }
 .desktop-layout{display:none}
 </style>
 </head>
 <body>
+<!-- FLOATING TIMER BAR -->
+<div class="timer-bar" id="timerBar">
+  <div class="timer-left">
+    <span class="timer-emoji" id="timerEmoji">🐾</span>
+    <div class="timer-info">
+      <span class="timer-label" id="timerLabel">Potty Check</span>
+      <span class="timer-countdown" id="timerCountdown">5:00</span>
+    </div>
+  </div>
+  <div class="timer-right">
+    <button class="timer-add" onclick="addTimerMin(1)" title="+1 min">+1m</button>
+    <button class="timer-stop" onclick="stopTimer()">✕ Done</button>
+  </div>
+</div>
 
 <div class="cute-tape"></div>
 
+<!-- MOBILE NAV -->
 <nav class="top-nav">
   <div class="nav-brand">
     <h1>Jasmine's Life OS ✿</h1>
     <div class="clkbadge"><span class="lbl">Now:</span><span class="clktime" id="mClk">--:-- --</span></div>
   </div>
-  <button class="btn btn-ghost" style="font-size:.56rem;padding:7px 12px" onclick="resetDay()">☀️ Reset</button>
+  <div class="nav-actions">
+    <div class="de-badge" onclick="switchTab('stats');setTimeout(()=>document.getElementById('deModule')?.scrollIntoView({behavior:'smooth',block:'start'}),100)">
+      <span class="de-lbl">🇩🇪</span>
+      <span class="de-days" id="mDeDays">--</span>
+      <span class="de-lbl">days</span>
+    </div>
+    <button class="notif-btn" id="notifBell" onclick="toggleNotifications()" title="Schedule notifications">🔔</button>
+    <div class="gist-bar" id="gistBar" onclick="openGistModal()" title="Cloud sync">
+      <span class="gist-dot" id="gistDot"></span>
+      <span class="gist-bar-txt" id="gistBarTxt">Sync</span>
+    </div>
+    <button class="btn btn-ghost" style="font-size:.52rem;padding:6px 10px" onclick="resetDay()">☀️</button>
+  </div>
 </nav>
 
 <div class="pills-row">
-  <span class="pill pla">✿ Sophia Yin Protocol</span>
+  <span class="pill pla">✿ Sophia Yin</span>
   <span class="pill pmi">🐾 Timber</span>
   <span class="pill ppe">🌿 Wellness</span>
 </div>
 
 <button id="jumpNowBtn" class="fab-now" onclick="jumpToNow()">🎯 Now</button>
 
-<!-- FLOW -->
+<!-- FLOW PAGE -->
 <div class="page active" id="page-flow">
-  <div id="mWhatsNext" class="whats-next" style="margin-top:14px">
+  <!-- Shift undo bar — visible when schedule is shifted -->
+  <div class="shift-undo-bar" id="shiftUndoBar" style="margin-top:12px">
+    <span class="shift-undo-txt" id="shiftUndoTxt">⏩ Schedule shifted</span>
+    <button class="shift-undo-btn" onclick="undoShift()">↩ Undo Shift</button>
+  </div>
+  <div id="mWhatsNext" class="whats-next" style="margin-top:12px">
     <span class="wn-icon">⏳</span>
-    <div class="wn-text"><h4 id="mWnTitle">Loading…</h4><p id="mWnDesc"></p></div>
+    <div class="wn-text" style="flex:1"><h4 id="mWnTitle">Loading…</h4><p id="mWnDesc"></p></div>
+    <span id="offsetBadge" class="offset-badge synced" onclick="openSheet(null)" style="display:none">✓ Synced</span>
+  </div>
+  <!-- Today's scratch pad -->
+  <div class="scratch-wrap">
+    <div class="scratch-lbl"><span style="font-size:.9rem">📝</span><span class="lbl">Today's Notes</span></div>
+    <textarea class="scratch-ta" id="scratchPad" placeholder="Quick thoughts, adjustments, reminders for today…" oninput="saveScratch()" rows="2"></textarea>
   </div>
   <div class="filter-row">
     <button class="btn btn-f on"         id="mba" onclick="ftl('all','m')">All</button>
-    <button class="btn btn-f f-timber"   id="mbp" onclick="ftl('timber','m')">🐾 Timber</button>
-    <button class="btn btn-f f-focus"    id="mbw" onclick="ftl('focus','m')">💻 Focus</button>
-    <button class="btn btn-f f-wellness" id="mbm" onclick="ftl('wellness','m')">🌿 Wellness</button>
+    <button class="btn btn-f f-timber"   id="mbp" onclick="ftl('timber','m')">🐾</button>
+    <button class="btn btn-f f-focus"    id="mbw" onclick="ftl('focus','m')">💻</button>
+    <button class="btn btn-f f-wellness" id="mbm" onclick="ftl('wellness','m')">🌿</button>
   </div>
   <div class="tl-wrap" id="mTlb"></div>
 </div>
 
-<!-- PT -->
+<!-- MOVE PAGE -->
 <div class="page" id="page-pt">
-  <div style="margin-top:14px">
+  <div style="margin-top:12px">
     <div class="pt-header">
       <h2>Movement Engine 🌿</h2>
-      <p>Use 5-min Pomodoro breaks for PT.<br>Progress saves automatically! ✨</p>
+      <p style="font-size:.72rem;color:var(--tm);margin:4px 0 10px">Pomodoro breaks → PT. Auto-saves! ✨</p>
       <div style="display:flex;justify-content:center">
         <div class="dw2"><span class="lbl">Day:</span>
           <select id="mDsel" onchange="chDay()">
@@ -276,92 +606,205 @@ select{appearance:none;background:transparent;border:none;outline:none;font-fami
     <div class="prog-card">
       <div class="pt2"><span class="lbl">Movement Progress</span><span class="pp" id="mPtxt">0%</span></div>
       <div class="ptr"><div class="pf" id="mPbar"></div></div>
-      <div class="pm2"><span>Target: 1 Hour</span><span><span id="mDn">0</span> / <span id="mTn">0</span> Done</span></div>
+      <div class="pm2"><span>Target: 1 Hour</span><span><span id="mDn">0</span>/<span id="mTn">0</span> Done</span></div>
     </div>
     <div id="mPtb"></div>
   </div>
 </div>
 
-<!-- STATS -->
+<!-- STATS PAGE -->
 <div class="page" id="page-stats">
-  <div style="margin-top:14px;display:flex;flex-direction:column;gap:14px">
+  <div style="margin-top:12px;display:flex;flex-direction:column;gap:12px">
+
+    <!-- Germany Module -->
+    <div class="de-module" id="deModule">
+      <div class="de-header">
+        <div>
+          <p class="lbl" style="color:var(--ga);margin-bottom:2px">🇩🇪 Germany Trip — March 30</p>
+          <h3 style="color:var(--td)">Countdown to Departure</h3>
+        </div>
+        <div class="de-countdown">
+          <div class="de-unit"><span class="de-num" id="mDeD">--</span><span class="de-ulbl">days</span></div>
+          <div class="de-unit"><span class="de-num" id="mDeH">--</span><span class="de-ulbl">hrs</span></div>
+          <div class="de-unit"><span class="de-num" id="mDeM">--</span><span class="de-ulbl">min</span></div>
+        </div>
+      </div>
+      <div class="de-phrase">
+        <span style="font-size:1.1rem">💬</span>
+        <div style="flex:1">
+          <div class="de-phrase-de" id="dePhraseDE">Wo ist die nächste U-Bahn?</div>
+          <div class="de-phrase-en" id="dePhraseEN">Where is the nearest subway?</div>
+        </div>
+        <button class="de-phrase-btn" onclick="nextPhrase()" title="Next phrase">🔀</button>
+      </div>
+      <a href="https://wanderlog.com" target="_blank" rel="noopener" class="wanderlog-btn">
+        🗺️ Open Wanderlog Itinerary
+      </a>
+    </div>
+
+    <!-- Quick stats -->
     <div class="stat-grid">
       <div class="sc" style="border-color:var(--pm)"><span class="si">⏱️</span><span class="lbl" style="color:var(--pa)">Fasting</span><span class="sv">8:30 PM–8:30 AM</span></div>
       <div class="sc" style="border-color:var(--mm)"><span class="si">🥗</span><span class="lbl" style="color:var(--ma)">Daily Fuel</span><span class="sv">1,700 kcal</span></div>
-      <div class="sc wide" style="border-color:var(--lm)"><span class="si">🔴</span><span class="lbl" style="color:var(--la)">RLT Protocol</span><span class="sv">Red + NIR Daily</span></div>
-    </div>
-    <div class="card">
-      <h3 class="lbl" style="text-align:center">🐾 Timber's Daily Care</h3>
-      <div class="steps" style="margin-top:10px">
-        <div class="step"><span>✅ Living Room Playpen (Meals/TV)</span></div>
-        <div class="step"><span>✅ Stroller Walks (No Ground Contact)</span></div>
-        <div class="step"><span>✅ Slicker Brush & Toothpaste Prep</span></div>
-        <div class="step"><span>✅ Litter Box Check</span></div>
-      </div>
-    </div>
-    <!-- Weekly consistency chart -->
-    <div class="card" style="padding:16px">
-      <p class="lbl" style="text-align:center;margin-bottom:4px">📅 This Week's Consistency</p>
-      <p style="text-align:center;font-size:.62rem;color:var(--tm);margin-bottom:10px">% of PT completed per day</p>
-      <div style="position:relative;height:120px"><canvas id="mChWeek"></canvas></div>
+      <div class="sc wide" style="border-color:var(--lm)"><span class="si">🔴</span><span class="lbl" style="color:var(--la)">Today's RLT</span><span class="sv" id="mTodayRlt">Loading…</span></div>
     </div>
 
+    <!-- Timber's Firsts -->
     <div class="card">
-      <h3 class="lbl" style="text-align:center">💪 Arm PT (5lb Weights)</h3>
-      <div class="steps" style="margin-top:10px">
-        <div class="step"><span>💡 Scaption (3x12)</span></div>
-        <div class="step"><span>💡 External Rotations (3x15)</span></div>
-        <div class="step"><span>💡 Neutral Hammer Press (3x10)</span></div>
-        <div class="step"><span>💡 Bent-Over Squeeze (3x12)</span></div>
+      <h3 class="lbl" style="text-align:center;margin-bottom:10px">🐶 Timber's Firsts & Memories</h3>
+      <!-- Quick preset taps -->
+      <p class="lbl" style="margin-bottom:5px">⚡ Quick Add</p>
+      <div class="mem-presets" id="memPresetsRow">
+        <button class="mem-preset" onclick="presetMemory('First Stroller Trip','soc')">🛻 Stroller</button>
+        <button class="mem-preset" onclick="presetMemory('First Cat Sniff (Tulip)','soc')">🐱 Cat Sniff</button>
+        <button class="mem-preset" onclick="presetMemory('First Voluntary Sit','train')">🎓 First Sit</button>
+        <button class="mem-preset" onclick="presetMemory('First Toothbrushing','health')">🦷 Teeth</button>
+        <button class="mem-preset" onclick="presetMemory('First Cat Sniff (Tigris)','soc')">🐈 Tigris</button>
       </div>
+      <div class="mem-cats" id="memCatRow">
+        <button class="mem-cat-btn cat-soc sel" onclick="selCat(this,'soc')"><span class="cat-icon">🌍</span>Social</button>
+        <button class="mem-cat-btn cat-home"    onclick="selCat(this,'home')"><span class="cat-icon">🏠</span>Home Life</button>
+        <button class="mem-cat-btn cat-health"  onclick="selCat(this,'health')"><span class="cat-icon">💚</span>Health</button>
+        <button class="mem-cat-btn cat-train"   onclick="selCat(this,'train')"><span class="cat-icon">🎓</span>Training</button>
+      </div>
+      <!-- Editable datetime -->
+      <input type="datetime-local" class="mem-datetime" id="memWhen" title="When did this happen?">
+      <div class="mem-add">
+        <input class="mem-input" id="memInput" type="text" placeholder="e.g. First stroller trip, first cat sniff…" maxlength="80">
+        <button class="mem-add-btn" onclick="addMemory()">+ Add</button>
+      </div>
+      <div class="mem-list" id="memList"></div>
+    </div>
+
+    <!-- RLT weekly reference -->
+    <div class="card" id="statsRef-rlt">
+      <h3 class="lbl" style="text-align:center;margin-bottom:9px">🔴 RLT Weekly Protocol</h3>
+      <div style="display:flex;flex-direction:column;gap:5px">
+        <div style="background:var(--pl);border:1.5px solid var(--pm);border-radius:9px;padding:7px 10px">
+          <span class="lbl" style="color:var(--pa)">Every Night — 9:00–9:40 PM</span>
+          <p style="font-size:.7rem;margin-top:2px">Face 10m → Hips 20m (10/side) → Rotating 10m</p>
+        </div>
+        <div style="background:var(--ll);border:1.5px solid var(--lm);border-radius:9px;padding:7px 10px">
+          <span class="lbl" style="color:var(--la)">Mon · Wed · Fri — Arms</span>
+          <p style="font-size:.7rem;margin-top:2px">Arms 10m → Arm PT immediately after (ATP window)</p>
+        </div>
+        <div style="background:var(--sl);border:1.5px solid var(--sm);border-radius:9px;padding:7px 10px">
+          <span class="lbl" style="color:var(--sa)">Tue · Thu — Knees</span>
+          <p style="font-size:.7rem;margin-top:2px">Both knees 10m — capsule inflammation</p>
+        </div>
+        <div style="background:var(--ml);border:1.5px solid var(--mm);border-radius:9px;padding:7px 10px">
+          <span class="lbl" style="color:var(--ma)">Sat · Sun — Low Back</span>
+          <p style="font-size:.7rem;margin-top:2px">Lumbar 10m — NIR to disc level</p>
+        </div>
+        <div style="background:var(--pl);border:1.5px solid var(--pm);border-radius:9px;padding:7px 10px">
+          <span class="lbl" style="color:var(--pa)">Daily Midday — Fasted Stomach 20m</span>
+          <p style="font-size:.7rem;margin-top:2px">12:40 PM → walk immediately after</p>
+        </div>
+        <p style="font-size:.6rem;color:var(--tm);text-align:center;margin-top:3px">Iron at lunch = 8hr buffer ✓ · No oils until after RLT ✓</p>
+      </div>
+    </div>
+
+    <!-- Weekly chart -->
+    <div class="card" style="padding:14px">
+      <p class="lbl" style="text-align:center;margin-bottom:3px">📅 Weekly PT Consistency</p>
+      <p style="text-align:center;font-size:.6rem;color:var(--tm);margin-bottom:9px">% completed each day</p>
+      <div style="position:relative;height:110px"><canvas id="mChWeek"></canvas></div>
+    </div>
+
+    <!-- Arm PT ref -->
+    <div class="card" id="statsRef-armpt">
+      <h3 class="lbl" style="text-align:center">💪 Arm PT Reference</h3>
+      <div class="steps" style="margin-top:8px">
+        <div class="step s-wellness"><span class="snum sn-wellness">1</span><span>Scaption — 3×12</span></div>
+        <div class="step s-wellness"><span class="snum sn-wellness">2</span><span>External Rotations — 3×15</span></div>
+        <div class="step s-wellness"><span class="snum sn-wellness">3</span><span>Neutral Hammer Press — 3×10</span></div>
+        <div class="step s-wellness"><span class="snum sn-wellness">4</span><span>Bent-Over Rows — 3×12</span></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- MEMORIES PAGE (mobile only) -->
+<div class="page" id="page-mem">
+  <div style="margin-top:12px;display:flex;flex-direction:column;gap:12px">
+    <div class="card">
+      <h3 class="lbl" style="text-align:center;margin-bottom:10px">🐶 Timber's Firsts & Memories</h3>
+      <p class="lbl" style="margin-bottom:5px">⚡ Quick Add</p>
+      <div class="mem-presets">
+        <button class="mem-preset" onclick="presetMemory2('First Stroller Trip','soc')">🛻 Stroller</button>
+        <button class="mem-preset" onclick="presetMemory2('First Cat Sniff (Tulip)','soc')">🐱 Cat Sniff</button>
+        <button class="mem-preset" onclick="presetMemory2('First Voluntary Sit','train')">🎓 First Sit</button>
+        <button class="mem-preset" onclick="presetMemory2('First Toothbrushing','health')">🦷 Teeth</button>
+        <button class="mem-preset" onclick="presetMemory2('First Cat Sniff (Tigris)','soc')">🐈 Tigris</button>
+      </div>
+      <div class="mem-cats" id="memCatRow2">
+        <button class="mem-cat-btn cat-soc sel" onclick="selCat2(this,'soc')"><span class="cat-icon">🌍</span>Social</button>
+        <button class="mem-cat-btn cat-home"    onclick="selCat2(this,'home')"><span class="cat-icon">🏠</span>Home Life</button>
+        <button class="mem-cat-btn cat-health"  onclick="selCat2(this,'health')"><span class="cat-icon">💚</span>Health</button>
+        <button class="mem-cat-btn cat-train"   onclick="selCat2(this,'train')"><span class="cat-icon">🎓</span>Training</button>
+      </div>
+      <input type="datetime-local" class="mem-datetime" id="memWhen2" title="When did this happen?">
+      <div class="mem-add">
+        <input class="mem-input" id="memInput2" type="text" placeholder="First stroller trip, first cat sniff…" maxlength="80">
+        <button class="mem-add-btn" onclick="addMemory2()">+ Add</button>
+      </div>
+      <div class="mem-list" id="memList2"></div>
     </div>
   </div>
 </div>
 
+<!-- TAB BAR -->
 <nav class="tab-bar">
-  <button class="tab active" id="tab-flow"  onclick="switchTab('flow')" ><span class="tab-icon">🗓️</span><span class="tab-label">Flow</span></button>
-  <button class="tab"        id="tab-pt"    onclick="switchTab('pt')"   ><span class="tab-icon">💪</span><span class="tab-label">Move</span></button>
+  <button class="tab active" id="tab-flow"  onclick="switchTab('flow')"><span class="tab-icon">🗓️</span><span class="tab-label">Flow</span></button>
+  <button class="tab"        id="tab-pt"    onclick="switchTab('pt')"  ><span class="tab-icon">💪</span><span class="tab-label">Move</span></button>
   <button class="tab"        id="tab-stats" onclick="switchTab('stats')"><span class="tab-icon">📊</span><span class="tab-label">Stats</span></button>
+  <button class="tab"        id="tab-mem"   onclick="switchTab('mem')" ><span class="tab-icon">🐶</span><span class="tab-label">Timber</span></button>
 </nav>
 
-<!-- DESKTOP -->
+<!-- DESKTOP / TABLET LAYOUT -->
 <div class="desktop-layout" id="desktopLayout">
   <header class="desk-header">
     <div class="desk-brand">
       <div class="desk-pills">
-        <span class="pill pla">✿ Sophia Yin Protocol</span>
+        <span class="pill pla">✿ Sophia Yin</span>
         <span class="pill pmi">🐾 Timber</span>
         <span class="pill ppe">🌿 Wellness</span>
       </div>
-      <h1>Jasmine's Life OS</h1>
-      <div style="display:flex;align-items:center;gap:7px;margin-top:4px">
+      <h1>Jasmine's Life OS ✿</h1>
+      <div style="display:flex;align-items:center;gap:7px;margin-top:3px">
         <span class="lbl">Right now:</span>
         <span class="clktime" id="dClk">--:-- --</span>
       </div>
     </div>
-
-    <!-- centered what's next -->
     <div class="desk-wn-wrap">
       <div class="whats-next">
         <span class="wn-icon">⏳</span>
         <div class="wn-text"><h4 id="dWnTitle">Loading…</h4><p id="dWnDesc"></p></div>
       </div>
     </div>
-
-    <button class="btn btn-ghost" onclick="resetDay()">☀️ Reset Today</button>
+    <div class="desk-header-right">
+      <div class="de-badge" onclick="deskSwitchPanel('stats')">
+        <span class="de-lbl">🇩🇪</span>
+        <span class="de-days" id="dDeDays">--</span>
+        <span class="de-lbl">days</span>
+      </div>
+      <button class="btn btn-ghost" onclick="resetDay()">☀️ Reset</button>
+    </div>
   </header>
 
   <div class="desk-grid">
+    <!-- LEFT -->
     <div class="desk-left">
       <div class="desk-stat-row">
-        <div class="desk-sc" style="border-color:var(--pm)"><span class="si">⏱️</span><span class="lbl" style="color:var(--pa)">Fasting</span><span class="sv">8:30 PM – 8:30 AM</span></div>
-        <div class="desk-sc" style="border-color:var(--mm)"><span class="si">🥗</span><span class="lbl" style="color:var(--ma)">Daily Fuel</span><span class="sv">1,700 kcal + Meds</span></div>
-        <div class="desk-sc" style="border-color:var(--lm)"><span class="si">🔴</span><span class="lbl" style="color:var(--la)">RLT Protocol</span><span class="sv">Red + NIR Daily</span></div>
+        <div class="desk-sc" style="border-color:var(--pm)"><span class="si">⏱️</span><span class="lbl" style="color:var(--pa)">Fasting</span><span class="sv">8:30 PM–8:30 AM</span></div>
+        <div class="desk-sc" style="border-color:var(--mm)"><span class="si">🥗</span><span class="lbl" style="color:var(--ma)">Daily Fuel</span><span class="sv">1,700 kcal</span></div>
+        <div class="desk-sc" style="border-color:var(--lm)"><span class="si">🔴</span><span class="lbl" style="color:var(--la)">Today's RLT</span><span class="sv" id="dTodayRlt">Loading…</span></div>
       </div>
 
       <div class="card desk-flow" id="deskFlowCard">
         <div class="desk-fhd" onclick="toggleDeskCollapse('deskFlowCard','deskFlowBody','deskFlowIcon')">
-          <h2 style="display:flex;align-items:center;gap:8px">Master Flow ✿ <span class="collapse-icon" id="deskFlowIcon">▼</span></h2>
+          <h2 style="display:flex;align-items:center;gap:7px">Today's Flow ✿ <span class="collapse-icon" id="deskFlowIcon">▼</span></h2>
           <div class="desk-fg" onclick="event.stopPropagation()">
             <button class="btn desk-btn-f on"         id="dba" onclick="ftl('all','d')">All</button>
             <button class="btn desk-btn-f f-timber"   id="dbp" onclick="ftl('timber','d')">🐾 Timber</button>
@@ -374,203 +817,395 @@ select{appearance:none;background:transparent;border:none;outline:none;font-fami
         </div>
       </div>
 
-      <div class="card" style="padding:16px">
-          <div class="chart-head-wrap" onclick="toggleDeskCollapse(null,'deskChartABody','deskChartAIcon')">
-            <p class="lbl" style="text-align:center;margin-bottom:4px;display:flex;justify-content:center;align-items:center;gap:6px">📅 Weekly Consistency <span class="collapse-icon" id="deskChartAIcon">▼</span></p>
-            <p style="text-align:center;font-size:.6rem;color:var(--tm);margin-bottom:8px">% of PT completed per day</p>
-          </div>
-          <div class="collapsible-body" id="deskChartABody">
-            <div class="desk-cb"><canvas id="dChWeek"></canvas></div>
-          </div>
+      <div class="card" style="padding:14px">
+        <div class="chart-head-wrap" onclick="toggleDeskCollapse(null,'deskChartBody','deskChartIcon')">
+          <p class="lbl" style="text-align:center;margin-bottom:3px;display:flex;justify-content:center;align-items:center;gap:5px">📅 Weekly PT Consistency <span class="collapse-icon" id="deskChartIcon">▼</span></p>
+          <p style="text-align:center;font-size:.58rem;color:var(--tm);margin-bottom:7px">% completed each day</p>
         </div>
+        <div class="collapsible-body" id="deskChartBody">
+          <div class="desk-cb"><canvas id="dChWeek"></canvas></div>
+        </div>
+      </div>
     </div>
 
+    <!-- RIGHT: tabbed panel -->
     <div class="desk-right">
-      <div class="desk-pt">
-        <div class="desk-pt-head" onclick="toggleDeskCollapse(null,'deskPtBody','deskPtIcon')">
-          <h2>Movement Engine 🌿 <span class="collapse-icon" id="deskPtIcon">▼</span></h2>
-          <p>Chisel away during Pomodoro breaks.<br>Saves automatically! ✨</p>
+      <div class="desk-tabs">
+        <button class="desk-tab active" id="dtab-pt"   onclick="deskSwitchPanel('pt')"   >💪 Movement</button>
+        <button class="desk-tab"        id="dtab-stats" onclick="deskSwitchPanel('stats')">📊 Stats</button>
+        <button class="desk-tab"        id="dtab-mem"  onclick="deskSwitchPanel('mem')"  >🐶 Timber</button>
+      </div>
+
+      <!-- PT panel -->
+      <div class="desk-panel active" id="dpanel-pt">
+        <div class="desk-pt" style="position:static;max-height:none">
+          <div class="desk-pt-head" onclick="toggleDeskCollapse(null,'deskPtBody','deskPtIcon')">
+            <h2>Movement Engine 🌿 <span class="collapse-icon" id="deskPtIcon">▼</span></h2>
+            <p>Pomodoro breaks → PT. Auto-saves! ✨</p>
+          </div>
+          <div class="collapsible-body" id="deskPtBody" style="display:flex;flex-direction:column;flex:1;min-height:0">
+            <div style="display:flex;justify-content:center;margin-bottom:14px">
+              <div class="dw2"><span class="lbl">Day:</span>
+                <select id="dDsel" onchange="chDay()">
+                  <option value="1">Monday</option><option value="2">Tuesday</option>
+                  <option value="3">Wednesday</option><option value="4">Thursday</option>
+                  <option value="5">Friday</option><option value="6">Saturday</option>
+                  <option value="0">Sunday</option>
+                </select>
+              </div>
+            </div>
+            <div class="prog-card" style="margin-bottom:12px">
+              <div class="pt2"><span class="lbl">Movement Progress</span><span class="pp" id="dPtxt">0%</span></div>
+              <div class="ptr"><div class="pf" id="dPbar"></div></div>
+              <div class="pm2"><span>Target: 1 Hour</span><span><span id="dDn">0</span>/<span id="dTn">0</span> Done</span></div>
+            </div>
+            <div class="desk-pts" id="dPtb"></div>
+          </div>
         </div>
-        <div class="collapsible-body" id="deskPtBody" style="display:flex;flex-direction:column;flex:1;min-height:0">
-          <div style="display:flex;justify-content:center;margin-bottom:16px">
-            <div class="dw2"><span class="lbl">Showing:</span>
-              <select id="dDsel" onchange="chDay()">
-                <option value="1">Monday</option><option value="2">Tuesday</option>
-                <option value="3">Wednesday</option><option value="4">Thursday</option>
-                <option value="5">Friday</option><option value="6">Saturday</option>
-                <option value="0">Sunday</option>
-              </select>
+      </div>
+
+      <!-- Stats panel -->
+      <div class="desk-panel" id="dpanel-stats">
+        <div class="de-module">
+          <div class="de-header">
+            <div>
+              <p class="lbl" style="color:var(--ga);margin-bottom:2px">🇩🇪 Germany — March 30</p>
+              <h3 style="color:var(--td)">Countdown</h3>
+            </div>
+            <div class="de-countdown">
+              <div class="de-unit"><span class="de-num" id="dDeD">--</span><span class="de-ulbl">days</span></div>
+              <div class="de-unit"><span class="de-num" id="dDeH">--</span><span class="de-ulbl">hrs</span></div>
+              <div class="de-unit"><span class="de-num" id="dDeM">--</span><span class="de-ulbl">min</span></div>
             </div>
           </div>
-          <div class="prog-card" style="margin-bottom:14px">
-            <div class="pt2"><span class="lbl">Movement Progress</span><span class="pp" id="dPtxt">0%</span></div>
-            <div class="ptr"><div class="pf" id="dPbar"></div></div>
-            <div class="pm2"><span>Target: 1 Hour</span><span><span id="dDn">0</span> / <span id="dTn">0</span> Done</span></div>
+          <div class="de-phrase">
+            <span style="font-size:1rem">💬</span>
+            <div style="flex:1">
+              <div class="de-phrase-de" id="dDePhraseDE">Wo ist die nächste U-Bahn?</div>
+              <div class="de-phrase-en" id="dDePhraseEN">Where is the nearest subway?</div>
+            </div>
+            <button class="de-phrase-btn" onclick="nextPhrase()" title="Next phrase">🔀</button>
           </div>
-          <div class="desk-pts" id="dPtb"></div>
+          <a href="https://wanderlog.com" target="_blank" rel="noopener" class="wanderlog-btn">🗺️ Open Wanderlog</a>
+        </div>
+        <div class="card">
+          <h3 class="lbl" style="text-align:center;margin-bottom:8px">🔴 RLT Protocol</h3>
+          <div style="display:flex;flex-direction:column;gap:5px">
+            <div style="background:var(--pl);border:1.5px solid var(--pm);border-radius:8px;padding:6px 9px">
+              <span class="lbl" style="color:var(--pa)">Nightly 9:00–9:40 PM</span>
+              <p style="font-size:.68rem;margin-top:2px">Face 10m → Hips 20m → Rotating 10m</p>
+            </div>
+            <div style="background:var(--ll);border:1.5px solid var(--lm);border-radius:8px;padding:6px 9px">
+              <span class="lbl" style="color:var(--la)">M/W/F Arms · T/Th Knees · Sat/Sun Back</span>
+            </div>
+            <div style="background:var(--pl);border:1.5px solid var(--pm);border-radius:8px;padding:6px 9px">
+              <span class="lbl" style="color:var(--pa)">Daily 12:40 PM — Fasted Stomach 20m</span>
+            </div>
+            <p style="font-size:.58rem;color:var(--tm);text-align:center;margin-top:2px">Iron at lunch = 8hr buffer ✓</p>
+          </div>
+        </div>
+        <div class="card" style="padding:14px">
+          <p class="lbl" style="text-align:center;margin-bottom:7px">Weekly PT Consistency</p>
+          <div class="desk-cb"><canvas id="dChWeekAlt"></canvas></div>
+        </div>
+      </div>
+
+      <!-- Timber panel -->
+      <div class="desk-panel" id="dpanel-mem">
+        <div class="card">
+          <h3 class="lbl" style="text-align:center;margin-bottom:10px">🐶 Timber's Firsts & Memories</h3>
+          <p class="lbl" style="margin-bottom:5px">⚡ Quick Add</p>
+          <div class="mem-presets">
+            <button class="mem-preset" onclick="presetMemoryD('First Stroller Trip','soc')">🛻 Stroller</button>
+            <button class="mem-preset" onclick="presetMemoryD('First Cat Sniff (Tulip)','soc')">🐱 Tulip</button>
+            <button class="mem-preset" onclick="presetMemoryD('First Voluntary Sit','train')">🎓 First Sit</button>
+            <button class="mem-preset" onclick="presetMemoryD('First Toothbrushing','health')">🦷 Teeth</button>
+            <button class="mem-preset" onclick="presetMemoryD('First Cat Sniff (Tigris)','soc')">🐈 Tigris</button>
+          </div>
+          <div class="mem-cats" id="memCatRowD">
+            <button class="mem-cat-btn cat-soc sel" onclick="selCatD(this,'soc')"><span class="cat-icon">🌍</span>Social</button>
+            <button class="mem-cat-btn cat-home"    onclick="selCatD(this,'home')"><span class="cat-icon">🏠</span>Home</button>
+            <button class="mem-cat-btn cat-health"  onclick="selCatD(this,'health')"><span class="cat-icon">💚</span>Health</button>
+            <button class="mem-cat-btn cat-train"   onclick="selCatD(this,'train')"><span class="cat-icon">🎓</span>Train</button>
+          </div>
+          <input type="datetime-local" class="mem-datetime" id="memWhenD" title="When did this happen?">
+          <div class="mem-add">
+            <input class="mem-input" id="memInputD" type="text" placeholder="First stroller walk…" maxlength="80">
+            <button class="mem-add-btn" onclick="addMemoryD()">+ Add</button>
+          </div>
+          <div class="mem-list" id="memListD"></div>
         </div>
       </div>
     </div>
   </div>
 </div>
 
+<!-- BOTTOM SHEET OVERLAY -->
+<div class="sheet-overlay" id="sheetOverlay" onclick="closeSheet()"></div>
+
+<!-- BOTTOM SHEET -->
+<div class="sheet" id="sheet">
+  <div class="sheet-handle"></div>
+  <div class="sheet-title" id="sheetTitle">📍 I'm Here</div>
+  <p class="sheet-sub" id="sheetSub">Tap a timeline block to anchor your current position.</p>
+  <div class="sheet-offset-display">
+    <div class="sheet-offset-num synced" id="sheetOffsetNum">0</div>
+    <div class="sheet-offset-meta">
+      <span class="sheet-offset-label">minutes</span>
+      <span class="sheet-offset-dir" id="sheetOffsetDir">on schedule ✓</span>
+    </div>
+  </div>
+  <div class="sheet-actions">
+    <button class="sheet-btn sheet-btn-shift" id="sheetShiftBtn" onclick="applyShift()">
+      ⏩ Shift Remaining Schedule
+    </button>
+    <button class="sheet-btn" id="sheetUndoBtn" onclick="undoShift()" style="background:var(--pl);color:var(--pa);border-color:var(--pm);display:none">
+      ↩ Undo Shift — Restore Original Plan
+    </button>
+    <button class="sheet-btn sheet-btn-gemini" onclick="copyGeminiPrompt()">
+      ✨ Copy Gemini Priority Prompt
+    </button>
+    <button class="sheet-btn sheet-btn-claude" onclick="toggleClaudePanel()">
+      🤖 Ask Claude — Get AI Prioritization
+    </button>
+    <!-- Claude response panel -->
+    <div class="claude-panel" id="claudePanel">
+      <div class="claude-presets">
+        <button class="claude-preset-q" onclick="askClaude('How do I ruthlessly compress my remaining schedule to protect sleep and Timber\'s care?')">Compress today</button>
+        <button class="claude-preset-q" onclick="askClaude('Which remaining tasks can be skipped or shortened tonight without health consequences?')">What can I skip?</button>
+        <button class="claude-preset-q" onclick="askClaude('What is the minimum I must do tonight for Timber\'s wellbeing?')">Timber essentials</button>
+      </div>
+      <div class="claude-input-row">
+        <input class="claude-input" id="claudeInput" type="text" placeholder="Ask anything about your day…" maxlength="200">
+        <button class="claude-send-btn" id="claudeSendBtn" onclick="askClaudeCustom()">Ask</button>
+      </div>
+      <div class="claude-response thinking" id="claudeResponse">Tap a question above or type your own.</div>
+    </div>
+    <button class="sheet-btn sheet-btn-cancel" onclick="closeSheet()">
+      Close
+    </button>
+  </div>
+</div>
+
+<!-- GIST SYNC MODAL -->
+<div class="gist-modal" id="gistModal">
+  <div class="gist-modal-box">
+    <div class="gist-modal-handle"></div>
+    <h2 style="margin-bottom:10px">☁️ GitHub Gist Sync</h2>
+    <p class="gist-step">Your Timber memories sync to a private GitHub Gist — accessible from any device.<br><br>
+      <strong>Setup (2 min):</strong><br>
+      1. Go to <a href="https://github.com/settings/tokens/new" target="_blank">github.com/settings/tokens/new</a><br>
+      2. Name it "Life OS", check <strong>gist</strong> scope only, click Generate<br>
+      3. Copy the token and paste it below
+    </p>
+    <input class="gist-token-input" id="gistTokenInput" type="password" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" autocomplete="off">
+    <p style="font-size:.62rem;color:var(--tm);margin-bottom:12px">Token stays on your device only. Never sent anywhere except GitHub's API.</p>
+    <div id="gistStatusMsg" style="font-size:.7rem;color:var(--ma);margin-bottom:10px;display:none"></div>
+    <div class="gist-modal-actions">
+      <button class="gist-cancel-btn" onclick="closeGistModal()">Cancel</button>
+      <button class="gist-save-btn" onclick="saveGistToken()">Connect & Sync</button>
+    </div>
+    <div id="gistDisconnectWrap" style="display:none;margin-top:10px;text-align:center">
+      <button onclick="disconnectGist()" style="background:none;border:none;color:var(--pa);font-family:'Nunito',sans-serif;font-size:.68rem;font-weight:900;cursor:pointer;text-decoration:underline">Disconnect sync</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
 <script>
-// ─────────────────────────────────────────────────────────────────────────────
-// SCHEDULE DATA
-// Each step has its own category:
-//   "timber"   = Timber / puppy care tasks
-//   "focus"    = heads-down computer / work tasks
-//   "wellness" = body, meds, self-care, food, wind-down tasks
-// ─────────────────────────────────────────────────────────────────────────────
+// ─── CONSTANTS ────────────────────────────────────────────────────────────────
+const GERMANY_DATE = new Date('2026-03-30T06:00:00');
+
+const DE_PHRASES = [
+  {de:'Wo ist die nächste U-Bahn?',        en:'Where is the nearest subway?'},
+  {de:'Ich hätte gerne ein Wasser, bitte.', en:'I would like a water, please.'},
+  {de:'Wie viel kostet das?',              en:'How much does that cost?'},
+  {de:'Entschuldigung, ich spreche kein Deutsch.',en:'Excuse me, I don\'t speak German.'},
+  {de:'Können Sie mir helfen?',            en:'Can you help me?'},
+  {de:'Wo ist das nächste WC?',            en:'Where is the nearest restroom?'},
+  {de:'Ich bin allergisch gegen…',         en:'I am allergic to…'},
+  {de:'Einmal hin und zurück, bitte.',     en:'One return ticket, please.'},
+  {de:'Sprechen Sie Englisch?',            en:'Do you speak English?'},
+  {de:'Das ist sehr schön!',               en:'That is very beautiful!'},
+  {de:'Wo ist der Bahnhof?',               en:'Where is the train station?'},
+  {de:'Einen Tisch für zwei, bitte.',      en:'A table for two, please.'},
+];
+let phraseIdx = Math.floor(Math.random() * DE_PHRASES.length);
+
+// RLT target by day: 0=Sun,1=Mon,2=Tue,3=Wed,4=Thu,5=Fri,6=Sat
+const RLT_DAY = {
+  0:{target:'Low Back',  label:'Lumbar — 10 min seated/lying',color:'var(--ma)'},
+  1:{target:'Arms',      label:'Biceps + shoulders — 10 min · then Arm PT',color:'var(--la)'},
+  2:{target:'Knees',     label:'Both knees — 10 min angled',color:'var(--sa)'},
+  3:{target:'Arms',      label:'Biceps + shoulders — 10 min · then Arm PT',color:'var(--la)'},
+  4:{target:'Knees',     label:'Both knees — 10 min angled',color:'var(--sa)'},
+  5:{target:'Arms',      label:'Biceps + shoulders — 10 min · then Arm PT',color:'var(--la)'},
+  6:{target:'Low Back',  label:'Lumbar — 10 min seated/lying',color:'var(--ma)'},
+};
+
+// ─── SCHEDULE DATA ────────────────────────────────────────────────────────────
+// Steps: c = category (timber/focus/wellness)
+//        note = optional collapsible "why" text (not a numbered step)
+// Day-specific blocks are tagged with days[] — only shown on matching weekday
+// RLT rotating block is handled dynamically
 const S=[
  {t:"08:00 AM",e:"08:20 AM",i:"🌅",h:"Morning Routine & Potty",steps:[
-   {c:"wellness",txt:"<b>Apply Skincare:</b> Vitamin C serum and sunscreen."},
-   {c:"timber",  txt:"<b>Litter/Potty:</b> Check litter box or take Timber to potty spot."},
-   {c:"timber",  txt:"<b>Reward:</b> Treat immediately for going."},
-   {c:"timber",  txt:"<b>Prep:</b> Load Timber into the stroller for morning walk."},
+   {c:"wellness",txt:"Apply skincare — Vitamin C serum + sunscreen."},
+   {c:"timber",  txt:"Check litter box or take Timber to potty spot."},
+   {c:"timber",  txt:"Treat immediately the moment he goes."},
+   {c:"timber",  txt:"Load Timber into the stroller."},
  ]},
- {t:"08:20 AM",e:"08:40 AM",i:"☀️",h:"Stroller Walk — 20 mins",steps:[
-   {c:"timber",  txt:"<b>Paws Off Ground:</b> Keep him entirely in the stroller for safety."},
-   {c:"timber",  txt:"<b>Socialization:</b> Push at a relaxed pace. Pause for new sights."},
-   {c:"timber",  txt:"<b>Observation:</b> Let him watch cars, dogs, or neighbors."},
-   {c:"wellness",txt:"<b>You:</b> Breathe fresh air, swing arms, start the day gently."},
-   {c:"timber",  txt:"<b>Reward:</b> Treat for calm, quiet observing."},
+ {t:"08:20 AM",e:"08:40 AM",i:"☀️",h:"Stroller Walk — 20 min",steps:[
+   {c:"timber",  txt:"Paws off ground — keep him fully in the stroller.",note:"Prevents ground contact while he's still in the Sophia Yin socialization protocol."},
+   {c:"timber",  txt:"Push at a relaxed pace. Pause at anything interesting."},
+   {c:"wellness",txt:"Swing your arms, breathe deeply — your morning movement."},
+   {c:"timber",  txt:"Treat for calm, quiet observation."},
  ]},
- {t:"08:40 AM",e:"09:20 AM",i:"🍳",h:"Break Fast + Meds + Playpen",steps:[
-   {c:"timber",  txt:"<b>Zone Shift:</b> Place Timber in <b>Living Room Playpen</b>."},
-   {c:"timber",  txt:"<b>Treasure Hunt:</b> Scatter 5-10 kibbles in pen to keep him busy."},
-   {c:"wellness",txt:"<b>Eat & Meds:</b> High-protein breakfast + Vyvanse & Glucosamine."},
-   {c:"wellness",txt:"<b>Log:</b> Record meal in Cronometer and symptoms in Guava."},
-   {c:"timber",  txt:"<b>Prep:</b> Make a frozen Groov tool for his next nap."},
+ {t:"08:40 AM",e:"09:10 AM",i:"🍳",h:"Break Fast + Meds",steps:[
+   {c:"timber",  txt:"Place Timber in Living Room Playpen."},
+   {c:"timber",  txt:"Scatter 5–10 kibbles in pen for enrichment."},
+   {c:"wellness",txt:"Eat high-protein breakfast + Vyvanse & Glucosamine.",note:"Glucosamine absorbs better with food. Vyvanse taken fasted can feel harsh — food buffer helps."},
+   {c:"wellness",txt:"Log meal in Cronometer + symptoms in Guava."},
+   {c:"timber",  txt:"Prep a frozen Groov/Kong for his nap."},
  ]},
- {t:"09:20 AM",e:"10:00 AM",i:"💪",h:"Arm PT & Desk Prep",steps:[
-   {c:"timber",  txt:"<b>Zone Shift:</b> Move Timber to <b>Office Apartment</b> for Nap 1."},
-   {c:"wellness",txt:"<b>Weights:</b> Grab your two 5lb weights."},
-   {c:"wellness",txt:"<b>Scaption:</b> 3x12 reps. Lift arms in a 'V' shape."},
-   {c:"wellness",txt:"<b>Rotations & Press:</b> 3x15 external rotations, 3x10 hammer press."},
-   {c:"wellness",txt:"<b>Rows:</b> 3x12 bent-over squeeze."},
-   {c:"focus",   txt:"<b>Settle:</b> Sit at your desk and prep for deep work."},
+ {t:"09:10 AM",e:"09:35 AM",i:"💪",h:"Arm PT — 5lb Weights",statsTarget:'armpt',steps:[
+   {c:"timber",  txt:"Move Timber to Office Apartment for Nap 1. Frozen Kong inside."},
+   {c:"wellness",txt:"Scaption — 3×12. Arms in a V shape, thumbs up.",note:"Targets supraspinatus safely. Builds shoulder stabilizers without impingement risk — essential for hypermobility."},
+   {c:"wellness",txt:"External Rotations — 3×15. Elbow pinned, rotate out.",note:"Strengthens rotator cuff. Hypermobile joints need muscle tension to compensate for lax ligaments."},
+   {c:"wellness",txt:"Hammer Press — 3×10. Palms face each other.",note:"Neutral grip avoids shoulder impingement common with hypermobility."},
+   {c:"wellness",txt:"Bent-Over Rows — 3×12. Squeeze shoulder blades."},
  ]},
- {t:"10:00 AM",e:"11:20 AM",i:"🔄",h:"Focus Block 1 — 25/5 Pomodoro",steps:[
-   {c:"focus",   txt:"<b>Focus:</b> Start a 25-minute timer. Deep work only."},
-   {c:"wellness",txt:"<b>Breaks:</b> During 5-min break, do ONE leg/core PT exercise."},
-   {c:"timber",  txt:"<b>Timber:</b> Remains resting in his Office Apartment."},
-   {c:"timber",  txt:"<b>Safety:</b> Do NOT tether to yourself if doing stairs/chores."},
+ {t:"09:35 AM",e:"11:20 AM",i:"🔄",h:"Focus Block 1 — Pomodoro ×2",steps:[
+   {c:"focus",   txt:"Sit at desk. 25-min timer. Deep work only."},
+   {c:"wellness",txt:"5-min break: one PT exercise from your Movement list."},
+   {c:"focus",   txt:"Repeat for second cycle."},
+   {c:"timber",  txt:"Timber stays resting. Don't tether during focus blocks.",note:"Tethering while distracted reduces your ability to read his signals. Nap time = trust time."},
  ]},
- {t:"11:20 AM",e:"11:40 AM",i:"🚽",h:"Potty then Play — Session 2",steps:[
-   {c:"timber",  txt:"<b>Potty:</b> Check litter box or take him to potty spot."},
-   {c:"timber",  txt:"<b>Reward:</b> Immediate treat for going."},
-   {c:"timber",  txt:"<b>Play:</b> 10 minutes of structured play (fetch, chase)."},
-   {c:"timber",  txt:"<b>Rule:</b> No potty in 5 min? Back in Apartment, retry soon."},
+ {t:"11:20 AM",e:"11:45 AM",i:"🚽",h:"Potty + Play — Session 2",timers:[{label:"Potty",mins:5,emoji:"🚽"},{label:"Play",mins:10,emoji:"🎾"},{label:"Play",mins:15,emoji:"🎾"}],steps:[
+   {c:"timber",  txt:"Potty check — litter box or potty spot."},
+   {c:"timber",  txt:"Treat immediately for going."},
+   {c:"timber",  txt:"10 min structured play — fetch, chase, tug."},
+   {c:"timber",  txt:"No potty in 5 min? Back in Apartment, try again in 15."},
  ]},
- {t:"11:40 AM",e:"12:40 PM",i:"🪢",h:"Hands-Free Tether (Desk Time)",steps:[
-   {c:"timber",  txt:"<b>Tether:</b> Clip him to your desk leg or waist while you work."},
-   {c:"timber",  txt:"<b>Dr. Yin Rule:</b> Wait. Reward any voluntary sitting with kibble."},
-   {c:"timber",  txt:"<b>Ignore:</b> Jumping or whining gets zero attention."},
-   {c:"timber",  txt:"<b>Movement:</b> If you need to change floors, unclip and use playpen."},
-   {c:"focus",   txt:"<b>Pomodoro:</b> Continue 25/5 cycles of deep work."},
+ {t:"11:45 AM",e:"12:40 PM",i:"🪢",h:"Hands-Free Tether — Desk",steps:[
+   {c:"timber",  txt:"Clip him to desk leg or belt loop."},
+   {c:"timber",  txt:"Reward any voluntary calm sitting with a kibble.",note:"Sophia Yin's Learn to Earn: reward the behavior you want. Ignore jumping or whining entirely."},
+   {c:"focus",   txt:"Pomodoro 25/5 cycles."},
+   {c:"timber",  txt:"Moving floors or doing chores? Unclip → playpen first."},
  ]},
- {t:"12:40 PM",e:"01:00 PM",i:"🔴",h:"Stomach RLT (Fasted)",steps:[
-   {c:"timber",  txt:"<b>Timber:</b> Keep tethered near desk or place in Apartment."},
-   {c:"wellness",txt:"<b>Setup:</b> Sit at your desk with MitoPRO+ panel facing abdomen."},
-   {c:"wellness",txt:"<b>Protocol:</b> 20 mins RED + NIR. Fasted state is optimal."},
-   {c:"wellness",txt:"<b>Note:</b> Wipe stomach first if any residual night oils remain."},
-   {c:"focus",   txt:"<b>Multitask:</b> Continue reading CTA logs/emails."},
+ {t:"12:40 PM",e:"01:00 PM",i:"🔴",h:"RLT — Fasted Stomach (20 min)",steps:[
+   {c:"timber",  txt:"Tether Timber near desk or move to Apartment."},
+   {c:"wellness",txt:"MitoPRO panel at 6 inches, abdomen, RED + NIR.",note:"Fasted RLT causes adipocytes to release lipids. The walk immediately after ensures those lipids are burned, not re-stored."},
+   {c:"wellness",txt:"20-min timer. Can read or do light work."},
+   {c:"wellness",txt:"Wipe stomach first if any oils migrated there."},
  ]},
- {t:"01:00 PM",e:"01:25 PM",i:"🚽",h:"Potty then Play — Session 3",steps:[
-   {c:"timber",  txt:"<b>Immediate Potty:</b> Reward heavily."},
-   {c:"timber",  txt:"<b>Playtime:</b> 15 minutes of structured play."},
-   {c:"timber",  txt:"<b>Training:</b> Practice recalls ('Timber, come!'). Treat upon arrival."},
-   {c:"timber",  txt:"<b>Crate Reset:</b> If no potty, back in crate for 15 mins."},
+ {t:"01:00 PM",e:"01:25 PM",i:"🚶",h:"Potty Walk + Metabolic Follow-Through",timers:[{label:"Potty",mins:5,emoji:"🚽"},{label:"Walk",mins:15,emoji:"🚶"}],steps:[
+   {c:"timber",  txt:"Potty check — reward heavily."},
+   {c:"timber",  txt:"15 min walk or active play.",note:"This IS the metabolic follow-through. Lipids released by RLT are circulating now — movement ensures they're burned. Don't skip this."},
+   {c:"timber",  txt:"Practice recalls — 'Timber, come!' Treat on arrival."},
  ]},
- {t:"01:25 PM",e:"02:05 PM",i:"🍽️",h:"Lunch + Iron Supplement",steps:[
-   {c:"wellness",txt:"<b>Eat:</b> Have your lunch now."},
-   {c:"wellness",txt:"<b>Log:</b> Update Cronometer and Guava."},
-   {c:"wellness",txt:"<b>Meds:</b> Take Iron Supplement (wait 1 hour before coffee)."},
-   {c:"timber",  txt:"<b>Timber:</b> Tethered nearby. Practice 'Sit to Please' for attention."},
+ {t:"01:25 PM",e:"01:55 PM",i:"🍽️",h:"Lunch + Iron",steps:[
+   {c:"wellness",txt:"Eat lunch."},
+   {c:"wellness",txt:"Take Iron supplement with food.",note:"Lunch iron = 8-hour buffer before 9 PM RLT. High systemic iron can amplify oxidative stress during photobiomodulation."},
+   {c:"wellness",txt:"Log in Cronometer + Guava."},
+   {c:"timber",  txt:"Timber tethered nearby. Sit to Please practice."},
  ]},
- {t:"02:05 PM",e:"04:00 PM",i:"🔄",h:"Focus Block 2 — Sit/Stand Desk",steps:[
-   {c:"timber",  txt:"<b>Zone Shift:</b> Place frozen Kong in Office Apartment."},
-   {c:"timber",  txt:"<b>Nap 2:</b> Guide Timber inside, latch door, let him rest."},
-   {c:"focus",   txt:"<b>Ergonomics:</b> Toggle desk to standing height to start."},
-   {c:"focus",   txt:"<b>Pomodoro:</b> Resume 25/5 cycles. Switch to sitting every 45 mins."},
-   {c:"focus",   txt:"<b>Focus:</b> Zero distractions until 4:00 PM."},
+ {t:"01:55 PM",e:"04:00 PM",i:"🔄",h:"Focus Block 2 — Sit/Stand Desk",steps:[
+   {c:"timber",  txt:"Frozen Kong in Apartment. Guide Timber in for Nap 2."},
+   {c:"focus",   txt:"Toggle desk to standing height to start."},
+   {c:"focus",   txt:"Pomodoro cycles. Sit/stand every ~45 min."},
+   {c:"focus",   txt:"Longest uninterrupted focus window. Guard it.",note:"Timber is napping and fed — this is your best deep work window of the day."},
  ]},
- {t:"04:00 PM",e:"04:30 PM",i:"🚽",h:"Potty + Play + Cats",steps:[
-   {c:"timber",  txt:"<b>Potty:</b> Immediate trip/box check. Reward."},
-   {c:"timber",  txt:"<b>Play:</b> 15 minutes of structured play."},
-   {c:"timber",  txt:"<b>Exposure:</b> Supervised, distant cat greeting (optional)."},
-   {c:"timber",  txt:"<b>Safety:</b> If doing chores, use playpen, do NOT tether on stairs."},
+ {t:"04:00 PM",e:"04:30 PM",i:"🚽",h:"Potty + Play + Cats",timers:[{label:"Potty",mins:5,emoji:"🚽"},{label:"Play",mins:15,emoji:"🎾"},{label:"Cat Time",mins:10,emoji:"🐱"}],steps:[
+   {c:"timber",  txt:"Immediate potty check. Reward."},
+   {c:"timber",  txt:"15 min structured play."},
+   {c:"timber",  txt:"Optional: supervised distant cat greeting."},
+   {c:"timber",  txt:"Doing chores? Use playpen — do NOT tether on stairs."},
  ]},
- {t:"04:30 PM",e:"05:15 PM",i:"🪢",h:"Tethered Final Focus Hour",steps:[
-   {c:"timber",  txt:"<b>Tether:</b> Clip Timber to desk leg or belt."},
-   {c:"focus",   txt:"<b>Wrap Up:</b> Finish any remaining urgent CTA tasks."},
-   {c:"timber",  txt:"<b>Reward:</b> Quietly mark and treat when he settles calmly."},
-   {c:"focus",   txt:"<b>Energy:</b> Keep this block low-stimulation to prep for evening."},
+ {t:"04:30 PM",e:"05:15 PM",i:"🪢",h:"Tethered Wind-Down Focus",steps:[
+   {c:"timber",  txt:"Clip Timber to desk leg."},
+   {c:"focus",   txt:"Finish urgent CTA wrap-up tasks."},
+   {c:"timber",  txt:"Mark and treat quietly when he settles."},
+   {c:"focus",   txt:"Keep stimulation low — winding toward evening."},
  ]},
- {t:"05:15 PM",e:"05:45 PM",i:"🦮",h:"Evening Stroller Walk",steps:[
-   {c:"timber",  txt:"<b>Prep:</b> Load Timber into the stroller."},
-   {c:"timber",  txt:"<b>Socialization:</b> Expose to 5 new sights/sounds."},
-   {c:"wellness",txt:"<b>You:</b> Swing your arms, breathe deeply, decompress."},
-   {c:"timber",  txt:"<b>Reward:</b> Treat Timber for calm observation of the world."},
+ {t:"05:15 PM",e:"05:45 PM",i:"🦮",h:"Evening Stroller Walk — 30 min",steps:[
+   {c:"timber",  txt:"Load Timber into stroller."},
+   {c:"timber",  txt:"Expose to 5 new sights or sounds."},
+   {c:"wellness",txt:"Swing arms, breathe deeply — decompress from work."},
+   {c:"timber",  txt:"Treat for calm world observation."},
  ]},
- {t:"05:45 PM",e:"06:45 PM",i:"😴",h:"Nap 3 + Chores + Cat Time",steps:[
-   {c:"timber",  txt:"<b>Zone Shift:</b> Secure Timber in Apartment (Mandatory Rest)."},
-   {c:"wellness",txt:"<b>Cats:</b> Undivided attention for Tulip (wand toy/laser)."},
-   {c:"wellness",txt:"<b>Chores:</b> Check Sweepy app and do 15–20 mins of cleaning."},
-   {c:"wellness",txt:"<b>Freedom:</b> Use stairs freely while Timber is secured."},
+ {t:"05:45 PM",e:"06:45 PM",i:"😴",h:"Timber Nap 3 + Chores + Cats",steps:[
+   {c:"timber",  txt:"Secure Timber in Apartment for mandatory rest.",note:"Puppies need 16–18 hrs sleep/day. Skipping naps causes overtired biting and regression. Nap enforcement IS training."},
+   {c:"wellness",txt:"Undivided cat time — wand toy or laser for Tulip."},
+   {c:"wellness",txt:"Check Sweepy app. 15–20 min cleaning."},
+   {c:"wellness",txt:"Stairs are yours — move freely."},
  ]},
- {t:"06:45 PM",e:"07:30 PM",i:"🧊",h:"Dinner Prep & Social",steps:[
-   {c:"timber",  txt:"<b>Prep:</b> Assemble tomorrow's Groov tool/Kongs and freeze."},
-   {c:"wellness",txt:"<b>Social:</b> Cook dinner and chat with Nathan."},
-   {c:"timber",  txt:"<b>Timber:</b> Still napping. Resist waking him early."},
+ {t:"06:45 PM",e:"07:30 PM",i:"🧊",h:"Dinner Prep + Kong Prep",steps:[
+   {c:"timber",  txt:"Assemble tomorrow's Groov tools and Kongs. Freeze now.",note:"Frozen enrichment takes ~4 hours. Prepping tonight = ready for tomorrow's nap blocks."},
+   {c:"wellness",txt:"Cook dinner and chat with Nathan."},
+   {c:"timber",  txt:"Timber still napping — resist waking early."},
  ]},
- {t:"07:30 PM",e:"08:30 PM",i:"📺",h:"Dinner + TV Hour (Playpen)",steps:[
-   {c:"timber",  txt:"<b>Wake & Potty:</b> Quick trip/box check for Timber."},
-   {c:"timber",  txt:"<b>Zone Shift:</b> Place him in <b>Living Room Playpen</b>."},
-   {c:"wellness",txt:"<b>Eat:</b> Enjoy dinner (log in Cronometer)."},
-   {c:"wellness",txt:"<b>Relax:</b> Watch TV. Timber has a chew. No tethering needed!"},
+ {t:"07:30 PM",e:"08:30 PM",i:"📺",h:"Dinner + TV + Meds (Playpen)",steps:[
+   {c:"timber",  txt:"Wake Timber. Immediate potty check."},
+   {c:"timber",  txt:"Place him in Living Room Playpen with a chew."},
+   {c:"wellness",txt:"Eat dinner — log in Cronometer."},
+   {c:"wellness",txt:"Take Sertraline + Sronyx with dinner.",note:"Taking SSRIs and contraceptives with food reduces nausea and stomach upset. Consistent evening timing maintains steady serum levels."},
+   {c:"wellness",txt:"Watch TV. No tethering needed."},
  ]},
- {t:"08:30 PM",e:"09:00 PM",i:"🚿",h:"Shower + Wind Down",steps:[
-   {c:"timber",  txt:"<b>Zone Shift:</b> Guide Timber back to Office Apartment."},
-   {c:"wellness",txt:"<b>Shower:</b> Take your evening shower (30-min window)."},
-   {c:"wellness",txt:"<b>Balance:</b> Brush teeth + 2 mins Single Leg Balance."},
-   {c:"wellness",txt:"<b>Hygiene:</b> Floss and use mouthwash."},
+ {t:"08:30 PM",e:"09:00 PM",i:"🚿",h:"Shower + Quick Grooming",steps:[
+   {c:"timber",  txt:"Guide Timber back to Office Apartment."},
+   {c:"wellness",txt:"Shower — no oils or lotions. Bare skin for RLT.",note:"Oils, sunscreen, and moisturizers form a reflective barrier. Photons scatter before reaching tissue. Bare skin = full dose."},
+   {c:"timber",  txt:"Slicker brush 30 sec + dog toothpaste lick."},
+   {c:"wellness",txt:"Brush teeth + 2 min Single Leg Balance + floss."},
  ]},
- {t:"09:00 PM",e:"09:30 PM",i:"🔴",h:"Clean Face/Body RLT",steps:[
-   {c:"timber",  txt:"<b>Timber:</b> Safe in his Apartment with litter box access."},
-   {c:"wellness",txt:"<b>Setup:</b> RLT Panel in the office."},
-   {c:"wellness",txt:"<b>Crucial:</b> Do Face/Pain RLT <i>BEFORE</i> applying oils/skincare."},
-   {c:"wellness",txt:"<b>Protocol:</b> 10-20 mins RED + NIR. 6 inches away."},
-   {c:"wellness",txt:"<b>Skincare:</b> Apply Vitamin A and body oils <i>afterward</i>."},
+ {t:"09:00 PM",e:"09:10 PM",i:"🔴",h:"RLT — Face (10 min)",statsTarget:'rlt',steps:[
+   {c:"wellness",txt:"Panel 6 inches. RED + NIR. Eyes closed or goggles."},
+   {c:"wellness",txt:"10-min timer.",note:"Collagen remodeling, anti-inflammatory, circadian support via facial photoreceptors."},
  ]},
- {t:"09:30 PM",e:"10:00 PM",i:"🧩",h:"Hobbies + Hobonichi",steps:[
-   {c:"timber",  txt:"<b>Brain Drain:</b> Feed remaining kibble in puzzle feeders."},
-   {c:"wellness",txt:"<b>Relax:</b> Game, craft, Discord, or Hobonichi."},
-   {c:"timber",  txt:"<b>Freedom:</b> Timber can be loose/supervised in the office."},
-   {c:"wellness",txt:"<b>Bonding:</b> Enjoy your hobby while he works his brain."},
+ {t:"09:10 PM",e:"09:30 PM",i:"🔴",h:"RLT — Hips (10 min each side)",steps:[
+   {c:"wellness",txt:"Left hip — panel flush to skin. 10 min."},
+   {c:"wellness",txt:"Right hip — panel flush to skin. 10 min."},
+   {c:"wellness",txt:"Phone alarm for each switch.",note:"Nightly hip dosing: NIR penetrates to bursa/joint capsule level. Reduces cyst fluid accumulation, stimulates collagen cross-linking in hypermobile tissue."},
  ]},
- {t:"10:00 PM",e:"11:00 PM",i:"🐕",h:"Grooming & Lap Session",steps:[
-   {c:"timber",  txt:"<b>Treats Safe:</b> Litter box trained means late treats are okay!"},
-   {c:"timber",  txt:"<b>Teeth:</b> Let him lick dog-safe toothpaste off the brush."},
-   {c:"timber",  txt:"<b>Coat:</b> 30 seconds with slicker brush, then treat."},
-   {c:"timber",  txt:"<b>Chill:</b> Sit on the floor/couch. Let him settle on your lap."},
-   {c:"wellness",txt:"<b>Vibe:</b> Low voice, calm trust-building time."},
+ // RLT rotating block — steps injected dynamically based on today's day
+ {t:"09:30 PM",e:"09:40 PM",i:"🔴",h:"RLT — Rotating Target (10 min)",isRltRotating:true,steps:[]},
+ // Arm PT — only on Mon/Wed/Fri (days 1,3,5)
+ {t:"09:40 PM",e:"10:05 PM",i:"💪",h:"ATP Window — Arm PT",days:[1,3,5],statsTarget:'armpt',steps:[
+   {c:"wellness",txt:"Scaption — 3×12 slow reps."},
+   {c:"wellness",txt:"External Rotations — 3×15."},
+   {c:"wellness",txt:"Hammer Press — 3×10."},
+   {c:"wellness",txt:"Bent-Over Rows — 3×12."},
+   {c:"wellness",txt:"ATP from RLT peaks now — best window for collagen remodeling.",note:"Photobiomodulation elevates cellular ATP 5–10 min post-session. Doing resistance work in this window maximizes collagen synthesis and muscle adaptation."},
  ]},
- {t:"11:00 PM",e:"11:30 PM",i:"🏠",h:"Timber's Bedtime",steps:[
-   {c:"timber",  txt:"<b>Final Potty:</b> Ensure he knows where the litter box is."},
-   {c:"timber",  txt:"<b>Bed:</b> Place him in Apartment, toss small treat, latch."},
-   {c:"timber",  txt:"<b>Quiet:</b> Turn lights low, walk away."},
-   {c:"timber",  txt:"<b>Rule:</b> No long goodbyes. Ignore minor whining."},
+ {t:"10:05 PM",e:"10:15 PM",i:"✨",h:"Skincare — Post-RLT",statsTarget:'rlt',steps:[
+   {c:"wellness",txt:"Apply Vitamin A / retinol to face.",note:"RLT upregulates cellular receptors and increases local blood flow. Vitamin A absorption is enhanced immediately post-session."},
+   {c:"wellness",txt:"Collagen oils on hips and target areas."},
+   {c:"wellness",txt:"Never apply before RLT — oils block photons."},
  ]},
- {t:"11:30 PM",e:"11:59 PM",i:"💊",h:"PM Meds + Lights Out",steps:[
-   {c:"wellness",txt:"<b>Meds:</b> Take Sertraline and Sronyx with water."},
-   {c:"wellness",txt:"<b>Log:</b> Final symptom check in Guava."},
-   {c:"wellness",txt:"<b>Sleep:</b> Lights out by 12:00 AM."},
+ {t:"10:15 PM",e:"10:35 PM",i:"🐕",h:"Timber Wind-Down — 20 min",timers:[{label:"Wind-Down",mins:20,emoji:"🐕"}],steps:[
+   {c:"timber",  txt:"Scatter last kibble in puzzle feeder.",note:"20 min of calm, structured bonding > 60 min unstructured. Quality over duration."},
+   {c:"timber",  txt:"Lap time — low lights. Let him settle naturally."},
+   {c:"timber",  txt:"Keep voice low. No stimulating play."},
+ ]},
+ {t:"10:35 PM",e:"10:50 PM",i:"🏠",h:"Timber's Bedtime",steps:[
+   {c:"timber",  txt:"Final litter box check."},
+   {c:"timber",  txt:"Guide into Apartment, treat inside, latch door."},
+   {c:"timber",  txt:"Lights low. Walk away. No long goodbyes.",note:"Prolonged goodbyes signal departure is an event worth anxiety. Calm and brief = confident puppy."},
+ ]},
+ {t:"10:50 PM",e:"11:10 PM",i:"🧩",h:"Hobbies + Hobonichi",steps:[
+   {c:"wellness",txt:"Game, craft, sketch, Discord, or Hobonichi."},
+   {c:"wellness",txt:"One line reflection — what went well today?"},
+   {c:"wellness",txt:"Dim screens — blue light delays melatonin."},
+ ]},
+ {t:"11:10 PM",e:"11:25 PM",i:"💊",h:"Lights Out",steps:[
+   {c:"wellness",txt:"Final Guava log — pain levels + any notes."},
+   {c:"wellness",txt:"Lights out.",note:"Glucosamine incorporates into cartilage during deep sleep. Consistent sleep timing regulates cortisol — directly impacts hypermobility-related inflammation."},
  ]},
 ];
 
-// time → minutes helper
+// ─── TIME HELPERS ─────────────────────────────────────────────────────────────
 function tm(s){if(!s)return 0;const[hm,p]=s.split(' ');let[h,m]=hm.split(':').map(Number);if(p==='PM'&&h!==12)h+=12;if(p==='AM'&&h===12)h=0;return h*60+m;}
 S.forEach(x=>{x.smin=tm(x.t);x.emin=tm(x.e);});
 function getNowMin(){const n=new Date();return n.getHours()*60+n.getMinutes();}
@@ -580,116 +1215,140 @@ function getNowIdx(items,nowMin){
   return items.length-1;
 }
 
-// Category visual config
+// ─── CATEGORY CONFIG ──────────────────────────────────────────────────────────
 const CAT={
   timber:  {label:'🐾 Timber',  snCls:'sn-timber',  stepCls:'s-timber',  pillCls:'sc-timber'},
   focus:   {label:'💻 Focus',   snCls:'sn-focus',   stepCls:'s-focus',   pillCls:'sc-focus'},
   wellness:{label:'🌿 Wellness',snCls:'sn-wellness',stepCls:'s-wellness',pillCls:'sc-wellness'},
 };
 
-// PT data
+// ─── PT DATA ──────────────────────────────────────────────────────────────────
 const PT=[
   {g:"Daily Essentials",items:[
     {n:"Nerve Glides",d:"10 reps/side",days:[1,2,3,4,5]},
-    {n:"Plank (Standard)",d:"5x30s",days:[1,2,3,4,5]},
-    {n:"Side Plank (Knees)",d:"2x30s",days:[1,2,3,4,5]},
-    {n:"Anti-Rotation Press",d:"2x10",days:[1,2,3,4,5]},
-    {n:"Standing Clam",d:"3x10",days:[1,2,3,4,5]}]},
+    {n:"Plank (Standard)",d:"5×30s",days:[1,2,3,4,5]},
+    {n:"Side Plank (Knees)",d:"2×30s",days:[1,2,3,4,5]},
+    {n:"Anti-Rotation Press",d:"2×10",days:[1,2,3,4,5]},
+    {n:"Standing Clam",d:"3×10",days:[1,2,3,4,5]}]},
   {g:"Movement Snacks",items:[
-    {n:"Single Leg Stance",d:"3x30s",days:[1,2,3,4,5]},
-    {n:"Iso Hip Abd (Wall)",d:"2x20s",days:[1,2,3,4,5]},
-    {n:"Around the World",d:"2x10",days:[1,2,3,4,5]},
+    {n:"Single Leg Stance",d:"3×30s",days:[1,2,3,4,5]},
+    {n:"Iso Hip Abd (Wall)",d:"2×20s",days:[1,2,3,4,5]},
+    {n:"Around the World",d:"2×10",days:[1,2,3,4,5]},
     {n:"4-Way Band Walk",d:"10 reps",days:[1,2,3,4,5]}]},
   {g:"Group A — Floor (M/W/F)",items:[
-    {n:"Supine Bridge",d:"3x10",days:[1,3,5]},
-    {n:"Clamshell",d:"3x10",days:[1,3,5]},
-    {n:"Inner & Outer Thigh",d:"3x10",days:[1,3,5]},
-    {n:"Active Leg Raise",d:"3x10",days:[1,3,5]},
-    {n:"Lower Trunk Rotation",d:"3x10",days:[1,3,5]},
-    {n:"Open Book",d:"3x10",days:[1,3,5]},
-    {n:"Ham/Glute Ball Set",d:"3x10",days:[1,3,5]}]},
+    {n:"Supine Bridge",d:"3×10",days:[1,3,5]},
+    {n:"Clamshell",d:"3×10",days:[1,3,5]},
+    {n:"Inner & Outer Thigh",d:"3×10",days:[1,3,5]},
+    {n:"Active Leg Raise",d:"3×10",days:[1,3,5]},
+    {n:"Lower Trunk Rotation",d:"3×10",days:[1,3,5]},
+    {n:"Open Book",d:"3×10",days:[1,3,5]},
+    {n:"Ham/Glute Ball Set",d:"3×10",days:[1,3,5]}]},
   {g:"Group B — Standing (T/Th/Sat)",items:[
-    {n:"Wall Squat (Ball)",d:"3x10",days:[2,4,6]},
-    {n:"Single-Leg RDL",d:"2x8",days:[2,4,6]},
-    {n:"Lateral Step-Ups",d:"2x10",days:[2,4,6]},
-    {n:"Slider Lunge (Rev)",d:"3x10",days:[2,4,6]},
-    {n:"3-Way Reach (Band)",d:"3x10",days:[2,4,6]},
-    {n:"Prone Hip Extension",d:"3x10",days:[2,4,6]},
-    {n:"Hip Flex into Ball",d:"3x10s",days:[2,4,6]}]},
+    {n:"Wall Squat (Ball)",d:"3×10",days:[2,4,6]},
+    {n:"Single-Leg RDL",d:"2×8",days:[2,4,6]},
+    {n:"Lateral Step-Ups",d:"2×10",days:[2,4,6]},
+    {n:"Slider Lunge (Rev)",d:"3×10",days:[2,4,6]},
+    {n:"3-Way Reach (Band)",d:"3×10",days:[2,4,6]},
+    {n:"Prone Hip Extension",d:"3×10",days:[2,4,6]},
+    {n:"Hip Flex into Ball",d:"3×10s",days:[2,4,6]}]},
 ];
 
 let ps=[],cday=new Date().getDay(),tot=0;
+let weekChartM=null,weekChartD=null,weekChartAlt=null;
 
-// ─── PWA SETUP ────────────────────────────────────────────────────────────────
-// Kawaii pastel flower SVG icon (512x512)
-const ICON_SVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-  <rect width="512" height="512" rx="110" fill="#f7f2fb"/>
-  <!-- petals -->
-  <ellipse cx="256" cy="156" rx="38" ry="72" fill="#ffd8c8" opacity=".95"/>
-  <ellipse cx="256" cy="356" rx="38" ry="72" fill="#ffd8c8" opacity=".95"/>
-  <ellipse cx="156" cy="256" rx="72" ry="38" fill="#c2deff" opacity=".95"/>
-  <ellipse cx="356" cy="256" rx="72" ry="38" fill="#c2deff" opacity=".95"/>
-  <ellipse cx="190" cy="190" rx="38" ry="72" fill="#ddd0f0" opacity=".9" transform="rotate(-45 190 190)"/>
-  <ellipse cx="322" cy="190" rx="38" ry="72" fill="#b8f0d2" opacity=".9" transform="rotate(45 322 190)"/>
-  <ellipse cx="190" cy="322" rx="38" ry="72" fill="#b8f0d2" opacity=".9" transform="rotate(45 190 322)"/>
-  <ellipse cx="322" cy="322" rx="38" ry="72" fill="#ddd0f0" opacity=".9" transform="rotate(-45 322 322)"/>
-  <!-- center -->
-  <circle cx="256" cy="256" r="58" fill="#f79a7a"/>
-  <circle cx="256" cy="256" r="42" fill="#fff4ee"/>
-  <!-- face dots -->
-  <circle cx="242" cy="250" r="5" fill="#f79a7a"/>
-  <circle cx="270" cy="250" r="5" fill="#f79a7a"/>
-  <!-- smile -->
-  <path d="M240 266 Q256 280 272 266" stroke="#f79a7a" stroke-width="4" fill="none" stroke-linecap="round"/>
-</svg>`;
+// ─── PWA ──────────────────────────────────────────────────────────────────────
+const ICON_SVG=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><rect width="512" height="512" rx="110" fill="#f7f2fb"/><ellipse cx="256" cy="156" rx="38" ry="72" fill="#ffd8c8" opacity=".95"/><ellipse cx="256" cy="356" rx="38" ry="72" fill="#ffd8c8" opacity=".95"/><ellipse cx="156" cy="256" rx="72" ry="38" fill="#c2deff" opacity=".95"/><ellipse cx="356" cy="256" rx="72" ry="38" fill="#c2deff" opacity=".95"/><ellipse cx="190" cy="190" rx="38" ry="72" fill="#ddd0f0" opacity=".9" transform="rotate(-45 190 190)"/><ellipse cx="322" cy="190" rx="38" ry="72" fill="#b8f0d2" opacity=".9" transform="rotate(45 322 190)"/><ellipse cx="190" cy="322" rx="38" ry="72" fill="#b8f0d2" opacity=".9" transform="rotate(45 190 322)"/><ellipse cx="322" cy="322" rx="38" ry="72" fill="#ddd0f0" opacity=".9" transform="rotate(-45 322 322)"/><circle cx="256" cy="256" r="58" fill="#f79a7a"/><circle cx="256" cy="256" r="42" fill="#fff4ee"/><circle cx="242" cy="250" r="5" fill="#f79a7a"/><circle cx="270" cy="250" r="5" fill="#f79a7a"/><path d="M240 266 Q256 280 272 266" stroke="#f79a7a" stroke-width="4" fill="none" stroke-linecap="round"/></svg>`;
+const ICON_URL='data:image/svg+xml,'+encodeURIComponent(ICON_SVG);
 
-const ICON_URL = 'data:image/svg+xml,' + encodeURIComponent(ICON_SVG);
-
-// Build manifest as a blob URL so the browser picks it up as a real PWA
 function setupPWA(){
-  // Set favicon + apple touch icon
-  const fi=document.getElementById('faviconLink');
-  const ai=document.getElementById('appleIconLink');
-  if(fi)fi.href=ICON_URL;
-  // apple-touch-icon needs a PNG ideally, but SVG works on modern Android
-  if(ai)ai.href=ICON_URL;
-
-  const manifest={
-    name:"Jasmine's Life OS ✿",
-    short_name:"Life OS",
-    description:"Jasmine's daily schedule, PT engine, and wellness tracker",
-    start_url:"./",
-    display:"fullscreen",
-    orientation:"portrait-primary",
-    background_color:"#f7f2fb",
-    theme_color:"#f7f2fb",
-    icons:[
-      {src:ICON_URL,sizes:"512x512",type:"image/svg+xml",purpose:"any maskable"}
-    ]
-  };
+  const fi=document.getElementById('faviconLink'),ai=document.getElementById('appleIconLink');
+  if(fi)fi.href=ICON_URL;if(ai)ai.href=ICON_URL;
+  const manifest={name:"Jasmine's Life OS ✿",short_name:"Life OS",description:"Daily schedule, PT engine, wellness tracker",start_url:"./",display:"fullscreen",orientation:"portrait-primary",background_color:"#f7f2fb",theme_color:"#f7f2fb",icons:[{src:ICON_URL,sizes:"512x512",type:"image/svg+xml",purpose:"any maskable"}]};
   const blob=new Blob([JSON.stringify(manifest)],{type:'application/manifest+json'});
-  const url=URL.createObjectURL(blob);
   const link=document.getElementById('pwaManifest');
-  if(link)link.href=url;
+  if(link)link.href=URL.createObjectURL(blob);
 }
+
+// ─── DARK MODE (system-aware) ─────────────────────────────────────────────────
+// matchMedia handles it via CSS; we just sync theme-color meta
+function syncThemeColor(){
+  const dark=window.matchMedia('(prefers-color-scheme:dark)').matches;
+  document.querySelector('meta[name="theme-color"]').content=dark?'#2f2b36':'#f7f2fb';
+}
+window.matchMedia('(prefers-color-scheme:dark)').addEventListener('change',syncThemeColor);
 
 // ─── CLOCK ────────────────────────────────────────────────────────────────────
 function updateClock(){
   const n=new Date();const h=n.getHours(),m=n.getMinutes(),ap=h>=12?'PM':'AM';
   const h12=h%12||12,s=`${h12}:${String(m).padStart(2,'0')} ${ap}`;
-  const mc=document.getElementById('mClk'),dc=document.getElementById('dClk');
-  if(mc)mc.textContent=s;if(dc)dc.textContent=s;
-  document.body.classList.toggle('night-mode',h>=20||h<6);
+  ['mClk','dClk'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=s;});
 }
 setInterval(updateClock,10000);
 
-// ─── WHAT'S NEXT BANNER ───────────────────────────────────────────────────────
+// ─── GERMANY COUNTDOWN ────────────────────────────────────────────────────────
+function updateGermany(){
+  const now=new Date(),diff=GERMANY_DATE-now;
+  if(diff<=0){
+    ['mDeDays','dDeDays'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent='✈️';});
+    ['mDeD','dDeD'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent='✈️';});
+    return;
+  }
+  const d=Math.floor(diff/86400000),hr=Math.floor((diff%86400000)/3600000),mn=Math.floor((diff%3600000)/60000);
+  ['mDeDays','dDeDays'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=d;});
+  [['mDeD','dDeD',d],['mDeH','dDeH',hr],['mDeM','dDeM',mn]].forEach(([a,b,v])=>{
+    [a,b].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=String(v).padStart(2,'0');});
+  });
+}
+setInterval(updateGermany,30000);
+
+window.nextPhrase=()=>{
+  phraseIdx=(phraseIdx+1)%DE_PHRASES.length;
+  const p=DE_PHRASES[phraseIdx];
+  ['dePhraseDE','dDePhraseDE'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=p.de;});
+  ['dePhraseEN','dDePhraseEN'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=p.en;});
+};
+
+// ─── RLT DAY AWARENESS ────────────────────────────────────────────────────────
+function updateRltToday(){
+  const rlt=RLT_DAY[new Date().getDay()];
+  const txt=`Face 10m · Hips 20m · ${rlt.target} 10m`;
+  ['mTodayRlt','dTodayRlt'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=txt;});
+}
+
+// Get day-aware steps for the rotating RLT block
+function getRltRotatingSteps(){
+  const d=new Date().getDay();
+  const rlt=RLT_DAY[d];
+  if(d===1||d===3||d===5) return [
+    {c:"wellness",txt:`Arms — biceps + shoulders. Panel flush. 10 min.`},
+    {c:"wellness",txt:"Phone alarm. Arm PT follows immediately after.",note:"ATP from RLT peaks 5–10 min post-session. Doing arm PT now is when collagen remodeling is most efficient."},
+  ];
+  if(d===2||d===4) return [
+    {c:"wellness",txt:"Both knees — panel angled at joint. 10 min.",note:"NIR reduces capsule inflammation and supports cartilage integrity — key for hypermobility-related knee instability."},
+  ];
+  return [
+    {c:"wellness",txt:"Lumbar / low back — seated or lying. 10 min.",note:"NIR penetrates to paraspinal muscles and disc level. Anti-inflammatory effect helps with hypermobility-related low back pain."},
+  ];
+}
+
+// ─── WHAT'S NEXT ──────────────────────────────────────────────────────────────
 function updateWhatsNext(){
-  const nowMin=getNowMin(),ni=getNowIdx(S,nowMin);
-  const cur=S[ni],next=S[(ni+1)%S.length];
+  const nowMin=getNowMin();
+  const dayS=getFilteredSchedule('all');
+  // Use effective times for finding current block
+  const effItems=dayS.map(item=>({
+    smin: isShifted ? item.smin+offsetMin : item.smin,
+    emin: isShifted ? item.emin+offsetMin : item.emin,
+    ...item
+  }));
+  const ni=getNowIdx(effItems,nowMin);
+  const cur=effItems[ni],next=effItems[(ni+1)%effItems.length];
+  if(!cur)return;
   const isNow=nowMin>=cur.smin&&nowMin<cur.emin;
-  const title=isNow?`${cur.i} ${cur.h}`:`Next up: ${cur.i} ${cur.h}`;
-  const desc =isNow?`Until ${cur.e} · Up next: ${next.i} ${next.h} at ${next.t}`:`Starting at ${cur.t}`;
+  const dispE = isShifted ? fmtMin12(cur.emin) : cur.e;
+  const nextT = isShifted ? fmtMin12(next?.smin||0) : next?.t;
+  const title=isNow?`${cur.i} ${cur.h}`:`Next: ${cur.i} ${cur.h}`;
+  const desc=isNow?`Until ${dispE} · Then: ${next?.i} ${next?.h} at ${nextT}`:`Starts at ${isShifted?fmtMin12(cur.smin):cur.t}`;
   ['m','d'].forEach(p=>{
     const t=document.getElementById(`${p}WnTitle`),d=document.getElementById(`${p}WnDesc`);
     if(t)t.textContent=title;if(d)d.textContent=desc;
@@ -697,17 +1356,12 @@ function updateWhatsNext(){
 }
 setInterval(updateWhatsNext,60000);
 
-// ─── 🎯 NOW BUTTON ────────────────────────────────────────────────────────────
-// Rebuilds the timeline with fresh current time, THEN scrolls to the .now block
+// ─── NOW BUTTON ───────────────────────────────────────────────────────────────
 window.jumpToNow=()=>{
-  buildTL('all','mTlb','mb');   // mobile always shows "all" when jumping
-  buildTL('all','dTlb','db');
+  buildTL('all','mTlb','mb');
   updateWhatsNext();
-  // Short delay lets DOM repaint before we scroll
-  setTimeout(()=>{
-    const el=document.querySelector('#mTlb .now');
-    if(el)el.scrollIntoView({behavior:'smooth',block:'center'});
-  },80);
+  updateOffsetBadge();
+  setTimeout(()=>document.querySelector('#mTlb .now')?.scrollIntoView({behavior:'smooth',block:'center'}),80);
 };
 
 // ─── TAB SWITCHING ────────────────────────────────────────────────────────────
@@ -717,14 +1371,33 @@ window.switchTab=(tab)=>{
   document.getElementById('page-'+tab).classList.add('active');
   document.getElementById('tab-'+tab).classList.add('active');
   document.getElementById('jumpNowBtn').style.display=tab==='flow'?'flex':'none';
+  if(tab==='mem')renderMemories('memList2');
 };
 
-// ─── TIMELINE BUILDER ───────────────────────────────────────────────────────
-// "all"      → show every block, every step; each step gets a tiny category pill
-// [category] → show only blocks that contain ≥1 step in that category;
-//              within those blocks, show ONLY matching steps
+window.deskSwitchPanel=(panel)=>{
+  document.querySelectorAll('.desk-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.desk-tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('dpanel-'+panel).classList.add('active');
+  document.getElementById('dtab-'+panel).classList.add('active');
+  if(panel==='mem')renderMemories('memListD');
+};
+
+// ─── SCHEDULE FILTER (day-aware) ──────────────────────────────────────────────
+// Returns schedule items visible today, with RLT rotating block populated
+function getFilteredSchedule(f){
+  const today=new Date().getDay();
+  return S.filter(item=>{
+    // Skip day-specific blocks not matching today
+    if(item.days&&!item.days.includes(today))return false;
+    // For category filter, check if any visible step matches
+    if(f==='all')return true;
+    const steps=item.isRltRotating?getRltRotatingSteps():item.steps;
+    return steps.some(s=>s.c===f);
+  });
+}
+
+// ─── TIMELINE BUILDER (shift-aware + tap-to-anchor) ──────────────────────────
 function buildTL(f,containerId,btnPrefix){
-  // Update filter button states
   const map={all:'a',timber:'p',focus:'w',wellness:'m'};
   ['all','timber','focus','wellness'].forEach(k=>{
     const el=document.getElementById(btnPrefix+map[k]);if(!el)return;
@@ -735,47 +1408,66 @@ function buildTL(f,containerId,btnPrefix){
 
   const c=document.getElementById(containerId);c.innerHTML='';
   const nowMin=getNowMin();
+  const todayItems=getFilteredSchedule(f);
+  const allItems=getFilteredSchedule('all'); // for index alignment
 
-  // Build list of visible blocks + their visible steps
+  // Build visible blocks
   const blocks=[];
-  S.forEach(item=>{
-    const vis=f==='all'?item.steps:item.steps.filter(s=>s.c===f);
-    if(vis.length)blocks.push({item,vis});
+  todayItems.forEach((item,rawIdx)=>{
+    const rawSteps=item.isRltRotating?getRltRotatingSteps():item.steps;
+    const vis=f==='all'?rawSteps:rawSteps.filter(s=>s.c===f);
+    if(vis.length){
+      // Find original index in allItems for tap anchoring
+      const origIdx=allItems.indexOf(item);
+      blocks.push({item,vis,origIdx});
+    }
   });
 
-  const ni=getNowIdx(blocks.map(b=>b.item),nowMin);
+  // Determine "now" using effective times (shifted if active)
+  const ni=getNowIdx(blocks.map(b=>{
+    const eff=isShifted?{smin:b.item.smin+offsetMin,emin:b.item.emin+offsetMin}:b.item;
+    return eff;
+  }),nowMin);
 
-  blocks.forEach(({item,vis},i)=>{
+  blocks.forEach(({item,vis,origIdx},i)=>{
+    const effSmin = isShifted ? item.smin+offsetMin : item.smin;
+    const effEmin = isShifted ? item.emin+offsetMin : item.emin;
     const isNow=i===ni,isPast=i<ni;
+    const isAnchor = anchoredBlockIdx===origIdx;
+
     const d=document.createElement('div');
-    d.className='ti'+(isNow?' now':isPast?' past':'');
-    d.style.animationDelay=`${i*.025}s`;
+    d.className='ti'+(isNow?' now':isPast?' past':'')+(isAnchor?' im-here':'');
+    d.style.animationDelay=`${i*.02}s`;
 
     const badge=isNow?`<span class="nbadge"><span class="ndot"></span>Now</span>`:'';
+    const rltBadge=item.isRltRotating?`<span class="rlt-day-badge">🔴 ${RLT_DAY[new Date().getDay()].target}</span>`:'';
+    const statsLink=item.statsTarget?`<button class="stats-link" onclick="event.stopPropagation();navToStats('${item.statsTarget}')">📊 Ref</button>`:'';
+
+    // Show shifted times (with visual indicator if shifted future block)
+    const dispT = isShifted&&i>ni ? fmtMin12(effSmin) : item.t;
+    const dispE = isShifted&&i>ni ? fmtMin12(effEmin) : item.e;
+    const shiftedDot = isShifted&&i>ni&&!isNow ? `<span style="font-size:.42rem;color:var(--pa);margin-left:3px;font-weight:900">⏩</span>` : '';
 
     const stepsHtml=vis.map((s,si)=>{
       const cat=CAT[s.c];
-      // show category pill only in "all" mode
       const pill=f==='all'?`<span class="step-cat ${cat.pillCls}">${cat.label}</span>`:'';
-      return `<div class="step ${cat.stepCls}"><span class="snum ${cat.snCls}">${si+1}</span><span>${s.txt}${pill}</span></div>`;
+      const noteId=`n-${containerId}-${i}-${si}`;
+      const noteBtn=s.note?`<button class="note-btn" id="btn-${noteId}" onclick="event.stopPropagation();toggleNote('${noteId}')" aria-expanded="false">why <span class="nb-arr">▾</span></button>`:'';
+      const notePanel=s.note?`<div class="note-panel" id="${noteId}">${s.note}</div>`:'';
+      return `<div class="step ${cat.stepCls}" onclick="event.stopPropagation()"><span class="snum ${cat.snCls}">${si+1}</span><span>${s.txt}${pill}${noteBtn}</span>${notePanel}</div>`;
     }).join('');
 
-    d.innerHTML=`
-      <div class="tdc">
-        <div class="tdot">${item.i}</div>
-        <div class="tln"></div>
-      </div>
-      <div class="tc">
-        <div class="thd">
-          <h4>${item.h}${badge}</h4>
-          <span class="ttime">${item.t}–${item.e}</span>
-        </div>
-        <div class="steps">${stepsHtml}</div>
-      </div>`;
+    // Timer launch buttons
+    const timerRow = item.timers?.length
+      ? `<div class="timer-btns" style="display:flex;gap:5px;flex-wrap:wrap;margin-top:6px;position:relative" onclick="event.stopPropagation()">
+          ${item.timers.map((t,ti)=>`<button class="timer-launch" onclick="launchTimer('${t.label}',${t.mins},'${t.emoji}',${i})">${t.emoji} ${t.label} ${t.mins}m</button>`).join('')}
+        </div>` : '';
+
+    d.innerHTML=`<div class="tdc"><div class="tdot">${item.i}</div><div class="tln"></div></div><div class="tc" onclick="openSheet(${origIdx})"><div class="thd"><h4>${item.h}${badge}${rltBadge}${statsLink}</h4><span class="ttime">${dispT}–${dispE}${shiftedDot}</span></div><div class="steps">${stepsHtml}</div>${timerRow}</div>`;
     c.appendChild(d);
   });
 
-  setTimeout(()=>{const el=c.querySelector('.now');if(el)el.scrollIntoView({behavior:'smooth',block:'center'});},200);
+  setTimeout(()=>c.querySelector('.now')?.scrollIntoView({behavior:'smooth',block:'center'}),200);
 }
 
 window.ftl=(f,mode)=>{
@@ -783,11 +1475,27 @@ window.ftl=(f,mode)=>{
   if(mode==='d'||mode===undefined)buildTL(f,'dTlb','db');
 };
 
-// PT
+window.toggleNote=(id)=>{
+  const panel=document.getElementById(id),btn=document.getElementById('btn-'+id);
+  if(!panel||!btn)return;
+  const open=panel.classList.toggle('open');
+  btn.classList.toggle('open',open);
+  btn.setAttribute('aria-expanded',String(open));
+};
+
+// ─── COLLAPSIBLE ──────────────────────────────────────────────────────────────
+function toggleDeskCollapse(cardId,bodyId,iconId){
+  const body=document.getElementById(bodyId),icon=document.getElementById(iconId);
+  const card=cardId?document.getElementById(cardId):null;
+  body.classList.toggle('collapsed');icon.classList.toggle('collapsed');
+  if(body.classList.contains('collapsed')){body.style.maxHeight='0px';if(card)card.classList.add('collapsed');}
+  else{body.style.maxHeight='1200px';if(card)card.classList.remove('collapsed');setTimeout(()=>{if(!body.classList.contains('collapsed'))body.style.maxHeight='none';},400);}
+}
+
+// ─── PT ENGINE ────────────────────────────────────────────────────────────────
 function syncDaySelectors(){
   const s=String(cday);
-  const m=document.getElementById('mDsel'),d=document.getElementById('dDsel');
-  if(m)m.value=s;if(d)d.value=s;
+  ['mDsel','dDsel'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=s;});
 }
 window.chDay=()=>{
   const m=document.getElementById('mDsel'),d=document.getElementById('dDsel');
@@ -799,19 +1507,12 @@ window.chDay=()=>{
 function renderPT(){
   ['mPtb','dPtb'].forEach(cid=>{const c=document.getElementById(cid);if(c)c.innerHTML='';});
   tot=0;
-  const key=`jlos_${cday}`;
-  try{ps=JSON.parse(localStorage.getItem(key))||[];}catch(e){ps=[];}
+  try{ps=JSON.parse(localStorage.getItem(`jlos_${cday}`))||[];}catch(e){ps=[];}
   const sections=[];
-  PT.forEach((sec,si)=>{
-    const act=sec.items.filter(x=>x.days.includes(cday));
-    if(act.length)sections.push({label:sec.g,items:act,si});
-  });
+  PT.forEach((sec,si)=>{const act=sec.items.filter(x=>x.days.includes(cday));if(act.length)sections.push({label:sec.g,items:act,si});});
   ['mPtb','dPtb'].forEach(cid=>{
     const c=document.getElementById(cid);if(!c)return;
-    if(!sections.length){
-      c.innerHTML=`<div class="rc"><span class="ico">💤</span><h3>Rest Day!</h3><p style="color:var(--tm);margin-top:5px">No PT scheduled today.</p></div>`;
-      return;
-    }
+    if(!sections.length){c.innerHTML=`<div class="rc"><span class="ico">💤</span><h3>Rest Day!</h3><p style="color:var(--tm);margin-top:4px">No PT scheduled.</p></div>`;return;}
     sections.forEach(({label,items,si})=>{
       const blk=document.createElement('div');blk.className='psb';
       blk.innerHTML=`<div class="psl">${label}</div>`;
@@ -834,22 +1535,20 @@ window.tog=(id,el,cid)=>{
   if(el.checked){
     if(!ps.includes(id))ps.push(id);
     document.getElementById(`${cid}-r-${id}`).classList.add('dn');
-    if(otherCb){otherCb.checked=true;document.getElementById(`${otherId}-r-${id}`).classList.add('dn');}
+    if(otherCb){otherCb.checked=true;document.getElementById(`${otherId}-r-${id}`)?.classList.add('dn');}
   }else{
     ps=ps.filter(x=>x!==id);
     document.getElementById(`${cid}-r-${id}`).classList.remove('dn');
-    if(otherCb){otherCb.checked=false;document.getElementById(`${otherId}-r-${id}`).classList.remove('dn');}
+    if(otherCb){otherCb.checked=false;document.getElementById(`${otherId}-r-${id}`)?.classList.remove('dn');}
   }
   try{localStorage.setItem(`jlos_${cday}`,JSON.stringify(ps));}catch(e){}
-  updatePTUI();
-  refreshWeeklyChart();
+  updatePTUI();refreshWeeklyChart();
 };
 
 function updatePTUI(){
   let done=0;
   ps.forEach(id=>{if(document.getElementById(`mPtb-cb-${id}`)||document.getElementById(`dPtb-cb-${id}`))done++;});
-  done=Math.min(done,tot);
-  const p=tot>0?Math.round(done/tot*100):0;
+  done=Math.min(done,tot);const p=tot>0?Math.round(done/tot*100):0;
   ['mPtxt','dPtxt'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=p+'%';});
   ['mPbar','dPbar'].forEach(id=>{const el=document.getElementById(id);if(el)el.style.width=p+'%';});
   ['mDn','dDn'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=done;});
@@ -857,131 +1556,799 @@ function updatePTUI(){
 }
 
 window.resetDay=()=>{
-  if(confirm('Reset PT checkboxes for today? ☀️')){
-    try{localStorage.removeItem(`jlos_${cday}`);}catch(e){}
-    renderPT();
-    refreshWeeklyChart();
+  if(confirm('Reset PT for today? ☀️')){
+    try{localStorage.removeItem(`jlos_${cday}`);}catch(e){}renderPT();refreshWeeklyChart();
   }
 };
 
-// ─── COLLAPSIBLE SECTIONS ─────────────────────────────────────────────────────
-function toggleDeskCollapse(cardId,bodyId,iconId){
-  const body=document.getElementById(bodyId),icon=document.getElementById(iconId);
-  const card=cardId?document.getElementById(cardId):null;
-  body.classList.toggle('collapsed');icon.classList.toggle('collapsed');
-  if(body.classList.contains('collapsed')){
-    body.style.maxHeight='0px';if(card)card.classList.add('collapsed');
-  }else{
-    body.style.maxHeight='800px';if(card)card.classList.remove('collapsed');
-    setTimeout(()=>{if(!body.classList.contains('collapsed'))body.style.maxHeight='none';},400);
+// ─── TEMPORAL ENGINE ──────────────────────────────────────────────────────────
+// offsetMin: positive = behind, negative = ahead
+let offsetMin = 0;
+let anchoredBlockIdx = null; // index in getFilteredSchedule('all') result
+let isShifted = false;
+
+function fmtMin12(totalMin){
+  // convert minutes-since-midnight to 12h string
+  totalMin = ((totalMin % 1440) + 1440) % 1440;
+  const h=Math.floor(totalMin/60),m=totalMin%60;
+  const ap=h>=12?'PM':'AM',h12=h%12||12;
+  return `${h12}:${String(m).padStart(2,'0')} ${ap}`;
+}
+
+function getEffectiveMin(item){
+  // Apply shift to start time for future blocks
+  if(!isShifted)return item.smin;
+  // already shifted in the item.sminShifted? No — we compute on the fly
+  return item.smin + offsetMin;
+}
+
+// Returns display times for a schedule item accounting for current shift
+function getDisplayTimes(item, idx, nowIdx){
+  if(!isShifted || idx <= nowIdx) return {t:item.t, e:item.e};
+  const ns = item.smin + offsetMin;
+  const ne = item.emin + offsetMin;
+  return {t:fmtMin12(ns), e:fmtMin12(ne)};
+}
+
+// Open sheet anchored to a specific block index (or null for general)
+window.openSheet = (blockIdx) => {
+  anchoredBlockIdx = blockIdx;
+  const nowMin = getNowMin();
+  const dayItems = getFilteredSchedule('all');
+
+  let mins = 0, dir = 'synced', blockName = '';
+  if(blockIdx !== null){
+    const item = dayItems[blockIdx];
+    // How far are we from where we "should" be?
+    // If I tap this block, I'm saying "I'm starting this NOW"
+    // offset = now - item.smin (positive = we're running late relative to plan)
+    mins = nowMin - item.smin;
+    dir = mins > 2 ? 'behind' : mins < -2 ? 'ahead' : 'synced';
+    blockName = item.h;
+    // Mark this block as anchored
+    document.querySelectorAll('.ti.im-here').forEach(el=>el.classList.remove('im-here'));
+    const blocks = document.querySelectorAll('#mTlb .ti');
+    if(blocks[blockIdx]) blocks[blockIdx].classList.add('im-here');
+    // Also desktop
+    const dblocks = document.querySelectorAll('#dTlb .ti');
+    if(dblocks[blockIdx]) dblocks[blockIdx].classList.add('im-here');
+  } else {
+    mins = offsetMin;
+    dir = offsetMin > 2 ? 'behind' : offsetMin < -2 ? 'ahead' : 'synced';
+    blockName = 'your day';
+  }
+
+  const absMins = Math.abs(Math.round(mins));
+  const numEl = document.getElementById('sheetOffsetNum');
+  const dirEl = document.getElementById('sheetOffsetDir');
+  const titleEl = document.getElementById('sheetTitle');
+  const subEl = document.getElementById('sheetSub');
+  const shiftBtn = document.getElementById('sheetShiftBtn');
+
+  numEl.textContent = absMins;
+  numEl.className = `sheet-offset-num ${dir}`;
+  if(dir==='behind') dirEl.textContent = 'min behind schedule';
+  else if(dir==='ahead') dirEl.textContent = 'min ahead of schedule';
+  else dirEl.textContent = 'on schedule ✓';
+
+  if(blockIdx !== null){
+    titleEl.textContent = `📍 ${blockName}`;
+    subEl.textContent = `You're ${absMins > 0 ? absMins + ' min ' + (dir==='behind'?'behind':'ahead of') + ' plan' : 'right on schedule'}. Shift the rest of your day?`;
+  } else {
+    titleEl.textContent = isShifted ? '⏱ Current Shift' : '📍 Anchor Your Day';
+    subEl.textContent = isShifted
+      ? `Schedule is shifted by ${absMins} min. Tap a timeline block to re-anchor.`
+      : 'Tap any timeline block to say "I\'m here right now" and sync your schedule.';
+  }
+
+  // Update shift button label
+  const shiftDir = offsetMin > 0 ? `+${Math.round(offsetMin)} min` : `${Math.round(offsetMin)} min`;
+  shiftBtn.textContent = `⏩ Shift Remaining Day (${shiftDir})`;
+  shiftBtn.className = 'sheet-btn sheet-btn-shift';
+  if(Math.abs(offsetMin) <= 2) shiftBtn.textContent = '✓ Already Synced';
+
+  // Show undo button whenever a shift is active
+  const undoBtn = document.getElementById('sheetUndoBtn');
+  if(undoBtn) undoBtn.style.display = isShifted ? 'flex' : 'none';
+
+  // Store pending offset from this anchoring
+  if(blockIdx !== null) offsetMin = Math.round(mins);
+
+  document.getElementById('sheet').classList.add('open');
+  document.getElementById('sheetOverlay').classList.add('open');
+};
+
+window.closeSheet = () => {
+  document.getElementById('sheet').classList.remove('open');
+  document.getElementById('sheetOverlay').classList.remove('open');
+};
+
+window.applyShift = () => {
+  if(Math.abs(offsetMin) <= 2){
+    showToast('✓ Already synced — no shift needed');
+    closeSheet();
+    return;
+  }
+  isShifted = true;
+  updateOffsetBadge();
+  buildTL('all','mTlb','mb');
+  buildTL('all','dTlb','db');
+  updateWhatsNext();
+  const dir = offsetMin > 0 ? 'behind' : 'ahead';
+  showToast(`⏩ Schedule shifted ${Math.abs(offsetMin)} min ${dir}`);
+  closeSheet();
+};
+
+// Always-accessible undo — call from banner OR sheet button
+window.undoShift = () => {
+  offsetMin = 0;
+  isShifted = false;
+  anchoredBlockIdx = null;
+  document.querySelectorAll('.ti.im-here').forEach(el=>el.classList.remove('im-here'));
+  updateOffsetBadge();
+  buildTL('all','mTlb','mb');
+  buildTL('all','dTlb','db');
+  updateWhatsNext();
+  showToast('↩ Schedule restored to original plan');
+  closeSheet();
+};
+
+function updateOffsetBadge(){
+  const badge = document.getElementById('offsetBadge');
+  const bar   = document.getElementById('shiftUndoBar');
+  const barTxt= document.getElementById('shiftUndoTxt');
+  const undoBtn=document.getElementById('sheetUndoBtn');
+  const abs = Math.abs(offsetMin);
+  if(!isShifted || abs <= 2){
+    if(badge)badge.style.display='none';
+    if(bar)bar.classList.remove('visible');
+    if(undoBtn)undoBtn.style.display='none';
+    return;
+  }
+  const dir = offsetMin > 0 ? 'behind' : 'ahead';
+  if(badge){
+    badge.style.display='inline-flex';
+    badge.textContent = offsetMin > 0 ? `+${abs}m behind` : `−${abs}m ahead`;
+    badge.className = `offset-badge ${offsetMin > 0 ? 'behind' : 'ahead'} live`;
+  }
+  if(bar)bar.classList.add('visible');
+  if(barTxt)barTxt.textContent=`⏩ Day shifted ${abs} min ${dir}`;
+  if(undoBtn)undoBtn.style.display='flex';
+}
+
+window.copyGeminiPrompt = () => {
+  const now = new Date();
+  const h12 = now.getHours()%12||12;
+  const ap = now.getHours()>=12?'PM':'AM';
+  const timeStr = `${h12}:${String(now.getMinutes()).padStart(2,'0')} ${ap}`;
+  const abs = Math.abs(offsetMin);
+  const dir = offsetMin > 2 ? 'behind' : offsetMin < -2 ? 'ahead of' : 'on';
+  const behindStr = offsetMin > 2 ? `I am ${abs} minutes behind schedule.`
+    : offsetMin < -2 ? `I am ${abs} minutes ahead of schedule.`
+    : `I am currently on schedule.`;
+
+  // Get remaining priority tasks (timber + wellness only) from future blocks
+  const nowMin = getNowMin();
+  const dayItems = getFilteredSchedule('all');
+  const effectiveNow = isShifted ? nowMin - offsetMin : nowMin;
+  const remaining = [];
+  dayItems.forEach(item => {
+    const eff = isShifted ? item.smin + offsetMin : item.smin;
+    if(eff > nowMin){
+      const prioritySteps = item.steps.filter(s=>s.c==='timber'||s.c==='wellness');
+      if(prioritySteps.length){
+        remaining.push(`• ${item.h} (${fmtMin12(eff)}): ${prioritySteps.map(s=>s.txt.split('—')[0].trim()).slice(0,2).join(', ')}`);
+      }
+    }
+  });
+
+  const prompt = `It is ${timeStr}. ${behindStr}
+
+My remaining priority tasks (medical & puppy care) for today are:
+${remaining.slice(0,8).join('\n')}
+
+My hard sleep goal is 12:00 AM.
+
+Help me ruthlessly prioritize these tasks to protect sleep, my puppy Timber's care schedule, and my medical protocols. What can be shortened, combined, or skipped tonight?`;
+
+  navigator.clipboard.writeText(prompt).then(()=>{
+    showToast('✨ Gemini prompt copied to clipboard!');
+    closeSheet();
+  }).catch(()=>{
+    // Fallback: show prompt in a temporary textarea
+    const ta = document.createElement('textarea');
+    ta.value = prompt;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    showToast('✨ Copied!');
+    closeSheet();
+  });
+};
+
+function showToast(msg, duration=2800){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), duration);
+}
+
+// ─── TIMELINE BUILDER (updated to handle shift + tap) ─────────────────────────
+// (replaces original buildTL below)
+
+// ─── TIMBER MEMORIES (category-based, editable datetime) ─────────────────────
+const MEM_CATS = {
+  soc:    {label:'Socialization', icon:'🌍', cls:'cat-soc'},
+  home:   {label:'Home Life',     icon:'🏠', cls:'cat-home'},
+  health: {label:'Health',        icon:'💚', cls:'cat-health'},
+  train:  {label:'Training',      icon:'🎓', cls:'cat-train'},
+};
+let selCatKey = 'soc';
+let selCatKey2 = 'soc';
+let selCatKeyD = 'soc';
+
+window.selCat  = (btn, k) => { selCatKey  = k; _selCatBtn(btn,'memCatRow'); };
+window.selCat2 = (btn, k) => { selCatKey2 = k; _selCatBtn(btn,'memCatRow2'); };
+window.selCatD = (btn, k) => { selCatKeyD = k; _selCatBtn(btn,'memCatRowD'); };
+function _selCatBtn(btn, rowId){
+  document.querySelectorAll(`#${rowId} .mem-cat-btn`).forEach(b=>b.classList.remove('sel'));
+  btn.classList.add('sel');
+}
+
+function loadMemories(){try{return JSON.parse(localStorage.getItem('timber_memories'))||[];}catch(e){return[];}}
+function saveMemories(m){try{localStorage.setItem('timber_memories',JSON.stringify(m));}catch(e){}}
+
+// Format a date for display
+function fmtMemDate(dtStr){
+  // dtStr is a datetime-local value like "2025-03-04T14:30"
+  const d = dtStr ? new Date(dtStr) : new Date();
+  return d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})
+    + ' · ' + d.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});
+}
+
+function renderMemories(listId){
+  const mems=loadMemories();
+  const c=document.getElementById(listId);if(!c)return;
+  if(!mems.length){
+    c.innerHTML=`<p class="mem-empty">No memories yet!<br>Track Timber's firsts — stroller trip, first sit, cat sniff… 🐾</p>`;
+    return;
+  }
+  c.innerHTML='';
+  [...mems].reverse().forEach((m,i)=>{
+    const realIdx=mems.length-1-i;
+    const catInfo = MEM_CATS[m.cat] || MEM_CATS['soc'];
+    const row=document.createElement('div');
+    row.className='mem-item';
+    row.id=`mem-row-${realIdx}-${listId}`;
+    row.innerHTML=`
+      <span class="mem-item-emoji">${catInfo.icon}</span>
+      <div class="mem-item-text">
+        <div class="mem-item-title">${m.text}</div>
+        <div class="mem-item-date">${m.date}</div>
+      </div>
+      <span class="mem-item-cat ${catInfo.cls}">${catInfo.label}</span>
+      <div class="mem-del-wrap">
+        <button class="mem-del" onclick="askDelMemory(${realIdx},'${listId}')" title="Delete">🗑</button>
+        <div class="mem-del-confirm" id="delconf-${realIdx}-${listId}">
+          <button class="mem-del-yes" onclick="confirmDelMemory(${realIdx},'${listId}')">Del</button>
+          <button class="mem-del-no"  onclick="cancelDelMemory(${realIdx},'${listId}')">No</button>
+        </div>
+      </div>`;
+    c.appendChild(row);
+  });
+}
+
+function renderAllMemories(){['memList','memList2','memListD'].forEach(id=>renderMemories(id));}
+
+// Inline delete confirm (no confirm() dialog — works in sandboxed iframes)
+window.askDelMemory = (idx, listId) => {
+  // Hide all other open confirms first
+  document.querySelectorAll('.mem-del-confirm.show').forEach(el=>{
+    if(el.id !== `delconf-${idx}-${listId}`) el.classList.remove('show');
+  });
+  document.getElementById(`delconf-${idx}-${listId}`)?.classList.toggle('show');
+};
+window.confirmDelMemory = (idx, listId) => {
+  const mems=loadMemories();mems.splice(idx,1);saveMemories(mems);
+  renderAllMemories();
+  showToast('🗑 Memory deleted', 1800);
+};
+window.cancelDelMemory = (idx, listId) => {
+  document.getElementById(`delconf-${idx}-${listId}`)?.classList.remove('show');
+};
+
+// Shared add logic — reads datetime-local input for timestamp
+function _addMemory(inputId, whenId, catKey){
+  const input=document.getElementById(inputId);if(!input)return;
+  const text=input.value.trim();if(!text)return;
+  const whenEl=document.getElementById(whenId);
+  const dtStr = whenEl?.value || '';
+  const mems=loadMemories();
+  mems.push({cat:catKey, text, date:fmtMemDate(dtStr)});
+  saveMemories(mems);
+  input.value='';
+  // reset datetime to now
+  if(whenEl) whenEl.value = nowISOLocal();
+  renderAllMemories();
+  showToast('🐾 Memory saved!', 2000);
+}
+window.addMemory  = () => _addMemory('memInput',  'memWhen',  selCatKey);
+window.addMemory2 = () => _addMemory('memInput2', 'memWhen2', selCatKey2);
+window.addMemoryD = () => _addMemory('memInputD', 'memWhenD', selCatKeyD);
+
+// Preset quick-add — fills the input and selects category, then user hits Add
+function _presetMemory(inputId, whenId, catRowId, catSelVar, text, cat){
+  const input=document.getElementById(inputId);
+  if(input)input.value=text;
+  // Select category button
+  const btn=document.querySelector(`#${catRowId} .mem-cat-btn.cat-${cat}`);
+  if(btn){
+    document.querySelectorAll(`#${catRowId} .mem-cat-btn`).forEach(b=>b.classList.remove('sel'));
+    btn.classList.add('sel');
+  }
+  // Set catKey
+  return cat;
+}
+window.presetMemory  = (text,cat)=>{ selCatKey  = _presetMemory('memInput', 'memWhen', 'memCatRow','selCatKey',text,cat); };
+window.presetMemory2 = (text,cat)=>{ selCatKey2 = _presetMemory('memInput2','memWhen2','memCatRow2','selCatKey2',text,cat); };
+window.presetMemoryD = (text,cat)=>{ selCatKeyD = _presetMemory('memInputD','memWhenD','memCatRowD','selCatKeyD',text,cat); };
+
+// Get current time as datetime-local value (YYYY-MM-DDTHH:mm)
+function nowISOLocal(){
+  const n=new Date();
+  return new Date(n.getTime()-n.getTimezoneOffset()*60000).toISOString().slice(0,16);
+}
+function initDatetimeInputs(){
+  const v=nowISOLocal();
+  ['memWhen','memWhen2','memWhenD'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=v;});
+}
+
+// Enter key support
+['memInput','memInput2','memInputD'].forEach((id,i)=>{
+  document.getElementById(id)?.addEventListener('keydown',e=>{
+    if(e.key==='Enter')[window.addMemory,window.addMemory2,window.addMemoryD][i]();
+  });
+});
+
+// ─── STATS DEEP-LINKS ─────────────────────────────────────────────────────────
+window.navToStats = (target) => {
+  // Mobile: switch to stats tab, then scroll to anchor
+  const isDesktop = window.innerWidth >= 768;
+  if(!isDesktop){
+    switchTab('stats');
+    setTimeout(()=>{
+      const el = document.getElementById('statsRef-'+target);
+      el?.scrollIntoView({behavior:'smooth',block:'start'});
+    },120);
+  } else {
+    // Desktop: switch to stats panel
+    deskSwitchPanel('stats');
+    setTimeout(()=>{
+      const el = document.getElementById('statsRef-'+target);
+      el?.scrollIntoView({behavior:'smooth',block:'start'});
+    },120);
+  }
+  showToast('📊 Scrolled to reference', 1800);
+};
+
+// ─── SCRATCH PAD ──────────────────────────────────────────────────────────────
+const SCRATCH_KEY = 'jlos_scratch_' + new Date().toDateString();
+function saveScratch(){
+  const v = document.getElementById('scratchPad')?.value || '';
+  try{localStorage.setItem(SCRATCH_KEY, v);}catch(e){}
+}
+function loadScratch(){
+  try{
+    const v = localStorage.getItem(SCRATCH_KEY) || '';
+    const el = document.getElementById('scratchPad');
+    if(el) el.value = v;
+  }catch(e){}
+}
+function getDayTotal(d){let t=0;PT.forEach(sec=>{sec.items.forEach(item=>{if(item.days.includes(d))t++;});});return t;}
+function getDayDone(d){try{return(JSON.parse(localStorage.getItem(`jlos_${d}`))||[]).length;}catch(e){return 0;}}
+function buildWeeklyData(){
+  const today=new Date().getDay();
+  const order=[1,2,3,4,5,6,0];
+  const labels=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+  const data=order.map(d=>{const t=getDayTotal(d);return t?Math.round(Math.min(getDayDone(d),t)/t*100):0;});
+  const bgColors=order.map(d=>{
+    if(d===today)return '#b89de0';
+    const t=getDayTotal(d);if(!t)return '#ece8f4';
+    const pct=Math.min(getDayDone(d),t)/t;
+    return pct>=1?'#5dd9a0':pct>0?'#ffd8c8':'#ece8f4';
+  });
+  return{labels,data,bgColors};
+}
+const WEEK_OPTS={responsive:true,maintainAspectRatio:false,scales:{y:{display:false,min:0,max:100},x:{grid:{display:false},border:{display:false},ticks:{font:{size:9,weight:'bold'},color:'#a396b4'}}},plugins:{legend:{display:false},tooltip:{padding:8,cornerRadius:9,callbacks:{label:ctx=>`${ctx.raw}% done`}}}};
+
+// ─── TIMER ENGINE ─────────────────────────────────────────────────────────────
+let timerInterval = null;
+let timerSecsLeft = 0;
+let timerLabelTxt = '';
+let timerEmojiTxt = '';
+
+window.launchTimer = (label, mins, emoji) => {
+  if(timerInterval){ clearInterval(timerInterval); timerInterval = null; }
+  timerSecsLeft = mins * 60;
+  timerLabelTxt = label;
+  timerEmojiTxt = emoji;
+  _startTimerTick();
+  showToast(`${emoji} ${label} — ${mins} min started`, 2000);
+};
+
+window.addTimerMin = (m) => {
+  timerSecsLeft = Math.max(0, timerSecsLeft + m * 60);
+  _renderTimerDisplay();
+};
+
+window.stopTimer = () => {
+  if(timerInterval){ clearInterval(timerInterval); timerInterval = null; }
+  const bar = document.getElementById('timerBar');
+  bar?.classList.remove('active','urgent','done');
+  document.body.classList.remove('timer-active');
+  timerSecsLeft = 0;
+};
+
+function _startTimerTick(){
+  const bar = document.getElementById('timerBar');
+  document.getElementById('timerEmoji').textContent = timerEmojiTxt;
+  document.getElementById('timerLabel').textContent = timerLabelTxt;
+  bar.classList.add('active');
+  bar.classList.remove('urgent','done');
+  document.body.classList.add('timer-active');
+  _renderTimerDisplay();
+  timerInterval = setInterval(()=>{
+    timerSecsLeft--;
+    if(timerSecsLeft <= 0){
+      timerSecsLeft = 0;
+      clearInterval(timerInterval); timerInterval = null;
+      _renderTimerDisplay();
+      bar.classList.add('done'); bar.classList.remove('urgent');
+      document.getElementById('timerLabel').textContent = timerLabelTxt + ' ✓ Done!';
+      _fireTimerDone(timerLabelTxt, timerEmojiTxt);
+      setTimeout(stopTimer, 10000);
+    } else {
+      if(timerSecsLeft <= 30) bar.classList.add('urgent');
+      else bar.classList.remove('urgent');
+      _renderTimerDisplay();
+    }
+  }, 1000);
+}
+
+function _renderTimerDisplay(){
+  const m = Math.floor(timerSecsLeft / 60);
+  const s = timerSecsLeft % 60;
+  const el = document.getElementById('timerCountdown');
+  if(el) el.textContent = `${m}:${String(s).padStart(2,'0')}`;
+}
+
+function _fireTimerDone(label, emoji){
+  if(navigator.vibrate) navigator.vibrate([200,100,200,100,300]);
+  if(Notification.permission === 'granted'){
+    try{
+      new Notification(`${emoji} ${label} — Done!`, {
+        body: "Time's up 🐾",
+        icon: ICON_URL,
+        tag: 'jlos-timer',
+        requireInteraction: false
+      });
+    }catch(e){}
+  }
+  showToast(`${emoji} ${label} done! ✓`, 6000);
+}
+
+// ─── NOTIFICATION SYSTEM ──────────────────────────────────────────────────────
+const NOTIF_EVENTS = [
+  {key:'nap1end',  label:'Wake Timber — Nap 1 ends',    time:'11:20', emoji:'🐾'},
+  {key:'lunch',    label:'Lunch break + Iron',           time:'13:25', emoji:'🍽️'},
+  {key:'nap2end',  label:'Wake Timber — Nap 2 ends',    time:'16:00', emoji:'🐾'},
+  {key:'walk',     label:'Evening Stroller Walk',        time:'17:15', emoji:'🦮'},
+  {key:'nap3end',  label:'Wake Timber — Nap 3 ends',    time:'18:45', emoji:'🐾'},
+  {key:'dinner',   label:'Dinner + Meds time',           time:'19:30', emoji:'📺'},
+  {key:'shower',   label:'Shower — bare skin for RLT',  time:'20:30', emoji:'🚿'},
+  {key:'rlt',      label:'RLT session — 9:00 PM',       time:'21:00', emoji:'🔴'},
+  {key:'winddown', label:'Timber Wind-Down time',        time:'22:15', emoji:'🐕'},
+  {key:'bedtime',  label:"Timber's Bedtime",             time:'22:35', emoji:'🏠'},
+];
+
+let notifEnabled = false;
+let _notifTimers = [];
+
+window.toggleNotifications = async () => {
+  if(!('Notification' in window)){
+    showToast('Notifications not supported here', 3000); return;
+  }
+  if(notifEnabled){
+    notifEnabled = false;
+    _notifTimers.forEach(t=>clearTimeout(t)); _notifTimers = [];
+    document.getElementById('notifBell')?.classList.remove('enabled');
+    try{ localStorage.setItem('jlos_notif','off'); }catch(e){}
+    showToast('🔕 Notifications off', 2000); return;
+  }
+  const perm = await Notification.requestPermission();
+  if(perm !== 'granted'){
+    showToast('⚠️ Allow notifications in your browser to enable this', 3500); return;
+  }
+  notifEnabled = true;
+  document.getElementById('notifBell')?.classList.add('enabled');
+  _scheduleAllNotifs();
+  try{ localStorage.setItem('jlos_notif','on'); }catch(e){}
+  showToast('🔔 Notifications on — key Timber transitions will ping you', 3200);
+};
+
+function _scheduleAllNotifs(){
+  _notifTimers.forEach(t=>clearTimeout(t)); _notifTimers = [];
+  const now = new Date();
+  const midnight = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  NOTIF_EVENTS.forEach(ev=>{
+    const [hh,mm] = ev.time.split(':').map(Number);
+    let fireMs = midnight.getTime() + (hh*60+mm)*60000;
+    if(isShifted) fireMs += offsetMin * 60000;
+    const msUntil = fireMs - now.getTime();
+    if(msUntil > 0){
+      const tid = setTimeout(()=>{
+        if(!notifEnabled) return;
+        try{
+          new Notification(`${ev.emoji} ${ev.label}`, {
+            body: 'Life OS reminder',
+            icon: ICON_URL,
+            tag: ev.key,
+            requireInteraction: false
+          });
+        }catch(e){}
+        if(navigator.vibrate) navigator.vibrate(200);
+      }, msUntil);
+      _notifTimers.push(tid);
+    }
+  });
+}
+
+// Re-schedule notifs when shift changes
+const _baseApplyShift = window.applyShift;
+window.applyShift = function(){ _baseApplyShift(); if(notifEnabled) _scheduleAllNotifs(); };
+const _baseUndoShift = window.undoShift;
+window.undoShift = function(){ _baseUndoShift(); if(notifEnabled) _scheduleAllNotifs(); };
+
+function initNotifications(){
+  try{
+    if(localStorage.getItem('jlos_notif')==='on' && Notification.permission==='granted'){
+      notifEnabled = true;
+      document.getElementById('notifBell')?.classList.add('enabled');
+      _scheduleAllNotifs();
+    }
+  }catch(e){}
+}
+
+// ─── ASK CLAUDE ───────────────────────────────────────────────────────────────
+window.toggleClaudePanel = () => {
+  const panel = document.getElementById('claudePanel');
+  panel.classList.toggle('open');
+};
+
+function _buildScheduleContext(){
+  const nowMin = getNowMin();
+  const dayItems = getFilteredSchedule('all');
+  const remaining = [];
+  dayItems.forEach(item=>{
+    const eff = isShifted ? item.smin+offsetMin : item.smin;
+    if(eff > nowMin){
+      const steps = item.isRltRotating ? getRltRotatingSteps() : item.steps;
+      const priority = steps.filter(s=>s.c==='timber'||s.c==='wellness');
+      if(priority.length) remaining.push(`• ${item.h} at ${fmtMin12(eff)}`);
+    }
+  });
+  const now = new Date();
+  const h12 = now.getHours()%12||12, ap = now.getHours()>=12?'PM':'AM';
+  const timeStr = `${h12}:${String(now.getMinutes()).padStart(2,'0')} ${ap}`;
+  const offsetStr = offsetMin>2 ? `I am ${Math.abs(offsetMin)} min behind schedule.`
+    : offsetMin<-2 ? `I am ${Math.abs(offsetMin)} min ahead.` : 'I am on schedule.';
+  return `Context: It is ${timeStr}. ${offsetStr}\nRemaining priority tasks:\n${remaining.slice(0,10).join('\n')}\nHard sleep goal: 12:00 AM.`;
+}
+
+async function _sendToClaude(userQuestion){
+  const respEl = document.getElementById('claudeResponse');
+  const sendBtn = document.getElementById('claudeSendBtn');
+  respEl.className = 'claude-response thinking';
+  respEl.textContent = '✨ Thinking…';
+  if(sendBtn) sendBtn.disabled = true;
+  const context = _buildScheduleContext();
+  const fullPrompt = `${context}\n\nQuestion: ${userQuestion}\n\nBe concise and practical. You are helping a busy scientist with hypermobility manage her day around puppy care (Timber) and medical protocols. Max 3 paragraphs.`;
+  try{
+    const res = await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:600,
+        messages:[{role:'user',content:fullPrompt}]
+      })
+    });
+    const data = await res.json();
+    if(data.content && data.content[0]){
+      respEl.className = 'claude-response';
+      respEl.textContent = data.content[0].text;
+    } else {
+      throw new Error(data.error?.message || 'No response');
+    }
+  } catch(e){
+    respEl.className = 'claude-response';
+    respEl.textContent = `⚠️ Couldn't reach Claude API. Copy the Gemini prompt instead, or try again.\n\n(${e.message})`;
+  } finally {
+    if(sendBtn) sendBtn.disabled = false;
   }
 }
 
-// ─── WEEKLY CONSISTENCY CHART ────────────────────────────────────────────────
-// Reads real localStorage data for each day of the current week.
-// Each day's PT list is built from PT sections for that weekday,
-// so we know the total possible exercises and can compute a real %.
-function getDayTotal(dayNum){
-  // Count how many PT items are scheduled on dayNum
-  let t=0;
-  PT.forEach(sec=>{sec.items.forEach(item=>{if(item.days.includes(dayNum))t++;});});
-  return t;
+window.askClaude = (q) => {
+  document.getElementById('claudePanel').classList.add('open');
+  _sendToClaude(q);
+};
+window.askClaudeCustom = () => {
+  const inp = document.getElementById('claudeInput');
+  const q = inp?.value.trim();
+  if(!q){ showToast('Type a question first', 1500); return; }
+  _sendToClaude(q);
+  if(inp) inp.value = '';
+};
+// Enter key on claude input — registered at load time
+function initClaudeInput(){
+  document.getElementById('claudeInput')?.addEventListener('keydown', e=>{
+    if(e.key==='Enter') window.askClaudeCustom();
+  });
 }
-function getDayDone(dayNum){
+
+// ─── GITHUB GIST SYNC ─────────────────────────────────────────────────────────
+// Syncs timber_memories to/from a private GitHub Gist
+const GIST_TOKEN_KEY = 'jlos_gist_token';
+const GIST_ID_KEY    = 'jlos_gist_id';
+const GIST_FILE      = 'lifeos-timber-memories.json';
+let _gistSyncing = false;
+
+function _getGistToken(){ try{ return localStorage.getItem(GIST_TOKEN_KEY)||''; }catch(e){ return ''; }}
+function _getGistId()   { try{ return localStorage.getItem(GIST_ID_KEY)||''; }catch(e){ return ''; }}
+
+function _setGistStatus(state, txt){
+  const dot = document.getElementById('gistDot');
+  const bar = document.getElementById('gistBarTxt');
+  if(dot){ dot.className = 'gist-dot ' + state; }
+  if(bar){ bar.textContent = txt; }
+}
+
+window.openGistModal = () => {
+  const token = _getGistToken();
+  const inp = document.getElementById('gistTokenInput');
+  if(inp && token) inp.value = token;
+  const disc = document.getElementById('gistDisconnectWrap');
+  if(disc) disc.style.display = token ? 'block' : 'none';
+  document.getElementById('gistModal').classList.add('open');
+};
+window.closeGistModal = () => {
+  document.getElementById('gistModal').classList.remove('open');
+};
+window.disconnectGist = () => {
+  try{ localStorage.removeItem(GIST_TOKEN_KEY); localStorage.removeItem(GIST_ID_KEY); }catch(e){}
+  _setGistStatus('','Sync');
+  showToast('☁️ Gist sync disconnected', 2000);
+  closeGistModal();
+};
+
+window.saveGistToken = async () => {
+  const token = document.getElementById('gistTokenInput')?.value.trim();
+  if(!token){ showToast('Paste your GitHub token first', 2000); return; }
+  const msg = document.getElementById('gistStatusMsg');
+  if(msg){ msg.style.display='block'; msg.textContent='Testing token…'; msg.style.color='var(--tm)'; }
   try{
-    const data=JSON.parse(localStorage.getItem(`jlos_${dayNum}`))||[];
-    return data.length;
-  }catch(e){return 0;}
+    // Verify token works
+    const r = await fetch('https://api.github.com/user',{headers:{'Authorization':'token '+token}});
+    if(!r.ok) throw new Error('Invalid token');
+    try{ localStorage.setItem(GIST_TOKEN_KEY, token); }catch(e){}
+    if(msg){ msg.textContent='✓ Connected! Syncing…'; msg.style.color='var(--ma)'; }
+    closeGistModal();
+    await gistPush();
+    showToast('☁️ Gist sync connected & data uploaded!', 3000);
+  } catch(e){
+    if(msg){ msg.style.display='block'; msg.textContent='⚠️ '+e.message; msg.style.color='var(--pa)'; }
+  }
+};
+
+// Push memories to Gist (create if needed, update if exists)
+async function gistPush(){
+  const token = _getGistToken(); if(!token) return;
+  if(_gistSyncing) return; _gistSyncing = true;
+  _setGistStatus('syncing','Syncing…');
+  try{
+    const memories = loadMemories();
+    const content = JSON.stringify({memories, updated: new Date().toISOString()}, null, 2);
+    const gistId = _getGistId();
+    let url = 'https://api.github.com/gists';
+    let method = 'POST';
+    let body = { description:"Life OS — Timber Memories", public:false, files:{ [GIST_FILE]:{content} } };
+    if(gistId){
+      url = `https://api.github.com/gists/${gistId}`;
+      method = 'PATCH';
+      body = { files:{ [GIST_FILE]:{content} } };
+    }
+    const r = await fetch(url,{ method, headers:{'Authorization':'token '+token,'Content-Type':'application/json'}, body:JSON.stringify(body) });
+    if(!r.ok) throw new Error('Push failed: '+r.status);
+    const data = await r.json();
+    if(!gistId) try{ localStorage.setItem(GIST_ID_KEY, data.id); }catch(e){}
+    _setGistStatus('synced','Synced ✓');
+  } catch(e){
+    _setGistStatus('error','Sync error');
+    console.warn('Gist push error:', e);
+  } finally { _gistSyncing = false; }
 }
 
-let weekChartM=null, weekChartD=null;
-
-function buildWeeklyData(){
-  const labels=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-  const today=new Date().getDay();
-  // reorder so Mon is first, Sun is last (standard week view)
-  const order=[1,2,3,4,5,6,0];
-  const orderedLabels=order.map(d=>labels[d]);
-
-  const data=order.map(d=>{
-    const total=getDayTotal(d);
-    if(total===0)return 0;
-    const done=Math.min(getDayDone(d),total);
-    return Math.round(done/total*100);
-  });
-
-  // Color today's bar differently
-  const bgColors=order.map(d=>{
-    if(d===today)return '#b89de0';   // lavender = today
-    const pct=getDayTotal(d)>0?Math.min(getDayDone(d),getDayTotal(d))/getDayTotal(d):0;
-    if(pct>=1)return '#5dd9a0';      // green = complete
-    if(pct>0) return '#ffd8c8';      // peach = partial
-    return '#ece8f4';                 // light = nothing done
-  });
-
-  return {labels:orderedLabels, data, bgColors};
-}
-
-function initCharts(){
-  Chart.defaults.font.family="'Nunito',sans-serif";
-  Chart.defaults.font.weight="bold";
-  Chart.defaults.color="#a396b4";
-
-  const {labels,data,bgColors}=buildWeeklyData();
-
-  const weekData={
-    labels,
-    datasets:[{
-      data,
-      backgroundColor:bgColors,
-      borderRadius:10,
-      borderSkipped:false,
-    }]
-  };
-  const weekOpts={
-    responsive:true,
-    maintainAspectRatio:false,
-    scales:{
-      y:{display:false,min:0,max:100},
-      x:{grid:{display:false},border:{display:false},ticks:{font:{size:9,weight:'bold'},color:'#a396b4'}}
-    },
-    plugins:{
-      legend:{display:false},
-      tooltip:{
-        padding:9,cornerRadius:10,
-        callbacks:{label:ctx=>`${ctx.raw}% complete`}
+// Pull memories from Gist (replaces local if Gist is newer)
+async function gistPull(){
+  const token = _getGistToken(), gistId = _getGistId();
+  if(!token || !gistId) return;
+  _setGistStatus('syncing','Pulling…');
+  try{
+    const r = await fetch(`https://api.github.com/gists/${gistId}`,{headers:{'Authorization':'token '+token}});
+    if(!r.ok) throw new Error('Pull failed');
+    const data = await r.json();
+    const raw = data.files?.[GIST_FILE]?.content;
+    if(raw){
+      const parsed = JSON.parse(raw);
+      if(parsed.memories){
+        saveMemories(parsed.memories);
+        renderAllMemories();
+        _setGistStatus('synced','Synced ✓');
+        showToast('☁️ Memories synced from cloud', 2000);
       }
     }
-  };
-
-  const mW=document.getElementById('mChWeek');
-  if(mW)weekChartM=new Chart(mW,{type:'bar',data:weekData,options:weekOpts});
-  const dW=document.getElementById('dChWeek');
-  if(dW)weekChartD=new Chart(dW,{type:'bar',data:JSON.parse(JSON.stringify(weekData)),options:JSON.parse(JSON.stringify(weekOpts))});
+  } catch(e){
+    _setGistStatus('error','Sync error');
+  }
 }
 
+// Auto-push whenever memories change
+const _origSaveMemories = saveMemories;
+// Patch saveMemories to trigger push
+function saveMemories(m){
+  try{localStorage.setItem('timber_memories',JSON.stringify(m));}catch(e){}
+  // Debounced push
+  clearTimeout(saveMemories._pushTimer);
+  saveMemories._pushTimer = setTimeout(()=>{ if(_getGistToken()) gistPush(); }, 1200);
+}
+
+function initGistSync(){
+  const token = _getGistToken();
+  if(token){ _setGistStatus('synced','Synced ✓'); gistPull(); }
+  else { _setGistStatus('','Sync'); }
+}
+
+// ─── WEEKLY CHART ─────────────────────────────────────────────────────────────
+function initCharts(){
+  Chart.defaults.font.family="'Nunito',sans-serif";Chart.defaults.font.weight="bold";Chart.defaults.color="#a396b4";
+  const wd=buildWeeklyData();
+  const mk=(id)=>{const el=document.getElementById(id);return el?new Chart(el,{type:'bar',data:{labels:wd.labels,datasets:[{data:wd.data,backgroundColor:wd.bgColors,borderRadius:10,borderSkipped:false}]},options:WEEK_OPTS}):null;};
+  weekChartM=mk('mChWeek');weekChartD=mk('dChWeek');weekChartAlt=mk('dChWeekAlt');
+}
 function refreshWeeklyChart(){
-  const {labels,data,bgColors}=buildWeeklyData();
-  [weekChartM,weekChartD].forEach(ch=>{
+  const wd=buildWeeklyData();
+  [weekChartM,weekChartD,weekChartAlt].forEach(ch=>{
     if(!ch)return;
-    ch.data.labels=labels;
-    ch.data.datasets[0].data=data;
-    ch.data.datasets[0].backgroundColor=bgColors;
-    ch.update('none');
+    ch.data.labels=wd.labels;ch.data.datasets[0].data=wd.data;ch.data.datasets[0].backgroundColor=wd.bgColors;ch.update('none');
   });
 }
 
 // ─── INIT ─────────────────────────────────────────────────────────────────────
 window.onload=()=>{
-  setupPWA();
-  syncDaySelectors();
-  updateClock();
-  updateWhatsNext();
+  setupPWA();syncThemeColor();
+  syncDaySelectors();updateClock();updateWhatsNext();updateGermany();updateRltToday();
   buildTL('all','mTlb','mb');
   buildTL('all','dTlb','db');
-  renderPT();
-  initCharts();
+  renderPT();initCharts();renderAllMemories();
+  initDatetimeInputs();
+  loadScratch();
+  initNotifications();
+  initGistSync();
+  initClaudeInput();
   document.getElementById('jumpNowBtn').style.display='flex';
+  // rotate phrases every 5 min
+  setInterval(nextPhrase,300000);
 };
 </script>
 </body>

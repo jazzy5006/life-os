@@ -741,6 +741,69 @@ body.timer-active .desktop-layout{padding-top:70px}
   .api-settings-panel.open{max-width:100%}
 }
 .desktop-layout{display:none}
+
+/* ── SITTER PAGES ── */
+.sitter-overlay{display:none;position:fixed;inset:0;z-index:9999;background:#fdf6f0;overflow-y:auto;font-family:'Nunito',sans-serif;}
+.sitter-overlay.active{display:block}
+.sitter-hero{background:linear-gradient(135deg,#fde8d8 0%,#f9d6f0 50%,#d6e8f9 100%);padding:32px 20px 24px;text-align:center;border-bottom:3px solid #e8c8f0;}
+.sitter-hero h1{font-size:1.8rem;font-weight:900;color:#4a2d6a;line-height:1.15;margin-bottom:6px}
+.sitter-hero .hero-sub{font-size:.85rem;font-weight:700;color:#7a5a9a;margin-bottom:14px}
+.sitter-paws{font-size:1.4rem;letter-spacing:.3em;opacity:.6}
+.sitter-nav-pills{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:14px}
+.sitter-nav-pill{background:rgba(255,255,255,.7);border:2px solid rgba(255,255,255,.9);border-radius:999px;padding:7px 16px;font-size:.7rem;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:#6a4a8a;cursor:pointer;transition:all .2s;text-decoration:none;display:inline-block;}
+.sitter-nav-pill:hover,.sitter-nav-pill.active{background:#9a6aba;color:#fff;border-color:#9a6aba}
+.sitter-nav-pill.dog{background:rgba(255,220,180,.8);color:#8a4a20;border-color:rgba(255,190,140,.9)}
+.sitter-nav-pill.dog:hover,.sitter-nav-pill.dog.active{background:#e8834a;color:#fff;border-color:#e8834a}
+.sitter-nav-pill.cat{background:rgba(180,220,255,.8);color:#1a4a7a;border-color:rgba(140,190,255,.9)}
+.sitter-nav-pill.cat:hover,.sitter-nav-pill.cat.active{background:#4a8aba;color:#fff;border-color:#4a8aba}
+.sitter-body{max-width:520px;margin:0 auto;padding:20px 16px 60px}
+.sitter-section{margin-bottom:20px}
+.sitter-section-title{font-size:.6rem;font-weight:900;letter-spacing:.2em;text-transform:uppercase;color:#9a7aba;margin-bottom:10px;display:flex;align-items:center;gap:8px;}
+.sitter-section-title::after{content:'';flex:1;height:2px;background:linear-gradient(90deg,#e8d0f8,transparent)}
+.sitter-card{background:#fff;border-radius:18px;border:2px solid #edd8f8;padding:16px;margin-bottom:10px;box-shadow:0 2px 12px rgba(154,106,186,.08);}
+.sitter-card.orange{border-color:#fdd0b0;box-shadow:0 2px 12px rgba(232,131,74,.08)}
+.sitter-card.blue{border-color:#c8e0f8;box-shadow:0 2px 12px rgba(74,138,186,.08)}
+.sitter-card.green{border-color:#c8f0d8;box-shadow:0 2px 12px rgba(74,186,138,.08)}
+.sitter-card.red{border-color:#f8c8c8;box-shadow:0 2px 12px rgba(186,74,74,.08)}
+.sitter-card h3{font-size:.88rem;font-weight:900;color:#4a2d6a;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.sitter-card.orange h3{color:#7a3d10}.sitter-card.blue h3{color:#1a3d6a}.sitter-card.green h3{color:#1a5a3a}.sitter-card.red h3{color:#7a1a1a}
+.sitter-card p,.sitter-card li{font-size:.78rem;font-weight:600;color:#5a4070;line-height:1.65}
+.sitter-card.orange p,.sitter-card.orange li{color:#6a3a18}.sitter-card.blue p,.sitter-card.blue li{color:#1a3a5a}.sitter-card.green p,.sitter-card.green li{color:#1a4a2a}.sitter-card.red p,.sitter-card.red li{color:#6a1a1a}
+.sitter-card ul{padding-left:16px;margin-top:4px}.sitter-card li{margin-bottom:4px}
+.sitter-schedule-row{display:flex;align-items:flex-start;gap:10px;padding:9px 0;border-bottom:1px solid #f0e8f8;}
+.sitter-schedule-row:last-child{border-bottom:none;padding-bottom:0}
+.sitter-time{font-size:.72rem;font-weight:900;color:#9a6aba;min-width:68px;padding-top:1px;white-space:nowrap;}
+.sitter-schedule-row.orange .sitter-time{color:#d06a20}
+.sitter-event{font-size:.78rem;font-weight:700;color:#4a2d6a;line-height:1.5}
+.sitter-event small{display:block;font-size:.68rem;font-weight:600;color:#9a7aba;margin-top:2px}
+.sitter-schedule-row.orange .sitter-event{color:#5a2d10}.sitter-schedule-row.orange .sitter-event small{color:#b06040}
+.sitter-icon{font-size:1rem;padding-top:1px;min-width:22px;text-align:center}
+.sitter-contact-row{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid #f0e8f8;}
+.sitter-contact-row:last-child{border-bottom:none}
+.sitter-contact-name{font-size:.78rem;font-weight:900;color:#4a2d6a;min-width:110px}
+.sitter-contact-role{font-size:.66rem;font-weight:700;color:#9a7aba}
+.sitter-contact-phone{font-size:.78rem;font-weight:800;color:#9a6aba;margin-left:auto}
+.sitter-contact-phone a{color:inherit;text-decoration:none}.sitter-contact-phone a:hover{text-decoration:underline}
+.sitter-pill-row{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.sitter-pill{background:#f4e8fc;border:2px solid #e0c8f4;border-radius:999px;padding:4px 12px;font-size:.66rem;font-weight:900;color:#7a4aba;letter-spacing:.05em;}
+.sitter-pill.orange{background:#fdf0e8;border-color:#f4d0b0;color:#8a4a18}.sitter-pill.blue{background:#e8f2fc;border-color:#b8d8f4;color:#1a4a7a}.sitter-pill.green{background:#e8f8f0;border-color:#b8e8d0;color:#1a5a3a}.sitter-pill.red{background:#fce8e8;border-color:#f4b8b8;color:#7a1a1a}
+.sitter-tip{background:linear-gradient(135deg,#fef9ec,#fdf0fc);border:2px solid #f4e0b0;border-radius:14px;padding:12px 14px;margin-top:8px;font-size:.74rem;font-weight:700;color:#7a5a20;line-height:1.6;}
+.sitter-tip::before{content:'💡 ';font-size:.8rem}
+.sitter-warning{background:linear-gradient(135deg,#fff4f4,#fef0ec);border:2px solid #f4c8b8;border-radius:14px;padding:12px 14px;margin-top:8px;font-size:.74rem;font-weight:700;color:#8a3a20;line-height:1.6;}
+.sitter-warning::before{content:'⚠️ ';font-size:.8rem}
+.sitter-tab-content{display:none}.sitter-tab-content.active{display:block}
+.sitter-back{position:sticky;top:0;z-index:10;background:rgba(253,246,240,.95);backdrop-filter:blur(8px);border-bottom:2px solid #e8d0f0;padding:10px 16px;display:flex;align-items:center;gap:10px;}
+.sitter-back button{background:#f4e8fc;border:2px solid #e0c8f4;border-radius:999px;padding:6px 14px;font-size:.65rem;font-weight:900;letter-spacing:.1em;text-transform:uppercase;color:#7a4aba;cursor:pointer;font-family:'Nunito',sans-serif;}
+.sitter-back-title{font-size:.75rem;font-weight:900;color:#4a2d6a}
+.sitter-vet-block{background:linear-gradient(135deg,#fff4f4,#f8ecfc);border:2px solid #f4b8c8;border-radius:14px;padding:14px;margin-top:8px;}
+.sitter-vet-block h4{font-size:.8rem;font-weight:900;color:#7a1a3a;margin-bottom:6px}
+.sitter-vet-block p{font-size:.74rem;font-weight:700;color:#6a2a4a;line-height:1.6}
+.sitter-vet-block a{color:#c0305a;font-weight:900}
+.sitter-page-tabs{display:flex;gap:8px;margin-bottom:18px}
+.sitter-page-tab{flex:1;padding:10px 6px;border-radius:12px;border:2px solid #e0c8f4;background:#f9f0fd;font-family:'Nunito',sans-serif;font-size:.68rem;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:#7a4aba;cursor:pointer;transition:all .2s;text-align:center;}
+.sitter-page-tab.active{background:#9a6aba;color:#fff;border-color:#9a6aba}
+.sitter-page-tab.dog-tab.active{background:#e8834a;border-color:#e8834a}
+.sitter-page-tab.cat-tab.active{background:#4a8aba;border-color:#4a8aba}
 </style>
 </head>
 <body>
@@ -1607,16 +1670,19 @@ const S=[
    {c:"timber",txt:"Pick Timber up from crate immediately."},
    {c:"timber",txt:"Carry downstairs. Wait for sit at back door. Open. Out to pee spot.",note:"The sit at the door threshold is the Learn to Earn moment — the door opening is the reward. Keep this consistent every single trip."},
    {c:"timber",txt:"Praise heavily the moment he goes. This is the most important praise of the day."},
-   {c:"timber",txt:"Back upstairs to office."},
  ]},
- {t:"08:15 AM",e:"08:45 AM",i:"🎓",h:"Timber Breakfast Training (Learn to Earn)",steps:[
-   {c:"timber",txt:"Use full breakfast portion as training rewards — no bowl.",note:"Learn to Earn: every piece of food is earned through engagement. This builds focus, impulse control, and a working relationship simultaneously."},
-   {c:"timber",txt:"Work on: sit, eye contact, name recognition, come."},
-   {c:"timber",txt:"Keep sessions short and positive. End before he loses interest."},
+ {t:"08:15 AM",e:"08:30 AM",i:"🛻",h:"Morning Stroller Walk — 15 min",steps:[
+   {c:"timber",txt:"Load Timber into the stroller right after potty. He's unvaccinated — no paws on the ground in public areas.",note:"Stroller walks still count as socialization gold. He sees the world, hears traffic, feels wind, smells everything — all without paw contact. This is active socialization work."},
+   {c:"timber",txt:"15-minute loop around the block. Let him observe calmly."},
+   {c:"wellness",txt:"Your first fresh air of the day. Walk at your own pace."},
+ ]},
+ {t:"08:30 AM",e:"08:40 AM",i:"🎓",h:"Timber Breakfast Training (Learn to Earn)",steps:[
+   {c:"timber",txt:"Use full breakfast portion as training rewards — no bowl.",note:"Learn to Earn: every piece of food is earned through engagement. This builds focus, impulse control, and a working relationship simultaneously. 5–10 minutes is the sweet spot at this age — stop before he loses interest, always end on a win."},
+   {c:"timber",txt:"Work on: sit, eye contact, name recognition, come. 5–10 reps max per cue."},
    {c:"timber",txt:"Remaining food → puzzle feeder if training reps are done."},
    {c:"timber",txt:"Timber tethered to you the entire time."},
  ]},
- {t:"08:45 AM",e:"09:00 AM",i:"🍳",h:"Your Breakfast + Vyvanse",steps:[
+ {t:"08:40 AM",e:"09:00 AM",i:"🍳",h:"Your Breakfast + Vyvanse",steps:[
    {c:"wellness",txt:"Eat high-protein breakfast. Take Vyvanse.",note:"Vyvanse with food reduces harsh onset. Protein breakfast supports sustained focus through the morning work block."},
    {c:"wellness",txt:"Log breakfast in Cronometer."},
    {c:"timber",  txt:"Timber plays tethered beside you while you eat."},
@@ -1626,15 +1692,12 @@ const S=[
    {c:"timber",txt:"Carry downstairs. Sit at door. Out. Praise. Back upstairs."},
    {c:"timber",txt:"Into crate. Cover on. Walk away calmly — no long goodbye."},
  ]},
- {t:"09:00 AM",e:"09:10 AM",i:"🧹",h:"Sweepy — Daily Clean",steps:[
-   {c:"wellness",txt:"Open Sweepy app. Run today's 10-min cleaning task.",note:"Daily cleaning is essential with a puppy in the house. Accidents are easier to manage when the baseline is clean."},
-   {c:"wellness",txt:"Focus on office and any accident spots from this morning."},
- ]},
 
  // ── WORK BLOCK 1 ───────────────────────────────────────────────────────────
- {t:"09:10 AM",e:"10:30 AM",i:"🔄",h:"Focus Block 1 — Pomodoro",steps:[
+ {t:"09:00 AM",e:"10:30 AM",i:"🔄",h:"Focus Block 1 — Pomodoro",steps:[
    {c:"focus",   txt:"25 min deep work. Timer on."},
    {c:"wellness",txt:"5-min break: one PT exercise from your Movement list."},
+   {c:"wellness",txt:"Use one break for Sweepy — open app, run today's 5–10 min cleaning task.",note:"Timber is crated — this is a good low-focus break task. Prioritise accident spots and the office floor."},
    {c:"focus",   txt:"Repeat cycles. Timber is crated — guard this block.",note:"Timber is safely napping. This is your first clean focus window of the day. Protect it."},
  ]},
  {t:"10:30 AM",e:"10:45 AM",i:"🚽",h:"Timber Wake + Potty #3",steps:[
@@ -1676,7 +1739,12 @@ const S=[
  {t:"01:30 PM",e:"01:45 PM",i:"🚽",h:"Timber Wake + Potty #6",steps:[
    {c:"timber",txt:"Pick up from crate. Carry downstairs."},
    {c:"timber",txt:"Sit at door. Out. Praise. Back upstairs."},
-   {c:"timber",txt:"Tethered to desk. Awake window."},
+   {c:"timber",txt:"Lunch walk coming right up — load stroller after potty."},
+ ]},
+ {t:"01:45 PM",e:"02:00 PM",i:"🛻",h:"Lunch Stroller Walk — 15 min",steps:[
+   {c:"timber",txt:"Load Timber into the stroller. Second outing of the day.",note:"You eat lunch anywhere from 12–1 PM, so this walk happens after you've eaten and he's just woken from nap #2. Two stroller walks per day is excellent socialization volume for a 9-week-old."},
+   {c:"timber",txt:"15-minute loop. Calm observation — no rushing."},
+   {c:"wellness",txt:"Mid-afternoon fresh air and reset before your last focus block."},
  ]},
 
  // ── WORK BLOCK 2 ───────────────────────────────────────────────────────────
@@ -1708,24 +1776,29 @@ const S=[
  {t:"04:30 PM",e:"04:45 PM",i:"🚽",h:"Timber Wake + Potty #9",steps:[
    {c:"timber",txt:"Pick up from crate. Carry downstairs."},
    {c:"timber",txt:"Sit at door. Out. Praise. Back upstairs."},
-   {c:"timber",txt:"Tethered awake window — socialization time."},
+   {c:"timber",txt:"Tethered awake window — afternoon walk with Nathan coming at 5:30."},
  ]},
- {t:"04:30 PM",e:"05:00 PM",i:"🪢",h:"Tethered Play + Socialization",steps:[
-   {c:"timber",txt:"Tethered beside you. This is his afternoon socialization window.",note:"9 weeks is peak socialization period — closes around 12–14 weeks. Calm exposure to sights, sounds, textures counts."},
-   {c:"timber",txt:"Optional: supervised cat greeting if the cat is willing."},
-   {c:"timber",txt:"Short training reps if you have capacity — 5 minutes max."},
+ {t:"04:30 PM",e:"05:30 PM",i:"🪢",h:"Tethered Awake Window",steps:[
+   {c:"timber",txt:"Tethered beside you. Calm desk time while you wrap up work.",note:"He's awake and alert — reward settled behaviour. The walk with Nathan is the enrichment highlight coming at 5:30."},
+   {c:"timber",txt:"Potty #10 opportunity around 5:00 PM — watch for sniffing/circling."},
  ]},
- {t:"05:00 PM",e:"05:10 PM",i:"🚽",h:"Timber Potty #10",steps:[
-   {c:"timber",txt:"Carry downstairs. Sit at door. Out. Praise. Back upstairs."},
+ {t:"05:30 PM",e:"06:00 PM",i:"🚶",h:"Afternoon Walk with Nathan — 30 min",steps:[
+   {c:"timber",txt:"Load Timber into the stroller. Nathan joins.",note:"This is the social highlight of Timber's day — new person, new smells, longer outing. 30 minutes of calm observation from the stroller counts as serious enrichment."},
+   {c:"timber",txt:"Stroller walk — paws stay off the ground. Let him sniff the air."},
+   {c:"wellness",txt:"Your end-of-day decompression. Walk and talk with Nathan."},
  ]},
- {t:"05:30 PM",e:"05:45 PM",i:"🎓",h:"Timber Dinner Training (Learn to Earn)",steps:[
-   {c:"timber",txt:"Use dinner portion as training rewards. 10 minutes max.",note:"Three timed meals anchors his digestive rhythm — makes potty timing predictable. Dinner at 5:30 gives a full buffer before the overnight stretch."},
+ {t:"06:00 PM",e:"06:10 PM",i:"🚽",h:"Timber Potty #11",steps:[
+   {c:"timber",txt:"Back from walk — carry him straight outside for a potty."},
+   {c:"timber",txt:"Praise. Back inside for dinner."},
+ ]},
+ {t:"06:10 PM",e:"06:20 PM",i:"🎓",h:"Timber Dinner Training (Learn to Earn)",steps:[
+   {c:"timber",txt:"Use dinner portion as training rewards. 5–10 minutes max.",note:"Short sessions at this age beat long ones every time — stop while he's still keen. Always end on a successful rep. Post-meal urgency will hit around 6:30–6:40 — potty follows right after."},
    {c:"timber",txt:"Work on: sit, stay, down, come. Keep it positive."},
    {c:"timber",txt:"Remainder in puzzle feeder if reps are done."},
  ]},
- {t:"05:50 PM",e:"06:00 PM",i:"🚽",h:"Timber Potty #11 → Crate Nap #4",steps:[
+ {t:"06:30 PM",e:"06:40 PM",i:"🚽",h:"Timber Potty #12 → Crate Nap #4",steps:[
    {c:"timber",txt:"Post-meal urgency window. Carry downstairs."},
-   {c:"timber",txt:"Sit at door. Out. Praise. Into crate. Cover on.",note:"He goes down while you and your partner cook. This is deliberate — he learns that crate time happens even when the house is lively."},
+   {c:"timber",txt:"Sit at door. Out. Praise. Into crate. Cover on.",note:"He goes down while you and Nathan cook dinner. This is deliberate — he learns that crate time happens even when the house is lively."},
  ]},
 
  // ── EVENING ────────────────────────────────────────────────────────────────
@@ -1733,7 +1806,7 @@ const S=[
    {c:"wellness",txt:"Close work. Step away from desk."},
    {c:"wellness",txt:"Transition intentionally — work is done for today."},
  ]},
- {t:"06:00 PM",e:"07:30 PM",i:"🍳",h:"Cook Dinner Together",steps:[
+ {t:"06:40 PM",e:"07:30 PM",i:"🍳",h:"Cook Dinner Together",steps:[
    {c:"wellness",txt:"Cook with your partner. Timber is crated — this is your time.",note:"The evening nap is the one most likely to get disrupted by a well-meaning partner who just got home. Brief him: no letting Timber out early, even if he whines."},
    {c:"wellness",txt:"Prep tomorrow's frozen Kongs or puzzle feeders now while you cook.",},
    {c:"wellness",txt:"Take Sertraline + Sronyx with dinner.",note:"SSRIs and contraceptives taken with food reduce nausea. Consistent evening timing maintains steady serum levels."},
@@ -1748,8 +1821,8 @@ const S=[
    {c:"timber",  txt:"Timber tethered near you — calm supervised presence.",note:"Evening tethering during TV is natural socialization. He learns that calm behaviour is the norm when the family is together."},
    {c:"wellness",txt:"Watch Survivor. Wind down together."},
  ]},
- {t:"09:00 PM",e:"09:15 PM",i:"🚽",h:"Timber Potty #13 → Crate Nap #5",steps:[
-   {c:"timber",txt:"Carry downstairs. Sit at door. Out. Praise. Back upstairs.",note:"This is the critical nap. He goes down before the overtired wall hits — which is what caused the 11 PM wired behaviour. Hold this time firm."},
+ {t:"09:00 PM",e:"09:15 PM",i:"🚽",h:"Timber Potty #13 → Bedtime",steps:[
+   {c:"timber",txt:"Carry downstairs. Sit at door. Out. Praise. Back upstairs.",note:"This is bedtime for the night. Get him out before he hits the overtired wall — which is what caused the 11 PM wired behaviour. The 11 PM trip is a quiet middle-of-night out, not a wake-up. Hold this time firm."},
    {c:"timber",txt:"Into crate. Cover on. Walk away. He is done for the evening."},
  ]},
 
@@ -1784,19 +1857,15 @@ const S=[
    {c:"wellness",txt:"Keep lights dim. Wind down naturally."},
    {c:"wellness",txt:"One line reflection in Hobonichi if you feel like it."},
  ]},
- {t:"11:00 PM",e:"11:15 PM",i:"🚽",h:"Timber Wake + Potty #14",steps:[
-   {c:"timber",txt:"Pick up from crate. Carry downstairs."},
+ {t:"11:00 PM",e:"11:15 PM",i:"🌙",h:"Timber Overnight Potty #1",steps:[
+   {c:"timber",txt:"Pick up from crate. Carry downstairs. Lights low.",note:"This is not a wake-up — he's mid-sleep. Keep it boring. No talking, no play, no eye contact beyond what's needed. Out, praise, straight back in crate."},
    {c:"timber",txt:"Sit at door. Out. Praise. Back upstairs."},
-   {c:"timber",txt:"Very short calm wind-down only. No play, no excitement."},
+   {c:"timber",txt:"Straight back into crate. No wind-down. He goes back to sleep."},
  ]},
  {t:"11:15 PM",e:"11:30 PM",i:"💊",h:"Wind-Down + Meds",steps:[
    {c:"wellness",txt:"Final Guava log — pain levels and any notes."},
    {c:"wellness",txt:"Dim all screens. Brush teeth."},
    {c:"timber",  txt:"Timber tethered quietly. Low stimulation only."},
- ]},
- {t:"11:30 PM",e:"11:35 PM",i:"🏠",h:"Timber Potty #15 → Crate for Night",steps:[
-   {c:"timber",txt:"Final carry downstairs. Sit at door. Out. Praise.",note:"Calm and brief. No long goodbyes — prolonged farewells signal that departure is an event worth anxiety."},
-   {c:"timber",txt:"Into crate. Cover on. Walk away. This is your bedtime too."},
  ]},
  {t:"11:30 PM",e:"11:35 PM",i:"🌙",h:"Your Bedtime",steps:[
    {c:"wellness",txt:"Lights out. Timber is settled. You have done enough today."},
@@ -3878,6 +3947,333 @@ window.onload=()=>{
   // rotate phrases every 5 min
   setInterval(nextPhrase,300000);
 };
+</script>
+
+<!-- ══════════════════════════════════════════════════════ -->
+<!-- SITTER OVERLAY — accessed via #sitter or #cats hash   -->
+<!-- ══════════════════════════════════════════════════════ -->
+<div class="sitter-overlay" id="sitterOverlay">
+
+  <!-- STICKY BACK BAR -->
+  <div class="sitter-back">
+    <button onclick="closeSitter()">← Back</button>
+    <span class="sitter-back-title" id="sitterBackTitle">Care Guide</span>
+  </div>
+
+  <!-- HERO -->
+  <div class="sitter-hero">
+    <div class="sitter-paws">🐾 🐱 🐾</div>
+    <h1>Pet Care Guide</h1>
+    <p class="hero-sub">March 28 – April 11, 2026 · Thank you so much! 💜</p>
+    <div class="sitter-nav-pills">
+      <span class="sitter-nav-pill dog" id="pillDog" onclick="showSitterTab('dog')">🐶 Timber</span>
+      <span class="sitter-nav-pill cat" id="pillCat" onclick="showSitterTab('cat')">🐱 Tigris & Tulip</span>
+    </div>
+  </div>
+
+  <!-- ── TIMBER TAB ── -->
+  <div class="sitter-tab-content" id="sitterTabDog">
+    <div class="sitter-body">
+
+      <div class="sitter-section">
+        <div class="sitter-section-title">👋 Hi Milo & Lili!</div>
+        <div class="sitter-card orange">
+          <p>Thank you so much for taking care of Timber while I'm in Germany! He's a 9-week-old miniature poodle and a very good boy. This page has everything you need. Don't hesitate to text or call me any time — I mean it!</p>
+        </div>
+      </div>
+
+      <!-- CONTACTS -->
+      <div class="sitter-section">
+        <div class="sitter-section-title">📞 Contacts</div>
+        <div class="sitter-card">
+          <div class="sitter-contact-row">
+            <div><div class="sitter-contact-name">Jasmine</div><div class="sitter-contact-role">Owner — primary contact</div></div>
+            <div class="sitter-contact-phone"><a href="tel:+18643762210">864-376-2210</a></div>
+          </div>
+          <div class="sitter-contact-row">
+            <div><div class="sitter-contact-name">Nathan</div><div class="sitter-contact-role">Partner</div></div>
+            <div class="sitter-contact-phone"><a href="tel:+18643959015">864-395-9015</a></div>
+          </div>
+          <div class="sitter-contact-row">
+            <div><div class="sitter-contact-name">Leesville Animal Hospital</div><div class="sitter-contact-role">Timber's vet · 9309 Leesville Rd</div></div>
+            <div class="sitter-contact-phone"><a href="tel:+19198707000">919-870-7000</a></div>
+          </div>
+        </div>
+        <div class="sitter-vet-block">
+          <h4>🚨 Emergency Vets</h4>
+          <p>
+            <strong>NC State Veterinary Hospital</strong> · 1052 William Moore Dr · <a href="tel:+19195137690">919-513-7690</a><br>
+            <strong>Triangle Veterinary Referral Hospital</strong> · 608 Morreene Rd, Durham · <a href="tel:+19194893030">919-489-3030</a><br>
+            <strong>BluePearl Pet Hospital (Cary)</strong> · 1403 NW Maynard Rd · <a href="tel:+19198580739">919-858-0739</a>
+          </p>
+        </div>
+      </div>
+
+      <!-- FEEDING -->
+      <div class="sitter-section">
+        <div class="sitter-section-title">🍽️ Feeding</div>
+        <div class="sitter-card orange">
+          <h3>🐾 Food: Fromm Puppy Gold</h3>
+          <p><strong>3 meals per day</strong> — breakfast, lunch, dinner. Use the kibble as training rewards (Learn to Earn method) — hold the meal in your hand and ask him to sit or make eye contact before each piece. It only takes 5–10 minutes per meal and really helps with his training.</p>
+          <div class="sitter-tip">Miniature poodles at this age typically need <strong>¼ to ½ cup per day total</strong>, split across 3 meals. That's roughly 2–3 tablespoons per meal. He's growing fast so go by his body condition — you should be able to feel (not see) his ribs. Adjust up slightly if he seems hungry after every meal.</div>
+          <div class="sitter-pill-row">
+            <span class="sitter-pill orange">Breakfast ~8 AM</span>
+            <span class="sitter-pill orange">Lunch ~12 PM</span>
+            <span class="sitter-pill orange">Dinner ~5:30 PM</span>
+          </div>
+        </div>
+        <div class="sitter-warning">No food after 6 PM — this helps keep his overnight potty schedule predictable. Always have fresh water available.</div>
+      </div>
+
+      <!-- DAILY SCHEDULE -->
+      <div class="sitter-section">
+        <div class="sitter-section-title">🗓️ Daily Schedule</div>
+        <div class="sitter-card orange">
+          <h3>🌅 Morning</h3>
+          <div class="sitter-schedule-row orange"><span class="sitter-icon">🌅</span><span class="sitter-time">8:00 AM</span><div class="sitter-event">Wake + Potty #1<small>First thing out of crate — carry him straight outside</small></div></div>
+          <div class="sitter-schedule-row orange"><span class="sitter-icon">🍽️</span><span class="sitter-time">8:10 AM</span><div class="sitter-event">Breakfast (Learn to Earn)<small>Hand-feed kibble as training rewards. Sit, eye contact.</small></div></div>
+          <div class="sitter-schedule-row orange"><span class="sitter-icon">🚽</span><span class="sitter-time">8:50 AM</span><div class="sitter-event">Potty → Crate Nap #1<small>He's been awake ~50 min — crate before he gets overtired</small></div></div>
+          <div class="sitter-schedule-row orange"><span class="sitter-icon">🚽</span><span class="sitter-time">10:30 AM</span><div class="sitter-event">Wake + Potty #3<small>Out of crate, straight outside</small></div></div>
+          <div class="sitter-schedule-row orange"><span class="sitter-icon">🚽</span><span class="sitter-time">11:00 AM</span><div class="sitter-event">Potty #4<small>Quick trip before next nap window</small></div></div>
+        </div>
+        <div class="sitter-card orange">
+          <h3>☀️ Afternoon</h3>
+          <div class="sitter-schedule-row orange"><span class="sitter-icon">🚽</span><span class="sitter-time">12:00 PM</span><div class="sitter-event">Potty → Crate Nap #2<small>Then lunch if you haven't fed yet</small></div></div>
+          <div class="sitter-schedule-row orange"><span class="sitter-icon">🚽</span><span class="sitter-time">1:30 PM</span><div class="sitter-event">Wake + Potty #6</div></div>
+          <div class="sitter-schedule-row orange"><span class="sitter-icon">🚽</span><span class="sitter-time">2:00 PM</span><div class="sitter-event">Potty #7</div></div>
+          <div class="sitter-schedule-row orange"><span class="sitter-icon">🚽</span><span class="sitter-time">3:00 PM</span><div class="sitter-event">Potty → Crate Nap #3</div></div>
+          <div class="sitter-schedule-row orange"><span class="sitter-icon">🚽</span><span class="sitter-time">4:30 PM</span><div class="sitter-event">Wake + Potty #9</div></div>
+          <div class="sitter-schedule-row orange"><span class="sitter-icon">🍽️</span><span class="sitter-time">5:00 PM</span><div class="sitter-event">Potty #10 + Dinner<small>Hand-feed dinner kibble as training rewards</small></div></div>
+          <div class="sitter-schedule-row orange"><span class="sitter-icon">🚽</span><span class="sitter-time">5:50 PM</span><div class="sitter-event">Potty → Crate Nap #4</div></div>
+        </div>
+        <div class="sitter-card orange">
+          <h3>🌙 Evening & Overnight</h3>
+          <div class="sitter-schedule-row orange"><span class="sitter-icon">🚽</span><span class="sitter-time">7:30 PM</span><div class="sitter-event">Wake + Potty #12</div></div>
+          <div class="sitter-schedule-row orange"><span class="sitter-icon">🌙</span><span class="sitter-time">9:00 PM</span><div class="sitter-event">Last potty → Bedtime<small>This is it for the night. Crate him after this potty.</small></div></div>
+          <div class="sitter-schedule-row orange"><span class="sitter-icon">🌙</span><span class="sitter-time">11:00 PM</span><div class="sitter-event">Quiet overnight potty<small>Take him out half-asleep — no play, no talking, straight back in crate</small></div></div>
+          <div class="sitter-schedule-row orange"><span class="sitter-icon">🌙</span><span class="sitter-time">1:00 AM</span><div class="sitter-event">Overnight potty<small>Same — quiet, quick, back to crate</small></div></div>
+          <div class="sitter-schedule-row orange"><span class="sitter-icon">🌙</span><span class="sitter-time">4:00 AM</span><div class="sitter-event">Last overnight potty<small>He genuinely can't hold it longer than this yet at 9 weeks</small></div></div>
+        </div>
+      </div>
+
+      <!-- POTTY PROTOCOL -->
+      <div class="sitter-section">
+        <div class="sitter-section-title">🚽 Potty Protocol</div>
+        <div class="sitter-card orange">
+          <h3>🐾 How to do a potty trip</h3>
+          <ul>
+            <li>Take him straight outside — don't let him wander first</li>
+            <li>Stand still and wait. Give him 3–5 minutes.</li>
+            <li>When he goes, immediately say <strong>"good potty!"</strong> and give calm praise</li>
+            <li>Bring him back inside. If he didn't go, crate for 10 min and try again.</li>
+            <li>Watch for signs he needs to go: sniffing the floor, circling, squatting</li>
+          </ul>
+          <div class="sitter-tip">Always go outside immediately after: waking up from a nap, finishing a meal, and after any exciting play session. These are the highest-accident moments.</div>
+        </div>
+        <div class="sitter-warning">If he has an accident inside, clean it up with an enzymatic cleaner (not regular cleaner — the smell stays and he'll go back to the same spot). Don't scold him — just clean it up and supervise more closely next time.</div>
+      </div>
+
+      <!-- CRATE & NAPS -->
+      <div class="sitter-section">
+        <div class="sitter-section-title">🏠 Crate & Naps</div>
+        <div class="sitter-card orange">
+          <h3>🏠 Crate basics</h3>
+          <p>His crate is in the office. It's his safe space — never use it as punishment. At 9 weeks he needs to sleep roughly 16–18 hours a day. If he seems wired or bitey, he's almost certainly overtired and needs a nap, not more play.</p>
+          <div class="sitter-tip">When he whines in the crate, wait for a 10-second pause before letting him out. Letting him out while he's whining teaches him that whining = freedom.</div>
+          <div class="sitter-pill-row">
+            <span class="sitter-pill orange">~5 naps per day</span>
+            <span class="sitter-pill orange">1–2 hrs awake max</span>
+            <span class="sitter-pill orange">Overtired = bitey</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- VET INFO -->
+      <div class="sitter-section">
+        <div class="sitter-section-title">🏥 Vet & Health</div>
+        <div class="sitter-card red">
+          <h3>🚨 Call me AND the vet if you notice:</h3>
+          <ul>
+            <li>Vomiting more than once</li>
+            <li>Diarrhea for more than a few hours</li>
+            <li>Not eating two meals in a row</li>
+            <li>Lethargy / not wanting to move</li>
+            <li>Limping or yelping</li>
+            <li>Pale gums or difficulty breathing</li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+  </div><!-- end dog tab -->
+
+  <!-- ── CATS TAB ── -->
+  <div class="sitter-tab-content" id="sitterTabCat">
+    <div class="sitter-body">
+
+      <div class="sitter-section">
+        <div class="sitter-section-title">👋 Hi Ella, Michael & Vivi!</div>
+        <div class="sitter-card blue">
+          <p><strong>Ella & Michael</strong> — you're on cat duty <strong>Week 1</strong> (every other day). <strong>Vivi</strong> — you're on <strong>Week 2</strong> (every other day). Thank you both so much! The cats are pretty low-maintenance but here's everything you need.</p>
+        </div>
+      </div>
+
+      <!-- CONTACTS -->
+      <div class="sitter-section">
+        <div class="sitter-section-title">📞 Contacts</div>
+        <div class="sitter-card blue">
+          <div class="sitter-contact-row">
+            <div><div class="sitter-contact-name">Jasmine</div><div class="sitter-contact-role">Owner — primary contact</div></div>
+            <div class="sitter-contact-phone"><a href="tel:+18643762210">864-376-2210</a></div>
+          </div>
+          <div class="sitter-contact-row">
+            <div><div class="sitter-contact-name">Nathan</div><div class="sitter-contact-role">Partner</div></div>
+            <div class="sitter-contact-phone"><a href="tel:+18643959015">864-395-9015</a></div>
+          </div>
+          <div class="sitter-contact-row">
+            <div><div class="sitter-contact-name">Leesville Animal Hospital</div><div class="sitter-contact-role">9309 Leesville Rd</div></div>
+            <div class="sitter-contact-phone"><a href="tel:+19198707000">919-870-7000</a></div>
+          </div>
+        </div>
+        <div class="sitter-vet-block">
+          <h4>🚨 Emergency Vets</h4>
+          <p>
+            <strong>NC State Veterinary Hospital</strong> · 1052 William Moore Dr · <a href="tel:+19195137690">919-513-7690</a><br>
+            <strong>Triangle Veterinary Referral Hospital</strong> · 608 Morreene Rd, Durham · <a href="tel:+19194893030">919-489-3030</a><br>
+            <strong>BluePearl Pet Hospital (Cary)</strong> · 1403 NW Maynard Rd · <a href="tel:+19198580739">919-858-0739</a>
+          </p>
+        </div>
+      </div>
+
+      <!-- THE CATS -->
+      <div class="sitter-section">
+        <div class="sitter-section-title">🐱 Meet the Cats</div>
+        <div class="sitter-card blue">
+          <h3>🧡 Tigris</h3>
+          <p><strong>10 years old · orange & black tabby · ~8 lbs.</strong> The older, more cautious one. He has a treat wheel called <strong>Tigris' Tavern</strong> — check that it's stocked with Cosequin treats (joint supplement). He gets those from the wheel on his own schedule.</p>
+        </div>
+        <div class="sitter-card blue">
+          <h3>🤍 Tulip</h3>
+          <p><strong>5 years old · white & brown tabby · ~10 lbs.</strong> The friendlier, more social one. She'll probably come say hello right away.</p>
+        </div>
+      </div>
+
+      <!-- FEEDING -->
+      <div class="sitter-section">
+        <div class="sitter-section-title">🍽️ Feeding</div>
+        <div class="sitter-card blue">
+          <h3>🤖 Auto-feeders — no action needed!</h3>
+          <p>Both cats are on <strong>automatic feeders</strong>. You do <strong>not</strong> need to feed them manually — the feeders are programmed and fully stocked before I leave. Just check that both feeders are powered on and look like they're working when you visit.</p>
+          <div class="sitter-tip">Tigris' Tavern treat wheel — just make sure it's stocked with Cosequin treats. Refill from the bag nearby if it looks empty.</div>
+        </div>
+      </div>
+
+      <!-- WATER -->
+      <div class="sitter-section">
+        <div class="sitter-section-title">💧 Water Fountains</div>
+        <div class="sitter-card blue">
+          <h3>💧 Two water fountains</h3>
+          <ul>
+            <li><strong>Downstairs</strong> — by the entry bench</li>
+            <li><strong>Upstairs</strong> — hallway</li>
+          </ul>
+          <p style="margin-top:8px">Please check that both are running and have water on each visit. Top them up with fresh water if the level looks low.</p>
+        </div>
+      </div>
+
+      <!-- LITTER -->
+      <div class="sitter-section">
+        <div class="sitter-section-title">🧹 Litter Boxes</div>
+        <div class="sitter-card blue">
+          <h3>🧹 Two litter boxes</h3>
+          <ul>
+            <li><strong>Laundry room closet</strong></li>
+            <li><strong>Nathan's office</strong></li>
+          </ul>
+          <p style="margin-top:8px">Please scoop both boxes on each visit. Bag the waste and put it in the trash. If a box looks very full, do a full litter change — supplies are in the laundry room.</p>
+        </div>
+      </div>
+
+      <!-- PLANTS -->
+      <div class="sitter-section">
+        <div class="sitter-section-title">🌿 Plants</div>
+        <div class="sitter-card green">
+          <h3>🌿 Plant watering</h3>
+          <p>Please water the plants every other visit (so roughly once a week). Check the soil — if it's dry an inch down, it needs water. Don't overwater. The plants are labeled or I'll point them out before I leave.</p>
+        </div>
+      </div>
+
+      <!-- TRASH -->
+      <div class="sitter-section">
+        <div class="sitter-section-title">🗑️ Trash</div>
+        <div class="sitter-card green">
+          <h3>🗑️ Trash bins</h3>
+          <p>Please check the kitchen trash and take it out if it's full. Trash pickup is on the usual schedule — bins go out to the curb the night before pickup day.</p>
+        </div>
+      </div>
+
+      <!-- ACCIDENTS -->
+      <div class="sitter-section">
+        <div class="sitter-section-title">🧽 Accidents & Hairballs</div>
+        <div class="sitter-card">
+          <h3>🧽 If there's a mess</h3>
+          <p>The carpet cleaner is under the kitchen sink. Spray, let sit 1–2 minutes, blot (don't rub). Paper towels are on the counter. It happens — don't stress about it, just clean it up!</p>
+        </div>
+      </div>
+
+      <!-- HEALTH -->
+      <div class="sitter-section">
+        <div class="sitter-section-title">🏥 Health</div>
+        <div class="sitter-card red">
+          <h3>🚨 Text me if you notice:</h3>
+          <ul>
+            <li>Not eating for more than a day</li>
+            <li>Vomiting repeatedly (hairballs once in a while = normal)</li>
+            <li>Hiding for an unusually long time</li>
+            <li>Limping or obvious pain</li>
+            <li>Any breathing difficulty</li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+  </div><!-- end cat tab -->
+
+</div><!-- end sitter overlay -->
+
+<script>
+// ── SITTER HASH ROUTING ──
+function showSitterTab(tab){
+  document.querySelectorAll('.sitter-tab-content').forEach(el=>el.classList.remove('active'));
+  document.querySelectorAll('.sitter-nav-pill').forEach(el=>el.classList.remove('active'));
+  document.getElementById('sitterTab'+tab.charAt(0).toUpperCase()+tab.slice(1))?.classList.add('active');
+  document.getElementById('pill'+tab.charAt(0).toUpperCase()+tab.slice(1))?.classList.add('active');
+  const titles={dog:'🐶 Timber — Care Guide',cat:'🐱 Cat Care Guide'};
+  document.getElementById('sitterBackTitle').textContent=titles[tab]||'Care Guide';
+  window.scrollTo(0,0);
+}
+function openSitter(tab){
+  document.getElementById('sitterOverlay').classList.add('active');
+  document.body.style.overflow='hidden';
+  showSitterTab(tab||'dog');
+}
+function closeSitter(){
+  document.getElementById('sitterOverlay').classList.remove('active');
+  document.body.style.overflow='';
+  history.pushState('',document.title,window.location.pathname+window.location.search);
+}
+function handleSitterHash(){
+  const h=window.location.hash;
+  if(h==='#sitter'){openSitter('dog');}
+  else if(h==='#cats'){openSitter('cat');}
+  else{
+    const o=document.getElementById('sitterOverlay');
+    if(o&&o.classList.contains('active'))closeSitter();
+  }
+}
+window.addEventListener('hashchange',handleSitterHash);
+// Run on load (after main onload)
+setTimeout(handleSitterHash,100);
 </script>
 </body>
 </html>

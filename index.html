@@ -1244,7 +1244,8 @@ body.timer-active .desktop-layout{padding-top:70px}
   <button class="tab"        id="tab-pt"    onclick="switchTab('pt')"  ><span class="tab-icon">💪</span><span class="tab-label">Move</span></button>
   <button class="tab"        id="tab-life"  onclick="switchTab('life')"><span class="tab-icon">💜</span><span class="tab-label">Life</span></button>
   <button class="tab"        id="tab-cal"   onclick="switchTab('cal')" ><span class="tab-icon">📅</span><span class="tab-label">Cal</span></button>
-  <button class="tab"        id="tab-mem"   onclick="switchTab('mem')" ><span class="tab-icon">🐶</span><span class="tab-label">Timber</span></button>
+  <button class="tab"        id="tab-mem"   onclick="switchTab('mem')"><span class="tab-icon">🐶</span><span class="tab-label">Timber</span></button>
+  <button class="tab"        id="tab-stats" onclick="switchTab('stats')"><span class="tab-icon">📊</span><span class="tab-label">Ref</span></button>
 </nav>
 
 <!-- DESKTOP / TABLET LAYOUT -->
@@ -1672,60 +1673,65 @@ const S=[
    {c:"timber",txt:"Praise heavily the moment he goes. This is the most important praise of the day."},
  ]},
  {t:"08:15 AM",e:"08:30 AM",i:"🛻",h:"Morning Stroller Walk — 15 min",steps:[
-   {c:"timber",txt:"Load Timber into the stroller right after potty. He's unvaccinated — no paws on the ground in public areas.",note:"Stroller walks still count as socialization gold. He sees the world, hears traffic, feels wind, smells everything — all without paw contact. This is active socialization work."},
+   {c:"timber",txt:"Load Timber into the stroller right after potty #1. He's unvaccinated — no paws on the ground in public areas.",note:"Stroller walks count as socialization gold. He sees the world, hears traffic, feels wind, smells everything — all without paw contact."},
    {c:"timber",txt:"15-minute loop around the block. Let him observe calmly."},
    {c:"wellness",txt:"Your first fresh air of the day. Walk at your own pace."},
  ]},
- {t:"08:30 AM",e:"08:40 AM",i:"🎓",h:"Timber Breakfast Training (Learn to Earn)",steps:[
-   {c:"timber",txt:"Use full breakfast portion as training rewards — no bowl.",note:"Learn to Earn: every piece of food is earned through engagement. This builds focus, impulse control, and a working relationship simultaneously. 5–10 minutes is the sweet spot at this age — stop before he loses interest, always end on a win."},
+ {t:"08:30 AM",e:"08:35 AM",i:"🚽",h:"Timber Potty #2 — Post-Walk",steps:[
+   {c:"timber",txt:"Back from walk — carry him straight outside.",note:"The walk is stimulating and a potty trip right after is non-negotiable. Don't skip this even if he just went before the walk."},
+   {c:"timber",txt:"Sit at door. Out. Praise. Back inside for breakfast."},
+ ]},
+ {t:"08:35 AM",e:"08:45 AM",i:"🎓",h:"Timber Breakfast Training (Learn to Earn)",steps:[
+   {c:"timber",txt:"Use full breakfast portion as training rewards — no bowl.",note:"Learn to Earn: every piece of food is earned through engagement. 5–10 minutes is the sweet spot — stop before he loses interest, always end on a win."},
    {c:"timber",txt:"Work on: sit, eye contact, name recognition, come. 5–10 reps max per cue."},
    {c:"timber",txt:"Remaining food → puzzle feeder if training reps are done."},
    {c:"timber",txt:"Timber tethered to you the entire time."},
  ]},
- {t:"08:40 AM",e:"09:00 AM",i:"🍳",h:"Your Breakfast + Vyvanse",steps:[
+ {t:"08:45 AM",e:"09:10 AM",i:"🍳",h:"Your Breakfast + Vyvanse",steps:[
    {c:"wellness",txt:"Eat high-protein breakfast. Take Vyvanse.",note:"Vyvanse with food reduces harsh onset. Protein breakfast supports sustained focus through the morning work block."},
-   {c:"wellness",txt:"Log breakfast in Cronometer."},
+   {c:"wellness",txt:"Log breakfast in <a href='https://cronometer.com' target='_blank' style='color:inherit;text-decoration:underline;text-decoration-style:dotted'>Cronometer</a>."},
    {c:"timber",  txt:"Timber plays tethered beside you while you eat."},
  ]},
- {t:"08:50 AM",e:"09:00 AM",i:"🚽",h:"Timber Potty #2 → Crate Nap #1",steps:[
+ {t:"09:10 AM",e:"09:20 AM",i:"🚽",h:"Timber Potty #3 → Crate Nap #1",steps:[
    {c:"timber",txt:"Post-meal urgency window — take him out now.",note:"Puppies typically need to eliminate 15–30 minutes after eating. This trip is non-negotiable."},
    {c:"timber",txt:"Carry downstairs. Sit at door. Out. Praise. Back upstairs."},
    {c:"timber",txt:"Into crate. Cover on. Walk away calmly — no long goodbye."},
  ]},
 
  // ── WORK BLOCK 1 ───────────────────────────────────────────────────────────
- {t:"09:00 AM",e:"10:30 AM",i:"🔄",h:"Focus Block 1 — Pomodoro",steps:[
+ {t:"09:20 AM",e:"10:30 AM",i:"🔄",h:"Focus Block 1 — Pomodoro",steps:[
    {c:"focus",   txt:"25 min deep work. Timer on."},
    {c:"wellness",txt:"5-min break: one PT exercise from your Movement list."},
-   {c:"wellness",txt:"Use one break for Sweepy — open app, run today's 5–10 min cleaning task.",note:"Timber is crated — this is a good low-focus break task. Prioritise accident spots and the office floor."},
+   {c:"wellness",txt:"Use one break for <a href='https://sweepy.app' target='_blank' style='color:inherit;text-decoration:underline;text-decoration-style:dotted'>Sweepy</a> — open app, run today's 5–10 min cleaning task.",note:"Timber is crated — this is a good low-focus break task. Prioritise accident spots and the office floor."},
    {c:"focus",   txt:"Repeat cycles. Timber is crated — guard this block.",note:"Timber is safely napping. This is your first clean focus window of the day. Protect it."},
  ]},
- {t:"10:30 AM",e:"10:45 AM",i:"🚽",h:"Timber Wake + Potty #3",steps:[
+ {t:"10:30 AM",e:"10:45 AM",i:"🚽",h:"Timber Wake + Potty #4",steps:[
    {c:"timber",txt:"Pick up from crate. Carry downstairs."},
    {c:"timber",txt:"Sit at door. Out. Praise. Back upstairs."},
    {c:"timber",txt:"Timber tethered to desk. Awake window begins."},
  ]},
- {t:"10:45 AM",e:"11:00 AM",i:"🪢",h:"Tethered Desk Time — Awake Window",steps:[
+ {t:"10:45 AM",e:"11:45 AM",i:"🪢",h:"Tethered Desk Time — Awake Window",steps:[
    {c:"timber",txt:"Timber clipped to desk leg or belt loop.",note:"When he's not in his crate he's either tethered to you or directly supervised. No unsupervised access to any room at this age."},
    {c:"timber",txt:"Reward any calm sitting or lying down with a quiet marker and kibble."},
    {c:"focus",  txt:"Continue Pomodoro cycles. 25/5."},
  ]},
- {t:"11:00 AM",e:"11:10 AM",i:"🚽",h:"Timber Potty #4",steps:[
+ {t:"11:30 AM",e:"11:40 AM",i:"🚽",h:"Timber Potty #5",steps:[
    {c:"timber",txt:"Carry downstairs. Sit at door. Out. Praise. Back upstairs."},
-   {c:"timber",txt:"Tethered desk time continues."},
+   {c:"timber",txt:"Tethered desk time continues — watch for tired signals (yawning, losing focus)."},
  ]},
 
  // ── MIDDAY ─────────────────────────────────────────────────────────────────
- {t:"12:00 PM",e:"12:15 PM",i:"🚽",h:"Timber Potty #5 → Crate Nap #2",steps:[
+ {t:"11:45 AM",e:"12:00 PM",i:"🚽",h:"Timber Potty #6 → Crate Nap #2",steps:[
+   {c:"timber",txt:"Awake window is 1hr 15min — crate before he hits the overtired wall.",note:"9-week puppies max out around 60–75 min awake. Catch him before the meltdown. Overtired = bitey and inconsolable."},
    {c:"timber",txt:"Carry downstairs. Sit at door. Out. Praise. Back upstairs."},
    {c:"timber",txt:"Into crate. Cover on. Nap #2 begins."},
  ]},
- {t:"12:00 PM",e:"12:15 PM",i:"🍽️",h:"Your Lunch + Iron",steps:[
-   {c:"wellness",txt:"Eat lunch. Take iron supplement with food.",note:"Iron with food reduces stomach upset. Lunch timing gives the 8-hour buffer before evening RLT session — iron can amplify oxidative stress during photobiomodulation."},
-   {c:"wellness",txt:"Log in Cronometer + Guava."},
+ {t:"12:00 PM",e:"12:30 PM",i:"🍽️",h:"Your Lunch + Iron",steps:[
+   {c:"wellness",txt:"Eat lunch. Take iron supplement with food.",note:"Iron with food reduces stomach upset. Lunch timing gives the 8-hour buffer before evening RLT session."},
+   {c:"wellness",txt:"Log in <a href='https://cronometer.com' target='_blank' style='color:inherit;text-decoration:underline;text-decoration-style:dotted'>Cronometer</a> + <a href='https://guavahealth.com' target='_blank' style='color:inherit;text-decoration:underline;text-decoration-style:dotted'>Guava</a>."},
  ]},
- {t:"12:15 PM",e:"01:00 PM",i:"💪",h:"PT — Floor Exercises",statsTarget:'armpt',steps:[
-   {c:"wellness",txt:"Timber is crated — use this window for exercises that need floor space and more than 5 minutes.",note:"One dedicated PT slot for the exercises that can't fit in Pomodoro breaks. Protect this window."},
+ {t:"12:30 PM",e:"01:15 PM",i:"💪",h:"PT — Floor Exercises",statsTarget:'armpt',steps:[
+   {c:"wellness",txt:"Timber is crated — use this window for exercises that need floor space.",note:"One dedicated PT slot for exercises that can't fit in Pomodoro breaks. Protect this window."},
    {c:"wellness",txt:"Scaption — 3×12. Arms in V, thumbs up."},
    {c:"wellness",txt:"External Rotations — 3×15. Elbow pinned, rotate out."},
    {c:"wellness",txt:"Hammer Press — 3×10. Palms face each other."},
@@ -1736,58 +1742,64 @@ const S=[
    {c:"timber",txt:"Wednesday: potty trip before 1 PM meeting.",note:"Covers both 1 PM and 2 PM Wednesday meetings. Take him now so you're not interrupted mid-call."},
    {c:"timber",txt:"Carry downstairs. Sit at door. Out. Praise. Back upstairs. Crate."},
  ]},
- {t:"01:30 PM",e:"01:45 PM",i:"🚽",h:"Timber Wake + Potty #6",steps:[
+ {t:"01:30 PM",e:"01:45 PM",i:"🚽",h:"Timber Wake + Potty #7",steps:[
    {c:"timber",txt:"Pick up from crate. Carry downstairs."},
    {c:"timber",txt:"Sit at door. Out. Praise. Back upstairs."},
-   {c:"timber",txt:"Lunch walk coming right up — load stroller after potty."},
+   {c:"timber",txt:"Lunch training coming right up."},
  ]},
- {t:"01:45 PM",e:"02:00 PM",i:"🛻",h:"Lunch Stroller Walk — 15 min",steps:[
-   {c:"timber",txt:"Load Timber into the stroller. Second outing of the day.",note:"You eat lunch anywhere from 12–1 PM, so this walk happens after you've eaten and he's just woken from nap #2. Two stroller walks per day is excellent socialization volume for a 9-week-old."},
-   {c:"timber",txt:"15-minute loop. Calm observation — no rushing."},
-   {c:"wellness",txt:"Mid-afternoon fresh air and reset before your last focus block."},
+ {t:"01:45 PM",e:"01:55 PM",i:"🎓",h:"Timber Lunch Training (Learn to Earn)",steps:[
+   {c:"timber",txt:"Use full lunch portion as training rewards — no bowl.",note:"Spacing meals ~5 hrs apart (8:35 AM / 1:45 PM / 6:10 PM) keeps his digestive rhythm consistent and potty timing predictable."},
+   {c:"timber",txt:"Work on: sit, stay, down, come. 5–10 reps per cue, 5–10 min max."},
+   {c:"timber",txt:"Remaining food → puzzle feeder if reps are done."},
+ ]},
+ {t:"01:55 PM",e:"02:15 PM",i:"🛻",h:"Lunch Stroller Walk — 15 min",steps:[
+   {c:"timber",txt:"Load Timber into the stroller. Second outing of the day.",note:"Two stroller walks per day is excellent socialization volume for a 9-week-old. Keep it calm — no rushing."},
+   {c:"timber",txt:"15-minute loop. Let him watch the world go by."},
+   {c:"wellness",txt:"Fresh air and reset before your afternoon focus block."},
+ ]},
+ {t:"02:15 PM",e:"02:25 PM",i:"🚽",h:"Timber Potty #8 — Post-Walk",steps:[
+   {c:"timber",txt:"Back from walk — carry him straight outside.",note:"Post-stimulation and post-meal — high urgency window. Don't skip."},
+   {c:"timber",txt:"Sit at door. Out. Praise. Back upstairs. Tethered beside you."},
  ]},
 
  // ── WORK BLOCK 2 ───────────────────────────────────────────────────────────
- {t:"01:30 PM",e:"03:00 PM",i:"🔄",h:"Focus Block 2 — Pomodoro",steps:[
+ {t:"02:25 PM",e:"02:45 PM",i:"🔄",h:"Focus Block 2 — Pomodoro",steps:[
    {c:"focus",  txt:"25 min deep work. Timber tethered beside you."},
    {c:"wellness",txt:"5-min break: PT movement. Stand, stretch, one exercise."},
    {c:"timber", txt:"Reward calm settled behaviour during your focus cycles."},
- ]},
- {t:"02:00 PM",e:"02:10 PM",i:"🚽",h:"Timber Potty #7",steps:[
-   {c:"timber",txt:"Carry downstairs. Sit at door. Out. Praise. Back upstairs."},
-   {c:"timber",txt:"Tethered desk time continues."},
  ]},
  // Thursday 3 PM meeting — pre-meeting potty
  {t:"02:50 PM",e:"03:00 PM",i:"⚠️",h:"Pre-Meeting Potty Trip (Thu only)",days:[4],steps:[
    {c:"timber",txt:"Thursday: potty before 3 PM meeting.",note:"Take him now so you're free for the call."},
    {c:"timber",txt:"Carry downstairs. Sit at door. Out. Praise. Crate for meeting."},
  ]},
- {t:"03:00 PM",e:"03:15 PM",i:"🚽",h:"Timber Potty #8 → Crate Nap #3",steps:[
+ {t:"02:45 PM",e:"03:00 PM",i:"🚽",h:"Timber Potty #9 → Crate Nap #3",steps:[
+   {c:"timber",txt:"Awake window is 1hr 15min — time for crate.",note:"01:30 wake → 02:45 crate = 1hr 15min. Perfect window for 9 weeks."},
    {c:"timber",txt:"Carry downstairs. Sit at door. Out. Praise. Back upstairs."},
    {c:"timber",txt:"Into crate. Cover on. Nap #3 begins."},
  ]},
- {t:"03:00 PM",e:"04:30 PM",i:"🔄",h:"Focus Block 3 — Deep Work",steps:[
+ {t:"03:00 PM",e:"05:00 PM",i:"🔄",h:"Focus Block 3 — Deep Work",steps:[
    {c:"focus",  txt:"Timber crated — longest uninterrupted focus window.",note:"Protect this block. Timber is napping and fed. This is your best deep work window of the afternoon."},
    {c:"focus",  txt:"Pomodoro cycles. Sit/stand desk if you have one."},
    {c:"wellness",txt:"5-min breaks: PT movement."},
  ]},
 
  // ── LATE AFTERNOON ─────────────────────────────────────────────────────────
- {t:"04:30 PM",e:"04:45 PM",i:"🚽",h:"Timber Wake + Potty #9",steps:[
+ {t:"05:00 PM",e:"05:15 PM",i:"🚽",h:"Timber Wake + Potty #10",steps:[
    {c:"timber",txt:"Pick up from crate. Carry downstairs."},
    {c:"timber",txt:"Sit at door. Out. Praise. Back upstairs."},
    {c:"timber",txt:"Tethered awake window — afternoon walk with Nathan coming at 5:30."},
  ]},
- {t:"04:30 PM",e:"05:30 PM",i:"🪢",h:"Tethered Awake Window",steps:[
-   {c:"timber",txt:"Tethered beside you. Calm desk time while you wrap up work.",note:"He's awake and alert — reward settled behaviour. The walk with Nathan is the enrichment highlight coming at 5:30."},
-   {c:"timber",txt:"Potty #10 opportunity around 5:00 PM — watch for sniffing/circling."},
+ {t:"05:00 PM",e:"05:30 PM",i:"🪢",h:"Tethered Awake Window",steps:[
+   {c:"timber",txt:"Tethered beside you. Last few minutes of work wrap-up.",note:"He's awake and alert — reward settled behaviour. The walk with Nathan is the enrichment highlight coming at 5:30."},
+   {c:"timber",txt:"Watch for potty signals (sniffing, circling) — take him out before the walk if needed."},
  ]},
  {t:"05:30 PM",e:"06:00 PM",i:"🚶",h:"Afternoon Walk with Nathan — 30 min",steps:[
    {c:"timber",txt:"Load Timber into the stroller. Nathan joins.",note:"This is the social highlight of Timber's day — new person, new smells, longer outing. 30 minutes of calm observation from the stroller counts as serious enrichment."},
    {c:"timber",txt:"Stroller walk — paws stay off the ground. Let him sniff the air."},
    {c:"wellness",txt:"Your end-of-day decompression. Walk and talk with Nathan."},
  ]},
- {t:"06:00 PM",e:"06:10 PM",i:"🚽",h:"Timber Potty #11",steps:[
+ {t:"06:00 PM",e:"06:10 PM",i:"🚽",h:"Timber Potty #11 — Post-Walk",steps:[
    {c:"timber",txt:"Back from walk — carry him straight outside for a potty."},
    {c:"timber",txt:"Praise. Back inside for dinner."},
  ]},
@@ -1811,17 +1823,21 @@ const S=[
    {c:"wellness",txt:"Prep tomorrow's frozen Kongs or puzzle feeders now while you cook.",},
    {c:"wellness",txt:"Take Sertraline + Sronyx with dinner.",note:"SSRIs and contraceptives taken with food reduce nausea. Consistent evening timing maintains steady serum levels."},
  ]},
- {t:"07:30 PM",e:"07:45 PM",i:"🚽",h:"Timber Wake + Potty #12",steps:[
+ {t:"07:30 PM",e:"07:45 PM",i:"🚽",h:"Timber Wake + Potty #13",steps:[
    {c:"timber",txt:"Pick up from crate. Carry downstairs."},
    {c:"timber",txt:"Sit at door. Out. Praise. Back upstairs."},
    {c:"timber",txt:"Tethered near dining area. Calm presence during dinner."},
  ]},
  {t:"07:30 PM",e:"08:30 PM",i:"🍽️",h:"Dinner + Survivor",steps:[
-   {c:"wellness",txt:"Eat dinner together. Log in Cronometer."},
+   {c:"wellness",txt:"Eat dinner together. Log in <a href='https://cronometer.com' target='_blank' style='color:inherit;text-decoration:underline;text-decoration-style:dotted'>Cronometer</a>."},
    {c:"timber",  txt:"Timber tethered near you — calm supervised presence.",note:"Evening tethering during TV is natural socialization. He learns that calm behaviour is the norm when the family is together."},
    {c:"wellness",txt:"Watch Survivor. Wind down together."},
  ]},
- {t:"09:00 PM",e:"09:15 PM",i:"🚽",h:"Timber Potty #13 → Bedtime",steps:[
+ {t:"08:30 PM",e:"08:35 PM",i:"💧",h:"Timber Water Cutoff",steps:[
+   {c:"timber",txt:"Pick up Timber's water bowl now.",note:"Water cutoff 30 min before bedtime potty gives his bladder time to empty before the night. This is what makes the 11 PM trip actually work."},
+   {c:"timber",txt:"He has had water all day — this short window before bed is fine at this age."},
+ ]},
+ {t:"09:00 PM",e:"09:15 PM",i:"🚽",h:"Timber Potty #14 → Bedtime",steps:[
    {c:"timber",txt:"Carry downstairs. Sit at door. Out. Praise. Back upstairs.",note:"This is bedtime for the night. Get him out before he hits the overtired wall — which is what caused the 11 PM wired behaviour. The 11 PM trip is a quiet middle-of-night out, not a wake-up. Hold this time firm."},
    {c:"timber",txt:"Into crate. Cover on. Walk away. He is done for the evening."},
  ]},
@@ -1863,7 +1879,7 @@ const S=[
    {c:"timber",txt:"Straight back into crate. No wind-down. He goes back to sleep."},
  ]},
  {t:"11:15 PM",e:"11:30 PM",i:"💊",h:"Wind-Down + Meds",steps:[
-   {c:"wellness",txt:"Final Guava log — pain levels and any notes."},
+   {c:"wellness",txt:"Final <a href='https://guavahealth.com' target='_blank' style='color:inherit;text-decoration:underline;text-decoration-style:dotted'>Guava</a> log — pain levels and any notes."},
    {c:"wellness",txt:"Dim all screens. Brush teeth."},
    {c:"timber",  txt:"Timber tethered quietly. Low stimulation only."},
  ]},

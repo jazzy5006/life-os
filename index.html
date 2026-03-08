@@ -1004,7 +1004,7 @@ body.timer-active .desktop-layout{padding-top:70px}
           <div class="de-phrase-en" id="dePhraseEN">Where is the nearest subway?</div>
           <div class="de-phrase-pr" id="dePhrasePR">voh ist dee NEKH-steh oo-BAHN?</div>
         </div>
-        <button class="de-phrase-btn" onclick="nextPhrase()" title="Next phrase">🔀</button>
+        <button class="de-phrase-btn" onclick="nextPhrase()" title="Next phrase" aria-label="Next German phrase">🔀</button>
       </div>
       <a href="https://wanderlog.com" target="_blank" rel="noopener" class="wanderlog-btn" id="deWanderlog">
         🗺️ Open Wanderlog Itinerary
@@ -1019,31 +1019,7 @@ body.timer-active .desktop-layout{padding-top:70px}
     </div>
 
     <!-- Timber's Firsts -->
-    <div class="card">
-      <h3 class="lbl" style="text-align:center;margin-bottom:10px">🐶 Timber's Firsts & Memories</h3>
-      <!-- Quick preset taps -->
-      <p class="lbl" style="margin-bottom:5px">⚡ Quick Add</p>
-      <div class="mem-presets" id="memPresetsRow">
-        <button class="mem-preset" onclick="presetMemory('First Stroller Trip','soc')">🛻 Stroller</button>
-        <button class="mem-preset" onclick="presetMemory('First Cat Sniff (Tulip)','soc')">🐱 Cat Sniff</button>
-        <button class="mem-preset" onclick="presetMemory('First Voluntary Sit','train')">🎓 First Sit</button>
-        <button class="mem-preset" onclick="presetMemory('First Toothbrushing','health')">🦷 Teeth</button>
-        <button class="mem-preset" onclick="presetMemory('First Cat Sniff (Tigris)','soc')">🐈 Tigris</button>
-      </div>
-      <div class="mem-cats" id="memCatRow">
-        <button class="mem-cat-btn cat-soc sel" onclick="selCat(this,'soc')"><span class="cat-icon">🌍</span>Social</button>
-        <button class="mem-cat-btn cat-home"    onclick="selCat(this,'home')"><span class="cat-icon">🏠</span>Home Life</button>
-        <button class="mem-cat-btn cat-health"  onclick="selCat(this,'health')"><span class="cat-icon">💚</span>Health</button>
-        <button class="mem-cat-btn cat-train"   onclick="selCat(this,'train')"><span class="cat-icon">🎓</span>Training</button>
-      </div>
-      <!-- Editable datetime -->
-      <input type="datetime-local" class="mem-datetime" id="memWhen" title="When did this happen?">
-      <div class="mem-add">
-        <input class="mem-input" id="memInput" type="text" placeholder="e.g. First stroller trip, first cat sniff…" maxlength="80">
-        <button class="mem-add-btn" onclick="addMemory()">+ Add</button>
-      </div>
-      <div class="mem-list" id="memList"></div>
-    </div>
+
 
     <!-- RLT weekly reference -->
     <div class="card" id="statsRef-rlt">
@@ -1117,11 +1093,11 @@ body.timer-active .desktop-layout{padding-top:70px}
         <span class="battery-time" id="batteryTime">Not logged today</span>
       </div>
       <div class="battery-emojis" id="batteryEmojis">
-        <button class="battery-emoji-btn" onclick="logBattery(5)" title="Fully charged">🌟</button>
-        <button class="battery-emoji-btn" onclick="logBattery(4)" title="Good">😊</button>
-        <button class="battery-emoji-btn" onclick="logBattery(3)" title="Okay">😐</button>
-        <button class="battery-emoji-btn" onclick="logBattery(2)" title="Low">😔</button>
-        <button class="battery-emoji-btn" onclick="logBattery(1)" title="Running on empty">🪫</button>
+        <button class="battery-emoji-btn" onclick="logBattery(5)" title="Fully charged" aria-label="Fully charged">🌟</button>
+        <button class="battery-emoji-btn" onclick="logBattery(4)" title="Good" aria-label="Good">😊</button>
+        <button class="battery-emoji-btn" onclick="logBattery(3)" title="Okay" aria-label="Okay">😐</button>
+        <button class="battery-emoji-btn" onclick="logBattery(2)" title="Low" aria-label="Low">😔</button>
+        <button class="battery-emoji-btn" onclick="logBattery(1)" title="Running on empty" aria-label="Running on empty">🪫</button>
       </div>
       <!-- 7-day energy arc -->
       <div class="energy-arc-wrap" id="batteryHistory"></div>
@@ -1177,34 +1153,30 @@ body.timer-active .desktop-layout{padding-top:70px}
     <button class="conn-log-btn" onclick="logConnection()">💜 Log Connection</button>
     <div class="conn-history" id="connHistory"></div>
   </div>
-</div>
 
-<!-- MEMORIES PAGE (mobile only) -->
-<div class="page" id="page-mem">
-  <div style="margin-top:12px;display:flex;flex-direction:column;gap:12px">
-    <div class="card">
-      <h3 class="lbl" style="text-align:center;margin-bottom:10px">🐶 Timber's Firsts & Memories</h3>
-      <p class="lbl" style="margin-bottom:5px">⚡ Quick Add</p>
-      <div class="mem-presets">
-        <button class="mem-preset" onclick="presetMemory2('First Stroller Trip','soc')">🛻 Stroller</button>
-        <button class="mem-preset" onclick="presetMemory2('First Cat Sniff (Tulip)','soc')">🐱 Cat Sniff</button>
-        <button class="mem-preset" onclick="presetMemory2('First Voluntary Sit','train')">🎓 First Sit</button>
-        <button class="mem-preset" onclick="presetMemory2('First Toothbrushing','health')">🦷 Teeth</button>
-        <button class="mem-preset" onclick="presetMemory2('First Cat Sniff (Tigris)','soc')">🐈 Tigris</button>
-      </div>
-      <div class="mem-cats" id="memCatRow2">
-        <button class="mem-cat-btn cat-soc sel" onclick="selCat2(this,'soc')"><span class="cat-icon">🌍</span>Social</button>
-        <button class="mem-cat-btn cat-home"    onclick="selCat2(this,'home')"><span class="cat-icon">🏠</span>Home Life</button>
-        <button class="mem-cat-btn cat-health"  onclick="selCat2(this,'health')"><span class="cat-icon">💚</span>Health</button>
-        <button class="mem-cat-btn cat-train"   onclick="selCat2(this,'train')"><span class="cat-icon">🎓</span>Training</button>
-      </div>
-      <input type="datetime-local" class="mem-datetime" id="memWhen2" title="When did this happen?">
-      <div class="mem-add">
-        <input class="mem-input" id="memInput2" type="text" placeholder="First stroller trip, first cat sniff…" maxlength="80">
-        <button class="mem-add-btn" onclick="addMemory2()">+ Add</button>
-      </div>
-      <div class="mem-list" id="memList2"></div>
+  <!-- Timber Memories — now lives here in Life tab -->
+  <div class="card" style="margin-top:12px">
+    <h3 class="lbl" style="text-align:center;margin-bottom:10px">🐶 Timber's Firsts & Memories</h3>
+    <p class="lbl" style="margin-bottom:5px">⚡ Quick Add</p>
+    <div class="mem-presets" id="memPresetsRow">
+      <button class="mem-preset" onclick="presetMemory('First Stroller Trip','soc')">🛻 Stroller</button>
+      <button class="mem-preset" onclick="presetMemory('First Cat Sniff (Tulip)','soc')">🐱 Cat Sniff</button>
+      <button class="mem-preset" onclick="presetMemory('First Voluntary Sit','train')">🎓 First Sit</button>
+      <button class="mem-preset" onclick="presetMemory('First Toothbrushing','health')">🦷 Teeth</button>
+      <button class="mem-preset" onclick="presetMemory('First Cat Sniff (Tigris)','soc')">🐈 Tigris</button>
     </div>
+    <div class="mem-cats" id="memCatRow">
+      <button class="mem-cat-btn cat-soc sel" onclick="selCat(this,'soc')"><span class="cat-icon">🌍</span>Social</button>
+      <button class="mem-cat-btn cat-home"    onclick="selCat(this,'home')"><span class="cat-icon">🏠</span>Home Life</button>
+      <button class="mem-cat-btn cat-health"  onclick="selCat(this,'health')"><span class="cat-icon">💚</span>Health</button>
+      <button class="mem-cat-btn cat-train"   onclick="selCat(this,'train')"><span class="cat-icon">🎓</span>Training</button>
+    </div>
+    <input type="datetime-local" class="mem-datetime" id="memWhen" title="When did this happen?">
+    <div class="mem-add">
+      <input class="mem-input" id="memInput" type="text" placeholder="e.g. First stroller trip, first cat sniff…" maxlength="80">
+      <button class="mem-add-btn" onclick="addMemory()">+ Add</button>
+    </div>
+    <div class="mem-list" id="memList"></div>
   </div>
 </div>
 
@@ -1244,7 +1216,6 @@ body.timer-active .desktop-layout{padding-top:70px}
   <button class="tab"        id="tab-pt"    onclick="switchTab('pt')"  ><span class="tab-icon">💪</span><span class="tab-label">Move</span></button>
   <button class="tab"        id="tab-life"  onclick="switchTab('life')"><span class="tab-icon">💜</span><span class="tab-label">Life</span></button>
   <button class="tab"        id="tab-cal"   onclick="switchTab('cal')" ><span class="tab-icon">📅</span><span class="tab-label">Cal</span></button>
-  <button class="tab"        id="tab-mem"   onclick="switchTab('mem')"><span class="tab-icon">🐶</span><span class="tab-label">Timber</span></button>
   <button class="tab"        id="tab-stats" onclick="switchTab('stats')"><span class="tab-icon">📊</span><span class="tab-label">Ref</span></button>
 </nav>
 
@@ -1444,7 +1415,7 @@ body.timer-active .desktop-layout{padding-top:70px}
               <div class="de-phrase-en" id="dDePhraseEN">Where is the nearest subway?</div>
               <div class="de-phrase-pr" id="dDePhrasePR">voh ist dee NEKH-steh oo-BAHN?</div>
             </div>
-            <button class="de-phrase-btn" onclick="nextPhrase()" title="Next phrase">🔀</button>
+            <button class="de-phrase-btn" onclick="nextPhrase()" title="Next phrase" aria-label="Next German phrase">🔀</button>
           </div>
           <a href="https://wanderlog.com" target="_blank" rel="noopener" class="wanderlog-btn" id="deskDeWanderlog">🗺️ Open Wanderlog</a>
         </div>
@@ -1967,13 +1938,24 @@ function syncThemeColor(){
 }
 window.matchMedia('(prefers-color-scheme:dark)').addEventListener('change',syncThemeColor);
 
+// ─── HTML ESCAPE HELPER (XSS prevention) ─────────────────────────────────────
+const esc = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+
 // ─── CLOCK ────────────────────────────────────────────────────────────────────
 function updateClock(){
   const n=new Date();const h=n.getHours(),m=n.getMinutes(),ap=h>=12?'PM':'AM';
   const h12=h%12||12,s=`${h12}:${String(m).padStart(2,'0')} ${ap}`;
   ['mClk','dClk'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=s;});
 }
-setInterval(updateClock,10000);
+
+// ─── UNIFIED TICK (replaces 3 separate setIntervals) ─────────────────────────
+let _tickCount = 0;
+setInterval(()=>{
+  updateClock();
+  _tickCount++;
+  if(_tickCount % 3 === 0) updateGermany();   // every 30s
+  if(_tickCount % 6 === 0) updateWhatsNext();  // every 60s
+}, 10000);
 
 // ─── GERMANY COUNTDOWN ────────────────────────────────────────────────────────
 function updateGermany(){
@@ -2008,7 +1990,6 @@ function updateGermany(){
     [a,b].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=String(v).padStart(2,'0');});
   });
 }
-setInterval(updateGermany,30000);
 
 window.nextPhrase=()=>{
   phraseIdx=(phraseIdx+1)%DE_PHRASES.length;
@@ -2064,7 +2045,6 @@ function updateWhatsNext(){
     if(t)t.textContent=title;if(d)d.textContent=desc;
   });
 }
-setInterval(updateWhatsNext,60000);
 
 // ─── NOW BUTTON + SCROLL TO TOP ───────────────────────────────────────────────
 window.jumpToNow=()=>{
@@ -2132,7 +2112,8 @@ function buildTL(f,containerId,btnPrefix){
     if(k===f&&k!=='all')el.classList.add(`f-${k}`);
   });
 
-  const c=document.getElementById(containerId);c.innerHTML='';
+  const c=document.getElementById(containerId);
+  const frag=document.createDocumentFragment();
   const nowMin=getNowMin();
   const todayItems=getFilteredSchedule(f);
   const allItems=getFilteredSchedule('all'); // for index alignment
@@ -2196,8 +2177,10 @@ function buildTL(f,containerId,btnPrefix){
         </div>` : '';
 
     d.innerHTML=`<div class="tdc"><div class="tdot">${item.i}</div><div class="tln"></div></div><div class="tc" onclick="openSheet(${origIdx})"><div class="thd"><h4>${item.h}${badge}${ovBadge}${rltBadge}${statsLink}</h4><span class="ttime">${dispT}–${dispE}${shiftedDot}</span></div><div class="steps">${stepsHtml}</div>${timerRow}</div>`;
-    c.appendChild(d);
+    frag.appendChild(d);
   });
+  c.innerHTML='';
+  c.appendChild(frag);
 
   setTimeout(()=>c.querySelector('.now')?.scrollIntoView({behavior:'smooth',block:'center'}),200);
 }
@@ -2524,18 +2507,25 @@ const MEM_CATS = {
   train:  {label:'Training',      icon:'🎓', cls:'cat-train'},
 };
 let selCatKey = 'soc';
-let selCatKey2 = 'soc';
 let selCatKeyD = 'soc';
 
 window.selCat  = (btn, k) => { selCatKey  = k; _selCatBtn(btn,'memCatRow'); };
-window.selCat2 = (btn, k) => { selCatKey2 = k; _selCatBtn(btn,'memCatRow2'); };
 window.selCatD = (btn, k) => { selCatKeyD = k; _selCatBtn(btn,'memCatRowD'); };
 function _selCatBtn(btn, rowId){
   document.querySelectorAll(`#${rowId} .mem-cat-btn`).forEach(b=>b.classList.remove('sel'));
   btn.classList.add('sel');
 }
 
-function loadMemories(){try{return JSON.parse(localStorage.getItem('timber_memories'))||[];}catch(e){return[];}}
+function loadMemories(){
+  try{
+    const raw = JSON.parse(localStorage.getItem('timber_memories'))||[];
+    // Backfill unique IDs for legacy entries that predate sync
+    let changed = false;
+    raw.forEach((m,i)=>{ if(!m.id){ m.id = 'legacy-'+i+'-'+Math.random().toString(36).slice(2,6); changed=true; } });
+    if(changed) try{ localStorage.setItem('timber_memories',JSON.stringify(raw)); }catch(e){}
+    return raw;
+  }catch(e){return[];}
+}
 
 // Format a date for display
 function fmtMemDate(dtStr){
@@ -2562,8 +2552,8 @@ function renderMemories(listId){
     row.innerHTML=`
       <span class="mem-item-emoji">${catInfo.icon}</span>
       <div class="mem-item-text">
-        <div class="mem-item-title">${m.text}</div>
-        <div class="mem-item-date">${m.date}</div>
+        <div class="mem-item-title">${esc(m.text)}</div>
+        <div class="mem-item-date">${esc(m.date)}</div>
       </div>
       <span class="mem-item-cat ${catInfo.cls}">${catInfo.label}</span>
       <div class="mem-del-wrap">
@@ -2577,7 +2567,7 @@ function renderMemories(listId){
   });
 }
 
-function renderAllMemories(){['memList','memList2','memListD'].forEach(id=>renderMemories(id));}
+function renderAllMemories(){['memList','memListD'].forEach(id=>renderMemories(id));}
 
 // Inline delete confirm (no confirm() dialog — works in sandboxed iframes)
 window.askDelMemory = (idx, listId) => {
@@ -2603,7 +2593,7 @@ function _addMemory(inputId, whenId, catKey){
   const whenEl=document.getElementById(whenId);
   const dtStr = whenEl?.value || '';
   const mems=loadMemories();
-  mems.push({cat:catKey, text, date:fmtMemDate(dtStr)});
+  mems.push({id: Date.now()+'-'+Math.random().toString(36).slice(2,7), cat:catKey, text, date:fmtMemDate(dtStr)});
   saveMemories(mems);
   input.value='';
   // reset datetime to now
@@ -2612,7 +2602,6 @@ function _addMemory(inputId, whenId, catKey){
   showToast('🐾 Memory saved!', 2000);
 }
 window.addMemory  = () => _addMemory('memInput',  'memWhen',  selCatKey);
-window.addMemory2 = () => _addMemory('memInput2', 'memWhen2', selCatKey2);
 window.addMemoryD = () => _addMemory('memInputD', 'memWhenD', selCatKeyD);
 
 // Preset quick-add — fills the input and selects category, then user hits Add
@@ -2629,7 +2618,6 @@ function _presetMemory(inputId, whenId, catRowId, catSelVar, text, cat){
   return cat;
 }
 window.presetMemory  = (text,cat)=>{ selCatKey  = _presetMemory('memInput', 'memWhen', 'memCatRow','selCatKey',text,cat); };
-window.presetMemory2 = (text,cat)=>{ selCatKey2 = _presetMemory('memInput2','memWhen2','memCatRow2','selCatKey2',text,cat); };
 window.presetMemoryD = (text,cat)=>{ selCatKeyD = _presetMemory('memInputD','memWhenD','memCatRowD','selCatKeyD',text,cat); };
 
 // Get current time as datetime-local value (YYYY-MM-DDTHH:mm)
@@ -2639,13 +2627,13 @@ function nowISOLocal(){
 }
 function initDatetimeInputs(){
   const v=nowISOLocal();
-  ['memWhen','memWhen2','memWhenD'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=v;});
+  ['memWhen','memWhenD'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=v;});
 }
 
 // Enter key support
-['memInput','memInput2','memInputD'].forEach((id,i)=>{
+['memInput','memInputD'].forEach((id,i)=>{
   document.getElementById(id)?.addEventListener('keydown',e=>{
-    if(e.key==='Enter')[window.addMemory,window.addMemory2,window.addMemoryD][i]();
+    if(e.key==='Enter')[window.addMemory,window.addMemoryD][i]();
   });
 });
 
@@ -2978,7 +2966,30 @@ async function gistPush(){
   if(_gistSyncing) return; _gistSyncing = true;
   _setGistStatus('syncing','Syncing…');
   try{
-    const memories = loadMemories();
+    // Pull remote memories first and merge before pushing (prevents overwrites across devices)
+    let memories = loadMemories();
+    const gistIdForMerge = _getGistId();
+    if(gistIdForMerge){
+      try{
+        const remoteR = await fetch(`https://api.github.com/gists/${gistIdForMerge}`,{headers:{'Authorization':'token '+token}});
+        if(remoteR.ok){
+          const remoteData = await remoteR.json();
+          const remoteRaw = remoteData.files?.[GIST_FILE]?.content;
+          if(remoteRaw){
+            const remoteParsed = JSON.parse(remoteRaw);
+            if(Array.isArray(remoteParsed.memories)){
+              const localIds = new Set(memories.map(m=>m.id));
+              const newFromRemote = remoteParsed.memories.filter(m=>m.id && !localIds.has(m.id));
+              if(newFromRemote.length){
+                memories = [...memories, ...newFromRemote].sort((a,b)=>String(a.id).localeCompare(String(b.id)));
+                try{ localStorage.setItem('timber_memories',JSON.stringify(memories)); }catch(e){}
+                renderAllMemories();
+              }
+            }
+          }
+        }
+      }catch(mergeErr){ /* merge failed — push local anyway */ }
+    }
     // Collect all 7 PT day arrays (jlos_0 … jlos_6)
     const ptDays = {};
     for(let d=0;d<7;d++){
@@ -3047,9 +3058,18 @@ async function gistPull(){
       let pulled = [];
       // Memories
       if(parsed.memories){
-        try{ localStorage.setItem('timber_memories', JSON.stringify(parsed.memories)); }catch(e){}
-        renderAllMemories();
-        pulled.push('memories');
+        // Merge: union local + remote by id, deduplicate, sort by id (chronological)
+        const local = loadMemories();
+        const localIds = new Set(local.map(m=>m.id));
+        const incoming = parsed.memories.filter(m=>m.id && !localIds.has(m.id));
+        if(incoming.length){
+          const merged = [...local, ...incoming].sort((a,b)=>String(a.id).localeCompare(String(b.id)));
+          try{ localStorage.setItem('timber_memories', JSON.stringify(merged)); }catch(e){}
+          renderAllMemories();
+          pulled.push('memories ('+incoming.length+' new)');
+        } else {
+          pulled.push('memories (up to date)');
+        }
       }
       // PT days (jlos_0 … jlos_6)
       if(parsed.ptDays){
@@ -3082,9 +3102,7 @@ async function gistPull(){
   }
 }
 
-// Auto-push whenever memories change
-const _origSaveMemories = saveMemories;
-// Patch saveMemories to trigger push
+// Auto-push whenever memories change — debounced gistPush after each save
 function saveMemories(m){
   try{localStorage.setItem('timber_memories',JSON.stringify(m));}catch(e){}
   // Debounced push
@@ -3093,6 +3111,10 @@ function saveMemories(m){
 }
 
 function initGistSync(){
+  // Pull whenever the user switches back to this tab (catches adds made on other devices)
+  document.addEventListener('visibilitychange', ()=>{
+    if(document.visibilityState === 'visible' && _getGistToken()) gistPull();
+  });
   const token = _getGistToken();
   if(token){
     _setGistStatus('synced','Synced ✓');
@@ -3653,8 +3675,8 @@ function renderShapeAiResult(suggestions, animate){
     );
     return `<div class="shape-suggestion-item" id="shapeS-${i}">
       <div class="shape-sug-text">
-        <strong>${actionLabel[s.action]||s.action}:</strong> ${s.block}<br>
-        <span style="font-size:.65rem;color:var(--tm);font-weight:600">${s.reason}</span>
+        <strong>${esc(actionLabel[s.action]||s.action)}:</strong> ${esc(s.block)}<br>
+        <span style="font-size:.65rem;color:var(--tm);font-weight:600">${esc(s.reason)}</span>
       </div>
       ${matchIdx>=0
         ? `<button class="shape-sug-accept" onclick="acceptShapeSuggestion(${i},${matchIdx},'${s.action}')">Apply</button>`
@@ -3709,30 +3731,137 @@ function setCalUrl(u){ try{ localStorage.setItem(CAL_URL_KEY,u); }catch(e){} }
 // ── iCal parser ──────────────────────────────────────────────────────────────
 function parseICal(text){
   const events = [];
+
+  // How far ahead to expand recurring events (8 days covers the 7-day window + buffer)
+  const windowEnd = new Date(); windowEnd.setDate(windowEnd.getDate() + 8);
+  const windowStart = new Date(); windowStart.setHours(0,0,0,0);
+
+  const unescape = s => s.replace(/\\n/g,'\n').replace(/\\,/g,',').replace(/\\;/g,';').replace(/\\\\/g,'\\');
+
+  const parseDate = s => {
+    if(!s) return null;
+    const val = s.includes(':') ? s.split(':').pop() : s;
+    const y=+val.slice(0,4), mo=+val.slice(4,6)-1, d=+val.slice(6,8);
+    if(val.length === 8) return { date: new Date(y,mo,d), allDay: true };
+    const h=+val.slice(9,11), mi=+val.slice(11,13);
+    const date = val.endsWith('Z') ? new Date(Date.UTC(y,mo,d,h,mi)) : new Date(y,mo,d,h,mi);
+    return { date, allDay: false };
+  };
+
+  // Parse RRULE string into a plain object  e.g. { FREQ:'WEEKLY', BYDAY:'MO,WE', COUNT:'10' }
+  const parseRRule = s => {
+    const r = {};
+    s.split(';').forEach(p => { const [k,v]=p.split('='); if(k&&v) r[k.trim()]=v.trim(); });
+    return r;
+  };
+
+  // Day-of-week map for BYDAY
+  const DOW = { SU:0, MO:1, TU:2, WE:3, TH:4, FR:5, SA:6 };
+
+  // Expand a single VEVENT with RRULE into all occurrences within [windowStart, windowEnd]
+  const expand = (dtStart, duration, allDay, rruleStr, exdates) => {
+    const rule = parseRRule(rruleStr);
+    const freq = rule.FREQ?.toUpperCase();
+    const interval = parseInt(rule.INTERVAL||'1', 10);
+    const byDay = rule.BYDAY ? rule.BYDAY.split(',').map(d=>DOW[d.slice(-2)]).filter(d=>d!==undefined) : null;
+    const until = rule.UNTIL ? parseDate(rule.UNTIL)?.date : null;
+    const count = rule.COUNT ? parseInt(rule.COUNT,10) : null;
+
+    const results = [];
+    let cur = new Date(dtStart);
+    let n = 0;
+    const maxIter = 500; // safety cap
+
+    while(n < maxIter){
+      // Stop conditions
+      if(until && cur > until) break;
+      if(count !== null && results.length >= count) break;
+      if(cur > windowEnd) break;
+
+      const dateKey = cur.toISOString().slice(0,10);
+      const isExcluded = exdates.has(dateKey);
+
+      if(!isExcluded && cur >= windowStart){
+        results.push(new Date(cur));
+      }
+
+      // Advance to next occurrence
+      if(freq === 'DAILY'){
+        cur.setDate(cur.getDate() + interval);
+      } else if(freq === 'WEEKLY'){
+        if(byDay && byDay.length > 0){
+          // Move to next day in BYDAY list
+          cur.setDate(cur.getDate() + 1);
+        } else {
+          cur.setDate(cur.getDate() + 7 * interval);
+        }
+      } else if(freq === 'MONTHLY'){
+        cur.setMonth(cur.getMonth() + interval);
+      } else if(freq === 'YEARLY'){
+        cur.setFullYear(cur.getFullYear() + interval);
+      } else {
+        break; // unknown freq — stop
+      }
+
+      // For WEEKLY+BYDAY, only keep days that are in the BYDAY set
+      if(freq === 'WEEKLY' && byDay && byDay.length > 0){
+        // Skip past days not in the set, resetting week interval properly
+        while(!byDay.includes(cur.getDay())){
+          cur.setDate(cur.getDate() + 1);
+          // If we've moved into a new week beyond the interval, jump forward
+          if(cur.getDay() === 0){ // crossed Sunday — apply interval offset
+            if(interval > 1) cur.setDate(cur.getDate() + 7*(interval-1));
+          }
+        }
+      }
+
+      n++;
+    }
+    return results;
+  };
+
   text.split('BEGIN:VEVENT').slice(1).forEach(block => {
-    // Unfold continuation lines (RFC 5545 §3.1)
     const unfolded = block.replace(/\r?\n[ \t]/g, '');
     const get = key => {
       const m = unfolded.match(new RegExp(key + '[^:\r\n]*:([^\r\n]+)', 'i'));
       return m ? m[1].trim() : '';
     };
-    const unescape = s => s.replace(/\\n/g,'\n').replace(/\\,/g,',').replace(/\\;/g,';').replace(/\\\\/g,'\\');
-    const parseDate = s => {
-      if(!s) return null;
-      // Value is everything after the last colon (handles TZID=... prefix)
-      const val = s.includes(':') ? s.split(':').pop() : s;
-      const y=+val.slice(0,4), mo=+val.slice(4,6)-1, d=+val.slice(6,8);
-      if(val.length === 8) return { date: new Date(y,mo,d), allDay: true };
-      const h=+val.slice(9,11), mi=+val.slice(11,13);
-      const date = val.endsWith('Z') ? new Date(Date.UTC(y,mo,d,h,mi)) : new Date(y,mo,d,h,mi);
-      return { date, allDay: false };
-    };
-    const rawStart = get('DTSTART'), rawEnd = get('DTEND'), summary = unescape(get('SUMMARY'));
+
+    const rawStart = get('DTSTART'), rawEnd = get('DTEND');
+    const summary  = unescape(get('SUMMARY'));
+    const location = unescape(get('LOCATION'));
+    const rrule    = get('RRULE');
+
     if(!rawStart || !summary) return;
     const start = parseDate(rawStart), end = parseDate(rawEnd);
     if(!start) return;
-    events.push({ summary, location: unescape(get('LOCATION')), start: start.date, end: end?.date||null, allDay: start.allDay });
+
+    const duration = (end?.date && start.date) ? end.date - start.date : 0;
+
+    // Collect EXDATEs (excluded recurrence instances) as YYYY-MM-DD strings
+    const exdates = new Set();
+    [...unfolded.matchAll(/EXDATE[^:\r\n]*:([^\r\n]+)/gi)].forEach(m => {
+      m[1].split(',').forEach(d => {
+        const parsed = parseDate(d.trim());
+        if(parsed) exdates.add(parsed.date.toISOString().slice(0,10));
+      });
+    });
+
+    if(rrule){
+      // Expand recurring event into individual occurrences
+      const occurrences = expand(new Date(start.date), duration, start.allDay, rrule, exdates);
+      occurrences.forEach(occStart => {
+        const occEnd = duration ? new Date(occStart.getTime() + duration) : null;
+        events.push({ summary, location, start: occStart, end: occEnd, allDay: start.allDay });
+      });
+    } else {
+      // One-off event — only include if within window
+      if(start.date >= windowStart && start.date <= windowEnd){
+        events.push({ summary, location, start: start.date, end: end?.date||null, allDay: start.allDay });
+      }
+    }
   });
+
   return events;
 }
 
@@ -3818,7 +3947,7 @@ function populateShapeMeetings(){
     const durMin = e => (!e.end||e.allDay) ? null : Math.round((e.end-e.start)/60000);
     el.innerHTML = today.map(e => {
       const dur = durMin(e);
-      return `<div class="shape-meeting-chip"><span class="shape-meeting-time">${e.allDay?'All day':fmt12(e.start)}</span><span class="shape-meeting-title">${e.summary}</span>${dur?`<span class="shape-meeting-dur">${dur}m</span>`:''}</div>`;
+      return `<div class="shape-meeting-chip"><span class="shape-meeting-time">${e.allDay?'All day':fmt12(e.start)}</span><span class="shape-meeting-title">${esc(e.summary)}</span>${dur?`<span class="shape-meeting-dur">${dur}m</span>`:''}</div>`;
     }).join('');
   }).catch(() => { el.innerHTML = '<div class="shape-cal-empty">Could not load calendar — check Cal tab</div>'; });
 }
@@ -3883,8 +4012,8 @@ window.loadCalendar = async (forceRefresh = false) => {
           <div class="cal-event${e.allDay?' allday':''}">
             <div class="cal-event-time">${e.allDay?'All day':fmt12(e.start)}</div>
             <div>
-              <div class="cal-event-title">${e.summary}</div>
-              ${e.location?`<div class="cal-event-loc">📍 ${e.location}</div>`:''}
+              <div class="cal-event-title">${esc(e.summary)}</div>
+              ${e.location?`<div class="cal-event-loc">📍 ${esc(e.location)}</div>`:''}
             </div>
           </div>`).join('')}
       </div>`).join('');

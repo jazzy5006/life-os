@@ -94,6 +94,7 @@ p{font-size:.8rem;font-weight:600;color:var(--tb);line-height:1.6}
 .pla{background:var(--ll);color:var(--la);border:1.5px solid var(--lm)}
 .pmi{background:var(--ml);color:var(--ma);border:1.5px solid var(--mm)}
 .ppe{background:var(--pl);color:var(--pa);border:1.5px solid var(--pm)}
+.pfo{background:var(--sl);color:var(--sa);border:1.5px solid var(--sm)}
 
 /* ── TAB BAR ── */
 .tab-bar{display:flex;position:fixed;bottom:0;left:0;right:0;z-index:100;background:var(--bgc);border-top:2px solid var(--lm);padding-bottom:env(safe-area-inset-bottom)}
@@ -844,10 +845,11 @@ body.timer-active .desktop-layout{padding-top:70px}
 </nav>
 
 <div class="pills-row">
-  <span class="pill pla">✿ Sophia Yin</span>
-  <span class="pill pmi">🐾 Timber</span>
   <span class="pill ppe">🌿 Wellness</span>
+  <span class="pill pmi">🐾 Timber</span>
+  <span class="pill pfo">💻 Focus</span>
 </div>
+
 
 <button id="jumpNowBtn" class="fab-now" onclick="jumpToNow()">🎯 Now</button>
 <button id="jumpTopBtn" class="fab-top" onclick="scrollToTop()">↑ Top</button>
@@ -1134,27 +1136,8 @@ body.timer-active .desktop-layout{padding-top:70px}
     </div>
 
   </div>
-</div>
 
-<!-- CONNECTION LOG MODAL -->
-<div class="conn-modal" id="connModal">
-  <div class="conn-modal-box">
-    <div class="conn-modal-handle"></div>
-    <div class="conn-modal-person" id="connModalEmoji">💙</div>
-    <div class="conn-modal-name" id="connModalName">Partner</div>
-    <div class="conn-types" id="connTypes">
-      <button class="conn-type-btn sel" data-type="called">📞 Called</button>
-      <button class="conn-type-btn" data-type="texted">💬 Texted</button>
-      <button class="conn-type-btn" data-type="quality">🫂 Quality time</button>
-      <button class="conn-type-btn" data-type="checkin">💜 Check-in</button>
-      <button class="conn-type-btn" data-type="moment">✨ Meaningful moment</button>
-    </div>
-    <input class="conn-note-input" id="connNoteInput" type="text" placeholder="Optional note…" maxlength="100">
-    <button class="conn-log-btn" onclick="logConnection()">💜 Log Connection</button>
-    <div class="conn-history" id="connHistory"></div>
-  </div>
-
-  <!-- Timber Memories — now lives here in Life tab -->
+  <!-- Timber's Firsts & Memories -->
   <div class="card" style="margin-top:12px">
     <h3 class="lbl" style="text-align:center;margin-bottom:10px">🐶 Timber's Firsts & Memories</h3>
     <p class="lbl" style="margin-bottom:5px">⚡ Quick Add</p>
@@ -1177,6 +1160,25 @@ body.timer-active .desktop-layout{padding-top:70px}
       <button class="mem-add-btn" onclick="addMemory()">+ Add</button>
     </div>
     <div class="mem-list" id="memList"></div>
+  </div>
+</div>
+
+<!-- CONNECTION LOG MODAL -->
+<div class="conn-modal" id="connModal">
+  <div class="conn-modal-box">
+    <div class="conn-modal-handle"></div>
+    <div class="conn-modal-person" id="connModalEmoji">💙</div>
+    <div class="conn-modal-name" id="connModalName">Partner</div>
+    <div class="conn-types" id="connTypes">
+      <button class="conn-type-btn sel" data-type="called">📞 Called</button>
+      <button class="conn-type-btn" data-type="texted">💬 Texted</button>
+      <button class="conn-type-btn" data-type="quality">🫂 Quality time</button>
+      <button class="conn-type-btn" data-type="checkin">💜 Check-in</button>
+      <button class="conn-type-btn" data-type="moment">✨ Meaningful moment</button>
+    </div>
+    <input class="conn-note-input" id="connNoteInput" type="text" placeholder="Optional note…" maxlength="100">
+    <button class="conn-log-btn" onclick="logConnection()">Log Connection</button>
+    <div class="conn-history" id="connHistory"></div>
   </div>
 </div>
 
@@ -1224,9 +1226,9 @@ body.timer-active .desktop-layout{padding-top:70px}
   <header class="desk-header">
     <div class="desk-brand">
       <div class="desk-pills">
-        <span class="pill pla">✿ Sophia Yin</span>
-        <span class="pill pmi">🐾 Timber</span>
         <span class="pill ppe">🌿 Wellness</span>
+        <span class="pill pmi">🐾 Timber</span>
+        <span class="pill pfo">💻 Focus</span>
       </div>
       <h1>Jasmine's Life OS ✿</h1>
       <div style="display:flex;align-items:center;gap:7px;margin-top:3px">
@@ -1274,7 +1276,16 @@ body.timer-active .desktop-layout{padding-top:70px}
           </div>
         </div>
         <div class="collapsible-body" id="deskFlowBody" style="display:flex;flex-direction:column;flex:1;min-height:0">
-          <div class="desk-tls" id="dTlb"></div>
+          <!-- Tomorrow peek — calendar events only -->
+          <div class="tomorrow-peek" id="deskTomorrowPeek" onclick="toggleDeskTomorrowPeek()" style="margin-bottom:10px;flex-shrink:0">
+            <div class="tomorrow-peek-hd">
+              <span class="tomorrow-peek-lbl">☀️ Tomorrow</span>
+              <span class="tomorrow-peek-summary" id="deskTomorrowSummary">Loading…</span>
+              <span class="tomorrow-peek-arrow">▾</span>
+            </div>
+            <div class="tomorrow-peek-body" id="deskTomorrowBody"></div>
+          </div>
+          <div class="desk-tls" id="dTlb" style="flex:1;overflow-y:auto"></div>
         </div>
       </div>
 
@@ -1287,7 +1298,6 @@ body.timer-active .desktop-layout{padding-top:70px}
         <button class="desk-tab"        id="dtab-life"  onclick="deskSwitchPanel('life')"  >💜 Life</button>
         <button class="desk-tab"        id="dtab-cal"   onclick="deskSwitchPanel('cal')"   >📅 Calendar</button>
         <button class="desk-tab"        id="dtab-stats" onclick="deskSwitchPanel('stats')">📊 Stats</button>
-        <button class="desk-tab"        id="dtab-mem"   onclick="deskSwitchPanel('mem')"  >🐶 Timber</button>
       </div>
 
       <!-- PT panel -->
@@ -1370,6 +1380,31 @@ body.timer-active .desktop-layout{padding-top:70px}
             </div>
           </div>
           <div class="conn-nudge-wrap" id="deskConnNudge"></div>
+          <button class="conn-log-btn" onclick="logConnection()">Log Connection</button>
+          <div class="conn-history" id="deskConnHistory"></div>
+        </div>
+        <div class="card">
+          <h3 class="lbl" style="text-align:center;margin-bottom:10px">🐶 Timber's Firsts & Memories</h3>
+          <p class="lbl" style="margin-bottom:5px">⚡ Quick Add</p>
+          <div class="mem-presets">
+            <button class="mem-preset" onclick="presetMemoryD('First Stroller Trip','soc')">🛻 Stroller</button>
+            <button class="mem-preset" onclick="presetMemoryD('First Cat Sniff (Tulip)','soc')">🐱 Tulip</button>
+            <button class="mem-preset" onclick="presetMemoryD('First Voluntary Sit','train')">🎓 First Sit</button>
+            <button class="mem-preset" onclick="presetMemoryD('First Toothbrushing','health')">🦷 Teeth</button>
+            <button class="mem-preset" onclick="presetMemoryD('First Cat Sniff (Tigris)','soc')">🐈 Tigris</button>
+          </div>
+          <div class="mem-cats" id="memCatRowD">
+            <button class="mem-cat-btn cat-soc sel" onclick="selCatD(this,'soc')"><span class="cat-icon">🌍</span>Social</button>
+            <button class="mem-cat-btn cat-home"    onclick="selCatD(this,'home')"><span class="cat-icon">🏠</span>Home</button>
+            <button class="mem-cat-btn cat-health"  onclick="selCatD(this,'health')"><span class="cat-icon">💚</span>Health</button>
+            <button class="mem-cat-btn cat-train"   onclick="selCatD(this,'train')"><span class="cat-icon">🎓</span>Train</button>
+          </div>
+          <input type="datetime-local" class="mem-datetime" id="memWhenD" title="When did this happen?">
+          <div class="mem-add">
+            <input class="mem-input" id="memInputD" type="text" placeholder="First stroller walk…" maxlength="80">
+            <button class="mem-add-btn" onclick="addMemoryD()">+ Add</button>
+          </div>
+          <div class="mem-list" id="memListD"></div>
         </div>
       </div>
 
@@ -1464,31 +1499,6 @@ body.timer-active .desktop-layout{padding-top:70px}
       </div>
 
       <!-- Timber panel -->
-      <div class="desk-panel" id="dpanel-mem">
-        <div class="card">
-          <h3 class="lbl" style="text-align:center;margin-bottom:10px">🐶 Timber's Firsts & Memories</h3>
-          <p class="lbl" style="margin-bottom:5px">⚡ Quick Add</p>
-          <div class="mem-presets">
-            <button class="mem-preset" onclick="presetMemoryD('First Stroller Trip','soc')">🛻 Stroller</button>
-            <button class="mem-preset" onclick="presetMemoryD('First Cat Sniff (Tulip)','soc')">🐱 Tulip</button>
-            <button class="mem-preset" onclick="presetMemoryD('First Voluntary Sit','train')">🎓 First Sit</button>
-            <button class="mem-preset" onclick="presetMemoryD('First Toothbrushing','health')">🦷 Teeth</button>
-            <button class="mem-preset" onclick="presetMemoryD('First Cat Sniff (Tigris)','soc')">🐈 Tigris</button>
-          </div>
-          <div class="mem-cats" id="memCatRowD">
-            <button class="mem-cat-btn cat-soc sel" onclick="selCatD(this,'soc')"><span class="cat-icon">🌍</span>Social</button>
-            <button class="mem-cat-btn cat-home"    onclick="selCatD(this,'home')"><span class="cat-icon">🏠</span>Home</button>
-            <button class="mem-cat-btn cat-health"  onclick="selCatD(this,'health')"><span class="cat-icon">💚</span>Health</button>
-            <button class="mem-cat-btn cat-train"   onclick="selCatD(this,'train')"><span class="cat-icon">🎓</span>Train</button>
-          </div>
-          <input type="datetime-local" class="mem-datetime" id="memWhenD" title="When did this happen?">
-          <div class="mem-add">
-            <input class="mem-input" id="memInputD" type="text" placeholder="First stroller walk…" maxlength="80">
-            <button class="mem-add-btn" onclick="addMemoryD()">+ Add</button>
-          </div>
-          <div class="mem-list" id="memListD"></div>
-        </div>
-      </div>
     </div>
   </div>
 </div>
@@ -2073,8 +2083,7 @@ window.switchTab=(tab)=>{
   document.getElementById('page-'+tab).classList.add('active');
   document.getElementById('tab-'+tab).classList.add('active');
   document.getElementById('jumpNowBtn').style.display=tab==='flow'?'flex':'none';
-  if(tab==='mem')renderMemories('memList2');
-  if(tab==='life'){renderOrbits();renderBattery();}
+  if(tab==='life'){renderOrbits();renderBattery();renderMemories('memList');}
   if(tab==='cal')loadCalendar();
 };
 
@@ -2083,8 +2092,7 @@ window.deskSwitchPanel=(panel)=>{
   document.querySelectorAll('.desk-tab').forEach(t=>t.classList.remove('active'));
   document.getElementById('dpanel-'+panel).classList.add('active');
   document.getElementById('dtab-'+panel).classList.add('active');
-  if(panel==='mem')renderMemories('memListD');
-  if(panel==='life'){renderOrbits();renderBattery();}
+  if(panel==='life'){renderOrbits();renderBattery();renderMemories('memListD');}
   if(panel==='cal')loadCalendar();
 };
 
@@ -3289,23 +3297,58 @@ window.toggleTomorrowPeek = () => {
 };
 
 function buildTomorrowPeek(){
-  const tomorrow = new Date();
-  tomorrow.setDate(tomorrow.getDate() + 1);
-  const tomorrowDay = tomorrow.getDay();
-  const items = S.filter(item => {
-    if(item.days && !item.days.includes(tomorrowDay)) return false;
-    return true;
+  // Show tomorrow's calendar events only — this is a look-ahead for what's DIFFERENT, not the daily schedule
+  const summaryIds  = ['tomorrowSummary',  'deskTomorrowSummary'];
+  const bodyIds     = ['tomorrowBody',     'deskTomorrowBody'];
+
+  const setAll = (ids, fn) => ids.forEach(id => { const el=document.getElementById(id); if(el) fn(el); });
+
+  if(!getCalUrl()){
+    setAll(summaryIds, el => el.textContent = 'No calendar connected');
+    setAll(bodyIds,    el => el.innerHTML   = `<div class="tmr-item" style="color:var(--tm);font-style:italic">Connect your calendar in the Cal tab to see tomorrow's events here.</div>`);
+    return;
+  }
+
+  setAll(summaryIds, el => el.textContent = 'Loading…');
+
+  fetchCalEvents().then(events => {
+    if(!events){
+      setAll(summaryIds, el => el.textContent = 'Calendar unavailable');
+      return;
+    }
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    const tomorrowStr = tomorrow.toDateString();
+
+    const tomorrowEvents = events
+      .filter(e => e.start.toDateString() === tomorrowStr)
+      .sort((a,b) => a.start - b.start);
+
+    const fmt12 = d => { let h=d.getHours(),m=d.getMinutes(),ap=h>=12?'PM':'AM'; h=h%12||12; return `${h}:${String(m).padStart(2,'0')} ${ap}`; };
+
+    if(!tomorrowEvents.length){
+      setAll(summaryIds, el => el.textContent = 'Nothing on the calendar ✨');
+    setAll(bodyIds,    el => el.innerHTML   = `<div class="tmr-item" style="color:var(--tm);font-style:italic">Connect your calendar in the Cal tab to see tomorrow's events here.</div>`);
+      return;
+    }
+
+    setAll(summaryIds, el => el.textContent = `${tomorrowEvents.length} event${tomorrowEvents.length===1?'':'s'}`);
+    const html = tomorrowEvents.map(e =>
+      `<div class="tmr-item">
+        <span class="tmr-time">${e.allDay ? 'All day' : fmt12(e.start)}</span>
+        <span>${esc(e.summary)}${e.location ? `<span style="font-size:.6rem;color:var(--tm);margin-left:5px">📍 ${esc(e.location)}</span>` : ''}</span>
+      </div>`
+    ).join('');
+    setAll(bodyIds, el => el.innerHTML = html);
+  }).catch(() => {
+    setAll(summaryIds, el => el.textContent = 'Could not load');
+    setAll(bodyIds,    el => el.innerHTML   = '<div class="tmr-item" style="color:var(--pa)">⚠️ Could not reach calendar.</div>');
   });
-  const timber = items.filter(i => i.steps?.some(s => s.c==='timber')).length;
-  const wellness = items.filter(i => i.steps?.some(s => s.c==='wellness')).length;
-  const summaryEl = document.getElementById('tomorrowSummary');
-  if(summaryEl) summaryEl.textContent = `${items.length} blocks · 🐾×${timber} · 🌿×${wellness}`;
-  const bodyEl = document.getElementById('tomorrowBody');
-  if(!bodyEl) return;
-  bodyEl.innerHTML = items.slice(0,8).map(item =>
-    `<div class="tmr-item"><span class="tmr-time">${fmtMin12(item.smin)}</span><span>${item.i||''} ${item.h}</span></div>`
-  ).join('') + (items.length > 8 ? `<div class="tmr-item" style="color:var(--tm)">…and ${items.length-8} more</div>` : '');
 }
+
+window.toggleDeskTomorrowPeek = () => {
+  document.getElementById('deskTomorrowPeek')?.classList.toggle('open');
+};
 
 // ─── BIRTHDAY ─────────────────────────────────────────────────────────────────
 function checkBirthday(){
@@ -3421,7 +3464,7 @@ function renderOrbits(){
   });
   // Gentle nudge — warm and low-pressure
   const nudgeTxt = nudges.length
-    ? `A gentle reminder to reach out 💜  ${nudges.join('  ·  ')}`
+    ? `A gentle reminder to reach out — ${nudges.join('  ·  ')}`
     : '';
   ['connNudge','deskConnNudge'].forEach(id=>{
     const el=document.getElementById(id);
@@ -3439,11 +3482,14 @@ window.openConnModal = (name, emoji) => {
   document.querySelectorAll('.conn-type-btn').forEach((btn,i)=>btn.classList.toggle('sel',i===0));
   const log = loadConnLog();
   const entries = (log[name]||[]).slice(-5).reverse();
-  const histEl = document.getElementById('connHistory');
-  if(histEl) histEl.innerHTML = entries.length
+  ['connHistory','deskConnHistory'].forEach(hid=>{
+    const histEl = document.getElementById(hid);
+    if(!histEl) return;
+    histEl.innerHTML = entries.length
     ? '<p style="font-size:.6rem;font-weight:900;color:var(--tm);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px">Recent</p>'
       + entries.map(e=>`<div class="conn-hist-item"><span class="conn-hist-date">${new Date(e.date).toLocaleDateString('en',{month:'short',day:'numeric'})}</span><span>${e.type||'check-in'}${e.note?' — '+e.note:''}</span></div>`).join('')
     : `<p style="font-size:.72rem;color:var(--tm);font-style:italic;margin-top:8px">No connections logged yet for ${name}</p>`;
+  });
   document.getElementById('connModal').classList.add('open');
 };
 

@@ -964,6 +964,12 @@ body.timer-active .desktop-layout{padding-top:70px}
 <div class="page" id="page-stats">
   <div style="margin-top:12px;display:flex;flex-direction:column;gap:12px">
 
+  <!-- AI Keys button — mobile trigger for API settings panel -->
+  <button onclick="toggleApiSettings()" style="display:flex;align-items:center;gap:7px;background:var(--bgp);border:2px solid var(--sm);border-radius:var(--rf);padding:9px 14px;font-family:'Nunito',sans-serif;font-size:.62rem;font-weight:900;letter-spacing:.1em;text-transform:uppercase;color:var(--sa);cursor:pointer;width:100%" id="apiSettingsToggleBtn">
+    <span style="font-size:.9rem">⚙️</span> AI Integration Keys
+    <span style="margin-left:auto;font-size:.7rem;color:var(--tm)" id="apiSettingsBtnArrow">▾</span>
+  </button>
+
   <!-- API Settings Panel (hidden by default) -->
   <div class="api-settings-panel" id="apiSettingsPanel">
     <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
@@ -3153,8 +3159,10 @@ window.saveGeminiKey = () => {
 };
 
 window.toggleApiSettings = () => {
+  const arrow = document.getElementById('apiSettingsBtnArrow');
   const panel = document.getElementById('apiSettingsPanel');
   panel.classList.toggle('open');
+  if(arrow) arrow.textContent = panel.classList.contains('open') ? '▴' : '▾';
   if(panel.classList.contains('open')){
     // Pre-fill if key exists
     const key = getGeminiKey();

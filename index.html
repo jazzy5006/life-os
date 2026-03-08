@@ -628,6 +628,9 @@ body.timer-active .desktop-layout{padding-top:70px}
 .lab-chip.connection{background:var(--sl);border:1.5px solid var(--sm)}.lab-chip.connection .lab-chip-hd{color:var(--sa)}
 .lab-chip.work{background:var(--gl);border:1.5px solid var(--gm)}.lab-chip.work .lab-chip-hd{color:var(--ga)}
 .lab-chip.thinking{background:var(--bgp);border:1.5px solid var(--lm);color:var(--tm);font-style:italic}
+.lab-chip.home{background:rgba(255,200,100,.1);border:1.5px solid rgba(255,180,60,.4)}.lab-chip.home .lab-chip-hd{color:rgba(200,140,30,1)}
+.lab-chip.money{background:rgba(80,200,160,.1);border:1.5px solid rgba(60,180,140,.4)}.lab-chip.money .lab-chip-hd{color:rgba(30,160,120,1)}
+.lab-chip.processing{background:var(--ll);border:1.5px solid var(--lm);opacity:.85}.lab-chip.processing .lab-chip-hd{color:var(--la)}
 
 @media(min-width:1024px){
   .tab-bar,.page,.fab-now,.top-nav,.pills-row{display:none!important}
@@ -1290,6 +1293,15 @@ body.timer-active .desktop-layout{padding-top:70px}
               <span class="tomorrow-peek-arrow">▾</span>
             </div>
             <div class="tomorrow-peek-body" id="deskTomorrowBody"></div>
+          </div>
+          <!-- Brain Dump — desktop -->
+          <div class="lab-card" style="flex-shrink:0;margin-bottom:10px">
+            <div class="lab-hd">
+              <span class="lab-title">💭 Brain Dump</span>
+              <button class="lab-sort-btn" id="deskLabSortBtn" onclick="event.stopPropagation();labSynthesize()">✨ Sort this</button>
+            </div>
+            <textarea class="lab-ta" id="deskScratchPad" placeholder="Anything on your mind… Timber moments, how you're feeling, things to remember, stuff for later. Just let it out 💜" oninput="saveScratch()" rows="3"></textarea>
+            <div class="lab-results" id="deskLabResults"></div>
           </div>
           <div class="desk-tls" id="dTlb" style="flex:1;overflow-y:auto"></div>
         </div>
@@ -2674,14 +2686,24 @@ window.navToStats = (target) => {
 // ─── SCRATCH PAD ──────────────────────────────────────────────────────────────
 const SCRATCH_KEY = 'jlos_scratch_' + new Date().toDateString();
 function saveScratch(){
-  const v = document.getElementById('scratchPad')?.value || '';
+  // Sync both mobile and desktop textareas from whichever was edited
+  const mob = document.getElementById('scratchPad');
+  const dsk = document.getElementById('deskScratchPad');
+  // Determine which one triggered (active element), fall back to either with content
+  const active = document.activeElement;
+  const v = (active === mob || active === dsk) ? active.value : (mob?.value || dsk?.value || '');
   try{localStorage.setItem(SCRATCH_KEY, v);}catch(e){}
+  // Keep both in sync
+  if(mob && mob !== active) mob.value = v;
+  if(dsk && dsk !== active) dsk.value = v;
 }
 function loadScratch(){
   try{
     const v = localStorage.getItem(SCRATCH_KEY) || '';
-    const el = document.getElementById('scratchPad');
-    if(el) el.value = v;
+    ['scratchPad','deskScratchPad'].forEach(id=>{
+      const el = document.getElementById(id);
+      if(el) el.value = v;
+    });
   }catch(e){}
 }
 function getDayTotal(d){let t=0;PT.forEach(sec=>{sec.items.forEach(item=>{if(item.days.includes(d))t++;});});return t;}
@@ -3529,31 +3551,42 @@ document.getElementById('connModal')?.addEventListener('click',e=>{
 
 // ─── LAB SYNTHESIS ────────────────────────────────────────────────────────────
 window.labSynthesize = async () => {
-  const text = document.getElementById('scratchPad')?.value.trim();
+  const text = (document.getElementById('scratchPad')?.value || document.getElementById('deskScratchPad')?.value || '').trim();
   if(!text){ showToast('Write some notes first',1800); return; }
   const key = getGeminiKey();
   const resultsEl = document.getElementById('labResults');
+  const deskResultsEl = document.getElementById('deskLabResults');
   const btn = document.getElementById('labSortBtn');
+  const deskBtn = document.getElementById('deskLabSortBtn');
   if(btn) btn.disabled=true;
-  if(resultsEl) resultsEl.innerHTML='<div class="lab-chip thinking">✨ Sorting your notes…</div>';
-  if(!key){ if(resultsEl) resultsEl.innerHTML='<div class="lab-chip work">⚙️ Add your Gemini key in Stats → ⚙️ to use Lab Synthesis.</div>'; if(btn)btn.disabled=false; return; }
-  const sys=`Categorise notes into Puppy, Health, Connection, or Work. Return ONLY valid JSON array: [{"cat":"Puppy","items":["action"]},{"cat":"Health","items":["action"]}]. No markdown, no preamble.`;
+  if(deskBtn) deskBtn.disabled=true;
+  [resultsEl,deskResultsEl].forEach(el=>{if(el)el.innerHTML='<div class="lab-chip thinking">✨ Sorting your notes…</div>';});void 0;
+  if(!key){ [resultsEl,deskResultsEl].forEach(el=>{if(el)el.innerHTML='<div class="lab-chip work">⚙️ Add your Gemini key in Stats → ⚙️ to use Lab Synthesis.</div>';});void 0; if(btn)btn.disabled=false; return; }
+  const sys=`You are a personal organiser for Jasmine. Sort her brain dump notes into exactly these 6 categories — use only these names:
+- Pets: anything about Timber (her 9-week-old puppy), Tigris or Tulip (her cats), pet supplies, litter box, vet, food bowls, leash, crate, any pet-related errand or purchase
+- Health: Jasmine's own body, PT exercises, RLT therapy, meds, supplements, sleep, energy levels, her own medical appointments, mental health
+- Home & Errands: cleaning, tidying, household tasks, shopping, returns, Amazon, packages, home maintenance, Germany trip prep, packing, travel logistics, anything domestic that is not pet-related
+- Money & Admin: bills, subscriptions, budget, finances, insurance, paperwork, banking, anything financial or administrative
+- Connection: relationships, people, social plans, reaching out, Nathan, family, friends, messages to send, plans to make
+- Processing: feelings, worries, anxieties, things to sit with, emotional reflections, things that are not action items — anything that is more about how Jasmine feels than what she needs to do
+Only include a category in the output if it has at least one item. Return ONLY a valid JSON array, no markdown, no preamble: [{"cat":"Home & Errands","items":["action"]},{"cat":"Processing","items":["note"]}].`;
   try{
     const {GoogleGenAI}=await import('https://esm.run/@google/genai');
     const ai=new GoogleGenAI({ apiKey: key });
     const result=await ai.models.generateContent({
       model:'gemini-3.1-flash-lite-preview',
-      contents:`Categorise:\n${text}`,
+      contents:`Sort these notes:\n${text}`,
       config:{ systemInstruction:sys, thinkingConfig:{ thinkingLevel:'minimal' } }
     });
     const raw=result.text.replace(/```json|```/g,'').trim();
     const parsed=JSON.parse(raw);
-    const catColor={Puppy:'puppy',Health:'health',Connection:'connection',Work:'work'};
-    const catEmoji={Puppy:'🐾',Health:'💚',Connection:'💜',Work:'💻'};
-    if(resultsEl) resultsEl.innerHTML=parsed.map(g=>`<div class="lab-chip ${catColor[g.cat]||'work'}"><div class="lab-chip-hd">${catEmoji[g.cat]||'•'} ${g.cat}</div>${g.items.map(i=>`<div>• ${i}</div>`).join('')}</div>`).join('');
+    const catColor={Pets:'puppy',Health:'health','Home & Errands':'home',Money:'money','Money & Admin':'money',Connection:'connection',Processing:'processing'};
+    const catEmoji={Pets:'🐾',Health:'💚','Home & Errands':'🏠','Money & Admin':'💰',Connection:'💜',Processing:'💭'};
+    [resultsEl,deskResultsEl].forEach(el=>{if(el)el.innerHTML=parsed.map(g=>`<div class="lab-chip ${catColor[g.cat]||'work'}"><div class="lab-chip-hd">${catEmoji[g.cat]||'•'} ${g.cat}</div>${g.items.map(i=>`<div>• ${i}</div>`).join('')}</div>`).join('');});void 0;
   }catch(err){
-    if(resultsEl) resultsEl.innerHTML=`<div class="lab-chip work">⚠️ ${err.message||'Could not sort notes'}</div>`;
-  }finally{ if(btn) btn.disabled=false; }
+    [resultsEl,deskResultsEl].forEach(el=>{if(el)el.innerHTML=`<div class="lab-chip work">⚠️ ${err.message||'Could not sort notes'}</div>`;});void 0;
+  }finally{ if(btn) btn.disabled=false;
+  if(deskBtn) deskBtn.disabled=false; }
 };
 
 function initCharts(){

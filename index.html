@@ -1229,7 +1229,7 @@ body.timer-active .desktop-layout{padding-top:70px}
     <div class="cal-card" id="calEventsCard">
       <div class="cal-card-hd">
         <span class="cal-card-title">📅 Next 7 Days</span>
-        <button class="cal-refresh-btn" onclick="loadCalendar()">↻ Refresh</button>
+        <button class="cal-refresh-btn" onclick="loadCalendar(true)">↻ Refresh</button>
       </div>
       <div id="calEventsList"><div class="cal-loading">Loading your calendar…</div></div>
       <div style="text-align:center;margin-top:8px">
@@ -1483,7 +1483,7 @@ body.timer-active .desktop-layout{padding-top:70px}
         <div class="cal-card">
           <div class="cal-card-hd">
             <span class="cal-card-title">📅 Next 7 Days</span>
-            <button class="cal-refresh-btn" onclick="loadCalendar()">↻ Refresh</button>
+            <button class="cal-refresh-btn" onclick="loadCalendar(true)">↻ Refresh</button>
           </div>
           <div id="deskCalEventsList"><div class="cal-loading">Loading your calendar…</div></div>
           <div style="text-align:center;margin-top:8px">
@@ -3587,51 +3587,7 @@ function initShapeCard(){
   populateShapeMeetings();
 }
 
-// Pull today's events from iCal cache / live
-function populateShapeMeetings(){
-  const el = document.getElementById('shapeMeetings');
-  if(!el) return;
-  const url = getCalUrl();
-  if(!url){
-    el.innerHTML = '<div class="shape-cal-empty">No calendar connected — <button onclick="switchTab(\'cal\')" style="background:none;border:none;color:var(--sa);font-weight:900;cursor:pointer;font-size:.68rem;text-decoration:underline">connect one in Cal tab</button></div>';
-    return;
-  }
-  el.innerHTML = '<div class="shape-cal-empty">Loading today\'s events…</div>';
-  const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`;
-  fetch(proxyUrl)
-    .then(r=>r.json())
-    .then(json=>{
-      const ical = json.contents;
-      if(!ical || !ical.includes('BEGIN:VCALENDAR')) throw new Error('bad ical');
-      const events = parseICal(ical);
-      const todayStr = new Date().toDateString();
-      const todayEvents = events.filter(e => e.start.toDateString() === todayStr)
-                                .sort((a,b) => a.start - b.start);
-      if(!todayEvents.length){
-        el.innerHTML = '<div class="shape-cal-empty">Nothing on the calendar today 🌸</div>';
-        return;
-      }
-      const fmt12 = (d) => {
-        let h=d.getHours(),m=d.getMinutes(),ap=h>=12?'PM':'AM';
-        h=h%12||12; return `${h}:${String(m).padStart(2,'0')} ${ap}`;
-      };
-      const durMin = (e) => {
-        if(!e.end||e.allDay) return null;
-        return Math.round((e.end - e.start)/60000);
-      };
-      el.innerHTML = todayEvents.map(e=>{
-        const dur = durMin(e);
-        return `<div class="shape-meeting-chip">
-          <span class="shape-meeting-time">${e.allDay?'All day':fmt12(e.start)}</span>
-          <span class="shape-meeting-title">${e.summary}</span>
-          ${dur?`<span class="shape-meeting-dur">${dur}m</span>`:''}
-        </div>`;
-      }).join('');
-    })
-    .catch(()=>{
-      el.innerHTML = '<div class="shape-cal-empty">Could not load calendar — check Cal tab</div>';
-    });
-}
+// ─── TODAY'S SHAPE — GEMINI SUGGEST ─────────────────────────────────────────
 
 window.saveShapeContext = () => {
   const shape = loadShape();
@@ -3639,49 +3595,25 @@ window.saveShapeContext = () => {
   saveShape(shape);
 };
 
-// Ask Gemini to suggest block overrides
 window.runShapeSuggest = async () => {
   const key = getGeminiKey();
   const btn = document.getElementById('shapeSuggestBtn');
   const resultEl = document.getElementById('shapeAiResult');
-  if(!key){
-    showToast('⚙️ Add your Gemini key in Stats → ⚙️', 3000);
-    return;
-  }
+  if(!key){ showToast('⚙️ Add your Gemini key in Stats → ⚙️', 3000); return; }
   if(btn){ btn.disabled=true; btn.textContent='✨ Thinking…'; }
-  if(resultEl){ resultEl.classList.remove('visible'); }
+  if(resultEl) resultEl.classList.remove('visible');
 
-  // Gather context
   const contextNote = document.getElementById('shapeContextNote')?.value?.trim() || '';
   const battery = loadBatteryLog().find(e=>e.date===new Date().toDateString());
   const battEmoji = battery ? ['','🪫','😔','😐','😊','🌟'][battery.level] : 'not logged';
-
-  // Today's schedule blocks
   const nowMin = getNowMin();
-  const allBlocks = getFilteredSchedule('all');
-  const remaining = allBlocks
+  const remaining = getFilteredSchedule('all')
     .filter(b => b.smin > nowMin - 30)
     .map(b => `• ${b.h} (${b.t}–${b.e})`)
-    .slice(0, 12).join('\n');
+    .slice(0,12).join('\n');
+  const meetingText = document.getElementById('shapeMeetings')?.innerText?.replace(/\n+/g,' ') || 'none';
 
-  // Calendar meetings text
-  const meetingEl = document.getElementById('shapeMeetings');
-  const meetingText = meetingEl?.innerText?.replace(/\n+/g,' ') || 'none';
-
-  const prompt = `Today's schedule (remaining blocks):
-${remaining}
-
-Calendar events today: ${meetingText}
-
-Context from user: ${contextNote || 'none'}
-
-Energy today: ${battEmoji}
-
-Suggest exactly 3–5 specific schedule blocks to compress, skip, or move — to protect energy and make room for the meetings/context above. For each suggestion, reply with ONLY this exact JSON array (no markdown, no preamble):
-[
-  {"block":"exact block name from schedule","action":"compressed|skipped|moved","reason":"one short sentence"},
-  ...
-]`;
+  const prompt = `Today's schedule (remaining blocks):\n${remaining}\n\nCalendar events today: ${meetingText}\n\nContext from user: ${contextNote||'none'}\n\nEnergy today: ${battEmoji}\n\nSuggest exactly 3–5 specific schedule blocks to compress, skip, or move — to protect energy and make room for the meetings/context above. Reply with ONLY a valid JSON array, no markdown:\n[\n  {"block":"exact block name from schedule","action":"compressed|skipped|moved","reason":"one short sentence"},\n  ...\n]`;
 
   try{
     const {GoogleGenAI} = await import('https://esm.run/@google/genai');
@@ -3696,10 +3628,7 @@ Suggest exactly 3–5 specific schedule blocks to compress, skip, or move — to
     });
     const raw = result.text.replace(/```json|```/g,'').trim();
     const suggestions = JSON.parse(raw);
-    // Cache in shape data
-    const shape = loadShape();
-    shape.aiSuggestion = suggestions;
-    saveShape(shape);
+    const shape = loadShape(); shape.aiSuggestion = suggestions; saveShape(shape);
     renderShapeAiResult(suggestions, true);
   } catch(err){
     if(resultEl){
@@ -3717,26 +3646,22 @@ function renderShapeAiResult(suggestions, animate){
   if(!resultEl || !sugEl) return;
   const actionLabel = { compressed:'⏩ Compress', skipped:'✗ Skip', moved:'↕ Move later' };
   const allItems = getFilteredSchedule('all');
-
   sugEl.innerHTML = suggestions.map((s,i) => {
-    // Try to match suggestion to a real block by name similarity
     const matchIdx = allItems.findIndex(item =>
       item.h.toLowerCase().includes(s.block.toLowerCase().slice(0,12)) ||
       s.block.toLowerCase().includes(item.h.toLowerCase().slice(0,12))
     );
-    const hasMatch = matchIdx >= 0;
     return `<div class="shape-suggestion-item" id="shapeS-${i}">
       <div class="shape-sug-text">
         <strong>${actionLabel[s.action]||s.action}:</strong> ${s.block}<br>
         <span style="font-size:.65rem;color:var(--tm);font-weight:600">${s.reason}</span>
       </div>
-      ${hasMatch
+      ${matchIdx>=0
         ? `<button class="shape-sug-accept" onclick="acceptShapeSuggestion(${i},${matchIdx},'${s.action}')">Apply</button>`
         : `<span style="font-size:.58rem;color:var(--tm);font-style:italic">no match</span>`
       }
     </div>`;
   }).join('');
-
   resultEl.classList.add('visible');
 }
 
@@ -3744,25 +3669,21 @@ window.acceptShapeSuggestion = (sugIdx, blockIdx, action) => {
   const allItems = getFilteredSchedule('all');
   if(!allItems[blockIdx]) return;
   const item = allItems[blockIdx];
-  const key = blockKey(item);
   const shape = loadShape();
-  shape.overrides[key] = { status: action, blockName: item.h };
+  shape.overrides[blockKey(item)] = { status: action, blockName: item.h };
   saveShape(shape);
-  // Mark the button as done
   const btn = document.querySelector(`#shapeS-${sugIdx} .shape-sug-accept`);
-  if(btn){ btn.textContent = '✓ Applied'; btn.classList.add('done'); }
+  if(btn){ btn.textContent='✓ Applied'; btn.classList.add('done'); }
   updateShapeHeader();
   buildTL('all','mTlb','mb');
   buildTL('all','dTlb','db');
 };
 
-// Show override controls in bottom sheet for the current block
 function renderSheetOverrideSection(blockIdx){
   const section = document.getElementById('sheetOverrideSection');
   if(!section) return;
   if(blockIdx === null){ section.style.display='none'; return; }
   section.style.display = 'block';
-  // Highlight active state
   const allItems = getFilteredSchedule('all');
   const item = allItems[blockIdx];
   if(!item) return;
@@ -3776,19 +3697,139 @@ function renderSheetOverrideSection(blockIdx){
   }
 }
 
-// ─── TODAY'S SHAPE — OVERRIDE ENGINE
-const CAL_URL_KEY = 'jlos_cal_url';
+// ─── CALENDAR ENGINE ─────────────────────────────────────────────────────────
+// Single source of truth: fetch → parse → cache → render everywhere
+
+const CAL_URL_KEY   = 'jlos_cal_url';
+const CAL_CACHE_KEY = 'jlos_cal_cache';  // sessionStorage: {ts, events[]}
+
 function getCalUrl(){ try{ return localStorage.getItem(CAL_URL_KEY)||''; }catch(e){ return ''; } }
 function setCalUrl(u){ try{ localStorage.setItem(CAL_URL_KEY,u); }catch(e){} }
 
+// ── iCal parser ──────────────────────────────────────────────────────────────
+function parseICal(text){
+  const events = [];
+  text.split('BEGIN:VEVENT').slice(1).forEach(block => {
+    // Unfold continuation lines (RFC 5545 §3.1)
+    const unfolded = block.replace(/\r?\n[ \t]/g, '');
+    const get = key => {
+      const m = unfolded.match(new RegExp(key + '[^:\r\n]*:([^\r\n]+)', 'i'));
+      return m ? m[1].trim() : '';
+    };
+    const unescape = s => s.replace(/\\n/g,'\n').replace(/\\,/g,',').replace(/\\;/g,';').replace(/\\\\/g,'\\');
+    const parseDate = s => {
+      if(!s) return null;
+      // Value is everything after the last colon (handles TZID=... prefix)
+      const val = s.includes(':') ? s.split(':').pop() : s;
+      const y=+val.slice(0,4), mo=+val.slice(4,6)-1, d=+val.slice(6,8);
+      if(val.length === 8) return { date: new Date(y,mo,d), allDay: true };
+      const h=+val.slice(9,11), mi=+val.slice(11,13);
+      const date = val.endsWith('Z') ? new Date(Date.UTC(y,mo,d,h,mi)) : new Date(y,mo,d,h,mi);
+      return { date, allDay: false };
+    };
+    const rawStart = get('DTSTART'), rawEnd = get('DTEND'), summary = unescape(get('SUMMARY'));
+    if(!rawStart || !summary) return;
+    const start = parseDate(rawStart), end = parseDate(rawEnd);
+    if(!start) return;
+    events.push({ summary, location: unescape(get('LOCATION')), start: start.date, end: end?.date||null, allDay: start.allDay });
+  });
+  return events;
+}
+
+// ── Fetch with fallback proxy + sessionStorage cache ─────────────────────────
+async function fetchCalEvents(forceRefresh = false){
+  const url = getCalUrl();
+  if(!url) return null;
+
+  // Return cached events if fresh (< 5 min old) and not forced
+  if(!forceRefresh){
+    try{
+      const cached = JSON.parse(sessionStorage.getItem(CAL_CACHE_KEY)||'null');
+      if(cached && Date.now() - cached.ts < 5*60*1000){
+        // Rehydrate date strings back to Date objects
+        return cached.events.map(e => ({...e, start: new Date(e.start), end: e.end ? new Date(e.end) : null}));
+      }
+    }catch(e){}
+  }
+
+  // Try primary proxy, then fallback
+  const proxies = [
+    `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`,
+    `https://corsproxy.io/?${encodeURIComponent(url)}`
+  ];
+
+  let ical = null;
+  for(const proxy of proxies){
+    try{
+      const r = await Promise.race([
+        fetch(proxy),
+        new Promise((_,rej) => setTimeout(()=>rej(new Error('timeout')), 8000))
+      ]);
+      if(!r.ok) continue;
+      // allorigins wraps in {contents:...}; corsproxy returns raw text
+      const ct = r.headers.get('content-type')||'';
+      if(ct.includes('json')){
+        const json = await r.json();
+        ical = json.contents || null;
+      } else {
+        ical = await r.text();
+      }
+      if(ical && ical.includes('BEGIN:VCALENDAR')) break;
+      ical = null;
+    }catch(e){ continue; }
+  }
+
+  if(!ical) throw new Error('Could not fetch calendar — check your iCal URL or internet connection.');
+
+  const events = parseICal(ical);
+  // Cache to sessionStorage (store dates as ISO strings)
+  try{
+    sessionStorage.setItem(CAL_CACHE_KEY, JSON.stringify({
+      ts: Date.now(),
+      events: events.map(e => ({...e, start: e.start.toISOString(), end: e.end?.toISOString()||null}))
+    }));
+  }catch(e){}
+  return events;
+}
+
+// ── Shared helpers ────────────────────────────────────────────────────────────
+function fmt12(d){ let h=d.getHours(),m=d.getMinutes(),ap=h>=12?'PM':'AM'; h=h%12||12; return `${h}:${String(m).padStart(2,'0')} ${ap}`; }
+
+function dayLabel(d){
+  const ds = d.toDateString(), td = new Date().toDateString(), tom = new Date(Date.now()+86400000).toDateString();
+  return ds===td ? 'Today' : ds===tom ? 'Tomorrow' : d.toLocaleDateString('en',{weekday:'long',month:'short',day:'numeric'});
+}
+
+function todayDateString(){ return new Date().toDateString(); }
+
+// ── Populate Today's Shape meetings (uses cache, never re-fetches) ────────────
+function populateShapeMeetings(){
+  const el = document.getElementById('shapeMeetings');
+  if(!el) return;
+  if(!getCalUrl()){
+    el.innerHTML = '<div class="shape-cal-empty">No calendar connected — <button onclick="switchTab(\'cal\')" style="background:none;border:none;color:var(--sa);font-weight:900;cursor:pointer;font-size:.68rem;text-decoration:underline">connect one in Cal tab</button></div>';
+    return;
+  }
+  el.innerHTML = '<div class="shape-cal-empty">Loading…</div>';
+  fetchCalEvents().then(events => {
+    if(!events){ el.innerHTML = '<div class="shape-cal-empty">Could not load calendar</div>'; return; }
+    const today = events.filter(e => e.start.toDateString() === todayDateString()).sort((a,b) => a.start-b.start);
+    if(!today.length){ el.innerHTML = '<div class="shape-cal-empty">Nothing on the calendar today 🌸</div>'; return; }
+    const durMin = e => (!e.end||e.allDay) ? null : Math.round((e.end-e.start)/60000);
+    el.innerHTML = today.map(e => {
+      const dur = durMin(e);
+      return `<div class="shape-meeting-chip"><span class="shape-meeting-time">${e.allDay?'All day':fmt12(e.start)}</span><span class="shape-meeting-title">${e.summary}</span>${dur?`<span class="shape-meeting-dur">${dur}m</span>`:''}</div>`;
+    }).join('');
+  }).catch(() => { el.innerHTML = '<div class="shape-cal-empty">Could not load calendar — check Cal tab</div>'; });
+}
+
+// ── Cal URL save / toggle setup ───────────────────────────────────────────────
 window.saveCalUrl = () => {
-  // Try both mobile and desktop input
   const u = (document.getElementById('calUrlInput')?.value||document.getElementById('deskCalUrlInput')?.value||'').trim();
   if(!u){ showToast('Paste your iCal URL first',2000); return; }
   setCalUrl(u);
-  ['calStatus','deskCalStatus'].forEach(id=>{
-    const el=document.getElementById(id); if(el){ el.textContent='Saved! Loading…'; el.style.color='var(--ma)'; }
-  });
+  try{ sessionStorage.removeItem(CAL_CACHE_KEY); }catch(e){}  // bust cache on new URL
+  ['calStatus','deskCalStatus'].forEach(id=>{ const el=document.getElementById(id); if(el){ el.textContent='Saved! Loading…'; el.style.color='var(--ma)'; } });
   toggleCalSetup(false);
   loadCalendar();
 };
@@ -3798,80 +3839,33 @@ window.toggleCalSetup = (forceOpen) => {
     const el=document.getElementById(id); if(!el) return;
     const open = forceOpen !== undefined ? forceOpen : el.style.display==='none';
     el.style.display = open ? 'block' : 'none';
-    const url = getCalUrl();
     const inp = id==='calSetupCard' ? document.getElementById('calUrlInput') : document.getElementById('deskCalUrlInput');
+    const url = getCalUrl();
     if(inp && url) inp.value = url;
   });
 };
 
-// Parse iCal text into event objects
-function parseICal(text){
-  const events = [];
-  const vevents = text.split('BEGIN:VEVENT').slice(1);
-  vevents.forEach(block => {
-    const get = (key) => {
-      const re = new RegExp(`${key}[^:]*:([^\\r\\n]+(?:\\r?\\n[ \\t][^\\r\\n]+)*)`, 'i');
-      const m = block.match(re);
-      return m ? m[1].replace(/\r?\n[ \t]/g,'').trim() : '';
-    };
-    const unescape = s => s.replace(/\\n/g,'\n').replace(/\\,/g,',').replace(/\\;/g,';').replace(/\\\\/g,'\\');
-    const parseDate = (s) => {
-      if(!s) return null;
-      // Strip TZID prefix if present e.g. TZID=America/New_York:20260305T090000
-      const clean = s.includes(':') ? s.split(':').pop() : s;
-      if(clean.length===8){ // all-day: YYYYMMDD
-        const y=+clean.slice(0,4),mo=+clean.slice(4,6)-1,d=+clean.slice(6,8);
-        return {date:new Date(y,mo,d), allDay:true};
-      }
-      // datetime: YYYYMMDDTHHmmssZ or local
-      const y=+clean.slice(0,4),mo=+clean.slice(4,6)-1,d=+clean.slice(6,8);
-      const h=+clean.slice(9,11),mi=+clean.slice(11,13);
-      const utc = clean.endsWith('Z');
-      const date = utc ? new Date(Date.UTC(y,mo,d,h,mi)) : new Date(y,mo,d,h,mi);
-      return {date, allDay:false};
-    };
-    const dtstart = get('DTSTART');
-    const dtend   = get('DTEND');
-    const summary = unescape(get('SUMMARY'));
-    const location = unescape(get('LOCATION'));
-    if(!dtstart || !summary) return;
-    const start = parseDate(dtstart);
-    const end   = parseDate(dtend);
-    if(!start) return;
-    events.push({ summary, location, start:start.date, end:end?.date||null, allDay:start.allDay });
-  });
-  return events;
-}
-
-// Fetch via CORS proxy, parse, and render
-window.loadCalendar = async () => {
-  const url = getCalUrl();
+// ── Main calendar page renderer ───────────────────────────────────────────────
+window.loadCalendar = async (forceRefresh = false) => {
   const listEls = ['calEventsList','deskCalEventsList'];
-  listEls.forEach(id=>{ const el=document.getElementById(id); if(el) el.innerHTML='<div class="cal-loading">Fetching your calendar…</div>'; });
-
+  const url = getCalUrl();
   if(!url){
     toggleCalSetup(true);
-    listEls.forEach(id=>{ const el=document.getElementById(id); if(el) el.innerHTML='<div class="cal-empty">Connect your Google Calendar above to see your events here.</div>'; });
+    listEls.forEach(id=>{ const el=document.getElementById(id); if(el) el.innerHTML='<div class="cal-empty">Connect your Google Calendar above ☝️</div>'; });
     return;
   }
-
-  // Use allorigins CORS proxy to fetch the iCal URL
-  const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`;
+  listEls.forEach(id=>{ const el=document.getElementById(id); if(el) el.innerHTML='<div class="cal-loading">Fetching your calendar…</div>'; });
   try{
-    const r = await fetch(proxyUrl);
-    if(!r.ok) throw new Error(`HTTP ${r.status}`);
-    const json = await r.json();
-    const ical = json.contents;
-    if(!ical || !ical.includes('BEGIN:VCALENDAR')) throw new Error('Invalid iCal data');
+    const events = await fetchCalEvents(forceRefresh);
+    if(!events) throw new Error('No events returned');
 
-    const events = parseICal(ical);
-    const now = new Date();
-    const sevenDays = new Date(now.getTime() + 7*24*60*60*1000);
+    // Next 7 full calendar days (today through end of day+6)
+    const todayStart = new Date(); todayStart.setHours(0,0,0,0);
+    const windowEnd  = new Date(todayStart); windowEnd.setDate(windowEnd.getDate()+7); windowEnd.setHours(23,59,59,999);
 
-    // Filter to next 7 days
     const upcoming = events
-      .filter(e => e.start >= new Date(now.toDateString()) && e.start <= sevenDays)
-      .sort((a,b) => a.start - b.start);
+      .filter(e => e.start >= todayStart && e.start <= windowEnd)
+      .sort((a,b) => a.start-b.start);
 
     if(!upcoming.length){
       listEls.forEach(id=>{ const el=document.getElementById(id); if(el) el.innerHTML='<div class="cal-empty">No events in the next 7 days 🌸</div>'; });
@@ -3880,29 +3874,11 @@ window.loadCalendar = async () => {
 
     // Group by day
     const grouped = {};
-    upcoming.forEach(e => {
-      const key = e.start.toDateString();
-      if(!grouped[key]) grouped[key]=[];
-      grouped[key].push(e);
-    });
+    upcoming.forEach(e => { const k=e.start.toDateString(); (grouped[k]||(grouped[k]=[])).push(e); });
 
-    const fmt12 = (d) => {
-      let h=d.getHours(),m=d.getMinutes(),ap=h>=12?'PM':'AM';
-      h=h%12||12;
-      return `${h}:${String(m).padStart(2,'0')} ${ap}`;
-    };
-    const dayLabel = (dateStr) => {
-      const d = new Date(dateStr);
-      const today = new Date().toDateString();
-      const tom = new Date(Date.now()+86400000).toDateString();
-      if(d.toDateString()===today) return 'Today';
-      if(d.toDateString()===tom) return 'Tomorrow';
-      return d.toLocaleDateString('en',{weekday:'long',month:'short',day:'numeric'});
-    };
-
-    const html = Object.entries(grouped).map(([dateStr, evts]) => `
+    const html = Object.entries(grouped).map(([ds, evts]) => `
       <div class="cal-day-group">
-        <div class="cal-day-label">${dayLabel(dateStr)}</div>
+        <div class="cal-day-label">${dayLabel(new Date(ds))}</div>
         ${evts.map(e=>`
           <div class="cal-event${e.allDay?' allday':''}">
             <div class="cal-event-time">${e.allDay?'All day':fmt12(e.start)}</div>
@@ -3914,25 +3890,21 @@ window.loadCalendar = async () => {
       </div>`).join('');
 
     listEls.forEach(id=>{ const el=document.getElementById(id); if(el) el.innerHTML=html; });
-  } catch(err){
-    const msg = err.message.includes('Failed to fetch')
-      ? '⚠️ Could not reach your calendar. Check your internet connection or iCal URL.'
-      : `⚠️ ${err.message}`;
+  }catch(err){
+    const msg = err.message.includes('timeout')
+      ? '⚠️ Calendar took too long to load. Try refreshing.'
+      : err.message.includes('fetch') || err.message.includes('Could not')
+        ? '⚠️ Could not reach your calendar. Check your iCal URL and internet connection.'
+        : `⚠️ ${err.message}`;
     listEls.forEach(id=>{ const el=document.getElementById(id); if(el) el.innerHTML=`<div class="cal-error">${msg}<br><br><button onclick="toggleCalSetup(true)" style="background:none;border:none;cursor:pointer;color:var(--la);font-weight:900;font-size:.7rem;text-decoration:underline">Re-enter calendar URL</button></div>`; });
   }
 };
 
 function initCalendar(){
-  const url = getCalUrl();
-  if(url){
-    loadCalendar();
-  } else {
-    // Show setup prompt, hide events card until connected
+  if(getCalUrl()) loadCalendar();
+  else{
     toggleCalSetup(true);
-    ['calEventsList','deskCalEventsList'].forEach(id=>{
-      const el=document.getElementById(id);
-      if(el) el.innerHTML='<div class="cal-empty">Connect your Google Calendar above ☝️</div>';
-    });
+    ['calEventsList','deskCalEventsList'].forEach(id=>{ const el=document.getElementById(id); if(el) el.innerHTML='<div class="cal-empty">Connect your Google Calendar above ☝️</div>'; });
   }
 }
 

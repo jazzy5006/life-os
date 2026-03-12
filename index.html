@@ -3056,7 +3056,6 @@ async function gistPull(){
         if(match){
           gistId = match.id;
           try{ localStorage.setItem(GIST_ID_KEY, gistId); }catch(e){}
-          showToast('☁️ Found existing Gist — pulling data…', 2000);
         }
       }
     }
@@ -3117,7 +3116,6 @@ async function gistPull(){
         pulled.push('brain dump');
       }
       _setGistStatus('synced','Synced ✓');
-      if(pulled.length) showToast(`☁️ Synced: ${pulled.join(', ')}`, 2500);
     }
   } catch(e){
     _setGistStatus('error','Sync error');
@@ -4204,44 +4202,50 @@ window.onload=()=>{
         <div class="sitter-section-title">🍽️ Feeding</div>
         <div class="sitter-card orange">
           <h3>🐾 Food: Fromm Puppy Gold</h3>
-          <p><strong>3 meals per day</strong> — breakfast, lunch, dinner. Use the kibble as training rewards (Learn to Earn method) — hold the meal in your hand and ask him to sit or make eye contact before each piece. It only takes 5–10 minutes per meal and really helps with his training.</p>
+          <p><strong>2 meals per day</strong> — breakfast and dinner. Use the kibble as training rewards (Learn to Earn method) — hold the meal in your hand and ask him to sit or make eye contact before each piece. It only takes 5–10 minutes per meal and really helps with his training.</p>
           <div class="sitter-tip">Miniature poodles at this age need <strong>¼ to ½ cup per day total</strong> — that's roughly <strong>2–3 tablespoons per meal</strong>. Go by his body condition: you should be able to feel (not see) his ribs. Adjust slightly up if he seems hungry after every meal.</div>
           <div class="sitter-pill-row">
             <span class="sitter-pill orange">Breakfast ~8 AM</span>
-            <span class="sitter-pill orange">Lunch ~12 PM</span>
-            <span class="sitter-pill orange">Dinner ~5:30 PM</span>
+            <span class="sitter-pill orange">Dinner ~5:00 PM</span>
           </div>
         </div>
-        <div class="sitter-warning">No food after 6 PM — this helps keep his overnight potty schedule predictable. Pick up his water bowl around <strong>8:00 PM</strong> (about an hour before bed) to help reduce overnight accidents. Fresh water should be available all day up until then.</div>
+        <div class="sitter-warning">No food after 6 PM — this helps keep his overnight potty schedule predictable. Pick up his water bowl around <strong>5:45 PM</strong> (with his last crate nap) to help reduce overnight accidents. Fresh water should be available all day up until then.</div>
       </div>
 
       <!-- DAILY SCHEDULE -->
       <div class="sitter-section">
         <div class="sitter-section-title">🗓️ Daily Schedule</div>
+        <div class="sitter-tip" style="margin-bottom:10px">The pattern all day: <strong>45 min awake → potty → crate + treat → 2 hr nap → repeat.</strong> Every nap starts with a potty trip and a treat in the crate. This is what keeps accidents minimal and helps him settle happily.</div>
         <div class="sitter-card orange">
           <h3>🌅 Morning</h3>
-          <div class="sitter-schedule-row orange"><span class="sitter-icon">🌅</span><span class="sitter-time">8:00 AM</span><div class="sitter-event">Wake + Potty<small>First thing out of crate — straight outside</small></div></div>
-          <div class="sitter-schedule-row orange"><span class="sitter-icon">🍽️</span><span class="sitter-time">8:10 AM</span><div class="sitter-event">Breakfast (Learn to Earn)<small>Hand-feed kibble as training rewards. Sit, eye contact. 5–10 min.</small></div></div>
-          <div class="sitter-schedule-row orange"><span class="sitter-icon">🚽</span><span class="sitter-time">8:45 AM</span><div class="sitter-event">Potty → Crate Nap<small>Post-meal trip, then crate for nap</small></div></div>
-          <div class="sitter-schedule-row orange"><span class="sitter-icon">🚽</span><span class="sitter-time">10:30 AM</span><div class="sitter-event">Wake + Potty<small>Out of crate, straight outside</small></div></div>
-          <div class="sitter-schedule-row orange"><span class="sitter-icon">🚽</span><span class="sitter-time">12:00 PM</span><div class="sitter-event">Potty → Crate Nap<small>Into crate after this trip</small></div></div>
+          <div class="sitter-schedule-row orange"><span class="sitter-icon">🌅</span><span class="sitter-time">8:00 AM</span><div class="sitter-event">Wake + potty<small>Carry straight outside — bladder is full</small></div></div>
+          <div class="sitter-schedule-row orange"><span class="sitter-icon">🍽️</span><span class="sitter-time">8:00–8:45</span><div class="sitter-event">Breakfast (Learn to Earn)<small>Hand-feed full breakfast as training rewards. Sit, eye contact, come. 5–10 min max.</small></div></div>
+          <div class="sitter-schedule-row orange"><span class="sitter-icon">🚽</span><span class="sitter-time">8:45 AM</span><div class="sitter-event">Potty → crate + treat<small>Outside first, then high-value treat in crate. Cover crate, walk away.</small></div></div>
+          <div class="sitter-schedule-row orange"><span class="sitter-icon">💤</span><span class="sitter-time">9:00–11:00</span><div class="sitter-event">Nap #1 — 2 hours</div></div>
+          <div class="sitter-schedule-row orange"><span class="sitter-icon">🌅</span><span class="sitter-time">11:00 AM</span><div class="sitter-event">Wake + potty<small>Carry straight outside</small></div></div>
+          <div class="sitter-schedule-row orange"><span class="sitter-icon">🪢</span><span class="sitter-time">11:00–11:45</span><div class="sitter-event">Awake window<small>Tethered to you — play, explore, training. Watch for tired signs.</small></div></div>
+          <div class="sitter-schedule-row orange"><span class="sitter-icon">🚽</span><span class="sitter-time">11:45 AM</span><div class="sitter-event">Potty → crate + treat</div></div>
+          <div class="sitter-schedule-row orange"><span class="sitter-icon">💤</span><span class="sitter-time">12:00–2:00</span><div class="sitter-event">Nap #2 — 2 hours</div></div>
         </div>
         <div class="sitter-card orange">
           <h3>☀️ Afternoon</h3>
-          <div class="sitter-schedule-row orange"><span class="sitter-icon">🚽</span><span class="sitter-time">1:30 PM</span><div class="sitter-event">Wake + Potty</div></div>
-          <div class="sitter-schedule-row orange"><span class="sitter-icon">🍽️</span><span class="sitter-time">12–1 PM</span><div class="sitter-event">Lunch (Learn to Earn)<small>Hand-feed around midday, whenever works for you</small></div></div>
-          <div class="sitter-schedule-row orange"><span class="sitter-icon">🚽</span><span class="sitter-time">3:00 PM</span><div class="sitter-event">Potty → Crate Nap</div></div>
-          <div class="sitter-schedule-row orange"><span class="sitter-icon">🚽</span><span class="sitter-time">4:30 PM</span><div class="sitter-event">Wake + Potty</div></div>
-          <div class="sitter-schedule-row orange"><span class="sitter-icon">🍽️</span><span class="sitter-time">5:30 PM</span><div class="sitter-event">Dinner (Learn to Earn)<small>Hand-feed dinner kibble as training rewards. 5–10 min.</small></div></div>
-          <div class="sitter-schedule-row orange"><span class="sitter-icon">🚽</span><span class="sitter-time">6:00 PM</span><div class="sitter-event">Potty → Crate Nap</div></div>
+          <div class="sitter-schedule-row orange"><span class="sitter-icon">🌅</span><span class="sitter-time">2:00 PM</span><div class="sitter-event">Wake + potty</div></div>
+          <div class="sitter-schedule-row orange"><span class="sitter-icon">🪢</span><span class="sitter-time">2:00–2:45</span><div class="sitter-event">Awake window<small>Tethered play, light training, enrichment toy</small></div></div>
+          <div class="sitter-schedule-row orange"><span class="sitter-icon">🚽</span><span class="sitter-time">2:45 PM</span><div class="sitter-event">Potty → crate + treat</div></div>
+          <div class="sitter-schedule-row orange"><span class="sitter-icon">💤</span><span class="sitter-time">3:00–5:00</span><div class="sitter-event">Nap #3 — 2 hours</div></div>
+          <div class="sitter-schedule-row orange"><span class="sitter-icon">🌅</span><span class="sitter-time">5:00 PM</span><div class="sitter-event">Wake + potty</div></div>
+          <div class="sitter-schedule-row orange"><span class="sitter-icon">🍽️</span><span class="sitter-time">5:00–5:15</span><div class="sitter-event">Dinner (Learn to Earn)<small>Hand-feed full dinner as training rewards — backyard or inside. Last meal of the day.</small></div></div>
+          <div class="sitter-schedule-row orange"><span class="sitter-icon">🚶</span><span class="sitter-time">5:15–5:45</span><div class="sitter-event">Afternoon walk<small>Stroller walk — paws off the ground (he's unvaccinated)</small></div></div>
+          <div class="sitter-schedule-row orange"><span class="sitter-icon">🚽</span><span class="sitter-time">5:45 PM</span><div class="sitter-event">Potty → crate + treat<small>Pick up water bowl now — helps overnight</small></div></div>
+          <div class="sitter-schedule-row orange"><span class="sitter-icon">💤</span><span class="sitter-time">6:00–8:00</span><div class="sitter-event">Nap #4 — 2 hours</div></div>
         </div>
         <div class="sitter-card orange">
           <h3>🌙 Evening & Overnight</h3>
-          <div class="sitter-schedule-row orange"><span class="sitter-icon">🚽</span><span class="sitter-time">7:30 PM</span><div class="sitter-event">Wake + Potty</div></div>
-          <div class="sitter-schedule-row orange"><span class="sitter-icon">💧</span><span class="sitter-time">8:00 PM</span><div class="sitter-event">Pick up water bowl<small>Helps reduce overnight accidents</small></div></div>
-          <div class="sitter-schedule-row orange"><span class="sitter-icon">🌙</span><span class="sitter-time">9:00 PM</span><div class="sitter-event">Last potty → Bedtime<small>Into his crate for the night after this</small></div></div>
+          <div class="sitter-schedule-row orange"><span class="sitter-icon">🌅</span><span class="sitter-time">8:00 PM</span><div class="sitter-event">Wake + potty</div></div>
+          <div class="sitter-schedule-row orange"><span class="sitter-icon">🪢</span><span class="sitter-time">8:00–8:45</span><div class="sitter-event">Calm evening awake window<small>Tethered, low stimulation. No rough play — you want him drowsy.</small></div></div>
+          <div class="sitter-schedule-row orange"><span class="sitter-icon">🌙</span><span class="sitter-time">8:45 PM</span><div class="sitter-event">Potty → crate + treat — Bedtime<small>High-value treat, cover crate, lights low, walk away calmly</small></div></div>
           <div class="sitter-schedule-row orange"><span class="sitter-icon">🌙</span><span class="sitter-time">11:00 PM</span><div class="sitter-event">Quiet overnight potty<small>No play, no talking — out, praise, straight back to crate</small></div></div>
-          <div class="sitter-schedule-row orange"><span class="sitter-icon">🌙</span><span class="sitter-time">4:00 AM</span><div class="sitter-event">Last overnight potty<small>At 12 weeks he can usually make it from 11 PM to 4 AM</small></div></div>
+          <div class="sitter-schedule-row orange"><span class="sitter-icon">🌙</span><span class="sitter-time">4:00 AM</span><div class="sitter-event">Overnight potty if needed<small>He may start sleeping through — follow his lead</small></div></div>
         </div>
       </div>
 
@@ -4270,8 +4274,8 @@ window.onload=()=>{
           <p>His crate will be set up at your place — it's his safe space and he's used to it. Never use it as punishment. At 12 weeks he still needs a lot of sleep. If he seems wired or bitey, he's almost certainly overtired and needs a nap, not more play.</p>
           <div class="sitter-tip">When he whines in the crate, wait for a 10-second pause before letting him out. Letting him out mid-whine teaches him that whining = freedom.</div>
           <div class="sitter-pill-row">
-            <span class="sitter-pill orange">~4–5 naps per day</span>
-            <span class="sitter-pill orange">~2 hrs awake at a time</span>
+            <span class="sitter-pill orange">4 naps per day</span>
+            <span class="sitter-pill orange">45 min awake at a time</span>
             <span class="sitter-pill orange">Overtired = bitey</span>
           </div>
         </div>

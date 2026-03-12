@@ -1711,6 +1711,7 @@ const S=[
  ]},
  {t:"11:15 AM",e:"11:45 AM",i:"🪢",h:"Tethered Desk Time — 11:15 AM",steps:[
    {c:"timber",txt:"Tethered beside you at the desk. Reward calm settled behaviour.",note:"30 minutes of tethered time. Watch for tired signals — yawning, losing interest, getting nippy. If you see them, start the crate routine early."},
+   {c:"timber",txt:"Drop kibble pieces when he's calm or playing quietly with a toy.",note:"This is his midday meal — small pieces throughout the window, not all at once. No kibble for jumping, mouthing, or demanding attention."},
    {c:"focus",txt:"Continue work. Pomodoro cycles."},
  ]},
 
@@ -1730,6 +1731,7 @@ const S=[
  ]},
  {t:"02:15 PM",e:"02:45 PM",i:"🪢",h:"Tethered Desk Time — 2:15 PM",steps:[
    {c:"timber",txt:"Tethered beside you. 30 minutes awake window.",note:"Keep stimulation low. Tethered chewing on a toy counts as enrichment. No rough play."},
+   {c:"timber",txt:"Drop kibble pieces when he's calm or playing quietly with a toy.",note:"This is his afternoon meal — reward the behaviour you want to see. Calm = kibble. Demanding = nothing."},
    {c:"focus",txt:"Continue deep work."},
  ]},
 
@@ -4202,11 +4204,13 @@ window.onload=()=>{
         <div class="sitter-section-title">🍽️ Feeding</div>
         <div class="sitter-card orange">
           <h3>🐾 Food: Fromm Puppy Gold</h3>
-          <p><strong>2 meals per day</strong> — breakfast and dinner. Use the kibble as training rewards (Learn to Earn method) — hold the meal in your hand and ask him to sit or make eye contact before each piece. It only takes 5–10 minutes per meal and really helps with his training.</p>
+          <p><strong>4 meals per day</strong> — breakfast, two midday tethered snacks, and dinner. Breakfast and dinner are full Learn to Earn sessions — hold the meal in your hand and ask him to sit or make eye contact before each piece (5–10 min). The two midday meals are dropped as calm-behaviour rewards during his tethered awake windows: kibble goes down when he's settled or playing quietly with a toy. Nothing for jumping, mouthing, or demanding.</p>
           <div class="sitter-tip">Miniature poodles at this age need <strong>¼ to ½ cup per day total</strong> — that's roughly <strong>2–3 tablespoons per meal</strong>. Go by his body condition: you should be able to feel (not see) his ribs. Adjust slightly up if he seems hungry after every meal.</div>
           <div class="sitter-pill-row">
             <span class="sitter-pill orange">Breakfast ~8 AM</span>
-            <span class="sitter-pill orange">Dinner ~5:00 PM</span>
+            <span class="sitter-pill orange">Tethered snack ~11 AM</span>
+            <span class="sitter-pill orange">Tethered snack ~2 PM</span>
+            <span class="sitter-pill orange">Dinner ~5 PM</span>
           </div>
         </div>
         <div class="sitter-warning">No food after 6 PM — this helps keep his overnight potty schedule predictable. Pick up his water bowl around <strong>5:45 PM</strong> (with his last crate nap) to help reduce overnight accidents. Fresh water should be available all day up until then.</div>
@@ -4223,14 +4227,14 @@ window.onload=()=>{
           <div class="sitter-schedule-row orange"><span class="sitter-icon">🚽</span><span class="sitter-time">8:45 AM</span><div class="sitter-event">Potty → crate + treat<small>Outside first, then high-value treat in crate. Cover crate, walk away.</small></div></div>
           <div class="sitter-schedule-row orange"><span class="sitter-icon">💤</span><span class="sitter-time">9:00–11:00</span><div class="sitter-event">Nap #1 — 2 hours</div></div>
           <div class="sitter-schedule-row orange"><span class="sitter-icon">🌅</span><span class="sitter-time">11:00 AM</span><div class="sitter-event">Wake + potty<small>Carry straight outside</small></div></div>
-          <div class="sitter-schedule-row orange"><span class="sitter-icon">🪢</span><span class="sitter-time">11:00–11:45</span><div class="sitter-event">Awake window<small>Tethered to you — play, explore, training. Watch for tired signs.</small></div></div>
+          <div class="sitter-schedule-row orange"><span class="sitter-icon">🪢</span><span class="sitter-time">11:00–11:45</span><div class="sitter-event">Awake window + midday meal<small>Tethered to you. Drop kibble when he's calm or playing with a toy — this is his second meal.</small></div></div>
           <div class="sitter-schedule-row orange"><span class="sitter-icon">🚽</span><span class="sitter-time">11:45 AM</span><div class="sitter-event">Potty → crate + treat</div></div>
           <div class="sitter-schedule-row orange"><span class="sitter-icon">💤</span><span class="sitter-time">12:00–2:00</span><div class="sitter-event">Nap #2 — 2 hours</div></div>
         </div>
         <div class="sitter-card orange">
           <h3>☀️ Afternoon</h3>
           <div class="sitter-schedule-row orange"><span class="sitter-icon">🌅</span><span class="sitter-time">2:00 PM</span><div class="sitter-event">Wake + potty</div></div>
-          <div class="sitter-schedule-row orange"><span class="sitter-icon">🪢</span><span class="sitter-time">2:00–2:45</span><div class="sitter-event">Awake window<small>Tethered play, light training, enrichment toy</small></div></div>
+          <div class="sitter-schedule-row orange"><span class="sitter-icon">🪢</span><span class="sitter-time">2:00–2:45</span><div class="sitter-event">Awake window + afternoon meal<small>Tethered. Drop kibble for calm behaviour and quiet toy play — his third meal.</small></div></div>
           <div class="sitter-schedule-row orange"><span class="sitter-icon">🚽</span><span class="sitter-time">2:45 PM</span><div class="sitter-event">Potty → crate + treat</div></div>
           <div class="sitter-schedule-row orange"><span class="sitter-icon">💤</span><span class="sitter-time">3:00–5:00</span><div class="sitter-event">Nap #3 — 2 hours</div></div>
           <div class="sitter-schedule-row orange"><span class="sitter-icon">🌅</span><span class="sitter-time">5:00 PM</span><div class="sitter-event">Wake + potty</div></div>
@@ -4271,8 +4275,9 @@ window.onload=()=>{
         <div class="sitter-section-title">🏠 Crate & Naps</div>
         <div class="sitter-card orange">
           <h3>🏠 Crate basics</h3>
-          <p>His crate will be set up at your place — it's his safe space and he's used to it. Never use it as punishment. At 12 weeks he still needs a lot of sleep. If he seems wired or bitey, he's almost certainly overtired and needs a nap, not more play.</p>
+          <p>I'll set up a travel crate at your place before I leave — it's his safe space and he's very used to it. Never use it as punishment. At 12 weeks he still needs a lot of sleep. If he seems wired or bitey, he's almost certainly overtired and needs a nap, not more play.</p>
           <div class="sitter-tip">When he whines in the crate, wait for a 10-second pause before letting him out. Letting him out mid-whine teaches him that whining = freedom.</div>
+          <div class="sitter-warning" style="margin-top:8px">The <strong>10-minute rule</strong> only applies after waking up: if he doesn't potty after a nap, crate him for 10 minutes and try again. If you're putting him in for a nap and he doesn't go before — that's fine, just put him in. No need to wait.</div>
           <div class="sitter-pill-row">
             <span class="sitter-pill orange">4 naps per day</span>
             <span class="sitter-pill orange">45 min awake at a time</span>

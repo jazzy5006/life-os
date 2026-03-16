@@ -3046,7 +3046,11 @@ async function gistPush(){
     if(!gistId) try{ localStorage.setItem(GIST_ID_KEY, data.id); }catch(e){}
     _setGistStatus('synced','Synced ✓');
   } catch(e){
-    _setGistStatus('error','Sync error');
+    const msg = e?.message||String(e);
+    const friendly = msg.includes('401')||msg.includes('Bad credentials') ? 'Token expired — re-enter in ⚙️' :
+                     msg.includes('404') ? 'Gist not found — reconnect in ⚙️' :
+                     msg.includes('fetch')||msg.includes('network') ? 'No internet' : 'Sync error';
+    _setGistStatus('error', friendly);
     console.warn('Gist push error:', e);
   } finally { _gistSyncing = false; }
 }

@@ -3943,19 +3943,27 @@ async function fetchCalEvents(forceRefresh = false){
   const url = getCalUrl();
   if(!url) return null;
 
-  // Return cached events if fresh (< 5 min old) and not forced
+  // Return session-cached events if fresh (< 5 min old) and not forced
   if(!forceRefresh){
     try{
       const cached = JSON.parse(sessionStorage.getItem(CAL_CACHE_KEY)||'null');
       if(cached && Date.now() - cached.ts < 5*60*1000){
-        // Rehydrate date strings back to Date objects
         return cached.events.map(e => ({...e, start: new Date(e.start), end: e.end ? new Date(e.end) : null}));
       }
     }catch(e){}
   }
 
-  // Try primary proxy, then fallback
-  // Each proxy entry: { build: fn, extract: fn }
+  // Check for manually pasted iCal (escape hatch)
+  try{
+    const manual = JSON.parse(localStorage.getItem('jlos_ical_manual')||'null');
+    if(manual && manual.ical && manual.ical.includes('BEGIN:VCALENDAR') && !forceRefresh){
+      const events = parseICal(manual.ical);
+      _cacheCalEvents(events);
+      return events;
+    }
+  }catch(e){}
+
+  // Try proxies
   const proxyDefs = [
     {
       build: u => `https://corsproxy.io/?${encodeURIComponent(u)}`,
@@ -3995,18 +4003,91 @@ async function fetchCalEvents(forceRefresh = false){
     }catch(e){ lastErr = e.message; continue; }
   }
 
-  if(!ical) throw new Error(`Could not load calendar — all proxies failed (last error: ${lastErr}). Try the Retry button in a moment, or check your iCal URL.`);
+  if(ical){
+    // Save to Gist as backup cache
+    _saveIcalToGist(ical);
+    const events = parseICal(ical);
+    _cacheCalEvents(events);
+    return events;
+  }
 
-  const events = parseICal(ical);
-  // Cache to sessionStorage (store dates as ISO strings)
+  // All proxies failed — try Gist backup cache
+  try{
+    const gistIcal = await _loadIcalFromGist();
+    if(gistIcal && gistIcal.ical && gistIcal.ical.includes('BEGIN:VCALENDAR')){
+      const ageMin = Math.round((Date.now() - gistIcal.ts) / 60000);
+      const ageStr = ageMin < 60 ? `${ageMin}m ago` : `${Math.round(ageMin/60)}h ago`;
+      showToast(`📅 Showing cached calendar (${ageStr})`, 4000);
+      const events = parseICal(gistIcal.ical);
+      _cacheCalEvents(events);
+      return events;
+    }
+  }catch(e){}
+
+  throw new Error(`Proxies unavailable (${lastErr}). Tap "Paste iCal" to load manually.`);
+}
+
+function _cacheCalEvents(events){
   try{
     sessionStorage.setItem(CAL_CACHE_KEY, JSON.stringify({
       ts: Date.now(),
       events: events.map(e => ({...e, start: e.start.toISOString(), end: e.end?.toISOString()||null}))
     }));
   }catch(e){}
-  return events;
 }
+
+async function _saveIcalToGist(ical){
+  try{
+    const token = _getGistToken();
+    const gistId = localStorage.getItem('jlos_gist_id');
+    if(!token || !gistId) return;
+    await fetch(`https://api.github.com/gists/${gistId}`, {
+      method:'PATCH',
+      headers:{'Authorization':`token ${token}`,'Content-Type':'application/json'},
+      body: JSON.stringify({files:{'jlos_ical_cache.json':{content:JSON.stringify({ts:Date.now(),ical})}}})
+    });
+  }catch(e){}
+}
+
+async function _loadIcalFromGist(){
+  try{
+    const token = _getGistToken();
+    const gistId = localStorage.getItem('jlos_gist_id');
+    if(!token || !gistId) return null;
+    const r = await fetch(`https://api.github.com/gists/${gistId}`,{
+      headers:{'Authorization':`token ${token}`}
+    });
+    if(!r.ok) return null;
+    const data = await r.json();
+    const file = data.files?.['jlos_ical_cache.json'];
+    if(!file) return null;
+    return JSON.parse(file.content);
+  }catch(e){ return null; }
+}
+
+// Manual iCal paste handler
+window.saveManualIcal = () => {
+  const ta = document.getElementById('manualIcalInput');
+  if(!ta) return;
+  const text = ta.value.trim();
+  if(!text.includes('BEGIN:VCALENDAR')){
+    showToast('That doesn\'t look like valid iCal data', 2500);
+    return;
+  }
+  localStorage.setItem('jlos_ical_manual', JSON.stringify({ts: Date.now(), ical: text}));
+  _saveIcalToGist(text);
+  showToast('✓ Calendar data saved!', 2000);
+  document.getElementById('manualIcalWrap')?.style && (document.getElementById('manualIcalWrap').style.display='none');
+  try{ sessionStorage.removeItem(CAL_CACHE_KEY); }catch(e){}
+  loadCalendar(true);
+};
+
+window.toggleManualIcal = () => {
+  const wrap = document.getElementById('manualIcalWrap');
+  if(!wrap) return;
+  const open = wrap.style.display === 'none' || !wrap.style.display;
+  wrap.style.display = open ? 'block' : 'none';
+};
 
 // ── Shared helpers ────────────────────────────────────────────────────────────
 function fmt12(d){ let h=d.getHours(),m=d.getMinutes(),ap=h>=12?'PM':'AM'; h=h%12||12; return `${h}:${String(m).padStart(2,'0')} ${ap}`; }
@@ -4110,7 +4191,20 @@ window.loadCalendar = async (forceRefresh = false) => {
     const msg = err.message.includes('timeout')
       ? '⚠️ Calendar timed out — tap Retry.'
       : `⚠️ ${err.message}`;
-    listEls.forEach(id=>{ const el=document.getElementById(id); if(el) el.innerHTML=`<div class="cal-error">${msg}<br><br><button onclick="toggleCalSetup(true)" style="background:none;border:none;cursor:pointer;color:var(--la);font-weight:900;font-size:.7rem;text-decoration:underline">Re-enter calendar URL</button></div>`; });
+    const pasteHtml = `
+      <div id="manualIcalWrap" style="display:none;margin-top:12px">
+        <p style="font-size:.68rem;color:var(--tm);font-weight:600;margin-bottom:6px">
+          Open Google Calendar on desktop → Settings → your calendar → "Secret address in iCal format" → copy everything → paste here:
+        </p>
+        <textarea id="manualIcalInput" style="width:100%;min-height:80px;background:var(--bgp);border:2px solid var(--lm);border-radius:10px;padding:8px;font-size:.72rem;font-family:'Nunito',sans-serif;color:var(--td);outline:none;resize:none;box-sizing:border-box" placeholder="Paste raw iCal text here (BEGIN:VCALENDAR…)"></textarea>
+        <button onclick="saveManualIcal()" style="margin-top:6px;background:var(--la);color:#fff;border:none;border-radius:var(--rf);padding:8px 16px;font-family:'Nunito',sans-serif;font-size:.65rem;font-weight:900;text-transform:uppercase;cursor:pointer;width:100%">Save & Load Calendar</button>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px">
+        <button onclick="loadCalendar(true)" style="background:var(--la);color:#fff;border:none;border-radius:var(--rf);padding:7px 14px;font-family:'Nunito',sans-serif;font-size:.62rem;font-weight:900;text-transform:uppercase;cursor:pointer">↻ Retry</button>
+        <button onclick="toggleCalSetup(true)" style="background:none;border:2px solid var(--lm);border-radius:var(--rf);padding:7px 14px;font-family:'Nunito',sans-serif;font-size:.62rem;font-weight:900;text-transform:uppercase;cursor:pointer;color:var(--td)">Edit URL</button>
+        <button onclick="toggleManualIcal()" style="background:none;border:2px solid var(--lm);border-radius:var(--rf);padding:7px 14px;font-family:'Nunito',sans-serif;font-size:.62rem;font-weight:900;text-transform:uppercase;cursor:pointer;color:var(--td)">Paste iCal</button>
+      </div>`;
+    listEls.forEach(id=>{ const el=document.getElementById(id); if(el) el.innerHTML=`<div class="cal-error" style="padding:4px 0">${msg}${pasteHtml}</div>`; });
   }
 };
 

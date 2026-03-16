@@ -4075,6 +4075,10 @@ async function fetchCalEvents(forceRefresh = false){
   // Try proxies
   const proxyDefs = [
     {
+      build: u => `https://divine-dust-c8fa.jazzy5006.workers.dev/?url=${encodeURIComponent(u)}`,
+      extract: async r => r.text()
+    },
+    {
       build: u => `https://corsproxy.io/?${encodeURIComponent(u)}`,
       extract: async r => r.text()
     },
@@ -4662,4 +4666,4 @@ window.addEventListener('hashchange',handleSitterHash);
 setTimeout(handleSitterHash,100);
 </script>
 </body>
-</html>
+  </html>

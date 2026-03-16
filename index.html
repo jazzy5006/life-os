@@ -314,6 +314,11 @@ select{appearance:none;background:transparent;border:none;outline:none;font-fami
 @keyframes pulse-offset{0%,100%{box-shadow:0 0 0 0 rgba(247,154,122,.35)}50%{box-shadow:0 0 0 7px rgba(247,154,122,0)}}
 
 /* ── I'M HERE TAP ── */
+/* Calendar event blocks in timeline */
+.ti.cal-event>.tc{background:linear-gradient(135deg,var(--bgc),rgba(194,222,255,.15));border-color:var(--sa);border-left:4px solid var(--sa)}
+.ti.cal-event>.tdc>.tdot{border-color:var(--sa);background:var(--sl)}
+.ti.cal-event>.tc h4{color:var(--sa)}
+
 .ti.im-here>.tc{border-color:var(--pa)!important;box-shadow:0 0 0 3px var(--pl),0 6px 18px rgba(247,154,122,.2)!important}
 .ti.im-here>.tdc>.tdot{border-color:var(--pa)!important;box-shadow:0 0 0 4px var(--pl)!important}
 .ti>.tc{cursor:pointer;-webkit-tap-highlight-color:transparent}
@@ -1789,7 +1794,7 @@ const S=[
  ]},
 
  // ── WORK BLOCK 1 ───────────────────────────────────────────────────────────
- {t:"09:00 AM",e:"11:00 AM",i:"🔄",h:"Focus Block 1 — Pomodoro",steps:[
+ {t:"09:00 AM",e:"11:00 AM",i:"🔄",h:"Focus Block 1 — Pomodoro",days:[1,2,3,4,5],steps:[
    {c:"focus",   txt:"25 min deep work. Timer on."},
    {c:"wellness",txt:"5-min break: open the Move tab and do one PT exercise for today.",note:"This is how your PT gets done — a few reps each break adds up to a full session across the day without needing a dedicated block."},
    {c:"wellness",txt:"Use one break for <a href='https://sweepy.app' target='_blank' style='color:inherit;text-decoration:underline;text-decoration-style:dotted'>Sweepy</a> — open app, run today's 5–10 min cleaning task.",note:"Timber is crated — this is a good low-focus break task. Prioritise accident spots and the office floor."},
@@ -1797,11 +1802,11 @@ const S=[
  ]},
 
  // ── MIDDAY ─────────────────────────────────────────────────────────────────
- {t:"12:00 PM",e:"12:30 PM",i:"🍽️",h:"Your Lunch",steps:[
+ {t:"12:00 PM",e:"12:30 PM",i:"🍽️",h:"Your Lunch",days:[1,2,3,4,5],steps:[
    {c:"wellness",txt:"Eat lunch. Take iron supplement with food.",note:"Iron with food reduces stomach upset."},
    {c:"wellness",txt:"Log in <a href='https://cronometer.com' target='_blank' style='color:inherit;text-decoration:underline;text-decoration-style:dotted'>Cronometer</a> + <a href='https://guavahealth.com' target='_blank' style='color:inherit;text-decoration:underline;text-decoration-style:dotted'>Guava</a>."},
  ]},
- {t:"03:00 PM",e:"05:00 PM",i:"🔄",h:"Focus Block 3 — Deep Work",steps:[
+ {t:"03:00 PM",e:"05:00 PM",i:"🔄",h:"Focus Block 3 — Deep Work",days:[1,2,3,4,5],steps:[
    {c:"focus",  txt:"Timber crated — longest uninterrupted focus window.",note:"Protect this block. Timber is napping and fed. This is your best deep work window of the afternoon."},
    {c:"focus",  txt:"Pomodoro cycles. Sit/stand desk if you have one."},
    {c:"wellness",txt:"5-min breaks: PT movement."},
@@ -1877,6 +1882,31 @@ const S=[
 // ─── TIME HELPERS ─────────────────────────────────────────────────────────────
 function tm(s){if(!s)return 0;const[hm,p]=s.split(' ');let[h,m]=hm.split(':').map(Number);if(p==='PM'&&h!==12)h+=12;if(p==='AM'&&h===12)h=0;return h*60+m;}
 S.forEach(x=>{x.smin=tm(x.t);x.emin=tm(x.e);});
+
+// Calendar events injected into the timeline — populated by injectCalEvents()
+let _calDayEvents = [];
+
+function injectCalEvents(events){
+  if(!events) return;
+  const today = new Date().toDateString();
+  const todayEvents = events.filter(e => e.start.toDateString() === today);
+  _calDayEvents = todayEvents.map(e => {
+    const smin = e.allDay ? 0 : e.start.getHours()*60 + e.start.getMinutes();
+    const emin = e.end ? e.end.getHours()*60 + e.end.getMinutes() : smin + 60;
+    const h12s = e.allDay ? 'All day' : `${e.start.getHours()%12||12}:${String(e.start.getMinutes()).padStart(2,'0')} ${e.start.getHours()>=12?'PM':'AM'}`;
+    const h12e = e.end ? `${e.end.getHours()%12||12}:${String(e.end.getMinutes()).padStart(2,'0')} ${e.end.getHours()>=12?'PM':'AM'}` : '';
+    return {
+      t: h12s, e: h12e,
+      i: '📅', h: esc(e.summary) + (e.location ? ` · 📍${esc(e.location)}` : ''),
+      smin, emin,
+      steps: [{c:'focus', txt: e.location ? `📍 ${esc(e.location)}` : 'Calendar event'}],
+      _isCalEvent: true,
+    };
+  }).filter(e => !e._allDay); // skip all-day events from timeline (they show in Shape card)
+  // Re-render timelines
+  buildTL('all','mTlb','mb');
+  buildTL('all','dTlb','db');
+}
 function getNowMin(){const n=new Date();return n.getHours()*60+n.getMinutes();}
 function getNowIdx(items,nowMin){
   for(let i=0;i<items.length;i++)if(nowMin>=items[i].smin&&nowMin<items[i].emin)return i;
@@ -2098,14 +2128,15 @@ window.deskSwitchPanel=(panel)=>{
 // Returns schedule items visible today, with RLT rotating block populated
 function getFilteredSchedule(f){
   const today=new Date().getDay();
-  return S.filter(item=>{
-    // Skip day-specific blocks not matching today
+  const base = S.filter(item=>{
     if(item.days&&!item.days.includes(today))return false;
-    // For category filter, check if any visible step matches
     if(f==='all')return true;
     const steps=item.isRltRotating?getRltRotatingSteps():item.steps;
     return steps.some(s=>s.c===f);
-  }).sort((a,b)=>a.smin-b.smin); // always render in time order
+  });
+  // Merge in today's calendar events (always shown in 'all' filter)
+  const calItems = f==='all' ? _calDayEvents : [];
+  return [...base, ...calItems].sort((a,b)=>a.smin-b.smin);
 }
 
 // ─── TIMELINE BUILDER (shift-aware + tap-to-anchor) ──────────────────────────
@@ -2149,7 +2180,7 @@ function buildTL(f,containerId,btnPrefix){
     const isAnchor = anchoredBlockIdx===origIdx;
 
     const d=document.createElement('div');
-    d.className='ti'+(isNow?' now':isPast?' past':'')+(isAnchor?' im-here':'');
+    d.className='ti'+(isNow?' now':isPast?' past':'')+(isAnchor?' im-here':'')+(item._isCalEvent?' cal-event':'');
     d.style.animationDelay=`${i*.02}s`;
 
     // Override state — apply class and build badge
@@ -3060,6 +3091,7 @@ async function gistPull(){
   const token = _getGistToken();
   if(!token) return;
   let gistId = _getGistId();
+  _lastGistPull = Date.now();
   _setGistStatus('syncing','Pulling…');
   try{
     // If no gistId saved locally, search existing gists for the Life OS file
@@ -3151,8 +3183,15 @@ function saveMemories(m){
 
 function initGistSync(){
   // Pull whenever the user switches back to this tab (catches adds made on other devices)
+  let _lastGistPull = 0;
   document.addEventListener('visibilitychange', ()=>{
-    if(document.visibilityState === 'visible' && _getGistToken()) gistPull();
+    if(document.visibilityState === 'visible' && _getGistToken()){
+      const now = Date.now();
+      if(now - _lastGistPull > 5 * 60 * 1000){ // only pull if 5+ min since last pull
+        _lastGistPull = now;
+        gistPull();
+      }
+    }
   });
   const token = _getGistToken();
   if(token){
@@ -4356,6 +4395,8 @@ window.loadCalendar = async (forceRefresh = false) => {
       </div>`).join('');
 
     listEls.forEach(id=>{ const el=document.getElementById(id); if(el) el.innerHTML=html; });
+    // Inject today's events into the Flow timeline
+    injectCalEvents(events);
   }catch(err){
     const msg = err.message.includes('timeout')
       ? '⚠️ Calendar timed out — tap Retry.'
@@ -4722,4 +4763,4 @@ window.addEventListener('hashchange',handleSitterHash);
 setTimeout(handleSitterHash,100);
 </script>
 </body>
-          </html>
+        </html>

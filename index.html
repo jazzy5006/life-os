@@ -314,6 +314,11 @@ select{appearance:none;background:transparent;border:none;outline:none;font-fami
 @keyframes pulse-offset{0%,100%{box-shadow:0 0 0 0 rgba(247,154,122,.35)}50%{box-shadow:0 0 0 7px rgba(247,154,122,0)}}
 
 /* ── I'M HERE TAP ── */
+/* Timber rebuild blocks in timeline */
+.ti.timber-rebuild>.tc{background:linear-gradient(135deg,var(--bgc),rgba(247,154,122,.12));border-color:var(--pa);border-left:4px solid var(--pa)}
+.ti.timber-rebuild>.tdc>.tdot{border-color:var(--pa);background:var(--pl)}
+.ti.timber-rebuild>.tc h4{color:var(--pa)}
+
 /* Calendar event blocks in timeline */
 .ti.cal-event>.tc{background:linear-gradient(135deg,var(--bgc),rgba(194,222,255,.15));border-color:var(--sa);border-left:4px solid var(--sa)}
 .ti.cal-event>.tdc>.tdot{border-color:var(--sa);background:var(--sl)}
@@ -653,7 +658,7 @@ body.timer-active .desktop-layout{padding-top:70px}
   .desk-stat-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
   .desk-sc{padding:16px 10px;border-radius:var(--rlg);border:2px solid;display:flex;flex-direction:column;align-items:center;text-align:center;gap:3px;background:var(--bgc);transition:transform .25s cubic-bezier(.34,1.56,.64,1)}
   .desk-sc:hover{transform:translateY(-3px)}
-  .desk-flow{display:flex;flex-direction:column;height:560px;transition:height .4s ease}
+  .desk-flow{display:flex;flex-direction:column;height:calc(100vh - 220px);min-height:600px;transition:height .4s ease}
   .desk-flow.collapsed{height:auto}
   .desk-fhd{display:flex;align-items:center;justify-content:space-between;gap:10px;padding-bottom:10px;margin-bottom:10px;border-bottom:2px solid var(--ll);cursor:pointer}
   .desk-fg{display:flex;gap:6px}
@@ -662,7 +667,7 @@ body.timer-active .desktop-layout{padding-top:70px}
   .desk-btn-f.on.f-timber{background:var(--pa);border-color:var(--pa)}
   .desk-btn-f.on.f-focus{background:var(--sa);border-color:var(--sa)}
   .desk-btn-f.on.f-wellness{background:var(--la);border-color:var(--la)}
-  .desk-tls{overflow-y:auto;flex:1;padding-right:7px}
+  .desk-tls{overflow-y:auto;flex:1;padding-right:7px;min-height:0}
   .desk-tls::-webkit-scrollbar{width:5px}
   .desk-tls::-webkit-scrollbar-thumb{background:var(--lm);border-radius:20px}
   .desk-charts{display:flex;flex-direction:column;gap:12px}
@@ -715,7 +720,7 @@ body.timer-active .desktop-layout{padding-top:70px}
   .desk-right{display:grid;grid-template-columns:1fr 1fr;gap:14px}
   .desk-stat-row{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
   .desk-sc{padding:14px 9px;border-radius:var(--rlg);border:2px solid;display:flex;flex-direction:column;align-items:center;text-align:center;gap:3px;background:var(--bgc)}
-  .desk-flow{display:flex;flex-direction:column;height:500px}
+  .desk-flow{display:flex;flex-direction:column;height:calc(100vh - 200px);min-height:500px}
   .desk-fhd{display:flex;align-items:center;justify-content:space-between;gap:9px;padding-bottom:9px;margin-bottom:9px;border-bottom:2px solid var(--ll);cursor:pointer}
   .desk-fg{display:flex;gap:5px;flex-wrap:wrap}
   .desk-btn-f{background:var(--bgc);border-color:var(--lm);color:var(--tm);flex:none;padding:6px 11px;font-size:.56rem}
@@ -913,10 +918,20 @@ body.timer-active .desktop-layout{padding-top:70px}
       <button class="shape-suggest-btn" id="shapeSuggestBtn" onclick="runShapeSuggest()">
         ✨ Suggest what to compress or skip
       </button>
+      <!-- Timber rebuild button -->
+      <button class="shape-suggest-btn" id="timberRebuildBtn" onclick="runTimberRebuild()" style="background:linear-gradient(135deg,var(--pa),var(--pm));margin-top:6px">
+        🐾 Rebuild Timber's Day from context
+      </button>
       <!-- AI result with accept buttons -->
       <div class="shape-ai-result" id="shapeAiResult">
         <div class="shape-ai-result-hd">✨ Gemini's suggestions — tap to apply</div>
         <div id="shapeAiSuggestions"></div>
+      </div>
+      <!-- Timber rebuild result -->
+      <div class="shape-ai-result" id="timberRebuildResult" style="border-color:var(--pm);background:var(--pl)">
+        <div class="shape-ai-result-hd" style="color:var(--pa)">🐾 New Timber Schedule</div>
+        <div id="timberRebuildContent"></div>
+        <button onclick="clearTimberRebuild()" style="margin-top:10px;background:none;border:1.5px solid var(--pm);border-radius:var(--rf);padding:5px 12px;font-family:'Nunito',sans-serif;font-size:.6rem;font-weight:900;color:var(--pa);cursor:pointer">↩ Restore original schedule</button>
       </div>
     </div>
   </div>
@@ -2213,7 +2228,7 @@ function buildTL(f,containerId,btnPrefix){
     const isAnchor = anchoredBlockIdx===origIdx;
 
     const d=document.createElement('div');
-    d.className='ti'+(isNow?' now':isPast?' past':'')+(isAnchor?' im-here':'')+(item._isCalEvent?' cal-event':'');
+    d.className='ti'+(isNow?' now':isPast?' past':'')+(isAnchor?' im-here':'')+(item._isTimberRebuild?' timber-rebuild':item._isCalEvent?' cal-event':'');
     d.style.animationDelay=`${i*.02}s`;
 
     // Override state — apply class and build badge
@@ -4069,6 +4084,256 @@ function renderShapeAiResult(suggestions, animate){
   resultEl.classList.add('visible');
 }
 
+// ─── TIMBER DAY REBUILDER ────────────────────────────────────────────────────
+// Rebuilds Timber's schedule from a given wake time, following the strict pattern:
+// :00 Nap (2hrs) → :00 Wake+Potty (15min) → :15 Tethered/Awake (30min) → :45 Potty→Crate (15min) → :00 Nap
+// Always lands on the hour. Bedtime target ~8:45pm (21:45).
+
+const TIMBER_NORMAL_BEDTIME = 21 * 60; // 9:00 PM crate
+const TIMBER_NORMAL_WAKE    = 8 * 60;  // 8:00 AM
+
+// Parse a time string like "3pm", "3:30pm", "15:00", "3" from natural language
+function _parseTimberWakeTime(text){
+  // Try to extract a time from text like "sleeping until 3pm", "nap until 3:30", etc.
+  const t = text.toLowerCase();
+  // Patterns: 3pm, 3:30pm, 3:30 pm, 15:00, 3, three
+  const wordNums = {one:1,two:2,three:3,four:4,five:5,six:6,seven:7,eight:8,nine:9,ten:10,eleven:11,twelve:12};
+  let hour = null, minute = 0, isPM = null;
+
+  // Match "3:30pm" or "3:30 pm" or "15:30"
+  let m = t.match(/(\d{1,2}):(\d{2})\s*(am|pm)?/);
+  if(m){ hour=parseInt(m[1]); minute=parseInt(m[2]); if(m[3]) isPM=(m[3]==='pm'); }
+
+  // Match "3pm" or "3 pm"
+  if(hour===null){ m = t.match(/(\d{1,2})\s*(am|pm)/); if(m){ hour=parseInt(m[1]); isPM=(m[2]==='pm'); } }
+
+  // Match word numbers "three pm"
+  if(hour===null){
+    for(const [word,val] of Object.entries(wordNums)){
+      if(t.includes(word)){ hour=val; isPM=t.includes('pm')||(!t.includes('am')&&val<8); break; }
+    }
+  }
+
+  // Match bare number "until 3" — assume PM if between 1-7
+  if(hour===null){ m = t.match(/until\s+(\d{1,2})/); if(m){ hour=parseInt(m[1]); } }
+  if(hour===null){ m = t.match(/(\d{1,2})\s*(?:o'?clock)?/); if(m){ hour=parseInt(m[1]); } }
+
+  if(hour===null) return null;
+
+  // Resolve AM/PM
+  if(isPM === null) isPM = (hour >= 1 && hour <= 7);
+  if(isPM && hour !== 12) hour += 12;
+  if(!isPM && hour === 12) hour = 0;
+
+  return hour * 60 + minute;
+}
+
+// Generate Timber's schedule blocks from a wake time
+function _buildTimberSchedule(wakeMin){
+  const blocks = [];
+  // Round wake time UP to next :00 (naps always start on the hour)
+  // But wake+potty starts at wakeMin, potty→crate at wakeMin+45, nap at wakeMin+60 (next hour)
+  // Actually: wake is always on the hour in our pattern, so round to nearest hour
+  const wakeHour = Math.ceil(wakeMin / 60) * 60; // round up to next hour
+  const actualWake = wakeHour; // wake on the hour
+
+  let cursor = actualWake;
+  const cycles = [];
+
+  // Generate cycles until we hit 9pm (normal bedtime area)
+  while(cursor < TIMBER_NORMAL_BEDTIME + 60){
+    // Wake + Potty: 15 min
+    cycles.push({ type:'wake', start: cursor, end: cursor+15 });
+    cursor += 15;
+    // Awake window: 30 min
+    cycles.push({ type:'awake', start: cursor, end: cursor+30 });
+    cursor += 30;
+    // Potty → Crate: 15 min
+    cycles.push({ type:'crate', start: cursor, end: cursor+15 });
+    cursor += 15;
+    // Nap: 2 hrs — starts on the hour (cursor should already be on hour)
+    if(cursor < TIMBER_NORMAL_BEDTIME + 60){
+      cycles.push({ type:'nap', start: cursor, end: cursor+120 });
+      cursor += 120;
+    }
+  }
+
+  return { cycles, wakeMin: actualWake };
+}
+
+function _minToStr(m){
+  m = ((m % 1440) + 1440) % 1440;
+  const h=Math.floor(m/60), mi=m%60, ap=h>=12?'PM':'AM', h12=h%12||12;
+  return `${h12}:${String(mi).padStart(2,'0')} ${ap}`;
+}
+
+// Apply the new Timber schedule as overrides (visual only — shown in timeline)
+let _timberRebuildData = null;
+
+window.runTimberRebuild = async () => {
+  const key = getGeminiKey();
+  const btn = document.getElementById('timberRebuildBtn');
+  const resultEl = document.getElementById('timberRebuildResult');
+  const contentEl = document.getElementById('timberRebuildContent');
+  const contextNote = document.getElementById('shapeContextNote')?.value?.trim() || '';
+
+  if(!contextNote){
+    showToast('Type something in the context box first — e.g. "Timber is sleeping until 3pm"', 3500);
+    return;
+  }
+
+  if(btn){ btn.disabled=true; btn.textContent='🐾 Thinking…'; }
+  resultEl.classList.remove('visible');
+
+  // Use Gemini to extract the wake time if key available, else try local parse
+  let wakeMin = null;
+  if(key){
+    try{
+      const {GoogleGenAI} = await import('https://esm.run/@google/genai');
+      const ai = new GoogleGenAI({ apiKey: key });
+      const result = await ai.models.generateContent({
+        model: 'gemini-3.1-flash-lite-preview',
+        contents: `The user said: "${contextNote}"
+
+Does this mention a time that Timber (the puppy) will wake up or stop sleeping? If yes, reply with ONLY the time in 24h format like "15:00". If no Timber wake time is mentioned, reply with "none".`,
+        config:{ thinkingConfig:{ thinkingLevel:'minimal' } }
+      });
+      const raw = result.text.trim();
+      if(raw !== 'none' && raw.match(/\d{1,2}:\d{2}/)){
+        const [h,m] = raw.split(':').map(Number);
+        wakeMin = h*60 + m;
+      }
+    }catch(e){}
+  }
+
+  // Fallback to local parser
+  if(wakeMin === null) wakeMin = _parseTimberWakeTime(contextNote);
+
+  if(wakeMin === null){
+    contentEl.innerHTML = `<div style="font-size:.72rem;color:var(--pa)">⚠️ Could not find a wake time in your note. Try: "Timber is sleeping until 3pm"</div>`;
+    resultEl.classList.add('visible');
+    if(btn){ btn.disabled=false; btn.textContent='🐾 Rebuild Timber Day from context'; }
+    return;
+  }
+
+  // Build the new schedule
+  const { cycles, wakeMin: actualWake } = _buildTimberSchedule(wakeMin);
+  _timberRebuildData = { cycles, wakeMin: actualWake };
+
+  // Find last crate time = proposed bedtime
+  const lastCrate = [...cycles].reverse().find(c => c.type==='crate');
+  const proposedBedtime = lastCrate ? lastCrate.end : actualWake + 60;
+  const normalBedtime = TIMBER_NORMAL_BEDTIME + 15; // 9:00pm crate done
+  const diffMin = proposedBedtime - normalBedtime;
+  const diffStr = Math.abs(diffMin) < 10 ? 'right on schedule'
+    : diffMin > 0 ? `${diffMin} min later than usual`
+    : `${Math.abs(diffMin)} min earlier than usual`;
+
+  // Render preview
+  const typeLabels = {
+    wake: '🌅 Wake + Potty',
+    awake: '🪢 Awake window',
+    crate: '🚽 Potty → Crate',
+    nap: '💤 Nap (2 hrs)',
+  };
+  const preview = cycles.map(c =>
+    `<div style="display:flex;gap:8px;align-items:center;padding:3px 0;font-size:.72rem;font-weight:700;color:var(--td)">
+      <span style="min-width:90px;color:var(--pa);font-size:.65rem">${_minToStr(c.start)}–${_minToStr(c.end)}</span>
+      <span>${typeLabels[c.type]||c.type}</span>
+    </div>`
+  ).join('');
+
+  contentEl.innerHTML = `
+    <div style="font-size:.68rem;color:var(--pa);font-weight:700;margin-bottom:8px">
+      Starting from ${_minToStr(actualWake)} wake · Bedtime crate ${_minToStr(proposedBedtime)} (${diffStr})
+    </div>
+    ${preview}
+    <div style="margin-top:12px;display:flex;flex-direction:column;gap:6px">
+      <div style="font-size:.68rem;font-weight:700;color:var(--td)">When should Timber go to bed tonight?</div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap">
+        <button onclick="applyTimberRebuild(${proposedBedtime})" style="background:var(--pa);color:#fff;border:none;border-radius:var(--rf);padding:7px 14px;font-family:'Nunito',sans-serif;font-size:.62rem;font-weight:900;cursor:pointer">
+          Follow new pattern (${_minToStr(proposedBedtime)})
+        </button>
+        <button onclick="applyTimberRebuild(${normalBedtime})" style="background:var(--bgc);border:2px solid var(--pm);border-radius:var(--rf);padding:7px 14px;font-family:'Nunito',sans-serif;font-size:.62rem;font-weight:900;color:var(--pa);cursor:pointer">
+          Normal bedtime (${_minToStr(normalBedtime)})
+        </button>
+      </div>
+    </div>`;
+
+  resultEl.classList.add('visible');
+  if(btn){ btn.disabled=false; btn.textContent='🐾 Rebuild Timber Day from context'; }
+};
+
+window.applyTimberRebuild = (chosenBedtimeMin) => {
+  if(!_timberRebuildData) return;
+  const { cycles } = _timberRebuildData;
+
+  // Trim cycles to chosen bedtime
+  const activeCycles = cycles.filter(c => c.start < chosenBedtimeMin);
+
+  // Map cycle types to override statuses for existing Timber blocks
+  // Strategy: mark all existing Timber blocks in this time range as 'moved'
+  // then inject the new blocks into _calDayEvents (piggyback on calendar inject)
+  const shape = loadShape();
+
+  // Mark all current Timber schedule blocks from wakeMin onwards as overridden
+  const allItems = getFilteredSchedule('all');
+  const wakeMin = _timberRebuildData.wakeMin;
+  allItems.forEach(item => {
+    if(item.smin >= wakeMin && item.steps?.some(s => s.c === 'timber')){
+      shape.overrides[blockKey(item)] = { status:'skipped', blockName: item.h };
+    }
+  });
+  saveShape(shape);
+
+  // Build new display blocks and inject via _calDayEvents
+  const typeLabels = {
+    wake:  { h:'🌅 Timber Wake + Potty', i:'🌅', steps:[{c:'timber',txt:'Carry straight outside. Bladder full.'},{c:'timber',txt:'Out. Praise. Back inside.'}] },
+    awake: { h:'🪢 Timber — Awake Window', i:'🪢', steps:[{c:'timber',txt:'Tethered beside you. Reward calm settled behaviour.'},{c:'timber',txt:'Drop kibble pieces when calm or playing quietly with a toy.'}] },
+    crate: { h:'🚽 Timber Potty → Crate + Treat', i:'🚽', steps:[{c:'timber',txt:'Carry outside. Give 5 minutes to go.'},{c:'timber',txt:'Back inside. Crate with high-value treat. Cover. Walk away.'}] },
+    nap:   { h:'💤 Timber Nap (2 hrs)', i:'💤', steps:[{c:'timber',txt:'Timber is down for 2 hours.',note:'Down on the hour, back up on the hour.'}] },
+  };
+
+  const newBlocks = activeCycles.map(c => {
+    const def = typeLabels[c.type];
+    return {
+      t: _minToStr(c.start), e: _minToStr(c.end),
+      i: def.i, h: def.h,
+      smin: c.start, emin: c.end,
+      steps: def.steps,
+      _isCalEvent: true,
+      _isTimberRebuild: true,
+    };
+  });
+
+  // Remove any previous rebuild blocks and add new ones
+  _calDayEvents = _calDayEvents.filter(e => !e._isTimberRebuild);
+  _calDayEvents.push(...newBlocks);
+
+  updateShapeHeader();
+  buildTL('all','mTlb','mb');
+  buildTL('all','dTlb','db');
+
+  // Close result panel
+  document.getElementById('timberRebuildResult')?.classList.remove('visible');
+  showToast(`🐾 Timber's day rebuilt from ${_minToStr(wakeMin)}`, 3000);
+};
+
+window.clearTimberRebuild = () => {
+  _timberRebuildData = null;
+  _calDayEvents = _calDayEvents.filter(e => !e._isTimberRebuild);
+  // Remove skipped overrides for timber blocks
+  const shape = loadShape();
+  Object.keys(shape.overrides).forEach(k => {
+    if(shape.overrides[k].blockName?.includes('Timber')) delete shape.overrides[k];
+  });
+  saveShape(shape);
+  updateShapeHeader();
+  buildTL('all','mTlb','mb');
+  buildTL('all','dTlb','db');
+  showToast('↩ Timber schedule restored', 2000);
+};
+
 window.acceptShapeSuggestion = (sugIdx, blockIdx, action) => {
   const allItems = getFilteredSchedule('all');
   if(!allItems[blockIdx]) return;
@@ -4868,4 +5133,4 @@ window.addEventListener('hashchange',handleSitterHash);
 setTimeout(handleSitterHash,100);
 </script>
 </body>
-</html>
+  </html>

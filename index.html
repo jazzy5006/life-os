@@ -3815,13 +3815,60 @@ window.runShapeSuggest = async () => {
   const battery = loadBatteryLog().find(e=>e.date===new Date().toDateString());
   const battEmoji = battery ? ['','🪫','😔','😐','😊','🌟'][battery.level] : 'not logged';
   const nowMin = getNowMin();
-  const remaining = getFilteredSchedule('all')
-    .filter(b => b.smin > nowMin - 30)
-    .map(b => `• ${b.h} (${b.t}–${b.e})`)
-    .slice(0,12).join('\n');
+  const allBlocks = getFilteredSchedule('all').filter(b => b.smin > nowMin - 30);
+
+  // ── SEPARATE TIMBER TRACK FROM JASMINE TRACK ──────────────────────────────
+  // Timber's nap/crate blocks run CONCURRENTLY with Jasmine's work blocks.
+  // They are not competing for the same time — changes to one don't free up the other.
+  const timberNapBlocks = allBlocks.filter(b =>
+    b.steps?.every(s => s.c === 'timber') &&
+    (b.h.includes('Nap') || b.h.includes('Crate') || b.h.includes('Potty'))
+  );
+  const timberAwakeBlocks = allBlocks.filter(b =>
+    b.steps?.some(s => s.c === 'timber') && !timberNapBlocks.includes(b)
+  );
+  const jasmineBlocks = allBlocks.filter(b =>
+    !b.steps?.some(s => s.c === 'timber') ||
+    b.steps?.some(s => s.c === 'wellness' || s.c === 'focus')
+  );
+
+  // ── ONLY THESE BLOCKS ARE COMPRESSIBLE ────────────────────────────────────
+  // Never suggest compressing: cooking, meals, social/family time, Timber care
+  const NEVER_COMPRESS = [
+    'Cook Dinner', 'Dinner', 'Your Breakfast', 'Your Lunch',
+    'Walk', 'Tethered', 'Timber', 'Potty', 'Nap', 'Crate', 'Wake'
+  ];
+  const compressible = jasmineBlocks.filter(b =>
+    !NEVER_COMPRESS.some(kw => b.h.includes(kw))
+  );
+
+  const fmtBlocks = arr => arr.map(b => `  • ${b.h} (${b.t}–${b.e})`).join('\n');
   const meetingText = document.getElementById('shapeMeetings')?.innerText?.replace(/\n+/g,' ') || 'none';
 
-  const prompt = `Today's schedule (remaining blocks):\n${remaining}\n\nCalendar events today: ${meetingText}\n\nContext from user: ${contextNote||'none'}\n\nEnergy today: ${battEmoji}\n\nSuggest exactly 3–5 specific schedule blocks to compress, skip, or move — to protect energy and make room for the meetings/context above. Reply with ONLY a valid JSON array, no markdown:\n[\n  {"block":"exact block name from schedule","action":"compressed|skipped|moved","reason":"one short sentence"},\n  ...\n]`;
+  const prompt =
+`SCHEDULE STRUCTURE — two parallel tracks running simultaneously:
+
+JASMINE'S TRACK (her own time — focus work, wellness, routines):
+${fmtBlocks(jasmineBlocks) || '  (none remaining)'}
+
+TIMBER'S TRACK (puppy care — runs concurrently with Jasmine's work blocks):
+  Awake windows (Jasmine is present):
+${fmtBlocks(timberAwakeBlocks) || '  (none remaining)'}
+  Naps/crate (Jasmine is FREE — these overlap with her focus blocks):
+${fmtBlocks(timberNapBlocks) || '  (none remaining)'}
+
+CALENDAR EVENTS TODAY: ${meetingText}
+USER CONTEXT: ${contextNote || 'none'}
+ENERGY TODAY: ${battEmoji}
+
+BLOCKS THAT CAN BE COMPRESSED OR SKIPPED (only suggest from this list):
+${fmtBlocks(compressible) || '  (none — everything remaining is essential)'}
+
+Suggest 3–5 blocks to compress, skip, or move. Reply with ONLY a valid JSON array:
+[
+  {"block":"exact block name","action":"compressed|skipped|moved","reason":"one short sentence"},
+  ...
+]`;
 
   try{
     const {GoogleGenAI} = await import('https://esm.run/@google/genai');
@@ -3830,7 +3877,12 @@ window.runShapeSuggest = async () => {
       model: 'gemini-3.1-flash-lite-preview',
       contents: prompt,
       config: {
-        systemInstruction: 'You are a compassionate ADHD coach. Return ONLY a valid JSON array as specified. No markdown, no explanation.',
+        systemInstruction: `You are a compassionate ADHD coach for a scientist with hypermobility.
+CRITICAL RULES:
+1. Timber's nap blocks happen AT THE SAME TIME as Jasmine's focus/work blocks. If Timber sleeps longer, this does NOT free up Jasmine's time — she was already working. Never suggest compressing Jasmine's work or cooking because of Timber's schedule.
+2. Never suggest compressing or skipping: any Timber care block, any meal, any cooking block, any social/family time, or any walk.
+3. Only suggest blocks from the COMPRESSIBLE LIST provided. Do not invent blocks not on that list.
+4. Return ONLY a valid JSON array. No markdown, no explanation outside the JSON.`,
         thinkingConfig: { thinkingLevel: 'minimal' }
       }
     });
@@ -4670,4 +4722,4 @@ window.addEventListener('hashchange',handleSitterHash);
 setTimeout(handleSitterHash,100);
 </script>
 </body>
-            </html>
+          </html>

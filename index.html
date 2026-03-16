@@ -1819,7 +1819,7 @@ const S=[
  // ── TIMBER NAP CYCLE 4 ──────────────────────────────────────────────────────
  {t:"05:45 PM",e:"06:00 PM",i:"🚽",h:"Timber Potty → Crate + Treat #4",steps:[
    {c:"timber",txt:"Back from walk — carry straight outside for potty.",note:"Post-walk bladder check. Then straight into crate for the evening nap."},
-   {c:"timber",txt:"Crate with treat. Cover. Walk away calmly.",note:"Water cutoff also happens now — pick up the bowl before you crate him. Last meal was at 5:30, last water now. This sets up the overnight hold."},
+   {c:"timber",txt:"Crate with treat. Cover. Walk away calmly.",note:"Last meal of the day. Water stays available until 8:30 PM."},
  ]},
  {t:"06:00 PM",e:"08:00 PM",i:"💤",h:"Timber Nap #4 (2 hrs)",steps:[
    {c:"timber",txt:"Timber is down until 8:00 PM.",note:"Cook dinner and eat together during this nap. He wakes for TV family time."},
@@ -1833,6 +1833,7 @@ const S=[
  {t:"08:15 PM",e:"08:45 PM",i:"🛋️",h:"Timber — Tethered Evening Time",steps:[
    {c:"timber",txt:"Tether him near you on the couch. Calm presence during TV.",note:"This is intentional family integration — he learns to settle while the household is relaxed. Ignore excitement, reward calm. If he won't settle within 10 minutes, crate him early."},
    {c:"timber",txt:"No rough play, no exciting interaction. You want him drowsy by 8:45."},
+   {c:"wellness",txt:"8:30 PM — pick up Timber's water bowl.",note:"Last water of the day. Bedtime potty is at 8:45 — 15 minutes is enough time for his bladder."},
  ]},
 
  // ── TIMBER BEDTIME ──────────────────────────────────────────────────────────
@@ -4870,7 +4871,7 @@ window.onload=()=>{
             <div class="sitter-contact-phone"><a href="tel:+18643762210">864-376-2210</a></div>
           </div>
           <div class="sitter-contact-row">
-            <div><div class="sitter-contact-name">your partner</div><div class="sitter-contact-role">Partner</div></div>
+            <div><div class="sitter-contact-name">Nathan</div><div class="sitter-contact-role">Partner</div></div>
             <div class="sitter-contact-phone"><a href="tel:+18643959015">864-395-9015</a></div>
           </div>
           <div class="sitter-contact-row">
@@ -4902,7 +4903,7 @@ window.onload=()=>{
             <span class="sitter-pill orange">Dinner ~5 PM</span>
           </div>
         </div>
-        <div class="sitter-warning">No food after 6 PM — this helps keep his overnight potty schedule predictable. Pick up his water bowl around <strong>5:45 PM</strong> (with his last crate nap) to help reduce overnight accidents. Fresh water should be available all day up until then.</div>
+        <div class="sitter-warning">No food after 6 PM — this helps keep his overnight potty schedule predictable. Pick up his water bowl at <strong>8:15 PM</strong> when he wakes for his evening window. No water after 8:15 PM — this gives his bladder 30 minutes before his 8:45 PM bedtime potty and helps him sleep through the night.</div>
       </div>
 
       <!-- DAILY SCHEDULE -->
@@ -4929,14 +4930,15 @@ window.onload=()=>{
           <div class="sitter-schedule-row orange"><span class="sitter-icon">🌅</span><span class="sitter-time">5:00 PM</span><div class="sitter-event">Wake + potty</div></div>
           <div class="sitter-schedule-row orange"><span class="sitter-icon">🍽️</span><span class="sitter-time">5:00–5:15</span><div class="sitter-event">Dinner (Learn to Earn)<small>Hand-feed full dinner as training rewards — backyard or inside. Last meal of the day.</small></div></div>
           <div class="sitter-schedule-row orange"><span class="sitter-icon">🚶</span><span class="sitter-time">5:15–5:45</span><div class="sitter-event">Afternoon walk<small>Stroller walk — paws off the ground (he's unvaccinated)</small></div></div>
-          <div class="sitter-schedule-row orange"><span class="sitter-icon">🚽</span><span class="sitter-time">5:45 PM</span><div class="sitter-event">Potty → crate + treat<small>Pick up water bowl now — helps overnight</small></div></div>
+          <div class="sitter-schedule-row orange"><span class="sitter-icon">🚽</span><span class="sitter-time">5:45 PM</span><div class="sitter-event">Potty → crate + treat</div></div>
           <div class="sitter-schedule-row orange"><span class="sitter-icon">💤</span><span class="sitter-time">6:00–8:00</span><div class="sitter-event">Nap #4 — 2 hours</div></div>
         </div>
         <div class="sitter-card orange">
           <h3>🌙 Evening & Overnight</h3>
           <div class="sitter-schedule-row orange"><span class="sitter-icon">🌅</span><span class="sitter-time">8:00 PM</span><div class="sitter-event">Wake + potty</div></div>
+          <div class="sitter-schedule-row orange"><span class="sitter-icon">💧</span><span class="sitter-time">8:15 PM</span><div class="sitter-event">Pick up water bowl<small>No water after this — helps him sleep through the night</small></div></div>
           <div class="sitter-schedule-row orange"><span class="sitter-icon">🪢</span><span class="sitter-time">8:00–8:45</span><div class="sitter-event">Calm evening awake window<small>Tethered, low stimulation. No rough play — you want him drowsy.</small></div></div>
-          <div class="sitter-schedule-row orange"><span class="sitter-icon">🌙</span><span class="sitter-time">8:45 PM</span><div class="sitter-event">Potty → crate + treat — Bedtime<small>High-value treat, cover crate, lights low, walk away calmly</small></div></div>
+          <div class="sitter-schedule-row orange"><span class="sitter-icon">🌙</span><span class="sitter-time">8:45 PM</span><div class="sitter-event">Potty → crate + treat — Bedtime<small>High-value treat, cover crate, lights low, walk away calmly. He is asleep by 9:00 PM.</small></div></div>
           <div class="sitter-schedule-row orange"><span class="sitter-icon">🌙</span><span class="sitter-time">11:00 PM</span><div class="sitter-event">Quiet overnight potty<small>No play, no talking — out, praise, straight back to crate</small></div></div>
           <div class="sitter-schedule-row orange"><span class="sitter-icon">🌙</span><span class="sitter-time">4:00 AM</span><div class="sitter-event">Overnight potty if needed<small>He may start sleeping through — follow his lead</small></div></div>
         </div>
@@ -4951,7 +4953,7 @@ window.onload=()=>{
             <li>Take him straight outside — don't let him wander first</li>
             <li>Stand still and wait. Give him 3–5 minutes.</li>
             <li>When he goes, immediately say <strong>"good potty!"</strong> and give calm praise</li>
-            <li>If he didn't go, crate for 10 minutes and try again</li>
+            <li>If he didn't go <strong>after waking from a nap</strong>, crate for 10 minutes and try again — before a nap it's fine if he doesn't go, just put him in</li>
             <li>Watch for signs he needs to go: sniffing the floor, circling, squatting</li>
           </ul>
           <div class="sitter-tip">Always go outside immediately after: waking up from a nap, finishing a meal, and after any exciting play. These are the highest-accident moments.</div>
@@ -4998,7 +5000,7 @@ window.onload=()=>{
             <div class="sitter-contact-phone"><a href="tel:+18643762210">864-376-2210</a></div>
           </div>
           <div class="sitter-contact-row">
-            <div><div class="sitter-contact-name">your partner</div><div class="sitter-contact-role">Partner</div></div>
+            <div><div class="sitter-contact-name">Nathan</div><div class="sitter-contact-role">Partner</div></div>
             <div class="sitter-contact-phone"><a href="tel:+18643959015">864-395-9015</a></div>
           </div>
           <div class="sitter-contact-row">

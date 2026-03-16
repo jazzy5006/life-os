@@ -4110,7 +4110,7 @@ async function fetchCalEvents(forceRefresh = false){
     try{
       const proxyUrl = proxy.build(url);
       const r = await Promise.race([
-        fetch(proxyUrl, {headers:{'X-Requested-With':'XMLHttpRequest'}}),
+        fetch(proxyUrl),
         new Promise((_,rej) => setTimeout(()=>rej(new Error('timeout')), 6000))
       ]);
       if(!r.ok){ lastErr = `HTTP ${r.status}`; continue; }
@@ -4670,4 +4670,4 @@ window.addEventListener('hashchange',handleSitterHash);
 setTimeout(handleSitterHash,100);
 </script>
 </body>
-  </html>
+            </html>

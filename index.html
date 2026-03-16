@@ -1,4 +1,4 @@
-;overflow-x:hidden}<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -920,9 +920,12 @@ body.timer-active .desktop-layout{padding-top:70px}
   <div class="lab-card">
     <div class="lab-hd">
       <span class="lab-title">💭 Brain Dump</span>
-      <button class="lab-sort-btn" id="labSortBtn" onclick="event.stopPropagation();labSynthesize()">✨ Sort this</button>
+      <button class="lab-sort-btn" id="labClearBtn" onclick="clearBrainDump()">🗑 Clear all</button>
     </div>
-    <textarea class="lab-ta" id="scratchPad" placeholder="Anything on your mind… Timber moments, how you're feeling, things to remember, stuff for later. Just let it out 💜" oninput="saveScratch()" rows="3"></textarea>
+    <div style="display:flex;gap:6px;margin-bottom:8px">
+      <textarea class="lab-ta" id="scratchPad" placeholder="Type a thought and hit Add… 💜" rows="2" style="flex:1;margin-bottom:0" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();addBrainItem();}"></textarea>
+      <button onclick="addBrainItem()" style="background:var(--la);color:#fff;border:none;border-radius:var(--rf);padding:0 14px;font-family:'Nunito',sans-serif;font-size:.7rem;font-weight:900;cursor:pointer;flex-shrink:0;align-self:stretch">Add</button>
+    </div>
     <div class="lab-results" id="labResults"></div>
   </div>
   <div class="filter-row">
@@ -1298,9 +1301,12 @@ body.timer-active .desktop-layout{padding-top:70px}
           <div class="lab-card" style="flex-shrink:0;margin-bottom:10px">
             <div class="lab-hd">
               <span class="lab-title">💭 Brain Dump</span>
-              <button class="lab-sort-btn" id="deskLabSortBtn" onclick="event.stopPropagation();labSynthesize()">✨ Sort this</button>
+              <button class="lab-sort-btn" id="deskLabSortBtn" onclick="clearBrainDump()">🗑 Clear all</button>
             </div>
-            <textarea class="lab-ta" id="deskScratchPad" placeholder="Anything on your mind… Timber moments, how you're feeling, things to remember, stuff for later. Just let it out 💜" oninput="saveScratch()" rows="3"></textarea>
+            <div style="display:flex;gap:6px;margin-bottom:8px">
+              <textarea class="lab-ta" id="deskScratchPad" placeholder="Type a thought and hit Add… 💜" rows="2" style="flex:1;margin-bottom:0" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();addBrainItem();}"></textarea>
+              <button onclick="addBrainItem()" style="background:var(--la);color:#fff;border:none;border-radius:var(--rf);padding:0 14px;font-family:'Nunito',sans-serif;font-size:.7rem;font-weight:900;cursor:pointer;flex-shrink:0;align-self:stretch">Add</button>
+            </div>
             <div class="lab-results" id="deskLabResults"></div>
           </div>
           <div class="desk-tls" id="dTlb" style="flex:1;overflow-y:auto"></div>
@@ -3012,12 +3018,16 @@ async function gistPush(){
     const battery = loadBatteryLog();
     const connections = loadConnLog();
     const scratch = (() => { try{ return localStorage.getItem(SCRATCH_KEY)||''; }catch(e){ return ''; } })();
+    const brainItems = (() => { try{ return localStorage.getItem('jlos_brain_items')||'[]'; }catch(e){ return '[]'; } })();
+    const brainDate = (() => { try{ return localStorage.getItem('jlos_brain_date')||''; }catch(e){ return ''; } })();
     const content = JSON.stringify({
       memories,
       ptDays,
       battery,
       connections,
       scratch,
+      brainItems,
+      brainDate,
       updated: new Date().toISOString()
     }, null, 2);
     const gistId = _getGistId();
@@ -3116,6 +3126,9 @@ async function gistPull(){
           if(el) el.value = parsed.scratch;
         });
         pulled.push('brain dump');
+        if(d.brainItems){ localStorage.setItem('jlos_brain_items', d.brainItems); }
+        if(d.brainDate){ localStorage.setItem('jlos_brain_date', d.brainDate); }
+        renderBrainItems();
       }
       _setGistStatus('synced','Synced ✓');
     }
@@ -3537,44 +3550,140 @@ document.getElementById('connModal')?.addEventListener('click',e=>{
 });
 
 // ─── LAB SYNTHESIS ────────────────────────────────────────────────────────────
-window.labSynthesize = async () => {
-  const text = (document.getElementById('scratchPad')?.value || document.getElementById('deskScratchPad')?.value || '').trim();
-  if(!text){ showToast('Write some notes first',1800); return; }
+// ── BRAIN DUMP ENGINE ─────────────────────────────────────────────────────────
+const BRAIN_KEY = 'jlos_brain_items';
+const BRAIN_DATE_KEY = 'jlos_brain_date';
+
+function loadBrainItems(){
+  try{
+    // Auto-clear at 1am on a new day
+    const savedDate = localStorage.getItem(BRAIN_DATE_KEY);
+    const today = new Date().toDateString();
+    const hour = new Date().getHours();
+    if(savedDate && savedDate !== today && hour >= 1){
+      localStorage.removeItem(BRAIN_KEY);
+      localStorage.setItem(BRAIN_DATE_KEY, today);
+      return [];
+    }
+    if(!savedDate) localStorage.setItem(BRAIN_DATE_KEY, today);
+    return JSON.parse(localStorage.getItem(BRAIN_KEY)||'[]');
+  }catch(e){ return []; }
+}
+
+function saveBrainItems(items){
+  try{
+    localStorage.setItem(BRAIN_KEY, JSON.stringify(items));
+    localStorage.setItem(BRAIN_DATE_KEY, new Date().toDateString());
+    // Push to Gist for cross-device sync
+    clearTimeout(saveBrainItems._t);
+    saveBrainItems._t = setTimeout(()=>{ if(typeof gistPush==='function'&&_getGistToken()) gistPush(); },2000);
+  }catch(e){}
+}
+
+function renderBrainItems(){
+  const items = loadBrainItems();
+  const catColor={Pets:'puppy',Health:'health','Home & Errands':'home','Money & Admin':'money',Connection:'connection',Processing:'processing'};
+  const catEmoji={Pets:'🐾',Health:'💚','Home & Errands':'🏠','Money & Admin':'💰',Connection:'💜',Processing:'💭'};
+  const ORDER = ['Pets','Health','Home & Errands','Money & Admin','Connection','Processing'];
+
+  if(!items.length){
+    ['labResults','deskLabResults'].forEach(id=>{
+      const el=document.getElementById(id);
+      if(el) el.innerHTML='<div style="font-size:.72rem;color:var(--tm);font-weight:600;padding:8px 0;text-align:center">Your sorted thoughts will appear here 💜</div>';
+    });
+    return;
+  }
+
+  // Group by category in fixed order
+  const grouped={};
+  items.forEach(item=>{ (grouped[item.cat]||(grouped[item.cat]=[])).push(item); });
+
+  const html = ORDER.filter(cat=>grouped[cat]?.length).map(cat=>`
+    <div class="lab-chip ${catColor[cat]||'work'}">
+      <div class="lab-chip-hd">${catEmoji[cat]||'•'} ${cat}</div>
+      ${grouped[cat].map(item=>`
+        <div style="display:flex;align-items:flex-start;gap:6px;padding:2px 0">
+          <span style="flex:1">• ${esc(item.text)}</span>
+          <button onclick="deleteBrainItem('${item.id}')" style="background:none;border:none;cursor:pointer;color:var(--tm);font-size:.8rem;padding:0 2px;line-height:1;flex-shrink:0;opacity:.6" title="Remove">✕</button>
+        </div>`).join('')}
+    </div>`).join('');
+
+  ['labResults','deskLabResults'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el) el.innerHTML=html;
+  });
+}
+
+window.addBrainItem = async () => {
+  const mob = document.getElementById('scratchPad');
+  const dsk = document.getElementById('deskScratchPad');
+  const active = document.activeElement;
+  const ta = (active===mob||active===dsk) ? active : (mob||dsk);
+  const text = ta?.value.trim();
+  if(!text){ showToast('Type something first 💜',1500); return; }
+
+  // Clear input immediately
+  if(mob) mob.value='';
+  if(dsk) dsk.value='';
+
+  // Categorise via Gemini (or fallback to Processing)
+  const cat = await _categoriseItem(text);
+  const items = loadBrainItems();
+  items.push({ id: Date.now().toString(36)+Math.random().toString(36).slice(2,5), text, cat });
+  saveBrainItems(items);
+  renderBrainItems();
+};
+
+window.deleteBrainItem = (id) => {
+  const items = loadBrainItems().filter(i=>i.id!==id);
+  saveBrainItems(items);
+  renderBrainItems();
+};
+
+window.clearBrainDump = () => {
+  if(!loadBrainItems().length){ showToast('Already clear 💜',1500); return; }
+  saveBrainItems([]);
+  renderBrainItems();
+  showToast('🗑 Brain dump cleared',1800);
+};
+
+async function _categoriseItem(text){
   const key = getGeminiKey();
-  const resultsEl = document.getElementById('labResults');
-  const deskResultsEl = document.getElementById('deskLabResults');
-  const btn = document.getElementById('labSortBtn');
-  const deskBtn = document.getElementById('deskLabSortBtn');
-  if(btn) btn.disabled=true;
-  if(deskBtn) deskBtn.disabled=true;
-  [resultsEl,deskResultsEl].forEach(el=>{if(el)el.innerHTML='<div class="lab-chip thinking">✨ Sorting your notes…</div>';});void 0;
-  if(!key){ [resultsEl,deskResultsEl].forEach(el=>{if(el)el.innerHTML='<div class="lab-chip work">⚙️ Add your Gemini key in Stats → ⚙️ to use Lab Synthesis.</div>';});void 0; if(btn)btn.disabled=false; return; }
-  const sys=`You are a personal organiser for Jasmine. Sort her brain dump notes into exactly these 6 categories — use only these names:
-- Pets: anything about Timber (her 9-week-old puppy), Tigris or Tulip (her cats), pet supplies, litter box, vet, food bowls, leash, crate, any pet-related errand or purchase
-- Health: Jasmine's own body, PT exercises, RLT therapy, meds, supplements, sleep, energy levels, her own medical appointments, mental health
-- Home & Errands: cleaning, tidying, household tasks, shopping, returns, Amazon, packages, home maintenance, Germany trip prep, packing, travel logistics, anything domestic that is not pet-related
-- Money & Admin: bills, subscriptions, budget, finances, insurance, paperwork, banking, anything financial or administrative
-- Connection: relationships, people, social plans, reaching out, your partner, family, friends, messages to send, plans to make
-- Processing: feelings, worries, anxieties, things to sit with, emotional reflections, things that are not action items — anything that is more about how Jasmine feels than what she needs to do
-Only include a category in the output if it has at least one item. Return ONLY a valid JSON array, no markdown, no preamble: [{"cat":"Home & Errands","items":["action"]},{"cat":"Processing","items":["note"]}].`;
+  if(!key) return _localCategorise(text);
   try{
     const {GoogleGenAI}=await import('https://esm.run/@google/genai');
     const ai=new GoogleGenAI({ apiKey: key });
     const result=await ai.models.generateContent({
       model:'gemini-3.1-flash-lite-preview',
-      contents:`Sort these notes:\n${text}`,
-      config:{ systemInstruction:sys, thinkingConfig:{ thinkingLevel:'minimal' } }
+      contents:text,
+      config:{ systemInstruction:`Categorise this note into exactly one of these categories: Pets, Health, Home & Errands, Money & Admin, Connection, Processing.
+Pets = anything about Timber (puppy), Tigris or Tulip (cats), vet, pet supplies.
+Health = Jasmine's own body, PT, RLT, meds, supplements, sleep, mental health.
+Home & Errands = household tasks, shopping, Germany prep, packing, travel logistics.
+Money & Admin = bills, finances, insurance, paperwork, banking.
+Connection = relationships, people, social plans, messages to send.
+Processing = feelings, worries, emotional reflections — not action items.
+Reply with ONLY the category name, nothing else.`, thinkingConfig:{thinkingLevel:'minimal'} }
     });
-    const raw=result.text.replace(/```json|```/g,'').trim();
-    const parsed=JSON.parse(raw);
-    const catColor={Pets:'puppy',Health:'health','Home & Errands':'home',Money:'money','Money & Admin':'money',Connection:'connection',Processing:'processing'};
-    const catEmoji={Pets:'🐾',Health:'💚','Home & Errands':'🏠','Money & Admin':'💰',Connection:'💜',Processing:'💭'};
-    [resultsEl,deskResultsEl].forEach(el=>{if(el)el.innerHTML=parsed.map(g=>`<div class="lab-chip ${catColor[g.cat]||'work'}"><div class="lab-chip-hd">${catEmoji[g.cat]||'•'} ${g.cat}</div>${g.items.map(i=>`<div>• ${i}</div>`).join('')}</div>`).join('');});void 0;
-  }catch(err){
-    [resultsEl,deskResultsEl].forEach(el=>{if(el)el.innerHTML=`<div class="lab-chip work">⚠️ ${err.message||'Could not sort notes'}</div>`;});void 0;
-  }finally{ if(btn) btn.disabled=false;
-  if(deskBtn) deskBtn.disabled=false; }
-};
+    const cat = result.text.trim().replace(/[^a-zA-Z& ]/g,'');
+    const valid=['Pets','Health','Home & Errands','Money & Admin','Connection','Processing'];
+    return valid.find(v=>cat.includes(v.split(' ')[0])) || 'Processing';
+  }catch(e){ return _localCategorise(text); }
+}
+
+function _localCategorise(text){
+  const t=text.toLowerCase();
+  if(/timber|puppy|dog|tigris|tulip|cat|vet|crate|kibble|leash|paw/.test(t)) return 'Pets';
+  if(/rlt|pt |physio|med|pill|supplement|sleep|pain|doctor|appt|health|energy/.test(t)) return 'Health';
+  if(/clean|shop|pack|germany|travel|errand|house|laundry|amazon|order/.test(t)) return 'Home & Errands';
+  if(/bill|pay|budget|bank|insurance|finance|money|subscri/.test(t)) return 'Money & Admin';
+  if(/call|text|message|reach|friend|family|partner|people|plan/.test(t)) return 'Connection';
+  return 'Processing';
+}
+
+// Keep saveScratch/loadScratch as no-ops (data now in brain items)
+function saveScratch(){}
+function loadScratch(){ renderBrainItems(); }
 
 function initCharts(){
   Chart.defaults.font.family="'Nunito',sans-serif";Chart.defaults.font.weight="bold";Chart.defaults.color="#a396b4";

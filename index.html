@@ -1290,14 +1290,14 @@ body.timer-active .desktop-layout{padding-top:70px}
 
   <div class="desk-grid">
     <!-- LEFT -->
-    <div class="desk-left">
+    <div class="desk-left" style="min-height:0">
       <div class="desk-stat-row">
         <div class="desk-sc" style="border-color:var(--pm)"><span class="si">⏱️</span><span class="lbl" style="color:var(--pa)">Fasting</span><span class="sv">8:30 PM–8:30 AM</span></div>
         <div class="desk-sc" style="border-color:var(--mm)"><span class="si">🥗</span><span class="lbl" style="color:var(--ma)">Daily Fuel</span><span class="sv">1,700 kcal</span></div>
         <div class="desk-sc" style="border-color:var(--lm)"><span class="si">🔴</span><span class="lbl" style="color:var(--la)">Today's RLT</span><span class="sv" id="dTodayRlt">Loading…</span></div>
       </div>
 
-      <div class="card desk-flow" id="deskFlowCard">
+      <div class="card desk-flow" id="deskFlowCard" style="flex:1">
         <div class="desk-fhd" onclick="toggleDeskCollapse('deskFlowCard','deskFlowBody','deskFlowIcon')">
           <h2 style="display:flex;align-items:center;gap:7px">Today's Flow ✿ <span class="collapse-icon" id="deskFlowIcon">▼</span></h2>
           <div class="desk-fg" onclick="event.stopPropagation()">
@@ -1307,7 +1307,7 @@ body.timer-active .desktop-layout{padding-top:70px}
             <button class="btn desk-btn-f f-wellness" id="dbm" onclick="ftl('wellness','d')">🌿 Wellness</button>
           </div>
         </div>
-        <div class="collapsible-body" id="deskFlowBody" style="display:flex;flex-direction:column;flex:1;min-height:0">
+        <div class="collapsible-body" id="deskFlowBody" style="display:flex;flex-direction:column;flex:1;min-height:0;max-height:none">
           <!-- Tomorrow peek — calendar events only -->
           <div class="tomorrow-peek" id="deskTomorrowPeek" onclick="toggleDeskTomorrowPeek()" style="margin-bottom:10px;flex-shrink:0">
             <div class="tomorrow-peek-hd">
@@ -2947,6 +2947,7 @@ const GIST_ID_KEY    = 'jlos_gist_id';
 const GIST_SAVED_DATE_KEY = 'jlos_gist_saved_date';
 const GIST_FILE      = 'lifeos-timber-memories.json';
 let _gistSyncing = false;
+let _lastGistPull = 0;
 
 function _getGistToken(){ try{ return localStorage.getItem(GIST_TOKEN_KEY)||''; }catch(e){ return ''; }}
 function _getGistId()   { try{ return localStorage.getItem(GIST_ID_KEY)||''; }catch(e){ return ''; }}
@@ -3231,11 +3232,10 @@ function saveMemories(m){
 
 function initGistSync(){
   // Pull whenever the user switches back to this tab (catches adds made on other devices)
-  let _lastGistPull = 0;
   document.addEventListener('visibilitychange', ()=>{
     if(document.visibilityState === 'visible' && _getGistToken()){
       const now = Date.now();
-      if(now - _lastGistPull > 5 * 60 * 1000){ // only pull if 5+ min since last pull
+      if(now - _lastGistPull > 5 * 60 * 1000){
         _lastGistPull = now;
         gistPull();
       }
@@ -3244,6 +3244,7 @@ function initGistSync(){
   const token = _getGistToken();
   if(token){
     _setGistStatus('synced','Synced ✓');
+    _lastGistPull = Date.now();
     gistPull();
     // Proactive expiry warning on load
     const daysLeft = _getTokenDaysLeft();
@@ -5133,4 +5134,4 @@ window.addEventListener('hashchange',handleSitterHash);
 setTimeout(handleSitterHash,100);
 </script>
 </body>
-  </html>
+                                                                                                                                                                                      </html>

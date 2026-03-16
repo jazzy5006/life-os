@@ -1302,6 +1302,39 @@ body.timer-active .desktop-layout{padding-top:70px}
             </div>
             <div class="tomorrow-peek-body" id="deskTomorrowBody"></div>
           </div>
+          <!-- Today's Shape — desktop -->
+          <div class="shape-card" id="deskShapeCard" style="flex-shrink:0;margin-bottom:10px">
+            <div class="shape-hd" onclick="toggleDeskShapeCard()">
+              <div class="shape-hd-left">
+                <span style="font-size:1rem">🗂️</span>
+                <div>
+                  <div class="shape-title">Today's Shape <span class="shape-ov-count" id="deskShapeOvCount" style="display:none">0</span></div>
+                  <div class="shape-subtitle" id="deskShapeSubtitle">Tap to plan around meetings or adjust your day</div>
+                </div>
+              </div>
+              <span class="shape-arrow">▾</span>
+            </div>
+            <div class="shape-body" id="deskShapeBody">
+              <div class="shape-cal-section">
+                <div class="shape-cal-lbl">📅 From your calendar today</div>
+                <div class="shape-meetings" id="deskShapeMeetings">
+                  <div class="shape-cal-empty">Loading calendar…</div>
+                </div>
+              </div>
+              <div class="shape-context-lbl">✏️ Add context or nuance</div>
+              <textarea class="shape-context-ta" id="deskShapeContextNote" rows="2"
+                placeholder="e.g. The 10am will run ~2hrs. Working from office today."
+                oninput="saveShapeContext()"></textarea>
+              <button class="shape-suggest-btn" id="deskShapeSuggestBtn" onclick="runShapeSuggest()">
+                ✨ Suggest what to compress or skip
+              </button>
+              <div class="shape-ai-result" id="deskShapeAiResult">
+                <div class="shape-ai-result-hd">✨ Gemini's suggestions — tap to apply</div>
+                <div id="deskShapeAiSuggestions"></div>
+              </div>
+            </div>
+          </div>
+
           <!-- Brain Dump — desktop -->
           <div class="lab-card" style="flex-shrink:0;margin-bottom:10px">
             <div class="lab-hd">
@@ -3795,25 +3828,90 @@ window.applyBlockOverride = (status) => {
 function updateShapeHeader(){
   const shape = loadShape();
   const count = Object.keys(shape.overrides).length;
+  ['shapeOvCount','deskShapeOvCount'].forEach(id => {
+    const el = document.getElementById(id);
+    if(el){ el.textContent = count; el.style.display = count ? 'inline' : 'none'; }
+  });
   const countEl = document.getElementById('shapeOvCount');
   const subEl   = document.getElementById('shapeSubtitle');
-  if(countEl){ countEl.textContent = count; countEl.style.display = count ? 'inline' : 'none'; }
-  if(subEl){
-    if(count === 0) subEl.textContent = 'Tap to plan around meetings or adjust your day';
-    else {
-      const skipped   = Object.values(shape.overrides).filter(o=>o.status==='skipped').length;
-      const compressed= Object.values(shape.overrides).filter(o=>o.status==='compressed').length;
-      const moved     = Object.values(shape.overrides).filter(o=>o.status==='moved').length;
-      const parts = [];
-      if(skipped)    parts.push(`${skipped} skipped`);
-      if(compressed) parts.push(`${compressed} compressed`);
-      if(moved)      parts.push(`${moved} moved`);
-      subEl.textContent = parts.join(' · ');
-    }
-  }
+  const deskCountEl = document.getElementById('deskShapeOvCount');
+  const deskSubEl   = document.getElementById('deskShapeSubtitle');
+  const subtitleTxt = count === 0 ? 'Tap to plan around meetings or adjust your day' : (() => {
+    const skipped   = Object.values(shape.overrides).filter(o=>o.status==='skipped').length;
+    const compressed= Object.values(shape.overrides).filter(o=>o.status==='compressed').length;
+    const moved     = Object.values(shape.overrides).filter(o=>o.status==='moved').length;
+    const parts = [];
+    if(skipped)    parts.push(`${skipped} skipped`);
+    if(compressed) parts.push(`${compressed} compressed`);
+    if(moved)      parts.push(`${moved} moved`);
+    return parts.join(' · ');
+  })();
+  [countEl, deskCountEl].forEach(el=>{ if(el){ el.textContent=count; el.style.display=count?'inline':'none'; } });
+  [subEl, deskSubEl].forEach(el=>{ if(el) el.textContent = subtitleTxt; });
 }
 
 // Toggle the shape card open/closed
+window.toggleDeskShapeCard = () => {
+  const card = document.getElementById('deskShapeCard');
+  if(!card) return;
+  const opening = !card.classList.contains('open');
+  card.classList.toggle('open', opening);
+  if(opening) initDeskShapeCard();
+};
+
+function initDeskShapeCard(){
+  const shape = loadShape();
+  const ta = document.getElementById('deskShapeContextNote');
+  if(ta && shape.contextNote) ta.value = shape.contextNote;
+  if(shape.aiSuggestion) renderDeskShapeAiResult(shape.aiSuggestion);
+  populateDeskShapeMeetings();
+}
+
+function populateDeskShapeMeetings(){
+  const el = document.getElementById('deskShapeMeetings');
+  if(!el) return;
+  if(!getCalUrl()){
+    el.innerHTML = '<div class="shape-cal-empty">No calendar connected</div>';
+    return;
+  }
+  el.innerHTML = '<div class="shape-cal-empty">Loading…</div>';
+  fetchCalEvents().then(events => {
+    if(!events){ el.innerHTML = '<div class="shape-cal-empty">Could not load calendar</div>'; return; }
+    const today = events.filter(e => e.start.toDateString() === todayDateString()).sort((a,b) => a.start-b.start);
+    if(!today.length){ el.innerHTML = '<div class="shape-cal-empty">Nothing on the calendar today 🌸</div>'; return; }
+    const durMin = e => (!e.end||e.allDay) ? null : Math.round((e.end-e.start)/60000);
+    el.innerHTML = today.map(e => {
+      const dur = durMin(e);
+      return `<div class="shape-meeting-chip"><span class="shape-meeting-time">${e.allDay?'All day':fmt12(e.start)}</span><span class="shape-meeting-title">${esc(e.summary)}</span>${dur?`<span class="shape-meeting-dur">${dur}m</span>`:''}</div>`;
+    }).join('');
+  }).catch(() => { el.innerHTML = '<div class="shape-cal-empty">Could not load calendar</div>'; });
+}
+
+function renderDeskShapeAiResult(suggestions){
+  const resultEl = document.getElementById('deskShapeAiResult');
+  const sugEl    = document.getElementById('deskShapeAiSuggestions');
+  if(!resultEl || !sugEl) return;
+  const actionLabel = { compressed:'⏩ Compress', skipped:'✗ Skip', moved:'↕ Move later' };
+  const allItems = getFilteredSchedule('all');
+  sugEl.innerHTML = suggestions.map((s,i) => {
+    const matchIdx = allItems.findIndex(item =>
+      item.h.toLowerCase().includes(s.block.toLowerCase().slice(0,12)) ||
+      s.block.toLowerCase().includes(item.h.toLowerCase().slice(0,12))
+    );
+    return `<div class="shape-suggestion-item" id="deskShapeS-${i}">
+      <div class="shape-sug-text">
+        <strong>${esc(actionLabel[s.action]||s.action)}:</strong> ${esc(s.block)}<br>
+        <span style="font-size:.65rem;color:var(--tm);font-weight:600">${esc(s.reason)}</span>
+      </div>
+      ${matchIdx>=0
+        ? `<button class="shape-sug-accept" onclick="acceptShapeSuggestion(${i},${matchIdx},'${s.action}')">Apply</button>`
+        : `<span style="font-size:.58rem;color:var(--tm);font-style:italic">no match</span>`
+      }
+    </div>`;
+  }).join('');
+  resultEl.classList.add('visible');
+}
+
 window.toggleShapeCard = () => {
   const card = document.getElementById('shapeCard');
   if(!card) return;
@@ -3838,7 +3936,13 @@ function initShapeCard(){
 
 window.saveShapeContext = () => {
   const shape = loadShape();
-  shape.contextNote = document.getElementById('shapeContextNote')?.value || '';
+  const active = document.activeElement;
+  const mob = document.getElementById('shapeContextNote');
+  const dsk = document.getElementById('deskShapeContextNote');
+  shape.contextNote = (active===mob||active===dsk) ? active.value : (mob?.value || dsk?.value || '');
+  // Sync both
+  if(mob && mob!==active) mob.value = shape.contextNote;
+  if(dsk && dsk!==active) dsk.value = shape.contextNote;
   saveShape(shape);
 };
 
@@ -3850,7 +3954,7 @@ window.runShapeSuggest = async () => {
   if(btn){ btn.disabled=true; btn.textContent='✨ Thinking…'; }
   if(resultEl) resultEl.classList.remove('visible');
 
-  const contextNote = document.getElementById('shapeContextNote')?.value?.trim() || '';
+  const contextNote = (document.getElementById('shapeContextNote')?.value || document.getElementById('deskShapeContextNote')?.value || '').trim();
   const battery = loadBatteryLog().find(e=>e.date===new Date().toDateString());
   const battEmoji = battery ? ['','🪫','😔','😐','😊','🌟'][battery.level] : 'not logged';
   const nowMin = getNowMin();
@@ -3929,6 +4033,7 @@ CRITICAL RULES:
     const suggestions = JSON.parse(raw);
     const shape = loadShape(); shape.aiSuggestion = suggestions; saveShape(shape);
     renderShapeAiResult(suggestions, true);
+    renderDeskShapeAiResult(suggestions);
   } catch(err){
     if(resultEl){
       resultEl.innerHTML = `<div class="shape-ai-result-hd">✨ Gemini's suggestions</div><div style="font-size:.72rem;color:var(--pa)">⚠️ ${err.message||'Could not get suggestions'}</div>`;
@@ -4763,4 +4868,4 @@ window.addEventListener('hashchange',handleSitterHash);
 setTimeout(handleSitterHash,100);
 </script>
 </body>
-        </html>
+</html>

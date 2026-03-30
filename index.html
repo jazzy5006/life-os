@@ -826,80 +826,52 @@ body.timer-active .desktop-layout{padding-top:70px}
 .cat-sub-content.active{display:block}
 
 /* ── SITTER MOBILE ── */
-@media(max-width:374px){
-  .sitter-hero h1{font-size:1.2rem
-  .vv-time-btn,.em-time-btn{font-size:.6rem;padding:5px 10px}
-  .sitter-hero .hero-sub{font-size:.76rem}
-  .cat-sub-tab{font-size:.48rem;letter-spacing:0;padding:8px 2px 10px}
-  .sitter-card{padding:12px}
-  .sitter-card h3{font-size:.8rem}
-  .sitter-card p,.sitter-card li{font-size:.74rem}
-  .sitter-contact-name{min-width:80px}
-  .sitter-time{min-width:56px;font-size:.66rem}
-}
 /* ── SITTER RESPONSIVE LAYOUT ── */
 .sitter-inner{display:block}
 .sitter-toc{display:none}
 .sitter-main{min-width:0}
 
-/* ToC pill bar — mobile default */
-.sitter-toc-bar{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;padding:10px 16px 12px;background:rgba(240,246,255,.97);border-bottom:1.5px solid #d8eaf8;flex-wrap:nowrap}
+/* ToC pill bar — sticky, scrollable, all screen sizes */
+.sitter-toc-bar{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;padding:10px 16px 12px;background:rgba(240,246,255,.97);backdrop-filter:blur(6px);border-bottom:1.5px solid #d8eaf8;flex-wrap:nowrap;position:sticky;top:calc(env(safe-area-inset-top,0px) + 96px);z-index:8}
 .sitter-toc-bar::-webkit-scrollbar{display:none}
-.sitter-toc-pill{display:inline-flex;align-items:center;gap:4px;white-space:nowrap;padding:5px 11px;border-radius:999px;border:1.5px solid #c8dff8;background:#f0f6ff;font-family:'Nunito',sans-serif;font-size:.6rem;font-weight:900;letter-spacing:.05em;color:#2a5a8a;text-decoration:none;-webkit-tap-highlight-color:transparent;transition:background .15s,color .15s;cursor:pointer;flex-shrink:0}
+.sitter-toc-pill{display:inline-flex;align-items:center;gap:4px;white-space:nowrap;padding:6px 12px;border-radius:999px;border:1.5px solid #c8dff8;background:#f0f6ff;font-family:'Nunito',sans-serif;font-size:.68rem;font-weight:900;letter-spacing:.04em;color:#2a5a8a;text-decoration:none;-webkit-tap-highlight-color:transparent;transition:background .15s,color .15s;cursor:pointer;flex-shrink:0}
 .sitter-toc-pill:hover,.sitter-toc-pill:active{background:#4a8aba;color:#fff;border-color:#4a8aba}
 .sitter-toc-pill.vivi{border-color:#f4c8e8;background:#fdf0f8;color:#7a2a5a}
 .sitter-toc-pill.vivi:hover,.sitter-toc-pill.vivi:active{background:#c8509a;color:#fff;border-color:#c8509a}
 
 /* Section scroll-margin so sticky headers don't cover anchors */
-.sitter-section{scroll-margin-top:120px;margin-bottom:24px}
+.sitter-section{scroll-margin-top:160px;margin-bottom:24px}
 
 /* Tablet 640px+ */
 @media(min-width:640px){
-  .sitter-overlay{overflow-y:auto}
   .sitter-body{max-width:680px;padding:24px 28px calc(60px + env(safe-area-inset-bottom,0px))}
   .sitter-card{padding:20px}
   .sitter-card h3{font-size:.92rem}
   .sitter-card p,.sitter-card li{font-size:.82rem}
-  .sitter-toc-bar{padding:12px 28px 14px;gap:8px}
-  .sitter-toc-pill{font-size:.65rem;padding:6px 14px}
+  .sitter-toc-bar{padding:12px 28px 14px;gap:8px;top:calc(env(safe-area-inset-top,0px) + 100px)}
+  .sitter-toc-pill{font-size:.72rem;padding:7px 14px}
   .sitter-hero h1{font-size:2rem}
   .sitter-hero .hero-sub{font-size:.9rem}
   .sitter-section-title{font-size:.65rem}
 }
 
-/* Desktop 900px+ — sidebar ToC */
+/* Desktop 900px+ */
 @media(min-width:900px){
-  .sitter-overlay{overflow-y:auto}
-  .sitter-toc-bar{display:none}
-  .sitter-body{max-width:none;padding:0}
-  .sitter-inner{display:grid;grid-template-columns:200px 1fr;gap:0;max-width:980px;margin:0 auto;padding:28px 32px calc(40px + env(safe-area-inset-bottom,0px))}
-  .sitter-toc{display:block;position:sticky;top:120px;align-self:start;padding-right:24px}
-  .sitter-toc-title{font-size:.52rem;font-weight:900;letter-spacing:.18em;text-transform:uppercase;color:#9a7aba;margin-bottom:10px;padding-bottom:6px;border-bottom:2px solid #e8d8f8}
-  .sitter-toc-link{display:flex;align-items:center;gap:6px;padding:6px 10px;border-radius:10px;font-family:'Nunito',sans-serif;font-size:.68rem;font-weight:800;color:#4a5a7a;text-decoration:none;transition:background .15s,color .15s;margin-bottom:2px;-webkit-tap-highlight-color:transparent;line-height:1.3}
-  .sitter-toc-link:hover{background:#e8f0fc;color:#1a3a6a}
-  .sitter-toc-link.active{background:#dbeafe;color:#1a3a6a;font-weight:900}
-  .sitter-toc-link.vivi{color:#6a2a5a}
-  .sitter-toc-link.vivi:hover{background:#fce8f4;color:#5a1a4a}
-  .sitter-toc-link.vivi.active{background:#f8d8ee;color:#5a1a4a}
-  .sitter-main{min-width:0;padding-left:0}
-  .sitter-section{scroll-margin-top:100px}
-  .sitter-card{padding:20px 22px}
+  .sitter-body{max-width:760px;margin:0 auto}
+  .sitter-toc-bar{top:calc(env(safe-area-inset-top,0px) + 100px);flex-wrap:wrap;gap:6px 8px;padding:12px 32px 14px}
+  .sitter-toc-pill{font-size:.7rem}
+  .sitter-card{padding:20px 24px}
   .sitter-card h3{font-size:.95rem}
   .sitter-card p,.sitter-card li{font-size:.82rem}
   .sitter-section-title{font-size:.65rem}
   .sitter-hero h1{font-size:2.1rem}
   .sitter-contact-name{min-width:120px}
+  .sitter-section{scroll-margin-top:170px}
 }
 
 @media(min-width:1100px){
-  .sitter-inner{grid-template-columns:220px 1fr;max-width:1100px}
-  .sitter-toc{padding-right:32px}
+  .sitter-body{max-width:860px}
 }
-@media(min-width:900px){
-  .cat-sub-bar{top:calc(env(safe-area-inset-top,0px) + 48px)}
-  .cat-sub-bar-inner{max-width:none}
-}
-
 
 /* ── FEEDER TOGGLE BUTTONS ── */
 .vv-time-btn,.em-time-btn{padding:6px 14px;border-radius:999px;border:2px solid #c8dff8;background:#f0f6ff;font-family:'Nunito',sans-serif;font-size:.65rem;font-weight:900;color:#4a6a9a;cursor:pointer;transition:all .18s;-webkit-tap-highlight-color:transparent;white-space:nowrap}
@@ -913,9 +885,14 @@ body.timer-active .desktop-layout{padding-top:70px}
 .fdr-schedule-box{background:linear-gradient(135deg,#f0f6ff,#e8f0fc);border:2px solid #c8dff8;border-radius:14px;padding:14px;margin-bottom:14px}
 .fdr-schedule-label{font-size:.58rem;font-weight:900;letter-spacing:.14em;text-transform:uppercase;color:#4a6a9a;margin-bottom:12px}
 .fdr-clean-label{font-size:.58rem;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:#4a6a9a;margin-bottom:8px}
+.fdr-row-highlight{background:rgba(255,255,255,.5);border-radius:10px;padding:10px;border-bottom:none;margin-bottom:8px}
+.fdr-tip-box{background:#fef0e8;border:1.5px solid #f4c8a0;border-radius:8px;padding:8px 10px;font-size:.7rem;font-weight:700;color:#7a3a10;line-height:1.55}
+
 /* Sitter ToC anchor links */
 .stoc-link-orange{font-size:.78rem;font-weight:700;color:#d06a20;text-decoration:none;padding:5px 0;border-bottom:1px solid #f0e8f8;display:block}
-.stoc-link-purple{font-size:.78rem;font-weight:700;color:#7a4aba;text-decoration:none;padding:5px 0;border-bottom:1px solid #e8d0f8;display:block}
+.stoc-link-purple{font-size:.78rem;font-weight:700;color:#7a4aba;text-decoration:none;padding:5px 0;border-bottom:1px solid #f0e8f8;display:block}
+.stoc-col{display:flex;flex-direction:column;gap:4px}
+
 /* Cat sub-tab bar */
 .cat-sub-bar{position:sticky;top:calc(env(safe-area-inset-top,0px) + 52px);z-index:9;background:rgba(240,246,255,.97);backdrop-filter:blur(8px);border-bottom:2px solid #c8dff8;padding:10px 16px 0}
 .cat-sub-bar-inner{display:flex;gap:8px;max-width:520px;margin:0 auto}
@@ -930,8 +907,7 @@ body.timer-active .desktop-layout{padding-top:70px}
 .fdr-inst{font-size:.72rem;font-weight:700;color:#2a5a8a;line-height:1.55;padding:8px 10px;background:rgba(255,255,255,.7);border-radius:8px;border:1px solid #c8dff8}
 .fdr-static{font-size:.72rem;font-weight:700;color:#1a3a6a;line-height:1.55}
 
-  .fdr-inst,.fdr-static{font-size:.68rem}
-}
+
 
 /* ── SCROLL TO TOP ── */
 .sitter-scroll-top{position:fixed;bottom:calc(24px + env(safe-area-inset-bottom,0px));right:18px;z-index:10000;width:40px;height:40px;border-radius:50%;background:#9a6aba;color:#fff;border:none;font-size:1.1rem;cursor:pointer;box-shadow:0 3px 14px rgba(154,106,186,.4);display:none;align-items:center;justify-content:center;transition:opacity .2s,transform .2s;-webkit-tap-highlight-color:transparent}
@@ -940,6 +916,21 @@ body.timer-active .desktop-layout{padding-top:70px}
 </style>
 </head>
 <body>
+<script>
+// If URL has #sitter or #cats, open overlay as soon as DOM is ready
+(function(){
+  var h = '#cats'; // preview override
+  if(h === '#sitter' || h === '#cats') {
+    document.addEventListener('DOMContentLoaded', function(){
+      var overlay = document.getElementById('sitterOverlay');
+      if(overlay) {
+        overlay.classList.add('active');
+        document.body.style.overflow = 'hidden';
+      }
+    });
+  }
+})();
+</script>
 <!-- FLOATING TIMER BAR -->
 <div class="timer-bar" id="timerBar">
   <div class="timer-left">
@@ -5002,8 +4993,8 @@ window.onload=()=>{
       <div class="sitter-section">
         <div class="sitter-section-title">📋 What's in This Guide</div>
         <div class="sitter-card">
-          <div style="display:flex;flex-direction:column;gap:4px">
-            <a href="#s-contacts" style="font-size:.78rem;font-weight:700;color:#7a4aba;text-decoration:none;padding:5px 0;border-bottom:1px solid #f0e8f8">📞 Contacts &amp; Emergency Vets</a>
+          <div class="stoc-col">
+            <a href="#s-contacts" class="stoc-link-purple">📞 Contacts &amp; Emergency Vets</a>
             <a href="#s-feeding" class="stoc-link-orange">🍽️ Feeding</a>
             <a href="#s-training" class="stoc-link-orange">🎓 Training</a>
             <a href="#s-schedule" class="stoc-link-orange">🗓️ Daily Schedule (example)</a>
@@ -5389,23 +5380,8 @@ window.onload=()=>{
         <a class="sitter-toc-pill" href="#sv-accidents">🧽 Accidents</a>
         <a class="sitter-toc-pill" href="#sv-contacts">📞 Contacts</a>
       </div>
-      <div class="sitter-inner">
-
-          <div class="sitter-toc">
-            <div class="sitter-toc-title">Contents</div>
-            <a class="sitter-toc-link vivi" href="#vv-tigris">🧡 Tigris</a>
-            <a class="sitter-toc-link vivi" href="#vv-visits">📅 House Visits</a>
-            <a class="sitter-toc-link vivi" href="#vv-return">✅ Return Checklist</a>
-            <a class="sitter-toc-link vivi" href="#vv-tulip">🤍 Tulip</a>
-            <a class="sitter-toc-link" href="#sv-water">💧 Water Fountains</a>
-            <a class="sitter-toc-link" href="#sv-litter">🧹 Litter Boxes</a>
-            <a class="sitter-toc-link" href="#sv-plants">🌿 Plants</a>
-            <a class="sitter-toc-link" href="#sv-trash-v">🗑️ Trash</a>
-            <a class="sitter-toc-link" href="#sv-accidents">🧽 Accidents</a>
-            <a class="sitter-toc-link" href="#sv-contacts">📞 Contacts &amp; Vets</a>
-          </div>
-        <div class="sitter-main">
-          <div class="sitter-body" style="padding-left:0;padding-right:0">
+      
+          <div class="sitter-body">
 
             <div class="sitter-section" id="vv-intro">
               <div class="sitter-section-title">🌸 Hi Vivi!</div>
@@ -5443,10 +5419,10 @@ window.onload=()=>{
                     <div class="fdr-static">Feeder runs normally: slot 1 at 6 AM, slot 2 at 1 PM, slot 3 at 9 PM. <strong>No action needed.</strong></div>
                   </div>
 
-                  <div class="fdr-row" style="background:rgba(255,255,255,.5);border-radius:10px;padding:10px;border-bottom:none;margin-bottom:8px">
+                  <div class="fdr-row" class="fdr-row-highlight">
                     <div class="fdr-date" style="color:#c86a20">Wed Apr 1 — Check feeder when you get home from work (~6 PM)</div>
                     <div class="fdr-static" style="color:#7a3a10;margin-bottom:10px">By 6 PM, slots 1 and 2 have dispensed. Slot 3 will fire at 9 PM as normal. Take a look at slots 1 and 2 — if Tigris has eaten most of what's in them, <strong>add half a can to each of those slots.</strong> That's all — no need to wait up for the 9 PM feeding or wake up early Thursday.</div>
-                    <div style="background:#fef0e8;border:1.5px solid #f4c8a0;border-radius:8px;padding:8px 10px;font-size:.7rem;font-weight:700;color:#7a3a10;line-height:1.55">
+                    <div class="fdr-tip-box">
                       💡 <strong>Why half a can?</strong> Tigris only eats about half per slot, so a full can would just go crusty. Half a can keeps her fed without waste.
                     </div>
                   </div>
@@ -5626,8 +5602,6 @@ window.onload=()=>{
         </div>
 
           </div>
-        </div>
-      </div>
     </div><!-- end vivi -->
 
     <!-- ── ELLA & MICHAEL SUB-TAB ── -->
@@ -5647,24 +5621,8 @@ window.onload=()=>{
         <a class="sitter-toc-pill" href="#sv-accidents">🧽 Accidents</a>
         <a class="sitter-toc-pill" href="#sv-contacts">📞 Contacts</a>
       </div>
-      <div class="sitter-inner">
-
-          <div class="sitter-toc">
-            <div class="sitter-toc-title">Contents</div>
-            <a class="sitter-toc-link" href="#em-schedule">📅 Visit Schedule</a>
-            <a class="sitter-toc-link" href="#em-health">🩺 Tigris Health</a>
-            <a class="sitter-toc-link" href="#em-supplements">💊 Supplements</a>
-            <a class="sitter-toc-link" href="#em-feeder">🤖 Wet Feeder</a>
-            <a class="sitter-toc-link" href="#em-tulip">🤍 Tulip</a>
-            <a class="sitter-toc-link" href="#sv-water">💧 Water Fountains</a>
-            <a class="sitter-toc-link" href="#sv-litter">🧹 Litter Boxes</a>
-            <a class="sitter-toc-link" href="#sv-plants">🌿 Plants</a>
-            <a class="sitter-toc-link" href="#sv-trash-em">🗑️ Trash</a>
-            <a class="sitter-toc-link" href="#sv-accidents">🧽 Accidents</a>
-            <a class="sitter-toc-link" href="#sv-contacts">📞 Contacts &amp; Vets</a>
-          </div>
-        <div class="sitter-main">
-          <div class="sitter-body" style="padding-left:0;padding-right:0">
+      
+          <div class="sitter-body">
 
             <div class="sitter-section" id="em-intro">
               <div class="sitter-section-title">🐦‍⬛ Hi Ella &amp; Michael!</div>
@@ -5867,8 +5825,6 @@ window.onload=()=>{
         </div>
 
           </div>
-        </div>
-      </div>
     </div><!-- end ella & michael -->
 
   </div><!-- end cat tab -->
@@ -5940,7 +5896,7 @@ function openSitter(tab){
 function closeSitter(){
   document.getElementById('sitterOverlay').classList.remove('active');
   document.body.style.overflow='';
-  history.pushState('',document.title,window.location.pathname+window.location.search);
+  try{history.pushState('',document.title,window.location.pathname+window.location.search);}catch(e){}
 }
 function handleSitterHash(){
   const h=window.location.hash;

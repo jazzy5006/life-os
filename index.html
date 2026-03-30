@@ -5712,12 +5712,14 @@ window.onload=()=>{
                     <div class="fdr-static">It's been 2 days since Sunday's refill — <strong>all 3 slots are spent. Full clean &amp; refill all 3 slots.</strong></div>
                   </div>
 
-                  <div class="fdr-row" style="background:rgba(255,240,240,.6);border-radius:10px;padding:10px;border-bottom:none;border:1.5px solid #f4c8c8">
-                    <div class="fdr-date" style="color:#8a1a1a">Wed Apr 8 — ⚠️ Please visit before 9 PM</div>
-                    <div class="fdr-static" style="color:#6a1a1a;margin-bottom:8px">This visit timing matters for Tigris's food coverage through Friday when Jasmine gets home.</div>
-                    <div style="background:#fff;border:1.5px solid #f4b8b8;border-radius:8px;padding:10px;font-size:.72rem;font-weight:700;color:#6a1a1a;line-height:1.6">
-                      If you visit <strong>before 9 PM</strong>: slots 1 &amp; 2 have dispensed today — <strong>clean &amp; refill slots 1 &amp; 2 only.</strong> Leave slot 3 alone — it fires at 9 PM tonight. This gives Tigris full coverage through Thursday and into Friday until Jasmine gets home at 7 PM. ✓
+                  <div class="fdr-row" style="border-bottom:none">
+                    <div class="fdr-date">Wed Apr 8 — what time are you visiting?</div>
+                    <div class="fdr-btns" style="margin-bottom:10px">
+                      <button class="em-time-btn active" id="em-apr8-before" onclick="setEmTime('apr8','before')">Before 9 PM</button>
+                      <button class="em-time-btn" id="em-apr8-after" onclick="setEmTime('apr8','after')">After 9 PM</button>
                     </div>
+                    <div id="em-apr8-before-inst" class="fdr-inst">Slots 1 &amp; 2 have dispensed today but slot 3 hasn't fired yet — <strong>clean &amp; refill slots 1 &amp; 2 only.</strong> Leave slot 3 alone, it still has food in it.</div>
+                    <div id="em-apr8-after-inst" class="fdr-inst" style="display:none">All 3 slots have dispensed — <strong>full clean &amp; refill all 3 slots.</strong></div>
                   </div>
                 </div>
 
@@ -5941,15 +5943,6 @@ function setViviTime(day, when){ // legacy - no longer used
   });
 }
 function setEmTime(day, when){
-  // Apr 5 and Apr 7 always show same message regardless
-  if(day==='apr5'||day==='apr7'){
-    ['before','after'].forEach(w=>{
-      const btn=document.getElementById('em-'+day+'-'+w);
-      if(btn) btn.classList.toggle('active',w===when);
-    });
-    return;
-  }
-  // Apr 8 branches
   if(day==='apr8'){
     ['before','after'].forEach(w=>{
       const btn=document.getElementById('em-apr8-'+w);

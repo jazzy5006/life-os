@@ -836,6 +836,65 @@ body.timer-active .desktop-layout{padding-top:70px}
   .sitter-contact-name{min-width:80px}
   .sitter-time{min-width:56px;font-size:.66rem}
 }
+/* ── SITTER RESPONSIVE LAYOUT ── */
+.sitter-inner{display:block}
+.sitter-toc{display:none}
+.sitter-main{min-width:0}
+
+/* ToC pill bar — mobile default */
+.sitter-toc-bar{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;padding:10px 16px 12px;background:rgba(240,246,255,.97);border-bottom:1.5px solid #d8eaf8;flex-wrap:nowrap}
+.sitter-toc-bar::-webkit-scrollbar{display:none}
+.sitter-toc-pill{display:inline-flex;align-items:center;gap:4px;white-space:nowrap;padding:5px 11px;border-radius:999px;border:1.5px solid #c8dff8;background:#f0f6ff;font-family:'Nunito',sans-serif;font-size:.6rem;font-weight:900;letter-spacing:.05em;color:#2a5a8a;text-decoration:none;-webkit-tap-highlight-color:transparent;transition:background .15s,color .15s;cursor:pointer;flex-shrink:0}
+.sitter-toc-pill:hover,.sitter-toc-pill:active{background:#4a8aba;color:#fff;border-color:#4a8aba}
+.sitter-toc-pill.vivi{border-color:#f4c8e8;background:#fdf0f8;color:#7a2a5a}
+.sitter-toc-pill.vivi:hover,.sitter-toc-pill.vivi:active{background:#c8509a;color:#fff;border-color:#c8509a}
+
+/* Section scroll-margin so sticky headers don't cover anchors */
+.sitter-section{scroll-margin-top:120px;margin-bottom:24px}
+
+/* Tablet 640px+ */
+@media(min-width:640px){
+  .sitter-overlay{overflow-y:auto}
+  .sitter-body{max-width:680px;padding:24px 28px calc(60px + env(safe-area-inset-bottom,0px))}
+  .sitter-card{padding:20px}
+  .sitter-card h3{font-size:.92rem}
+  .sitter-card p,.sitter-card li{font-size:.82rem}
+  .sitter-toc-bar{padding:12px 28px 14px;gap:8px}
+  .sitter-toc-pill{font-size:.65rem;padding:6px 14px}
+  .sitter-hero h1{font-size:2rem}
+  .sitter-hero .hero-sub{font-size:.9rem}
+  .sitter-section-title{font-size:.65rem}
+}
+
+/* Desktop 900px+ — sidebar ToC */
+@media(min-width:900px){
+  .sitter-overlay{overflow-y:auto}
+  .sitter-toc-bar{display:none}
+  .sitter-body{max-width:none;padding:0}
+  .sitter-inner{display:grid;grid-template-columns:200px 1fr;gap:0;max-width:980px;margin:0 auto;padding:28px 32px calc(40px + env(safe-area-inset-bottom,0px))}
+  .sitter-toc{display:block;position:sticky;top:120px;align-self:start;padding-right:24px}
+  .sitter-toc-title{font-size:.52rem;font-weight:900;letter-spacing:.18em;text-transform:uppercase;color:#9a7aba;margin-bottom:10px;padding-bottom:6px;border-bottom:2px solid #e8d8f8}
+  .sitter-toc-link{display:flex;align-items:center;gap:6px;padding:6px 10px;border-radius:10px;font-family:'Nunito',sans-serif;font-size:.68rem;font-weight:800;color:#4a5a7a;text-decoration:none;transition:background .15s,color .15s;margin-bottom:2px;-webkit-tap-highlight-color:transparent;line-height:1.3}
+  .sitter-toc-link:hover{background:#e8f0fc;color:#1a3a6a}
+  .sitter-toc-link.active{background:#dbeafe;color:#1a3a6a;font-weight:900}
+  .sitter-toc-link.vivi{color:#6a2a5a}
+  .sitter-toc-link.vivi:hover{background:#fce8f4;color:#5a1a4a}
+  .sitter-toc-link.vivi.active{background:#f8d8ee;color:#5a1a4a}
+  .sitter-main{min-width:0;padding-left:0}
+  .sitter-section{scroll-margin-top:100px}
+  .sitter-card{padding:20px 22px}
+  .sitter-card h3{font-size:.95rem}
+  .sitter-card p,.sitter-card li{font-size:.82rem}
+  .sitter-section-title{font-size:.65rem}
+  .sitter-hero h1{font-size:2.1rem}
+  .sitter-contact-name{min-width:120px}
+}
+
+@media(min-width:1100px){
+  .sitter-inner{grid-template-columns:220px 1fr;max-width:1100px}
+  .sitter-toc{padding-right:32px}
+}
+
 </style>
 </head>
 <body>
@@ -5218,80 +5277,137 @@ window.onload=()=>{
     <!-- ── OVERVIEW SUB-TAB ── -->
     <div class="cat-sub-content active" id="csub-overview">
       <div class="sitter-body">
-
         <div class="sitter-section">
           <div class="sitter-section-title">👋 Hi everyone!</div>
           <div class="sitter-card blue">
             <p><strong>Vivi</strong> — you're hosting Tigris and doing Tulip check-ins Mar 31–Apr 3. Tap <strong>🌸 Vivi</strong> above for everything you need.<br><br><strong>Ella &amp; Michael</strong> — you're on Week 2, Apr 5–8, both cats home. Tap <strong>🐦‍⬛ Ella &amp; Michael</strong> above for everything you need.<br><br>Your personal tabs are fully self-contained — you won't need to come back here. 💙</p>
           </div>
         </div>
-
       </div>
     </div><!-- end overview -->
 
     <!-- ── VIVI SUB-TAB ── -->
     <div class="cat-sub-content" id="csub-vivi">
-      <div class="sitter-body">
 
-        <div class="sitter-section">
-          <div class="sitter-section-title">🌸 Hi Vivi!</div>
-          <div class="sitter-card blue">
-            <p>Thank you so much for hosting Tigris and keeping an eye on things! Everything you need is right here on this tab. 💙</p>
-          </div>
-        </div>
+      <!-- VIVI TOC pill bar (mobile/tablet) -->
+      <div class="sitter-toc-bar">
+        <a class="sitter-toc-pill vivi" href="#vv-tigris">🧡 Tigris</a>
+        <a class="sitter-toc-pill vivi" href="#vv-visits">📅 Visits</a>
+        <a class="sitter-toc-pill vivi" href="#vv-return">✅ Return</a>
+        <a class="sitter-toc-pill vivi" href="#vv-tulip">🤍 Tulip</a>
+        <a class="sitter-toc-pill" href="#sv-water">💧 Water</a>
+        <a class="sitter-toc-pill" href="#sv-litter">🧹 Litter</a>
+        <a class="sitter-toc-pill" href="#sv-plants">🌿 Plants</a>
+        <a class="sitter-toc-pill" href="#sv-trash-v">🗑️ Trash</a>
+        <a class="sitter-toc-pill" href="#sv-accidents">🧽 Accidents</a>
+        <a class="sitter-toc-pill" href="#sv-contacts">📞 Contacts</a>
+      </div>
+      <div class="sitter-inner">
 
-        <!-- TIGRIS AT YOUR PLACE -->
-        <div class="sitter-section">
-          <div class="sitter-section-title">🧡 Tigris — staying with you</div>
-          <div class="sitter-card blue">
-            <h3>🧡 Drop-off: Sunday Mar 30 at ~7 PM</h3>
-            <p><strong>10 years old · orange &amp; black tabby · ~8 lbs.</strong> She recently had a dental procedure and a small mass removed from her side — recovering well! She's wearing her <strong>flower cone 🌸</strong> (yes it's shaped like a flower) to protect the site. You'll take it off when you bring her home Friday.</p>
-            <div class="sitter-tip">She has 14 cans of Friskies Pâté — plenty for her stay.</div>
+          <div class="sitter-toc">
+            <div class="sitter-toc-title">Contents</div>
+            <a class="sitter-toc-link vivi" href="#vv-tigris">🧡 Tigris</a>
+            <a class="sitter-toc-link vivi" href="#vv-visits">📅 House Visits</a>
+            <a class="sitter-toc-link vivi" href="#vv-return">✅ Return Checklist</a>
+            <a class="sitter-toc-link vivi" href="#vv-tulip">🤍 Tulip</a>
+            <a class="sitter-toc-link" href="#sv-water">💧 Water Fountains</a>
+            <a class="sitter-toc-link" href="#sv-litter">🧹 Litter Boxes</a>
+            <a class="sitter-toc-link" href="#sv-plants">🌿 Plants</a>
+            <a class="sitter-toc-link" href="#sv-trash-v">🗑️ Trash</a>
+            <a class="sitter-toc-link" href="#sv-accidents">🧽 Accidents</a>
+            <a class="sitter-toc-link" href="#sv-contacts">📞 Contacts &amp; Vets</a>
           </div>
+        <div class="sitter-main">
+          <div class="sitter-body" style="padding-left:0;padding-right:0">
 
-          <div class="sitter-card blue" style="margin-top:10px">
-            <h3>🤖 PetLibro Wet Feeder — every other day</h3>
-            <p>The feeder has <strong>3 slots</strong>, each loaded with <strong>one full can</strong> of Friskies Pâté (5.5 oz). Tigris eats about half per slot per meal — the full can across all three slots lasts <strong>two days</strong>.</p>
-            <p style="margin-top:8px"><strong>Meal times:</strong> 6:00 AM · 1:00 PM · 9:00 PM (automatic)</p>
-            <p style="margin-top:8px"><strong>Every other day</strong> (ideally after the 1 PM meal):</p>
-            <ol style="padding-left:18px;margin-top:6px">
-              <li>Remove the tray, discard crusty leftovers from each slot</li>
-              <li>Rinse and dry the tray and slots</li>
-              <li>Load 3 fresh cans — one per slot. <strong>Dump the can and mix/pat it down</strong> so it sits below the fill line (if you just dump it in it'll sit too high)</li>
-            </ol>
-          </div>
+            <div class="sitter-section" id="vv-intro">
+              <div class="sitter-section-title">🌸 Hi Vivi!</div>
+              <div class="sitter-card blue">
+                <p>Thank you so much for hosting Tigris and keeping an eye on things! Everything you need is right here on this tab. 💙</p>
+              </div>
+            </div>
 
-          <div class="sitter-card blue" style="margin-top:10px">
-            <h3>💊 Daily — 1 Cosequin piece</h3>
-            <p>Drop <strong>1 Cosequin piece</strong> in front of her once a day — she'll eat it on her own. The bag came with her supplies.</p>
-          </div>
-        </div>
+            <!-- TIGRIS -->
+            <div class="sitter-section" id="vv-tigris">
+              <div class="sitter-section-title">🧡 Tigris — staying with you</div>
+              <div class="sitter-card blue">
+                <h3>🧡 Drop-off: Sunday Mar 30 at ~7 PM</h3>
+                <p><strong>10 years old · orange &amp; black tabby · ~8 lbs.</strong> She recently had a dental procedure and a small mass removed from her side — recovering well! She's wearing her <strong>flower cone 🌸</strong> (yes it's shaped like a flower) to protect the site. You'll take it off when you bring her home Friday.</p>
+                <div class="sitter-tip">She has 14 cans of Friskies Pâté — plenty for her stay.</div>
+              </div>
+              <div class="sitter-card blue" style="margin-top:10px">
+                <h3>🤖 PetLibro Wet Feeder — every other day &nbsp;<a href="https://www.youtube.com/watch?v=An7HocZA1Pw" target="_blank" style="font-size:.65rem;font-weight:700;color:#4a8aba">▶ video</a></h3>
+                <p>The feeder has <strong>3 slots</strong>, each loaded with <strong>one full can</strong> of Friskies Pâté (5.5 oz). Tigris eats about half per slot per meal — the full load lasts <strong>two days</strong>.</p>
+                <p style="margin-top:8px"><strong>Meal times:</strong> 6:00 AM · 1:00 PM · 9:00 PM (automatic)</p>
+                <p style="margin-top:8px"><strong>Every other day</strong> (ideally after the 1 PM meal):</p>
+                <ol>
+                  <li>Remove the tray, discard crusty leftovers from each slot</li>
+                  <li>Rinse and dry the tray and slots</li>
+                  <li>Load 3 fresh cans — one per slot. <strong>Dump the can and mix/pat it down</strong> so it sits below the fill line (just dumping it in will sit too high)</li>
+                </ol>
+              </div>
+              <div class="sitter-card blue" style="margin-top:10px">
+                <h3>💊 Daily — 1 Cosequin piece</h3>
+                <p>Drop <strong>1 Cosequin piece</strong> in front of her once a day — she'll eat it on her own. The bag came with her supplies.</p>
+              </div>
+            </div>
 
-        <!-- VIVI HOUSE VISITS -->
-        <div class="sitter-section">
-          <div class="sitter-section-title">📅 Your house visits</div>
-          <div class="sitter-card blue">
-            <h3>🐱 Mar 31 · Apr 1 · Apr 3</h3>
-            <p style="margin-bottom:10px;font-size:.72rem;color:#4a6a8a">Tigris is with you — these visits are for Tulip, water, litter, plants, and house stuff.</p>
-            <div class="sitter-schedule-row blue"><span class="sitter-icon">📅</span><span class="sitter-time">Mar 31 · Tue</span><div class="sitter-event">Tulip, water, litter<small>Put trash bin on curb tonight before midnight — pickup Wednesday morning</small></div></div>
-            <div class="sitter-schedule-row blue"><span class="sitter-icon">📅</span><span class="sitter-time">Apr 1 · Wed</span><div class="sitter-event">Tulip, water, litter<small>Bring trash bin back in</small></div></div>
-            <div class="sitter-schedule-row blue"><span class="sitter-icon">📅</span><span class="sitter-time">Apr 3 · Fri</span><div class="sitter-event">Tulip, water, litter — and <strong>bring Tigris home!</strong><small>See return checklist below</small></div></div>
-          </div>
-        </div>
+            <!-- HOUSE VISITS -->
+            <div class="sitter-section" id="vv-visits">
+              <div class="sitter-section-title">📅 Your house visits</div>
+              <div class="sitter-card blue">
+                <h3>🐱 Mar 31 · Apr 1 · Apr 3</h3>
+                <p style="margin-bottom:10px;font-size:.72rem;color:#4a6a8a">Tigris is with you — these visits are for Tulip, water, litter, plants, and house stuff.</p>
+                <div class="sitter-schedule-row blue"><span class="sitter-icon">📅</span><span class="sitter-time">Mar 31 · Tue</span><div class="sitter-event">Tulip, water, litter<small>Put trash bin on curb tonight before midnight — pickup Wednesday morning</small></div></div>
+                <div class="sitter-schedule-row blue"><span class="sitter-icon">📅</span><span class="sitter-time">Apr 1 · Wed</span><div class="sitter-event">Tulip, water, litter<small>Bring trash bin back in</small></div></div>
+                <div class="sitter-schedule-row blue"><span class="sitter-icon">📅</span><span class="sitter-time">Apr 3 · Fri</span><div class="sitter-event">Tulip, water, litter — and <strong>bring Tigris home!</strong><small>See return checklist below</small></div></div>
+              </div>
+            </div>
 
-        <!-- TULIP -->
-        <div class="sitter-section">
-          <div class="sitter-section-title">🤍 Tulip</div>
-          <div class="sitter-card blue">
-            <p><strong>5 years old · white &amp; brown tabby · ~10 lbs.</strong> Dry feeder is in the <strong>living room, between the TV and the tan couch</strong> — automatic, just check it has food. If you see her, give her love and a <strong>Churu</strong> from the container in the <strong>upstairs guest bathroom</strong>.</p>
-          </div>
-        </div>
+            <!-- RETURN CHECKLIST -->
+            <div class="sitter-section" id="vv-return">
+              <div class="sitter-section-title">✅ Friday return checklist</div>
+              <div class="sitter-card blue">
+                <h3>🏠 Bringing Tigris home — Friday Apr 4</h3>
+                <p style="margin-bottom:10px">Pack everything before you leave. Here's exactly where each item goes:</p>
+                <div class="sitter-schedule-row blue"><span class="sitter-icon">🧡</span><span class="sitter-time">Tigris</span><div class="sitter-event">Remove her flower cone when you arrive at the house, then leave the cone in the <strong>upstairs guest bathroom</strong></div></div>
+                <div class="sitter-schedule-row blue"><span class="sitter-icon">🧹</span><span class="sitter-time">Litter box + pan</span><div class="sitter-event">Nathan's office closet</div></div>
+                <div class="sitter-schedule-row blue"><span class="sitter-icon">🤖</span><span class="sitter-time">Wet food feeder</span><div class="sitter-event">Bedroom — inside the large 40-gallon tub, opposite end from the microchip reader<small>Put the lid back on after</small></div></div>
+                <div class="sitter-schedule-row blue"><span class="sitter-icon">💧</span><span class="sitter-time">Water fountain</span><div class="sitter-event">Downstairs — top of the black cat furniture in the hallway corner<small>Refill and plug back in</small></div></div>
+                <div class="sitter-schedule-row blue"><span class="sitter-icon">🛏️</span><span class="sitter-time">Toys &amp; blanket</span><div class="sitter-event">Bedroom — wherever feels natural</div></div>
+                <div class="sitter-schedule-row blue"><span class="sitter-icon">🐾</span><span class="sitter-time">2 scratchers</span><div class="sitter-event">Triangle upright → Nathan's office, in front of the arm of the grey couch<small>Flat one with raised sides → living room, next to the tan couch</small></div></div>
+                <div class="sitter-schedule-row blue"><span class="sitter-icon">🐟</span><span class="sitter-time">Churu + Cosequin</span><div class="sitter-event">Upstairs guest bathroom</div></div>
+                <div class="sitter-schedule-row blue"><span class="sitter-icon">🥫</span><span class="sitter-time">Remaining Friskies cans</span><div class="sitter-event">Upstairs guest bathroom</div></div>
+              </div>
+              <div class="sitter-card blue" style="margin-top:10px">
+                <h3>📶 Reconnecting the feeder to home wifi</h3>
+                <p>When you plug the feeder back in at the house it'll lose wifi. Here's how to reconnect:</p>
+                <ol style="margin-top:8px">
+                  <li>Plug the feeder in at the house</li>
+                  <li>Press and hold the <strong>reset button on the back</strong> (next to the power port) until you hear a beep and the light flashes</li>
+                  <li>Open the <strong>PetLibro app</strong> — the feeder will show offline, tap it</li>
+                  <li>Make sure your phone is on <strong>Jasmine's wifi: freshplum118</strong></li>
+                  <li>Follow the in-app prompts to reconnect</li>
+                </ol>
+                <div class="sitter-tip">Jasmine already shared the device to your account so no login needed. If stuck: <strong>864-376-2210</strong> or <strong>jazzy5006@gmail.com</strong>.</div>
+              </div>
+            </div>
+
+            <!-- TULIP -->
+            <div class="sitter-section" id="vv-tulip">
+              <div class="sitter-section-title">🤍 Tulip</div>
+              <div class="sitter-card blue">
+                <p><strong>5 years old · white &amp; brown tabby · ~10 lbs.</strong> Dry feeder is in the <strong>living room, between the TV and the tan couch</strong> — automatic, just check it has food. If you see her, give her love and a <strong>Churu</strong> from the container in the <strong>upstairs guest bathroom</strong>.</p>
+              </div>
+            </div>
+
+
         <!-- WATER -->
-        <div class="sitter-section">
-          <div class="sitter-section-title">💧 Water Fountains — check &amp; refill as needed each visit</div>
+        <div class="sitter-section" id="sv-water">
+          <div class="sitter-section-title">💧 Water Fountains — check &amp; refill each visit</div>
           <div class="sitter-card blue">
             <h3>💧 Upstairs — next to the shoe bench &nbsp;<a href="https://photos.app.goo.gl/KAbeSba6uQspnStM9" target="_blank" style="font-size:.65rem;font-weight:700;color:#4a8aba">▶ video</a></h3>
-            <ol style="padding-left:18px;margin-top:6px">
+            <ol>
               <li>Fill the blue pitcher on the kitchen counter and bring it to the fountain</li>
               <li>Unplug from the wall</li>
               <li>Lift the white silicone spout to expose the reservoir</li>
@@ -5301,7 +5417,7 @@ window.onload=()=>{
           <div class="sitter-card blue" style="margin-top:10px">
             <h3>💧 Downstairs — top of black cat furniture in the hallway corner &nbsp;<a href="https://photos.app.goo.gl/bubKZ4Yod5Ffjmxs9" target="_blank" style="font-size:.65rem;font-weight:700;color:#4a8aba">▶ video</a></h3>
             <p style="margin-bottom:8px">Only needs refilling if the clear reservoir is ⅓ full or less.</p>
-            <ol style="padding-left:18px">
+            <ol>
               <li>Unplug from the wall</li>
               <li>Grab the clear reservoir and quickly flip it upside down</li>
               <li>Take to the guest bathroom, unscrew top, fill to max, screw back on</li>
@@ -5311,12 +5427,12 @@ window.onload=()=>{
           </div>
         </div>
         <!-- LITTER -->
-        <div class="sitter-section">
+        <div class="sitter-section" id="sv-litter">
           <div class="sitter-section-title">🧹 Litter Boxes — clean each visit</div>
           <div class="sitter-card blue">
             <h3>🧹 Laundry room closet &amp; Nathan's office closet &nbsp;<a href="https://photos.app.goo.gl/yvw1m1XcBgKFd2NV9" target="_blank" style="font-size:.65rem;font-weight:700;color:#4a8aba">▶ video</a></h3>
             <p style="margin-bottom:8px">All supplies on the shelves in the laundry room.</p>
-            <ol style="padding-left:18px">
+            <ol>
               <li>Scoop poop into a trash bag (green scoop hooks onto the laundry room box; bags on the second shelf, far left)</li>
               <li>Pull out the bottom tray, toss used pee pad, replace with a fresh one (gray box, first shelf)</li>
               <li>Laundry room box only: also swap the blue pad underneath</li>
@@ -5327,7 +5443,7 @@ window.onload=()=>{
           </div>
         </div>
         <!-- PLANTS -->
-        <div class="sitter-section">
+        <div class="sitter-section" id="sv-plants">
           <div class="sitter-section-title">🌿 Plants — water once a week</div>
           <div class="sitter-card green">
             <h3>🌿 Plant locations &nbsp;<a href="https://photos.app.goo.gl/PDff5MiuWaBhYEHy5" target="_blank" style="font-size:.65rem;font-weight:700;color:#3a7a4a">▶ downstairs video</a> &nbsp;<a href="https://photos.app.goo.gl/15JSVM3DASu5PnLcA" target="_blank" style="font-size:.65rem;font-weight:700;color:#3a7a4a">▶ upstairs video</a></h3>
@@ -5340,16 +5456,18 @@ window.onload=()=>{
             </ul>
           </div>
         </div>
-        <!-- TRASH -->
-        <div class="sitter-section">
-          <div class="sitter-section-title">🗑️ Trash</div>
-          <div class="sitter-card green">
-            <h3>🗑️ Trash bins &nbsp;<a href="https://photos.app.goo.gl/c4D9MyxQmwsbpdNW6" target="_blank" style="font-size:.65rem;font-weight:700;color:#3a7a4a">▶ video</a></h3>
-            <p>Pickup is <strong>Wednesday morning</strong>. Put the <strong>green-top trash bin</strong> on the curb <strong>Tuesday evening</strong> (right side of the house facing the road, handles away from street), bring back in Wednesday.</p>
-          </div>
-        </div>
+            <!-- TRASH -->
+            <div class="sitter-section" id="sv-trash-v">
+              <div class="sitter-section-title">🗑️ Trash</div>
+              <div class="sitter-card green">
+                <h3>🗑️ Trash bins &nbsp;<a href="https://photos.app.goo.gl/c4D9MyxQmwsbpdNW6" target="_blank" style="font-size:.65rem;font-weight:700;color:#3a7a4a">▶ video</a></h3>
+                <p>Pickup is <strong>Wednesday morning</strong>. Put the <strong>green-top trash bin</strong> on the curb <strong>Tuesday evening</strong> (right side of the house facing the road, handles away from street), bring back in Wednesday.</p>
+              </div>
+            </div>
+
+
         <!-- ACCIDENTS -->
-        <div class="sitter-section">
+        <div class="sitter-section" id="sv-accidents">
           <div class="sitter-section-title">🧽 Accidents &amp; Hairballs</div>
           <div class="sitter-card">
             <h3>🧽 If there's a mess &nbsp;<a href="https://photos.app.goo.gl/Zxm69JKpXNu8BkkdA" target="_blank" style="font-size:.65rem;font-weight:700;color:#7a4aba">▶ video</a></h3>
@@ -5357,39 +5475,8 @@ window.onload=()=>{
             <p><strong>On hardwood:</strong> White pet-friendly spray, first shelf in the laundry room. Paper towels on the counter.</p>
           </div>
         </div>
-
-        <!-- RETURN CHECKLIST -->
-        <div class="sitter-section">
-          <div class="sitter-section-title">✅ Friday return checklist</div>
-          <div class="sitter-card blue">
-            <h3>🏠 Bringing Tigris home — Friday Apr 4</h3>
-            <p style="margin-bottom:10px">Pack everything up before you leave. Here's exactly where each item goes:</p>
-            <div class="sitter-schedule-row blue"><span class="sitter-icon">🧡</span><span class="sitter-time">Tigris</span><div class="sitter-event">Remove her flower cone when you arrive at the house, then leave the cone in the <strong>upstairs guest bathroom</strong></div></div>
-            <div class="sitter-schedule-row blue"><span class="sitter-icon">🧹</span><span class="sitter-time">Litter box + pan</span><div class="sitter-event">Nathan's office closet</div></div>
-            <div class="sitter-schedule-row blue"><span class="sitter-icon">🤖</span><span class="sitter-time">Wet food feeder</span><div class="sitter-event">Bedroom — inside the large 40-gallon tub, opposite end from the microchip reader<small>Put the lid back on after</small></div></div>
-            <div class="sitter-schedule-row blue"><span class="sitter-icon">💧</span><span class="sitter-time">Water fountain</span><div class="sitter-event">Downstairs — top of the black cat furniture in the hallway corner<small>Refill and plug back in</small></div></div>
-            <div class="sitter-schedule-row blue"><span class="sitter-icon">🛏️</span><span class="sitter-time">Toys &amp; blanket</span><div class="sitter-event">Bedroom — wherever feels natural</div></div>
-            <div class="sitter-schedule-row blue"><span class="sitter-icon">🐾</span><span class="sitter-time">2 scratchers</span><div class="sitter-event">Triangle upright → Nathan's office, in front of the arm of the grey couch<small>Flat one with raised sides → living room, next to the tan couch</small></div></div>
-            <div class="sitter-schedule-row blue"><span class="sitter-icon">🐟</span><span class="sitter-time">Remaining Churu + Cosequin</span><div class="sitter-event">Upstairs guest bathroom</div></div>
-            <div class="sitter-schedule-row blue"><span class="sitter-icon">🥫</span><span class="sitter-time">Remaining Friskies cans</span><div class="sitter-event">Upstairs guest bathroom</div></div>
-          </div>
-
-          <div class="sitter-card blue" style="margin-top:10px">
-            <h3>📶 Reconnecting the feeder to home wifi</h3>
-            <p>When you plug the feeder back in at the house it'll lose wifi. Here's how to reconnect:</p>
-            <ol style="padding-left:18px;margin-top:8px">
-              <li style="margin-bottom:5px">Plug the feeder in at the house</li>
-              <li style="margin-bottom:5px">Press and hold the <strong>reset button on the back</strong> (next to the power port) until you hear a beep and the light flashes</li>
-              <li style="margin-bottom:5px">Open the <strong>PetLibro app</strong> — the feeder will show offline, tap it</li>
-              <li style="margin-bottom:5px">Make sure your phone is on <strong>Jasmine's wifi: freshplum118</strong></li>
-              <li>Follow the in-app prompts to reconnect</li>
-            </ol>
-            <div class="sitter-tip">Jasmine already shared the device to your account so no login needed. If stuck: <strong>864-376-2210</strong> or <strong>jazzy5006@gmail.com</strong>.</div>
-          </div>
-        </div>
-
         <!-- CONTACTS -->
-        <div class="sitter-section">
+        <div class="sitter-section" id="sv-contacts">
           <div class="sitter-section-title">📞 Contacts &amp; Vets</div>
           <div class="sitter-card blue">
             <div class="sitter-contact-row">
@@ -5418,87 +5505,122 @@ window.onload=()=>{
           </div>
         </div>
 
+          </div>
+        </div>
       </div>
     </div><!-- end vivi -->
 
     <!-- ── ELLA & MICHAEL SUB-TAB ── -->
     <div class="cat-sub-content" id="csub-em">
-      <div class="sitter-body">
 
-        <div class="sitter-section">
-          <div class="sitter-section-title">🐦‍⬛ Hi Ella &amp; Michael!</div>
-          <div class="sitter-card blue">
-            <p>Thank you both so much! Tigris will be back home by your first visit (Apr 5) and her cone will be off. Everything you need is right here on this tab. 💙</p>
-          </div>
-        </div>
+      <!-- EM TOC pill bar (mobile/tablet) -->
+      <div class="sitter-toc-bar">
+        <a class="sitter-toc-pill" href="#em-schedule">📅 Schedule</a>
+        <a class="sitter-toc-pill" href="#em-health">🩺 Health</a>
+        <a class="sitter-toc-pill" href="#em-supplements">💊 Supplements</a>
+        <a class="sitter-toc-pill" href="#em-feeder">🤖 Feeder</a>
+        <a class="sitter-toc-pill" href="#em-tulip">🤍 Tulip</a>
+        <a class="sitter-toc-pill" href="#sv-water">💧 Water</a>
+        <a class="sitter-toc-pill" href="#sv-litter">🧹 Litter</a>
+        <a class="sitter-toc-pill" href="#sv-plants">🌿 Plants</a>
+        <a class="sitter-toc-pill" href="#sv-trash-em">🗑️ Trash</a>
+        <a class="sitter-toc-pill" href="#sv-accidents">🧽 Accidents</a>
+        <a class="sitter-toc-pill" href="#sv-contacts">📞 Contacts</a>
+      </div>
+      <div class="sitter-inner">
 
-        <!-- VISIT SCHEDULE -->
-        <div class="sitter-section">
-          <div class="sitter-section-title">📅 Your visit schedule</div>
-          <div class="sitter-card blue">
-            <h3>🐱 Apr 5 · Apr 7 · Apr 8</h3>
-            <div class="sitter-schedule-row blue"><span class="sitter-icon">📅</span><span class="sitter-time">Apr 5 · Sun</span><div class="sitter-event">Both cats home — feeder clean/refill, Tigris health check, water, litter</div></div>
-            <div class="sitter-schedule-row blue"><span class="sitter-icon">📅</span><span class="sitter-time">Apr 7 · Tue</span><div class="sitter-event">Feeder, Tigris check, water, litter, plants<small>Put <strong>trash AND recycling</strong> on curb tonight before midnight</small></div></div>
-            <div class="sitter-schedule-row blue"><span class="sitter-icon">📅</span><span class="sitter-time">Apr 8 · Wed</span><div class="sitter-event">Feeder, Tigris check, water, litter<small>Bring trash bins and recycling back in</small></div></div>
+          <div class="sitter-toc">
+            <div class="sitter-toc-title">Contents</div>
+            <a class="sitter-toc-link" href="#em-schedule">📅 Visit Schedule</a>
+            <a class="sitter-toc-link" href="#em-health">🩺 Tigris Health</a>
+            <a class="sitter-toc-link" href="#em-supplements">💊 Supplements</a>
+            <a class="sitter-toc-link" href="#em-feeder">🤖 Wet Feeder</a>
+            <a class="sitter-toc-link" href="#em-tulip">🤍 Tulip</a>
+            <a class="sitter-toc-link" href="#sv-water">💧 Water Fountains</a>
+            <a class="sitter-toc-link" href="#sv-litter">🧹 Litter Boxes</a>
+            <a class="sitter-toc-link" href="#sv-plants">🌿 Plants</a>
+            <a class="sitter-toc-link" href="#sv-trash-em">🗑️ Trash</a>
+            <a class="sitter-toc-link" href="#sv-accidents">🧽 Accidents</a>
+            <a class="sitter-toc-link" href="#sv-contacts">📞 Contacts &amp; Vets</a>
           </div>
-        </div>
+        <div class="sitter-main">
+          <div class="sitter-body" style="padding-left:0;padding-right:0">
 
-        <!-- TIGRIS HEALTH -->
-        <div class="sitter-section">
-          <div class="sitter-section-title">🩺 Tigris — health check each visit</div>
-          <div class="sitter-card red">
-            <h3>🩺 Mass removal site check</h3>
-            <p>Tigris had a small mass removed from her side. Each visit, try to get eyes on the site — you may need to gently part her fur. Text Jasmine if you notice:</p>
-            <ul>
-              <li>Redness, swelling, or inflammation</li>
-              <li>Pus or discharge</li>
-              <li>The area looks open or irritated</li>
-            </ul>
-            <p style="margin-top:8px">Clean healing spot = you're good, no news is good news.</p>
-            <div class="sitter-tip">The flower cone 🌸 is in the <strong>upstairs guest bathroom</strong> in case it's ever needed.</div>
-          </div>
-        </div>
+            <div class="sitter-section" id="em-intro">
+              <div class="sitter-section-title">🐦‍⬛ Hi Ella &amp; Michael!</div>
+              <div class="sitter-card blue">
+                <p>Thank you both so much! Tigris will be back home by your first visit (Apr 5) and her cone will be off. Everything you need is right here on this tab. 💙</p>
+              </div>
+            </div>
 
-        <!-- TIGRIS SUPPLEMENTS -->
-        <div class="sitter-section">
-          <div class="sitter-section-title">💊 Tigris — supplements &amp; treat each visit</div>
-          <div class="sitter-card blue">
-            <p>Give Tigris <strong>2 Cosequin pieces</strong> and one <strong>Indoor Care Churu (purple pouch)</strong> each visit — both in the <strong>upstairs guest bathroom</strong>. Drop the Cosequin in front of her and she'll eat it; if she doesn't, put it in her eating box.</p>
-          </div>
-        </div>
+            <!-- VISIT SCHEDULE -->
+            <div class="sitter-section" id="em-schedule">
+              <div class="sitter-section-title">📅 Your visit schedule</div>
+              <div class="sitter-card blue">
+                <h3>🐱 Apr 5 · Apr 7 · Apr 8</h3>
+                <div class="sitter-schedule-row blue"><span class="sitter-icon">📅</span><span class="sitter-time">Apr 5 · Sun</span><div class="sitter-event">Both cats home — feeder clean/refill, Tigris health check, water, litter</div></div>
+                <div class="sitter-schedule-row blue"><span class="sitter-icon">📅</span><span class="sitter-time">Apr 7 · Tue</span><div class="sitter-event">Feeder, Tigris check, water, litter, plants<small>Put <strong>trash AND recycling</strong> on curb tonight before midnight</small></div></div>
+                <div class="sitter-schedule-row blue"><span class="sitter-icon">📅</span><span class="sitter-time">Apr 8 · Wed</span><div class="sitter-event">Feeder, Tigris check, water, litter<small>Bring trash bins and recycling back in</small></div></div>
+              </div>
+            </div>
 
-        <!-- TIGRIS FEEDER -->
-        <div class="sitter-section">
-          <div class="sitter-section-title">🤖 Tigris — wet feeder (each visit)</div>
-          <div class="sitter-card blue">
-            <h3>🤖 PetLibro feeder — in the bedroom</h3>
-            <p>The feeder is inside the <strong>large 40-gallon tub in the bedroom</strong>, opposite end from the microchip reader. 3 slots, each loaded with one full can of <strong>Friskies Pâté</strong> — lasts two days since Tigris eats about half per slot.</p>
-            <p style="margin-top:8px"><strong>Each visit, clean and refill:</strong></p>
-            <ol style="padding-left:18px;margin-top:6px">
-              <li>Remove the tray, discard crusty leftovers</li>
-              <li>Rinse and dry the tray and slots</li>
-              <li>Load 3 fresh cans — one per slot. Dump the can and <strong>mix and pat the food down</strong> so it sits below the fill line</li>
-              <li>Mix <strong>one pack of FortiFlora</strong> into each slot using the rubber spatula (in the guest bathroom) — or grab a spoon from the drawer to the left of the kitchen sink if needed</li>
-              <li>Wipe down the inside of the tub as needed, replace lid</li>
-            </ol>
-            <p style="margin-top:8px">Friskies cans and FortiFlora are in the <strong>upstairs guest bathroom</strong>.</p>
-          </div>
-        </div>
+            <!-- TIGRIS HEALTH -->
+            <div class="sitter-section" id="em-health">
+              <div class="sitter-section-title">🩺 Tigris — health check each visit</div>
+              <div class="sitter-card red">
+                <h3>🩺 Mass removal site check</h3>
+                <p>Tigris had a small mass removed from her side. Each visit, try to get eyes on the site — you may need to gently part her fur. Text Jasmine if you notice:</p>
+                <ul>
+                  <li>Redness, swelling, or inflammation</li>
+                  <li>Pus or discharge</li>
+                  <li>The area looks open or irritated</li>
+                </ul>
+                <p style="margin-top:8px">Clean healing spot = you're good, no news is good news.</p>
+                <div class="sitter-tip">The flower cone 🌸 is in the <strong>upstairs guest bathroom</strong> in case it's ever needed.</div>
+              </div>
+            </div>
 
-        <!-- TULIP -->
-        <div class="sitter-section">
-          <div class="sitter-section-title">🤍 Tulip</div>
-          <div class="sitter-card blue">
-            <p><strong>5 years old · white &amp; brown tabby · ~10 lbs.</strong> Dry feeder is in the <strong>living room, between the TV and the tan couch</strong> — automatic, just check it has food. If you see her, give her love and a <strong>Churu</strong> from the container in the <strong>upstairs guest bathroom</strong>.</p>
-          </div>
-        </div>
+            <!-- SUPPLEMENTS -->
+            <div class="sitter-section" id="em-supplements">
+              <div class="sitter-section-title">💊 Tigris — supplements &amp; treat each visit</div>
+              <div class="sitter-card blue">
+                <p>Give Tigris <strong>2 Cosequin pieces</strong> and one <strong>Indoor Care Churu (purple pouch)</strong> each visit — both in the <strong>upstairs guest bathroom</strong>. Drop the Cosequin in front of her and she'll eat it; if she doesn't, put it in her eating box.</p>
+              </div>
+            </div>
+
+            <!-- FEEDER -->
+            <div class="sitter-section" id="em-feeder">
+              <div class="sitter-section-title">🤖 Tigris — wet feeder (each visit)</div>
+              <div class="sitter-card blue">
+                <h3>🤖 PetLibro feeder — in the bedroom &nbsp;<a href="https://www.youtube.com/watch?v=An7HocZA1Pw" target="_blank" style="font-size:.65rem;font-weight:700;color:#4a8aba">▶ video</a></h3>
+                <p>The feeder is inside the <strong>large 40-gallon tub in the bedroom</strong>, opposite end from the microchip reader. 3 slots, each loaded with one full can of <strong>Friskies Pâté</strong> — lasts two days since Tigris eats about half per slot.</p>
+                <p style="margin-top:8px"><strong>Each visit, clean and refill:</strong></p>
+                <ol>
+                  <li>Remove the tray, discard crusty leftovers</li>
+                  <li>Rinse and dry the tray and slots</li>
+                  <li>Load 3 fresh cans — one per slot. Dump the can and <strong>mix and pat the food down</strong> so it sits below the fill line</li>
+                  <li>Mix <strong>one pack of FortiFlora</strong> into each slot using the rubber spatula (in the guest bathroom) — or grab a spoon from the drawer to the left of the kitchen sink if needed</li>
+                  <li>Wipe down the inside of the tub as needed, replace lid</li>
+                </ol>
+                <p style="margin-top:8px">Friskies cans and FortiFlora are in the <strong>upstairs guest bathroom</strong>.</p>
+              </div>
+            </div>
+
+            <!-- TULIP -->
+            <div class="sitter-section" id="em-tulip">
+              <div class="sitter-section-title">🤍 Tulip</div>
+              <div class="sitter-card blue">
+                <p><strong>5 years old · white &amp; brown tabby · ~10 lbs.</strong> Dry feeder is in the <strong>living room, between the TV and the tan couch</strong> — automatic, just check it has food. If you see her, give her love and a <strong>Churu</strong> from the container in the <strong>upstairs guest bathroom</strong>.</p>
+              </div>
+            </div>
+
 
         <!-- WATER -->
-        <div class="sitter-section">
-          <div class="sitter-section-title">💧 Water Fountains — check &amp; refill as needed each visit</div>
+        <div class="sitter-section" id="sv-water">
+          <div class="sitter-section-title">💧 Water Fountains — check &amp; refill each visit</div>
           <div class="sitter-card blue">
             <h3>💧 Upstairs — next to the shoe bench &nbsp;<a href="https://photos.app.goo.gl/KAbeSba6uQspnStM9" target="_blank" style="font-size:.65rem;font-weight:700;color:#4a8aba">▶ video</a></h3>
-            <ol style="padding-left:18px;margin-top:6px">
+            <ol>
               <li>Fill the blue pitcher on the kitchen counter and bring it to the fountain</li>
               <li>Unplug from the wall</li>
               <li>Lift the white silicone spout to expose the reservoir</li>
@@ -5508,7 +5630,7 @@ window.onload=()=>{
           <div class="sitter-card blue" style="margin-top:10px">
             <h3>💧 Downstairs — top of black cat furniture in the hallway corner &nbsp;<a href="https://photos.app.goo.gl/bubKZ4Yod5Ffjmxs9" target="_blank" style="font-size:.65rem;font-weight:700;color:#4a8aba">▶ video</a></h3>
             <p style="margin-bottom:8px">Only needs refilling if the clear reservoir is ⅓ full or less.</p>
-            <ol style="padding-left:18px">
+            <ol>
               <li>Unplug from the wall</li>
               <li>Grab the clear reservoir and quickly flip it upside down</li>
               <li>Take to the guest bathroom, unscrew top, fill to max, screw back on</li>
@@ -5518,12 +5640,12 @@ window.onload=()=>{
           </div>
         </div>
         <!-- LITTER -->
-        <div class="sitter-section">
+        <div class="sitter-section" id="sv-litter">
           <div class="sitter-section-title">🧹 Litter Boxes — clean each visit</div>
           <div class="sitter-card blue">
             <h3>🧹 Laundry room closet &amp; Nathan's office closet &nbsp;<a href="https://photos.app.goo.gl/yvw1m1XcBgKFd2NV9" target="_blank" style="font-size:.65rem;font-weight:700;color:#4a8aba">▶ video</a></h3>
             <p style="margin-bottom:8px">All supplies on the shelves in the laundry room.</p>
-            <ol style="padding-left:18px">
+            <ol>
               <li>Scoop poop into a trash bag (green scoop hooks onto the laundry room box; bags on the second shelf, far left)</li>
               <li>Pull out the bottom tray, toss used pee pad, replace with a fresh one (gray box, first shelf)</li>
               <li>Laundry room box only: also swap the blue pad underneath</li>
@@ -5534,7 +5656,7 @@ window.onload=()=>{
           </div>
         </div>
         <!-- PLANTS -->
-        <div class="sitter-section">
+        <div class="sitter-section" id="sv-plants">
           <div class="sitter-section-title">🌿 Plants — water once a week</div>
           <div class="sitter-card green">
             <h3>🌿 Plant locations &nbsp;<a href="https://photos.app.goo.gl/PDff5MiuWaBhYEHy5" target="_blank" style="font-size:.65rem;font-weight:700;color:#3a7a4a">▶ downstairs video</a> &nbsp;<a href="https://photos.app.goo.gl/15JSVM3DASu5PnLcA" target="_blank" style="font-size:.65rem;font-weight:700;color:#3a7a4a">▶ upstairs video</a></h3>
@@ -5547,17 +5669,19 @@ window.onload=()=>{
             </ul>
           </div>
         </div>
-        <!-- TRASH -->
-        <div class="sitter-section">
-          <div class="sitter-section-title">🗑️ Trash</div>
-          <div class="sitter-card green">
-            <h3>🗑️ Trash bins &nbsp;<a href="https://photos.app.goo.gl/c4D9MyxQmwsbpdNW6" target="_blank" style="font-size:.65rem;font-weight:700;color:#3a7a4a">▶ video</a></h3>
-            <p>Pickup is <strong>Wednesday morning</strong>. Put the <strong>green-top trash bin</strong> on the curb <strong>Tuesday evening</strong> (right side of the house, handles away from street), bring back in Wednesday.</p>
-            <p style="margin-top:6px"><strong>Recycling:</strong> only goes out <strong>Tuesday April 7</strong> — put both trash AND recycling bins out that night. Bring both back in Wednesday April 8.</p>
-          </div>
-        </div>
+            <!-- TRASH -->
+            <div class="sitter-section" id="sv-trash-em">
+              <div class="sitter-section-title">🗑️ Trash</div>
+              <div class="sitter-card green">
+                <h3>🗑️ Trash bins &nbsp;<a href="https://photos.app.goo.gl/c4D9MyxQmwsbpdNW6" target="_blank" style="font-size:.65rem;font-weight:700;color:#3a7a4a">▶ video</a></h3>
+                <p>Pickup is <strong>Wednesday morning</strong>. Put the <strong>green-top trash bin</strong> on the curb <strong>Tuesday evening</strong> (right side of the house, handles away from street), bring back in Wednesday.</p>
+                <p style="margin-top:6px"><strong>Recycling:</strong> only goes out <strong>Tuesday April 7</strong> — put both trash AND recycling bins out that night. Bring both back in Wednesday April 8.</p>
+              </div>
+            </div>
+
+
         <!-- ACCIDENTS -->
-        <div class="sitter-section">
+        <div class="sitter-section" id="sv-accidents">
           <div class="sitter-section-title">🧽 Accidents &amp; Hairballs</div>
           <div class="sitter-card">
             <h3>🧽 If there's a mess &nbsp;<a href="https://photos.app.goo.gl/Zxm69JKpXNu8BkkdA" target="_blank" style="font-size:.65rem;font-weight:700;color:#7a4aba">▶ video</a></h3>
@@ -5566,7 +5690,7 @@ window.onload=()=>{
           </div>
         </div>
         <!-- CONTACTS -->
-        <div class="sitter-section">
+        <div class="sitter-section" id="sv-contacts">
           <div class="sitter-section-title">📞 Contacts &amp; Vets</div>
           <div class="sitter-card blue">
             <div class="sitter-contact-row">
@@ -5595,6 +5719,8 @@ window.onload=()=>{
           </div>
         </div>
 
+          </div>
+        </div>
       </div>
     </div><!-- end ella & michael -->
 
@@ -5605,12 +5731,29 @@ window.onload=()=>{
 <script>
 // ── SITTER HASH ROUTING ──
 
+
+function initSitterToc(){
+  const links = document.querySelectorAll('.sitter-toc-link');
+  if(!links.length) return;
+  const ids = [...links].map(l=>l.getAttribute('href').slice(1));
+  const obs = new IntersectionObserver(entries=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){
+        links.forEach(l=>l.classList.remove('active'));
+        const a = document.querySelector('.sitter-toc-link[href="#'+e.target.id+'"]');
+        if(a) a.classList.add('active');
+      }
+    });
+  },{rootMargin:'-10% 0px -80% 0px'});
+  ids.forEach(id=>{const el=document.getElementById(id);if(el)obs.observe(el);});
+}
 function showCatSub(tab){
   document.querySelectorAll('.cat-sub-content').forEach(el=>el.classList.remove('active'));
   document.querySelectorAll('.cat-sub-tab').forEach(el=>el.classList.remove('active'));
   document.getElementById('csub-'+tab)?.classList.add('active');
   document.getElementById('cst-'+tab)?.classList.add('active');
   window.scrollTo(0,0);
+  setTimeout(initSitterToc,100);
 }
 function showSitterTab(tab){
   document.querySelectorAll('.sitter-tab-content').forEach(el=>el.classList.remove('active'));

@@ -4923,6 +4923,8 @@ window.onload=()=>{
   }catch(e){}
   // rotate phrases every 5 min
   setInterval(nextPhrase,300000);
+  // Open sitter overlay if URL has #sitter or #cats hash
+  handleSitterHash();
 };
 </script>
 
@@ -5910,7 +5912,10 @@ function showSitterTab(tab){
   window.scrollTo(0,0);
 }
 function openSitter(tab){
-  document.getElementById('sitterOverlay').classList.add('active');
+  const overlay = document.getElementById('sitterOverlay');
+  if(!overlay) return;
+  overlay.classList.add('active');
+  overlay.scrollTop = 0;
   document.body.style.overflow='hidden';
   showSitterTab(tab||'dog');
 }
@@ -5959,8 +5964,7 @@ document.getElementById('sitterOverlay')?.addEventListener('scroll', function(){
   btn.classList.toggle('visible', this.scrollTop > 300);
 });
 window.addEventListener('hashchange',handleSitterHash);
-// Run on load (after main onload)
-setTimeout(handleSitterHash,100);
+// Hash routing handled inside window.onload
 </script>
 </body>
 </html>

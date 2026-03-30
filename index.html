@@ -895,6 +895,12 @@ body.timer-active .desktop-layout{padding-top:70px}
   .sitter-toc{padding-right:32px}
 }
 
+
+/* ── FEEDER TOGGLE BUTTONS ── */
+.vv-time-btn,.em-time-btn{padding:6px 14px;border-radius:999px;border:2px solid #c8dff8;background:#f0f6ff;font-family:'Nunito',sans-serif;font-size:.65rem;font-weight:900;color:#4a6a9a;cursor:pointer;transition:all .18s;-webkit-tap-highlight-color:transparent}
+.vv-time-btn.active{background:#4a8aba;color:#fff;border-color:#4a8aba}
+.em-time-btn.active{background:#4a8aba;color:#fff;border-color:#4a8aba}
+.vv-inst{transition:opacity .2s}
 </style>
 </head>
 <body>
@@ -5377,15 +5383,75 @@ window.onload=()=>{
                 <p><strong>10 years old · orange &amp; black tabby · ~8 lbs.</strong> She recently had a dental procedure and a small mass removed from her side — recovering well! She's wearing her <strong>flower cone 🌸</strong> (yes it's shaped like a flower) to protect the site. You'll take it off when you bring her home Friday.</p>
                 <div class="sitter-tip">She has 14 cans of Friskies Pâté — plenty for her stay.</div>
               </div>
-              <div class="sitter-card blue" style="margin-top:10px">
-                <h3>🤖 PetLibro Wet Feeder — every other day &nbsp;<a href="https://www.youtube.com/watch?v=An7HocZA1Pw" target="_blank" style="font-size:.65rem;font-weight:700;color:#4a8aba">▶ how to clean feeder</a></h3>
-                <p>The feeder has <strong>3 slots</strong>, each loaded with <strong>one full can</strong> of Friskies Pâté (5.5 oz). Tigris eats about half per slot per meal — the full load lasts <strong>two days</strong>.</p>
-                <p style="margin-top:8px"><strong>Meal times:</strong> 6:00 AM · 1:00 PM · 9:00 PM (automatic)</p>
-                <p style="margin-top:8px"><strong>Every other day</strong> (ideally after the 1 PM meal):</p>
+              <div class="sitter-card blue" style="margin-top:10px" id="vivi-feeder-widget">
+                <h3>🤖 PetLibro Wet Feeder &nbsp;<a href="https://www.youtube.com/watch?v=An7HocZA1Pw" target="_blank" style="font-size:.65rem;font-weight:700;color:#4a8aba">▶ how to clean feeder</a></h3>
+                <p style="margin-bottom:10px">The feeder has <strong>3 slots</strong>, each loaded with one full can of Friskies Pâté (5.5 oz). Tigris eats about half per slot — the full load lasts <strong>two days</strong>. Meal times: <strong>6:00 AM · 1:00 PM · 9:00 PM</strong> (automatic).</p>
+
+                <!-- Refill schedule -->
+                <div style="background:linear-gradient(135deg,#f0f6ff,#e8f0fc);border:2px solid #c8dff8;border-radius:14px;padding:14px;margin-bottom:14px">
+                  <div style="font-size:.58rem;font-weight:900;letter-spacing:.14em;text-transform:uppercase;color:#4a6a9a;margin-bottom:10px">📅 Your Refill Schedule</div>
+
+                  <!-- Sun Mar 30 -->
+                  <div style="display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:1px solid #d8eaf8">
+                    <div style="min-width:90px;font-size:.7rem;font-weight:900;color:#4a6a9a">Sun Mar 30</div>
+                    <div style="font-size:.75rem;font-weight:700;color:#1a3a6a">✅ Already loaded — all 3 slots fresh. Tigris didn't eat tonight so first meal is Mon 6 AM.</div>
+                  </div>
+
+                  <!-- Tue Apr 1 toggle -->
+                  <div style="padding:10px 0;border-bottom:1px solid #d8eaf8">
+                    <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+                      <div style="min-width:90px;font-size:.7rem;font-weight:900;color:#4a6a9a">Tue Apr 1</div>
+                      <div style="font-size:.72rem;font-weight:800;color:#1a3a6a">Refill due — what time are you visiting?</div>
+                    </div>
+                    <div style="display:flex;gap:8px;margin-left:100px">
+                      <button class="vv-time-btn active" id="vv-apr1-before" onclick="setViviTime('apr1','before')">Before 9 PM</button>
+                      <button class="vv-time-btn" id="vv-apr1-after" onclick="setViviTime('apr1','after')">After 9 PM</button>
+                    </div>
+                    <div id="vv-apr1-before-inst" class="vv-inst" style="margin-left:100px;margin-top:8px">
+                      <span style="font-size:.72rem;font-weight:700;color:#2a5a8a">Clean &amp; refill <strong>slots 1 &amp; 2 only</strong> — the 9 PM slot hasn't fired yet, leave it.</span>
+                    </div>
+                    <div id="vv-apr1-after-inst" class="vv-inst" style="display:none;margin-left:100px;margin-top:8px">
+                      <span style="font-size:.72rem;font-weight:700;color:#2a5a8a">All 3 slots have fired — <strong>clean &amp; refill all 3 slots</strong>.</span>
+                    </div>
+                  </div>
+
+                  <!-- Wed Apr 2 -->
+                  <div style="display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:1px solid #d8eaf8">
+                    <div style="min-width:90px;font-size:.7rem;font-weight:900;color:#9a7aba">Wed Apr 2</div>
+                    <div style="font-size:.75rem;font-weight:700;color:#6a5a8a">No house visit — Tigris is still with you 🐱</div>
+                  </div>
+
+                  <!-- Thu Apr 3 toggle -->
+                  <div style="padding:10px 0;border-bottom:1px solid #d8eaf8">
+                    <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+                      <div style="min-width:90px;font-size:.7rem;font-weight:900;color:#4a6a9a">Thu Apr 3</div>
+                      <div style="font-size:.72rem;font-weight:800;color:#1a3a6a">Refill due &amp; bring Tigris home — what time?</div>
+                    </div>
+                    <div style="display:flex;gap:8px;margin-left:100px">
+                      <button class="vv-time-btn active" id="vv-apr3-before" onclick="setViviTime('apr3','before')">Before 9 PM</button>
+                      <button class="vv-time-btn" id="vv-apr3-after" onclick="setViviTime('apr3','after')">After 9 PM</button>
+                    </div>
+                    <div id="vv-apr3-before-inst" class="vv-inst" style="margin-left:100px;margin-top:8px">
+                      <span style="font-size:.72rem;font-weight:700;color:#2a5a8a">Clean &amp; refill <strong>slots 1 &amp; 2</strong> — leave slot 3, it'll fire tonight and keep her fed until you pack up Friday.</span>
+                    </div>
+                    <div id="vv-apr3-after-inst" class="vv-inst" style="display:none;margin-left:100px;margin-top:8px">
+                      <span style="font-size:.72rem;font-weight:700;color:#2a5a8a">All 3 slots spent — <strong>clean &amp; refill all 3</strong>. That covers her through Friday morning.</span>
+                    </div>
+                  </div>
+
+                  <!-- Fri Apr 4 -->
+                  <div style="display:flex;align-items:flex-start;gap:10px;padding:8px 0">
+                    <div style="min-width:90px;font-size:.7rem;font-weight:900;color:#4a6a9a">Fri Apr 4</div>
+                    <div style="font-size:.75rem;font-weight:700;color:#1a3a6a">🏠 Bring Tigris home! Pack the feeder — Jasmine will clean it at the house if needed.</div>
+                  </div>
+                </div>
+
+                <!-- How to clean -->
+                <div style="font-size:.72rem;font-weight:900;color:#4a6a9a;margin-bottom:8px;text-transform:uppercase;letter-spacing:.08em;font-size:.58rem">How to clean &amp; refill</div>
                 <ol>
-                  <li>Remove the tray, discard crusty leftovers from each slot</li>
+                  <li>Remove the tray, discard crusty leftovers from spent slots</li>
                   <li>Rinse and dry the tray and slots</li>
-                  <li>Load 3 fresh cans — one per slot. <strong>Dump the can and mix/pat it down</strong> so it sits below the fill line (just dumping it in will sit too high)</li>
+                  <li>Load fresh cans — one per slot. <strong>Dump the can and mix/pat it down</strong> so it sits below the fill line</li>
                 </ol>
               </div>
               <div class="sitter-card blue" style="margin-top:10px">
@@ -5630,17 +5696,72 @@ window.onload=()=>{
 
             <!-- FEEDER -->
             <div class="sitter-section" id="em-feeder">
-              <div class="sitter-section-title">🤖 Tigris — wet feeder (each visit)</div>
+              <div class="sitter-section-title">🤖 Tigris — wet feeder</div>
               <div class="sitter-card blue">
                 <h3>🤖 PetLibro feeder — in the bedroom &nbsp;<a href="https://www.youtube.com/watch?v=An7HocZA1Pw" target="_blank" style="font-size:.65rem;font-weight:700;color:#4a8aba">▶ how to clean feeder</a></h3>
-                <p>The feeder is inside the <strong>large 40-gallon tub in the bedroom</strong>, opposite end from the microchip reader. 3 slots, each loaded with one full can of <strong>Friskies Pâté</strong> — lasts two days since Tigris eats about half per slot.</p>
-                <p style="margin-top:8px"><strong>Each visit, clean and refill:</strong></p>
+                <p style="margin-bottom:12px">The feeder is inside the <strong>large 40-gallon tub in the bedroom</strong>, opposite end from the microchip reader. 3 slots, each loaded with one full can of <strong>Friskies Pâté</strong> — lasts two days. Friskies cans and FortiFlora are in the <strong>upstairs guest bathroom</strong>.</p>
+
+                <!-- Interactive visit schedule -->
+                <div style="background:linear-gradient(135deg,#f0f6ff,#e8f0fc);border:2px solid #c8dff8;border-radius:14px;padding:14px;margin-bottom:14px">
+                  <div style="font-size:.58rem;font-weight:900;letter-spacing:.14em;text-transform:uppercase;color:#4a6a9a;margin-bottom:10px">📅 What to do each visit</div>
+
+                  <!-- Apr 5 — always full -->
+                  <div style="padding:10px 0;border-bottom:1px solid #d8eaf8">
+                    <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px">
+                      <div style="min-width:80px;font-size:.7rem;font-weight:900;color:#4a6a9a">Sun Apr 5</div>
+                      <div style="font-size:.72rem;font-weight:800;color:#1a3a6a">What time are you visiting?</div>
+                    </div>
+                    <div style="display:flex;gap:8px;margin-left:90px">
+                      <button class="em-time-btn active" id="em-apr5-before" onclick="setEmTime('apr5','before')">Before 9 PM</button>
+                      <button class="em-time-btn" id="em-apr5-after" onclick="setEmTime('apr5','after')">After 9 PM</button>
+                    </div>
+                    <div id="em-apr5-inst" style="margin-left:90px;margin-top:8px;font-size:.72rem;font-weight:700;color:#2a5a8a">
+                      It's been 2+ days since the last refill — <strong>all 3 slots are spent regardless of time. Full clean &amp; refill.</strong>
+                    </div>
+                  </div>
+
+                  <!-- Apr 7 — always full -->
+                  <div style="padding:10px 0;border-bottom:1px solid #d8eaf8">
+                    <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px">
+                      <div style="min-width:80px;font-size:.7rem;font-weight:900;color:#4a6a9a">Tue Apr 7</div>
+                      <div style="font-size:.72rem;font-weight:800;color:#1a3a6a">What time are you visiting?</div>
+                    </div>
+                    <div style="display:flex;gap:8px;margin-left:90px">
+                      <button class="em-time-btn active" id="em-apr7-before" onclick="setEmTime('apr7','before')">Before 9 PM</button>
+                      <button class="em-time-btn" id="em-apr7-after" onclick="setEmTime('apr7','after')">After 9 PM</button>
+                    </div>
+                    <div id="em-apr7-inst" style="margin-left:90px;margin-top:8px;font-size:.72rem;font-weight:700;color:#2a5a8a">
+                      It's been 2 days since Sunday's refill — <strong>all 3 slots are spent regardless of time. Full clean &amp; refill.</strong>
+                    </div>
+                  </div>
+
+                  <!-- Apr 8 — BRANCHES -->
+                  <div style="padding:10px 0">
+                    <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px">
+                      <div style="min-width:80px;font-size:.7rem;font-weight:900;color:#4a6a9a">Wed Apr 8</div>
+                      <div style="font-size:.72rem;font-weight:800;color:#1a3a6a">What time are you visiting?</div>
+                    </div>
+                    <div style="display:flex;gap:8px;margin-left:90px">
+                      <button class="em-time-btn active" id="em-apr8-before" onclick="setEmTime('apr8','before')">Before 9 PM</button>
+                      <button class="em-time-btn" id="em-apr8-after" onclick="setEmTime('apr8','after')">After 9 PM</button>
+                    </div>
+                    <div id="em-apr8-before-inst" class="em-apr8-inst" style="margin-left:90px;margin-top:8px;font-size:.72rem;font-weight:700;color:#2a5a8a">
+                      Only slots 1 &amp; 2 have fired today — <strong>clean &amp; refill slots 1 &amp; 2 only</strong>. Leave slot 3 alone — it'll fire at 9 PM and keep Tigris fed until Jasmine gets home Friday.
+                    </div>
+                    <div id="em-apr8-after-inst" class="em-apr8-inst" style="display:none;margin-left:90px;margin-top:8px;font-size:.72rem;font-weight:700;color:#2a5a8a">
+                      All 3 slots have fired — <strong>clean &amp; refill all 3 slots</strong>. That covers Tigris through Friday when Jasmine gets home.
+                    </div>
+                  </div>
+                </div>
+
+                <!-- How to clean -->
+                <div style="font-size:.58rem;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:#4a6a9a;margin-bottom:8px">How to clean &amp; refill</div>
                 <ol>
-                  <li>Remove the tray, discard crusty leftovers</li>
+                  <li>Remove the tray, discard crusty leftovers from spent slots</li>
                   <li>Rinse and dry the tray and slots</li>
-                  <li>Load 3 fresh cans — one per slot. Dump the can and <strong>mix and pat the food down</strong> so it sits below the fill line</li>
-                  <li>Mix <strong>one pack of FortiFlora</strong> into each slot using the rubber spatula (in the guest bathroom) — or grab a spoon from the drawer to the left of the kitchen sink if needed</li>
-                  <li>Wipe down the inside of the tub as needed, replace lid</li>
+                  <li>Load fresh cans — one per slot. Dump and <strong>mix/pat food down</strong> below the fill line</li>
+                  <li>Mix <strong>one pack of FortiFlora</strong> into each loaded slot — rubber spatula in guest bathroom, or spoon from drawer left of kitchen sink</li>
+                  <li>Wipe down inside of tub as needed, replace lid</li>
                 </ol>
                 <p style="margin-top:8px">Friskies cans and FortiFlora are in the <strong>upstairs guest bathroom</strong>.</p>
               </div>
@@ -5837,6 +5958,37 @@ function handleSitterHash(){
   else{
     const o=document.getElementById('sitterOverlay');
     if(o&&o.classList.contains('active'))closeSitter();
+  }
+}
+
+function setViviTime(day, when){
+  ['apr1','apr3'].forEach(d=>{
+    if(d !== day) return;
+    ['before','after'].forEach(w=>{
+      const btn = document.getElementById('vv-'+d+'-'+w);
+      const inst = document.getElementById('vv-'+d+'-'+w+'-inst');
+      if(btn) btn.classList.toggle('active', w===when);
+      if(inst) inst.style.display = (w===when)?'block':'none';
+    });
+  });
+}
+function setEmTime(day, when){
+  // Apr 5 and Apr 7 always show same message regardless
+  if(day==='apr5'||day==='apr7'){
+    ['before','after'].forEach(w=>{
+      const btn=document.getElementById('em-'+day+'-'+w);
+      if(btn) btn.classList.toggle('active',w===when);
+    });
+    return;
+  }
+  // Apr 8 branches
+  if(day==='apr8'){
+    ['before','after'].forEach(w=>{
+      const btn=document.getElementById('em-apr8-'+w);
+      const inst=document.getElementById('em-apr8-'+w+'-inst');
+      if(btn) btn.classList.toggle('active',w===when);
+      if(inst) inst.style.display=(w===when)?'block':'none';
+    });
   }
 }
 window.addEventListener('hashchange',handleSitterHash);

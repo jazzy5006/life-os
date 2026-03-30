@@ -5404,54 +5404,48 @@ window.onload=()=>{
               </div>
               <div class="sitter-card blue" style="margin-top:10px" id="vivi-feeder-widget">
                 <h3>🤖 PetLibro Wet Feeder &nbsp;<a href="https://www.youtube.com/watch?v=An7HocZA1Pw" target="_blank" style="font-size:.65rem;font-weight:700;color:#4a8aba">▶ how to clean feeder</a></h3>
-                <p style="margin-bottom:10px">3 slots · one full can each · Tigris eats half per slot · full load lasts <strong>2 days</strong>. Auto-dispenses at <strong>6 AM · 1 PM · 9 PM</strong>.</p>
+
+                <div style="background:#f0f6ff;border:2px solid #c8dff8;border-radius:12px;padding:12px;margin-bottom:14px">
+                  <div style="font-size:.58rem;font-weight:900;letter-spacing:.14em;text-transform:uppercase;color:#4a6a9a;margin-bottom:4px">How it works</div>
+                  <p style="margin:0;font-size:.74rem;font-weight:700;color:#1a3a6a;line-height:1.6">3 slots · one full can per slot · auto-dispenses <strong>slot 1 at 6 AM, slot 2 at 1 PM, slot 3 at 9 PM</strong> · Tigris eats about half per slot · full load lasts 2 days</p>
+                </div>
 
                 <div style="background:linear-gradient(135deg,#f0f6ff,#e8f0fc);border:2px solid #c8dff8;border-radius:14px;padding:14px;margin-bottom:14px">
-                  <div style="font-size:.58rem;font-weight:900;letter-spacing:.14em;text-transform:uppercase;color:#4a6a9a;margin-bottom:12px">📅 Your Refill Schedule</div>
+                  <div style="font-size:.58rem;font-weight:900;letter-spacing:.14em;text-transform:uppercase;color:#4a6a9a;margin-bottom:12px">📅 Feeder Schedule</div>
 
                   <div class="fdr-row">
-                    <div class="fdr-date">Sun Mar 30</div>
-                    <div class="fdr-static">✅ Already loaded — all 3 slots fresh. Tigris didn't eat tonight so her first meal is Mon 6 AM.</div>
+                    <div class="fdr-date">Mon Mar 30 — Drop-off night</div>
+                    <div class="fdr-static">Feeder already loaded with 3 fresh cans before drop-off. Tigris didn't eat her 9 PM meal tonight — <strong>no action needed.</strong></div>
                   </div>
 
                   <div class="fdr-row">
-                    <div class="fdr-date">Tue Apr 1 · Refill due</div>
-                    <div class="fdr-label">What time are you visiting?</div>
-                    <div class="fdr-btns">
-                      <button class="vv-time-btn active" id="vv-apr1-before" onclick="setViviTime('apr1','before')">Before 9 PM</button>
-                      <button class="vv-time-btn" id="vv-apr1-after" onclick="setViviTime('apr1','after')">After 9 PM</button>
+                    <div class="fdr-date">Tue Mar 31 — First full day</div>
+                    <div class="fdr-static">Feeder runs normally: slot 1 at 6 AM, slot 2 at 1 PM, slot 3 at 9 PM. <strong>No action needed.</strong></div>
+                  </div>
+
+                  <div class="fdr-row" style="background:rgba(255,255,255,.5);border-radius:10px;padding:10px;border-bottom:none;margin-bottom:8px">
+                    <div class="fdr-date" style="color:#c86a20">Wed Apr 1 — Check feeder when you get home from work (~6 PM)</div>
+                    <div class="fdr-static" style="color:#7a3a10;margin-bottom:10px">By 6 PM, slots 1 and 2 have dispensed. Slot 3 will fire at 9 PM as normal. Take a look at slots 1 and 2 — if Tigris has eaten most of what's in them, <strong>add half a can to each of those slots.</strong> That's all — no need to wait up for the 9 PM feeding or wake up early Thursday.</div>
+                    <div style="background:#fef0e8;border:1.5px solid #f4c8a0;border-radius:8px;padding:8px 10px;font-size:.7rem;font-weight:700;color:#7a3a10;line-height:1.55">
+                      💡 <strong>Why half a can?</strong> Tigris only eats about half per slot, so a full can would just go crusty. Half a can keeps her fed without waste.
                     </div>
-                    <div id="vv-apr1-before-inst" class="fdr-inst">Slots 1 &amp; 2 have fired today. <strong>Clean &amp; refill slots 1 &amp; 2 only</strong> — slot 3 hasn't fired yet, leave it.</div>
-                    <div id="vv-apr1-after-inst" class="fdr-inst" style="display:none">All 3 slots have fired. <strong>Full clean &amp; refill all 3 slots.</strong></div>
                   </div>
 
                   <div class="fdr-row">
-                    <div class="fdr-date muted">Wed Apr 2</div>
-                    <div class="fdr-static" style="color:#7a6a8a">No house visit — Tigris is with you 🐱</div>
+                    <div class="fdr-date">Thu Apr 2 — No action needed</div>
+                    <div class="fdr-static">Wednesday's top-up carries Tigris through all of Thursday. The feeder runs normally. <strong>Nothing to do.</strong></div>
                   </div>
 
-                  <div class="fdr-row">
-                    <div class="fdr-date">Thu Apr 3 · Refill due + bring Tigris home</div>
-                    <div class="fdr-label">What time are you visiting?</div>
-                    <div class="fdr-btns">
-                      <button class="vv-time-btn active" id="vv-apr3-before" onclick="setViviTime('apr3','before')">Before 9 PM</button>
-                      <button class="vv-time-btn" id="vv-apr3-after" onclick="setViviTime('apr3','after')">After 9 PM</button>
-                    </div>
-                    <div id="vv-apr3-before-inst" class="fdr-inst">Slots 1 &amp; 2 have fired. <strong>Clean &amp; refill slots 1 &amp; 2 only</strong> — slot 3 fires tonight and covers Tigris through Friday morning.</div>
-                    <div id="vv-apr3-after-inst" class="fdr-inst" style="display:none">All 3 slots have fired. <strong>Full clean &amp; refill all 3 slots</strong> — covers Tigris through Friday when Jasmine gets home.</div>
-                  </div>
-
-                  <div class="fdr-row">
-                    <div class="fdr-date">Fri Apr 4</div>
-                    <div class="fdr-static">🏠 Bring Tigris home! Pack the feeder — Jasmine will clean it at the house if needed.</div>
+                  <div class="fdr-row" style="border-bottom:none">
+                    <div class="fdr-date" style="color:#1a7a3a">Fri Apr 3 — Bring Tigris home (after 1 PM, before 9 PM)</div>
+                    <div class="fdr-static" style="color:#1a5a2a">Pack everything up and bring her home. <strong>Leave the feeder as-is</strong> — Jasmine will clean it at the house if needed. See the return checklist below.</div>
                   </div>
                 </div>
 
-                <div style="font-size:.58rem;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:#4a6a9a;margin-bottom:8px">How to clean &amp; refill</div>
+                <div style="font-size:.58rem;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:#4a6a9a;margin-bottom:8px">How to top up a slot</div>
                 <ol>
-                  <li>Remove the tray, discard crusty leftovers from spent slots</li>
-                  <li>Rinse and dry the tray and slots</li>
-                  <li>Load fresh cans — one per slot. <strong>Dump and mix/pat food down</strong> below the fill line</li>
+                  <li>Open the can, dump the food into the slot</li>
+                  <li>Mix and pat it down so it sits <strong>below the fill line</strong> — if it sits too high the lid won't close properly</li>
                 </ol>
               </div>
               <div class="sitter-card blue" style="margin-top:10px">
@@ -5467,7 +5461,7 @@ window.onload=()=>{
                 <h3>🐱 Mar 31 · Apr 1 · Apr 3</h3>
                 <p style="margin-bottom:10px;font-size:.72rem;color:#4a6a8a">Tigris is with you at your place — these visits are just for Tulip and house upkeep.</p>
                 <div class="sitter-schedule-row blue"><span class="sitter-icon">📅</span><span class="sitter-time">Mar 31 · Tue</span><div class="sitter-event">Check on Tulip, water, litter<small>Put trash bin on curb tonight before midnight — pickup Wednesday morning</small></div></div>
-                <div class="sitter-schedule-row blue"><span class="sitter-icon">📅</span><span class="sitter-time">Apr 1 · Wed</span><div class="sitter-event">Check on Tulip, water, litter<small>Bring trash bin back in</small></div></div>
+                <div class="sitter-schedule-row blue"><span class="sitter-icon">📅</span><span class="sitter-time">Apr 1 · Wed</span><div class="sitter-event">Check on Tulip, water, litter<small>Bring trash bin back in · check Tigris's feeder when you get home from work (~6 PM) — see feeder schedule above</small></div></div>
                 <div class="sitter-schedule-row blue"><span class="sitter-icon">📅</span><span class="sitter-time">Apr 3 · Fri</span><div class="sitter-event">Check on Tulip, water, litter — and <strong>bring Tigris home!</strong><small>See return checklist below</small></div></div>
               </div>
             </div>
@@ -5699,40 +5693,31 @@ window.onload=()=>{
               <div class="sitter-section-title">🤖 Tigris — wet feeder</div>
               <div class="sitter-card blue">
                 <h3>🤖 PetLibro feeder — in the bedroom &nbsp;<a href="https://www.youtube.com/watch?v=An7HocZA1Pw" target="_blank" style="font-size:.65rem;font-weight:700;color:#4a8aba">▶ how to clean feeder</a></h3>
-                <p style="margin-bottom:12px">Inside the <strong>large 40-gallon tub in the bedroom</strong>, opposite end from the microchip reader. 3 slots · one full can each · lasts 2 days. Friskies cans and FortiFlora in the <strong>upstairs guest bathroom</strong>.</p>
+
+                <div style="background:#f0f6ff;border:2px solid #c8dff8;border-radius:12px;padding:12px;margin-bottom:14px">
+                  <div style="font-size:.58rem;font-weight:900;letter-spacing:.14em;text-transform:uppercase;color:#4a6a9a;margin-bottom:4px">How it works</div>
+                  <p style="margin:0;font-size:.74rem;font-weight:700;color:#1a3a6a;line-height:1.6">The feeder is inside the <strong>large 40-gallon tub in the bedroom</strong>, opposite end from the microchip reader. 3 slots · one full can each · auto-dispenses <strong>slot 1 at 6 AM, slot 2 at 1 PM, slot 3 at 9 PM</strong> · Tigris eats about half per slot · full load lasts 2 days</p>
+                </div>
 
                 <div style="background:linear-gradient(135deg,#f0f6ff,#e8f0fc);border:2px solid #c8dff8;border-radius:14px;padding:14px;margin-bottom:14px">
                   <div style="font-size:.58rem;font-weight:900;letter-spacing:.14em;text-transform:uppercase;color:#4a6a9a;margin-bottom:12px">📅 What to do each visit</div>
 
                   <div class="fdr-row">
                     <div class="fdr-date">Sun Apr 5</div>
-                    <div class="fdr-label">What time are you visiting?</div>
-                    <div class="fdr-btns">
-                      <button class="em-time-btn active" id="em-apr5-before" onclick="setEmTime('apr5','before')">Before 9 PM</button>
-                      <button class="em-time-btn" id="em-apr5-after" onclick="setEmTime('apr5','after')">After 9 PM</button>
-                    </div>
-                    <div id="em-apr5-inst" class="fdr-inst">It's been 2+ days since the last refill — <strong>all 3 slots are spent regardless of time. Full clean &amp; refill.</strong></div>
+                    <div class="fdr-static">It's been 2+ days since the feeder was last loaded — <strong>all 3 slots are spent. Full clean &amp; refill all 3 slots.</strong></div>
                   </div>
 
                   <div class="fdr-row">
                     <div class="fdr-date">Tue Apr 7</div>
-                    <div class="fdr-label">What time are you visiting?</div>
-                    <div class="fdr-btns">
-                      <button class="em-time-btn active" id="em-apr7-before" onclick="setEmTime('apr7','before')">Before 9 PM</button>
-                      <button class="em-time-btn" id="em-apr7-after" onclick="setEmTime('apr7','after')">After 9 PM</button>
-                    </div>
-                    <div id="em-apr7-inst" class="fdr-inst">It's been 2 days since Sunday's refill — <strong>all 3 slots are spent regardless of time. Full clean &amp; refill.</strong></div>
+                    <div class="fdr-static">It's been 2 days since Sunday's refill — <strong>all 3 slots are spent. Full clean &amp; refill all 3 slots.</strong></div>
                   </div>
 
-                  <div class="fdr-row">
-                    <div class="fdr-date">Wed Apr 8</div>
-                    <div class="fdr-label">What time are you visiting?</div>
-                    <div class="fdr-btns">
-                      <button class="em-time-btn active" id="em-apr8-before" onclick="setEmTime('apr8','before')">Before 9 PM</button>
-                      <button class="em-time-btn" id="em-apr8-after" onclick="setEmTime('apr8','after')">After 9 PM</button>
+                  <div class="fdr-row" style="background:rgba(255,240,240,.6);border-radius:10px;padding:10px;border-bottom:none;border:1.5px solid #f4c8c8">
+                    <div class="fdr-date" style="color:#8a1a1a">Wed Apr 8 — ⚠️ Please visit before 9 PM</div>
+                    <div class="fdr-static" style="color:#6a1a1a;margin-bottom:8px">This visit timing matters for Tigris's food coverage through Friday when Jasmine gets home.</div>
+                    <div style="background:#fff;border:1.5px solid #f4b8b8;border-radius:8px;padding:10px;font-size:.72rem;font-weight:700;color:#6a1a1a;line-height:1.6">
+                      If you visit <strong>before 9 PM</strong>: slots 1 &amp; 2 have dispensed today — <strong>clean &amp; refill slots 1 &amp; 2 only.</strong> Leave slot 3 alone — it fires at 9 PM tonight. This gives Tigris full coverage through Thursday and into Friday until Jasmine gets home at 7 PM. ✓
                     </div>
-                    <div id="em-apr8-before-inst" class="fdr-inst">Only slots 1 &amp; 2 have fired today — <strong>clean &amp; refill slots 1 &amp; 2 only</strong>. Leave slot 3 alone — it fires at 9 PM tonight and keeps Tigris fed until Jasmine gets home Friday.</div>
-                    <div id="em-apr8-after-inst" class="fdr-inst" style="display:none">All 3 slots have fired — <strong>full clean &amp; refill all 3 slots</strong>. Covers Tigris until Jasmine gets home Friday.</div>
                   </div>
                 </div>
 
@@ -5740,10 +5725,11 @@ window.onload=()=>{
                 <ol>
                   <li>Remove the tray, discard crusty leftovers from spent slots</li>
                   <li>Rinse and dry the tray and slots</li>
-                  <li>Load fresh cans — one per slot. Dump and <strong>mix/pat food down</strong> below the fill line</li>
+                  <li>Load fresh cans — one per slot. Dump and <strong>mix/pat food down below the fill line</strong></li>
                   <li>Mix <strong>one pack of FortiFlora</strong> into each loaded slot — rubber spatula in guest bathroom, or spoon from drawer left of kitchen sink</li>
                   <li>Wipe down inside of tub as needed, replace lid</li>
                 </ol>
+                <p style="margin-top:8px">Friskies cans and FortiFlora are in the <strong>upstairs guest bathroom</strong>.</p>
               </div>
             </div>
 
@@ -5941,7 +5927,9 @@ function handleSitterHash(){
   }
 }
 
-function setViviTime(day, when){
+function setViviTime(day, when){ // legacy - no longer used
+  return;
+/*
   ['apr1','apr3'].forEach(d=>{
     if(d !== day) return;
     ['before','after'].forEach(w=>{

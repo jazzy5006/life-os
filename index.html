@@ -17,34 +17,50 @@
 <style>
 /* ── TOKENS ── */
 :root{
-  --bg:#fdf8f4;--bgc:#fff;--bgp:#f7f2fb;--td:#4a4060;--tb:#6b5f7a;--tm:#a396b4;
-  --ll:#f0ebf8;--lm:#ddd0f0;--la:#b89de0;
-  --ml:#edfaf3;--mm:#b8f0d2;--ma:#5dd9a0;
-  --pl:#fff4ee;--pm:#ffd8c8;--pa:#f79a7a;
-  --sl:#eef6ff;--sm:#c2deff;--sa:#7bb8f5;
-  --gl:#fff8e8;--gm:#ffe8a0;--ga:#d4a800;
+  /* ── Light Mode: matcha + lilac ── */
+  --bg:#f4f1f9;--bgc:#fdfcff;--bgp:#ede8f7;--td:#3b3458;--tb:#5c5278;--tm:#9b8fb0;
+  --ll:#ede8f7;--lm:#cfc4e8;--la:#9b77d4;
+  --ml:#e8f7ee;--mm:#aee8c8;--ma:#3dba87;
+  --pl:#fdf0f5;--pm:#f7c8df;--pa:#e8608f;
+  --sl:#eaf3ff;--sm:#b8d8ff;--sa:#5ba0f0;
+  --gl:#fdf8e8;--gm:#f7e08c;--ga:#c8940a;
   --rmd:16px;--rlg:22px;--rxl:32px;--rf:999px;
   --nav-h:60px;--tab-h:56px;
-  --col-r:360px;/* right panel width */
+  --col-r:360px;
+  /* neumorphic shadow tokens */
+  --neu-light:rgba(255,255,255,.85);--neu-dark:rgba(180,165,210,.35);
+  --neu-shadow:6px 6px 16px var(--neu-dark),-6px -6px 16px var(--neu-light);
+  --neu-shadow-sm:3px 3px 8px var(--neu-dark),-3px -3px 8px var(--neu-light);
+  /* breathe / watermark */
+  --breathe-a:#c8a8e8;--breathe-b:#a8d8c0;--breathe-c:#f0b8d8;
 }
 @media(prefers-color-scheme:dark){:root{
-  --bg:#2f2b36;--bgc:#393441;--bgp:#332f3c;
-  --td:#e2dceb;--tb:#b6aec4;--tm:#8c839c;
-  --ll:#483f55;--lm:#5e546e;--la:#9c85c2;
-  --ml:#2d4239;--mm:#3a614e;--ma:#4ea37d;
-  --pl:#47342d;--pm:#6e4536;--pa:#ba6a50;
-  --sl:#2c3a4a;--sm:#3b5673;--sa:#5e94cc;
-  --gl:#3a3220;--gm:#6b5700;--ga:#f0c800;
+  /* ── Dark Mode: vaporwave ── */
+  --bg:#12102a;--bgc:#1c1a35;--bgp:#18163000;
+  --td:#e8e0ff;--tb:#b8aadc;--tm:#7a6ea8;
+  --ll:#2a2450;--lm:#3a3268;--la:#a07eff;
+  --ml:#162838;--mm:#1e4458;--ma:#30d8c8;
+  --pl:#2a1230;--pm:#4e1e50;--pa:#ff60b8;
+  --sl:#101e38;--sm:#183060;--sa:#40a8ff;
+  --gl:#201a10;--gm:#503c00;--ga:#ffd030;
+  --neu-light:rgba(60,50,100,.5);--neu-dark:rgba(0,0,0,.55);
+  --neu-shadow:6px 6px 18px var(--neu-dark),-4px -4px 12px var(--neu-light);
+  --neu-shadow-sm:3px 3px 9px var(--neu-dark),-2px -2px 6px var(--neu-light);
+  --breathe-a:#6020c0;--breathe-b:#20a0c0;--breathe-c:#c020a0;
 }}
 /* manual override still works */
 body.force-dark{
-  --bg:#2f2b36;--bgc:#393441;--bgp:#332f3c;
-  --td:#e2dceb;--tb:#b6aec4;--tm:#8c839c;
-  --ll:#483f55;--lm:#5e546e;--la:#9c85c2;
-  --ml:#2d4239;--mm:#3a614e;--ma:#4ea37d;
-  --pl:#47342d;--pm:#6e4536;--pa:#ba6a50;
-  --sl:#2c3a4a;--sm:#3b5673;--sa:#5e94cc;
-  --gl:#3a3220;--gm:#6b5700;--ga:#f0c800;
+  --bg:#12102a;--bgc:#1c1a35;--bgp:#181630;
+  --td:#e8e0ff;--tb:#b8aadc;--tm:#7a6ea8;
+  --ll:#2a2450;--lm:#3a3268;--la:#a07eff;
+  --ml:#162838;--mm:#1e4458;--ma:#30d8c8;
+  --pl:#2a1230;--pm:#4e1e50;--pa:#ff60b8;
+  --sl:#101e38;--sm:#183060;--sa:#40a8ff;
+  --gl:#201a10;--gm:#503c00;--ga:#ffd030;
+  --neu-light:rgba(60,50,100,.5);--neu-dark:rgba(0,0,0,.55);
+  --neu-shadow:6px 6px 18px var(--neu-dark),-4px -4px 12px var(--neu-light);
+  --neu-shadow-sm:3px 3px 9px var(--neu-dark),-2px -2px 6px var(--neu-light);
+  --breathe-a:#6020c0;--breathe-b:#20a0c0;--breathe-c:#c020a0;
 }
 body,.card,.top-nav,.tab-bar,.tc,.sc,.desk-sc,.desk-pt{
   transition:background-color .4s,border-color .4s,color .4s;
@@ -60,7 +76,7 @@ h3{font-size:.9rem;font-weight:800;color:var(--td)}
 h4{font-size:.83rem;font-weight:800;color:var(--td);line-height:1.3}
 p{font-size:.8rem;font-weight:600;color:var(--tb);line-height:1.6}
 .lbl{font-size:.56rem;font-weight:900;letter-spacing:.18em;text-transform:uppercase;color:var(--tm)}
-.card{background:var(--bgc);border-radius:var(--rlg);border:2px solid var(--lm);padding:16px}
+.card{background:var(--bgc);border-radius:var(--rlg);padding:16px;position:relative;box-shadow:var(--neu-shadow);overflow:hidden}
 
 /* ── BUTTONS ── */
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:5px;padding:8px 16px;border-radius:var(--rf);border:2px solid transparent;font-family:'Nunito',sans-serif;font-size:.62rem;font-weight:900;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;transition:transform .2s cubic-bezier(.34,1.56,.64,1);white-space:nowrap;-webkit-tap-highlight-color:transparent}
@@ -76,7 +92,7 @@ p{font-size:.8rem;font-weight:600;color:var(--tb);line-height:1.6}
 .cute-tape{height:14px;width:100%;background:repeating-linear-gradient(45deg,var(--ll),var(--ll) 10px,var(--ml) 10px,var(--ml) 20px,var(--pl) 20px,var(--pl) 30px,var(--sl) 30px,var(--sl) 40px);border-bottom:2px solid var(--lm)}
 
 /* ── MOBILE NAV ── */
-.top-nav{position:sticky;top:0;z-index:100;background:var(--bgc);border-bottom:2px solid var(--lm);padding:10px 14px 8px;display:flex;align-items:center;justify-content:space-between;gap:8px}
+.top-nav{position:sticky;top:0;z-index:100;background:var(--bgc);box-shadow:0 2px 12px var(--neu-dark);padding:10px 14px 8px;display:flex;align-items:center;justify-content:space-between;gap:8px}
 .nav-brand{display:flex;flex-direction:column;gap:1px}
 .nav-brand h1{font-size:1.1rem}
 .clkbadge{display:inline-flex;align-items:center;gap:5px;margin-top:1px}
@@ -92,7 +108,7 @@ p{font-size:.8rem;font-weight:600;color:var(--tb);line-height:1.6}
 .pfo{background:var(--sl);color:var(--sa);border:1.5px solid var(--sm)}
 
 /* ── TAB BAR ── */
-.tab-bar{display:flex;position:fixed;bottom:0;left:0;right:0;z-index:100;background:var(--bgc);border-top:2px solid var(--lm);padding-bottom:env(safe-area-inset-bottom)}
+.tab-bar{display:flex;position:fixed;bottom:0;left:0;right:0;z-index:100;background:var(--bgc);box-shadow:0 -2px 14px var(--neu-dark);padding-bottom:env(safe-area-inset-bottom)}
 .tab{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:10px 4px;min-height:44px;cursor:pointer;gap:2px;border:none;background:none;font-family:'Nunito',sans-serif;-webkit-tap-highlight-color:transparent;transition:background .15s}
 .tab:active{background:var(--ll)}
 .tab-icon{font-size:1.15rem;line-height:1}
@@ -112,7 +128,7 @@ p{font-size:.8rem;font-weight:600;color:var(--tb);line-height:1.6}
 .fab-top:active{transform:scale(.92)}
 
 /* ── WHAT'S NEXT ── */
-.whats-next{background:var(--bgp);border:2px solid var(--lm);border-radius:var(--rlg);padding:10px 12px;margin-bottom:12px;display:flex;align-items:center;gap:9px}
+.whats-next{background:var(--bgp);border-radius:var(--rlg);padding:10px 12px;margin-bottom:12px;display:flex;align-items:center;gap:9px;box-shadow:var(--neu-shadow-sm)}
 .wn-icon{font-size:1.3rem;flex-shrink:0}
 .wn-text h4{font-size:.8rem;margin-bottom:1px}
 .wn-text p{font-size:.65rem;color:var(--tm);line-height:1.4}
@@ -124,7 +140,7 @@ p{font-size:.8rem;font-weight:600;color:var(--tb);line-height:1.6}
 .tdc{display:flex;flex-direction:column;align-items:center;flex-shrink:0;width:32px}
 .tdot{width:32px;height:32px;border-radius:50%;border:2px solid var(--lm);background:var(--bgp);display:flex;align-items:center;justify-content:center;font-size:.8rem;flex-shrink:0;transition:transform .25s ease}
 .tln{width:2px;flex:1;border-left:2px dashed var(--lm);margin-top:3px;min-height:12px}
-.tc{flex:1;background:var(--bgc);border-radius:var(--rmd);border:2px solid var(--lm);padding:11px 13px}
+.tc{flex:1;background:var(--bgc);border-radius:var(--rmd);padding:11px 13px;box-shadow:var(--neu-shadow-sm)}
 .thd{display:flex;justify-content:space-between;align-items:flex-start;gap:4px;margin-bottom:6px;flex-wrap:wrap;row-gap:2px}
 .ttime{font-size:.62rem;font-weight:900;letter-spacing:.06em;color:var(--tm);white-space:nowrap;margin-top:2px}
 
@@ -146,7 +162,7 @@ p{font-size:.8rem;font-weight:600;color:var(--tb);line-height:1.6}
 .ti.past .tc{opacity:.65}
 
 /* Today's Shape card */
-.shape-card{background:var(--bgc);border:2px solid var(--lm);border-radius:var(--rlg);margin-top:8px;overflow:hidden}
+.shape-card{background:var(--bgc);border-radius:var(--rlg);margin-top:8px;overflow:hidden;box-shadow:var(--neu-shadow)}
 .shape-hd{display:flex;align-items:center;justify-content:space-between;padding:11px 13px;cursor:pointer;-webkit-tap-highlight-color:transparent}
 .shape-hd-left{display:flex;align-items:center;gap:7px}
 .shape-title{font-size:.75rem;font-weight:900;color:var(--td)}
@@ -235,10 +251,10 @@ p{font-size:.8rem;font-weight:600;color:var(--tb);line-height:1.6}
 .sv{font-size:.75rem;font-weight:800;color:var(--td)}
 
 /* ── PT ── */
-.pt-header{background:var(--bgp);border-radius:var(--rlg);border:2px solid var(--lm);padding:14px;margin-bottom:12px;text-align:center}
+.pt-header{background:var(--bgp);border-radius:var(--rlg);padding:14px;margin-bottom:12px;text-align:center;box-shadow:var(--neu-shadow)}
 .dw2{display:inline-flex;align-items:center;gap:6px;background:var(--bgc);border:2px solid var(--lm);border-radius:var(--rf);padding:6px 13px}
 select{appearance:none;background:transparent;border:none;outline:none;font-family:'Nunito',sans-serif;font-size:.72rem;font-weight:900;color:var(--la);cursor:pointer;padding-right:16px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23b89de0' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 0 center;background-size:13px}
-.prog-card{background:var(--bgc);border-radius:var(--rlg);border:2px solid var(--lm);padding:13px 14px;margin-bottom:12px}
+.prog-card{background:var(--bgc);border-radius:var(--rlg);padding:13px 14px;margin-bottom:12px;box-shadow:var(--neu-shadow)}
 .pt2{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:7px}
 .pp{font-size:1.7rem;font-weight:900;color:var(--ma);line-height:1}
 .ptr{height:9px;background:var(--ll);border-radius:var(--rf);border:1.5px solid var(--lm);overflow:hidden}
@@ -265,14 +281,14 @@ select{appearance:none;background:transparent;border:none;outline:none;font-fami
 .collapse-icon.collapsed{transform:rotate(-90deg)}
 
 /* ── TIMBER MILESTONES ── */
-.milestone-card{background:var(--bgc);border:2px solid var(--lm);border-radius:var(--rlg);padding:14px;margin-bottom:12px}
+.milestone-card{background:var(--bgc);border-radius:var(--rlg);padding:14px;box-shadow:var(--neu-shadow)}
 .milestone-item{display:flex;align-items:flex-start;gap:10px;padding:7px 0;border-bottom:1.5px solid var(--ll)}
 .milestone-item:last-child{border-bottom:none;padding-bottom:0}
 .milestone-icon{font-size:1.1rem;flex-shrink:0;margin-top:1px}
 .milestone-info{flex:1}
 .milestone-title{font-size:.78rem;font-weight:800;color:var(--td);line-height:1.3}
 .milestone-date{font-size:.56rem;font-weight:900;letter-spacing:.12em;text-transform:uppercase;color:var(--tm);margin-top:1px}
-.milestone-badge{display:inline-flex;align-items:center;padding:2px 8px;border-radius:var(--rf);font-size:.48rem;font-weight:900;letter-spacing:.1em;text-transform:uppercase;margin-left:6px;flex-shrink:0}
+.milestone-badge{display:inline-flex;align-items:center;vertical-align:middle;padding:2px 8px;border-radius:var(--rf);font-size:.48rem;font-weight:900;letter-spacing:.1em;text-transform:uppercase;margin-left:6px;flex-shrink:0}
 .ms-due{background:var(--pl);border:1.5px solid var(--pm);color:var(--pa);animation:ms-glow 2s ease-in-out infinite}
 @keyframes ms-glow{0%,100%{box-shadow:0 0 0 0 rgba(247,154,122,.4)}50%{box-shadow:0 0 0 4px rgba(247,154,122,.15)}}
 .ms-upcoming{background:var(--gl);border:1.5px solid var(--gm);color:var(--ga)}
@@ -561,7 +577,7 @@ body.timer-active .desktop-layout{padding-top:70px}
 .tmr-item{display:flex;align-items:center;gap:7px;padding:4px 0;font-size:.74rem;font-weight:700;color:var(--td)}
 .tmr-time{font-size:.62rem;color:var(--tm);min-width:52px;font-weight:700}
 /* Battery card — warm, visual */
-.battery-card{background:var(--bgc);border:2px solid var(--lm);border-radius:var(--rlg);padding:14px;margin-top:10px}
+.battery-card{background:var(--bgc);border-radius:var(--rlg);padding:14px;margin-top:10px;box-shadow:var(--neu-shadow)}
 .battery-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
 .battery-title{font-size:.75rem;font-weight:900;color:var(--td)}
 .battery-time{font-size:.58rem;color:var(--tm);font-weight:700}
@@ -908,6 +924,85 @@ body.timer-active .desktop-layout{padding-top:70px}
 .sitter-scroll-top{position:fixed;bottom:calc(24px + env(safe-area-inset-bottom,0px));right:18px;z-index:10000;width:40px;height:40px;border-radius:50%;background:#9a6aba;color:#fff;border:none;font-size:1.1rem;cursor:pointer;box-shadow:0 3px 14px rgba(154,106,186,.4);display:none;align-items:center;justify-content:center;transition:opacity .2s,transform .2s;-webkit-tap-highlight-color:transparent}
 .sitter-scroll-top.visible{display:flex}
 .sitter-scroll-top:active{transform:scale(.9)}
+
+/* ═══════════════════════════════════════════════════
+   ✿  SANRIO AESTHETIC LAYER
+   ═══════════════════════════════════════════════════ */
+
+/* ── Breathe Background ── */
+.breathe-layer{
+  position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(ellipse 60% 50% at 20% 20%,var(--breathe-a) 0%,transparent 60%),
+    radial-gradient(ellipse 55% 45% at 80% 75%,var(--breathe-b) 0%,transparent 55%),
+    radial-gradient(ellipse 45% 55% at 60% 10%,var(--breathe-c) 0%,transparent 50%);
+  opacity:.18;
+  animation:breathe 12s ease-in-out infinite alternate;
+}
+@media(prefers-reduced-motion:reduce){.breathe-layer{animation:none}}
+@keyframes breathe{
+  0%  {opacity:.12;background-position:0% 0%,100% 100%,60% 0%}
+  50% {opacity:.22;background-position:5% 5%, 95% 90%,65% 5%}
+  100%{opacity:.16;background-position:2% 8%, 98% 92%,58% 3%}
+}
+body,.card,.top-nav,.tab-bar{position:relative;z-index:1}
+
+/* ── Character Watermarks ── */
+.sanrio-watermark{
+  position:fixed;bottom:calc(var(--tab-h) + 20px);right:12px;
+  z-index:2;pointer-events:none;width:80px;height:80px;
+  opacity:.08;transition:opacity .4s;
+}
+.sanrio-watermark.kuromi-wm{
+  opacity:0;
+  filter:drop-shadow(0 0 8px #ff40c0) drop-shadow(0 0 16px #c020a0);
+}
+/* light mode → cinnamoroll visible, kuromi hidden */
+.cinna-wm{opacity:.08}
+.kuromi-wm{opacity:0!important}
+/* dark mode → kuromi glows, cinnamoroll hidden */
+@media(prefers-color-scheme:dark){
+  .cinna-wm{opacity:0!important}
+  .kuromi-wm{opacity:.55!important}
+}
+body.force-dark .cinna-wm{opacity:0!important}
+body.force-dark .kuromi-wm{opacity:.55!important}
+
+/* ── Hello Kitty Bow Accents ── */
+.hk-bow{
+  position:absolute;top:10px;right:12px;
+  width:28px;height:18px;pointer-events:none;z-index:5;
+  opacity:.7;transition:opacity .3s;
+}
+.card:hover .hk-bow{opacity:1}
+
+/* ── Pet Cameos ── */
+.pet-cameos{
+  display:flex;gap:8px;align-items:center;
+  padding:8px 0 2px;margin-top:6px;
+}
+.pet-cameo{
+  display:flex;flex-direction:column;align-items:center;gap:3px;
+  cursor:default;
+}
+.pet-cameo svg{width:36px;height:36px;filter:drop-shadow(0 2px 4px rgba(0,0,0,.12))}
+.pet-cameo-name{font-size:.44rem;font-weight:900;letter-spacing:.1em;text-transform:uppercase;color:var(--tm)}
+
+/* ── Updated Tab Bar Icons ── */
+.tab-icon svg{width:22px;height:22px;display:block}
+.tab.active .tab-icon svg path,
+.tab.active .tab-icon svg circle,
+.tab.active .tab-icon svg ellipse,
+.tab.active .tab-icon svg rect{
+  stroke:var(--la);
+}
+.tab.active .tab-icon svg .fill-accent{fill:var(--la)}
+.tab-icon svg .stroke-icon{stroke:var(--tm);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.tab.active .tab-icon svg .stroke-icon{stroke:var(--la)}
+
+/* ── Neumorphic button squish ── */
+.btn{transition:transform .15s cubic-bezier(.34,1.56,.64,1),box-shadow .15s}
+.btn:active{transform:scale(.93);box-shadow:var(--neu-shadow-sm)}
 </style>
 </head>
 <body>
@@ -926,6 +1021,73 @@ body.timer-active .desktop-layout{padding-top:70px}
   }
 })();
 </script>
+
+<!-- ✿ SANRIO AESTHETIC LAYER ✿ -->
+<div class="breathe-layer" aria-hidden="true"></div>
+
+<!-- Cinnamoroll watermark — light mode -->
+<svg class="sanrio-watermark cinna-wm" aria-hidden="true" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+  <!-- body -->
+  <ellipse cx="50" cy="72" rx="22" ry="16" fill="#e8f4ff" stroke="#c8a890" stroke-width="1.2"/>
+  <!-- head -->
+  <circle cx="50" cy="46" r="28" fill="#f0f8ff" stroke="#c8a890" stroke-width="1.2"/>
+  <!-- left ear - long drooping -->
+  <path d="M27,32 C18,20 12,50 20,68 C24,60 26,52 30,48 C32,40 30,34 27,32Z" fill="#ddeeff" stroke="#c8a890" stroke-width="1.2"/>
+  <!-- right ear - long drooping -->
+  <path d="M73,32 C82,20 88,50 80,68 C76,60 74,52 70,48 C68,40 70,34 73,32Z" fill="#ddeeff" stroke="#c8a890" stroke-width="1.2"/>
+  <!-- left eye -->
+  <circle cx="42" cy="46" r="5" fill="#2255aa"/>
+  <circle cx="43.5" cy="44.5" r="1.8" fill="#fff"/>
+  <!-- right eye -->
+  <circle cx="58" cy="46" r="5" fill="#2255aa"/>
+  <circle cx="59.5" cy="44.5" r="1.8" fill="#fff"/>
+  <!-- nose -->
+  <ellipse cx="50" cy="53" rx="3" ry="2" fill="#f0a0b8"/>
+  <!-- blush left -->
+  <ellipse cx="36" cy="52" rx="5" ry="3" fill="#ffb8cc" opacity=".6"/>
+  <!-- blush right -->
+  <ellipse cx="64" cy="52" rx="5" ry="3" fill="#ffb8cc" opacity=".6"/>
+  <!-- cinnamon-roll tail -->
+  <path d="M60,82 C70,80 75,72 68,68 C65,70 67,75 62,76 C58,77 56,74 58,71" fill="none" stroke="#c8a890" stroke-width="2" stroke-linecap="round"/>
+  <!-- small paws -->
+  <ellipse cx="34" cy="83" rx="6" ry="4" fill="#e8f4ff" stroke="#c8a890" stroke-width="1"/>
+  <ellipse cx="66" cy="83" rx="6" ry="4" fill="#e8f4ff" stroke="#c8a890" stroke-width="1"/>
+</svg>
+
+<!-- Kuromi watermark — dark mode -->
+<svg class="sanrio-watermark kuromi-wm" aria-hidden="true" viewBox="0 0 100 110" xmlns="http://www.w3.org/2000/svg">
+  <!-- hood/hat pointed jester shape -->
+  <path d="M50,5 C42,14 28,30 25,48 C35,46 42,52 50,52 C58,52 65,46 75,48 C72,30 58,14 50,5Z" fill="#1a1a2e" stroke="#4a0060" stroke-width="1"/>
+  <!-- pink skull on hood -->
+  <circle cx="50" cy="24" r="7" fill="#ff80d0" stroke="#c020a0" stroke-width="1"/>
+  <circle cx="47" cy="23" r="1.5" fill="#1a1a2e"/>
+  <circle cx="53" cy="23" r="1.5" fill="#1a1a2e"/>
+  <path d="M46,27 L48,27 M50,27 L52,27 M48,27 L50,28 L52,27" stroke="#1a1a2e" stroke-width="1" fill="none"/>
+  <!-- pink bow-like ears from hood sides -->
+  <ellipse cx="27" cy="44" rx="7" ry="5" fill="#ff80d0" transform="rotate(-20,27,44)"/>
+  <ellipse cx="73" cy="44" rx="7" ry="5" fill="#ff80d0" transform="rotate(20,73,44)"/>
+  <!-- head base -->
+  <circle cx="50" cy="62" r="26" fill="#fafafa" stroke="#1a1a2e" stroke-width="1.5"/>
+  <!-- left eye — full circle -->
+  <circle cx="40" cy="60" r="8" fill="#1a1a2e"/>
+  <circle cx="42" cy="58" r="2.5" fill="#fff"/>
+  <!-- right eye — wink curve -->
+  <path d="M53,56 C56,53 62,53 65,56" stroke="#1a1a2e" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  <!-- grin with fang -->
+  <path d="M38,70 C42,76 58,76 62,70" stroke="#1a1a2e" stroke-width="2" fill="none" stroke-linecap="round"/>
+  <path d="M49,72 L49,78 L51,76 L53,78 L53,72" fill="#1a1a2e"/>
+  <!-- blush -->
+  <ellipse cx="34" cy="66" rx="5" ry="3" fill="#ff80d0" opacity=".5"/>
+  <ellipse cx="66" cy="66" rx="5" ry="3" fill="#ff80d0" opacity=".5"/>
+  <!-- body -->
+  <ellipse cx="50" cy="90" rx="20" ry="15" fill="#fafafa" stroke="#1a1a2e" stroke-width="1.2"/>
+  <!-- devil arrow tail -->
+  <path d="M68,88 C80,82 88,90 82,96 L86,92 L80,96 L84,100" fill="none" stroke="#ff40c0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- paws -->
+  <ellipse cx="36" cy="100" rx="7" ry="4.5" fill="#fafafa" stroke="#1a1a2e" stroke-width="1"/>
+  <ellipse cx="64" cy="100" rx="7" ry="4.5" fill="#fafafa" stroke="#1a1a2e" stroke-width="1"/>
+</svg>
+
 <!-- FLOATING TIMER BAR -->
 <div class="timer-bar" id="timerBar">
   <div class="timer-left">
@@ -1214,6 +1376,116 @@ body.timer-active .desktop-layout{padding-top:70px}
         ⚡ Battery low — ask Gemini for Ruthless Compression
       </button>
       <div class="battery-compress-result" id="batteryCompressResult"></div>
+      <!-- ✿ Pet Cameos ✿ -->
+      <div class="pet-cameos">
+        <!-- Timber — red miniature poodle -->
+        <div class="pet-cameo">
+          <svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+            <!-- fluffy head pom -->
+            <circle cx="24" cy="16" r="10" fill="#d4623a" opacity=".9"/>
+            <circle cx="19" cy="13" r="4" fill="#e07850"/>
+            <circle cx="29" cy="13" r="4" fill="#e07850"/>
+            <circle cx="24" cy="11" r="4.5" fill="#e07850"/>
+            <!-- ears - floppy long poodle ears -->
+            <ellipse cx="15" cy="19" rx="5" ry="8" fill="#c45530" transform="rotate(-10,15,19)"/>
+            <ellipse cx="33" cy="19" rx="5" ry="8" fill="#c45530" transform="rotate(10,33,19)"/>
+            <!-- face -->
+            <circle cx="21" cy="17" r="2.5" fill="#1a0a00"/>
+            <circle cx="27" cy="17" r="2.5" fill="#1a0a00"/>
+            <circle cx="21.8" cy="16.2" r=".9" fill="#fff"/>
+            <circle cx="27.8" cy="16.2" r=".9" fill="#fff"/>
+            <ellipse cx="24" cy="21" rx="2.5" ry="1.8" fill="#b84030"/>
+            <!-- blush -->
+            <ellipse cx="17" cy="20" rx="3.5" ry="2" fill="#e89060" opacity=".5"/>
+            <ellipse cx="31" cy="20" rx="3.5" ry="2" fill="#e89060" opacity=".5"/>
+            <!-- body fluffy -->
+            <ellipse cx="24" cy="35" rx="9" ry="8" fill="#d4623a"/>
+            <circle cx="18" cy="30" r="4" fill="#e07850"/>
+            <circle cx="30" cy="30" r="4" fill="#e07850"/>
+            <!-- legs -->
+            <ellipse cx="19" cy="43" rx="4" ry="3" fill="#e07850"/>
+            <ellipse cx="29" cy="43" rx="4" ry="3" fill="#e07850"/>
+            <!-- tail pom -->
+            <circle cx="36" cy="36" r="4" fill="#e07850"/>
+          </svg>
+          <span class="pet-cameo-name">Timber</span>
+        </div>
+        <!-- Tigris — grey tabby -->
+        <div class="pet-cameo">
+          <svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+            <!-- head -->
+            <circle cx="24" cy="20" r="13" fill="#b0aaa8"/>
+            <!-- tabby stripes -->
+            <path d="M19,10 C20,8 24,7 24,7 C24,7 28,8 29,10" stroke="#888480" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+            <path d="M21,9 L23,12" stroke="#888480" stroke-width="1" fill="none"/>
+            <path d="M27,9 L25,12" stroke="#888480" stroke-width="1" fill="none"/>
+            <!-- M forehead -->
+            <path d="M20,14 L22,16 L24,14 L26,16 L28,14" stroke="#888480" stroke-width="1.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+            <!-- pointy ears -->
+            <path d="M13,14 L11,5 L19,11Z" fill="#b0aaa8" stroke="#888480" stroke-width=".8"/>
+            <path d="M35,14 L37,5 L29,11Z" fill="#b0aaa8" stroke="#888480" stroke-width=".8"/>
+            <path d="M14,13 L12.5,7 L18,11Z" fill="#d8a0b0"/>
+            <path d="M34,13 L35.5,7 L30,11Z" fill="#d8a0b0"/>
+            <!-- sleepy half-lidded eyes -->
+            <ellipse cx="20" cy="21" rx="4" ry="3" fill="#e8e0d0"/>
+            <ellipse cx="28" cy="21" rx="4" ry="3" fill="#e8e0d0"/>
+            <path d="M16,20 C18,19 22,19 24,20" stroke="#555" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+            <path d="M24,20 C26,19 30,19 32,20" stroke="#555" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+            <ellipse cx="20" cy="21.5" rx="2.5" ry="1.8" fill="#3a7a30"/>
+            <ellipse cx="28" cy="21.5" rx="2.5" ry="1.8" fill="#3a7a30"/>
+            <!-- nose + mouth -->
+            <path d="M22.5,25 L24,27 L25.5,25" stroke="#c08090" stroke-width="1.2" fill="none"/>
+            <ellipse cx="24" cy="24.5" rx="2" ry="1.5" fill="#d0a0b0"/>
+            <!-- whiskers -->
+            <path d="M15,25 L21,26 M15,27 L21,27.5" stroke="#888" stroke-width=".8" fill="none"/>
+            <path d="M33,25 L27,26 M33,27 L27,27.5" stroke="#888" stroke-width=".8" fill="none"/>
+            <!-- body curled up, sleeping -->
+            <ellipse cx="24" cy="38" rx="13" ry="7" fill="#b0aaa8"/>
+            <path d="M13,40 C15,32 33,32 35,40" stroke="#888480" stroke-width="1" fill="none"/>
+            <!-- curl tail over body -->
+            <path d="M36,36 C42,32 44,38 40,42 C38,44 34,44 32,42" fill="none" stroke="#b0aaa8" stroke-width="4" stroke-linecap="round"/>
+            <path d="M36,36 C42,32 44,38 40,42 C38,44 34,44 32,42" fill="none" stroke="#888480" stroke-width="1" stroke-linecap="round"/>
+          </svg>
+          <span class="pet-cameo-name">Tigris</span>
+        </div>
+        <!-- Tulip — snowshoe siamese -->
+        <div class="pet-cameo">
+          <svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+            <!-- head white -->
+            <circle cx="24" cy="20" r="13" fill="#f0ede8"/>
+            <!-- chocolate point mask -->
+            <ellipse cx="24" cy="23" rx="10" ry="9" fill="#7a4a2a" opacity=".35"/>
+            <path d="M16,16 C18,22 30,22 32,16" fill="#7a4a2a" opacity=".25"/>
+            <!-- pointy ears -->
+            <path d="M13,14 L10,4 L20,11Z" fill="#f0ede8" stroke="#c8b8a8" stroke-width=".8"/>
+            <path d="M35,14 L38,4 L28,11Z" fill="#f0ede8" stroke="#c8b8a8" stroke-width=".8"/>
+            <path d="M14,13 L12,7 L19,11Z" fill="#d8a0b0"/>
+            <path d="M34,13 L36,7 L29,11Z" fill="#d8a0b0"/>
+            <!-- vivid blue eyes -->
+            <circle cx="20" cy="20" r="4.5" fill="#e8f0ff"/>
+            <circle cx="28" cy="20" r="4.5" fill="#e8f0ff"/>
+            <circle cx="20" cy="20" r="3" fill="#1870e0"/>
+            <circle cx="28" cy="20" r="3" fill="#1870e0"/>
+            <circle cx="20" cy="20" r="1.5" fill="#0a1a40"/>
+            <circle cx="28" cy="20" r="1.5" fill="#0a1a40"/>
+            <circle cx="21" cy="18.8" r="1" fill="#fff"/>
+            <circle cx="29" cy="18.8" r="1" fill="#fff"/>
+            <!-- nose -->
+            <ellipse cx="24" cy="24.5" rx="2" ry="1.5" fill="#d0a0b0"/>
+            <!-- whiskers -->
+            <path d="M14,24 L20,25 M14,26 L20,26.5" stroke="#aaa" stroke-width=".7" fill="none"/>
+            <path d="M34,24 L28,25 M34,26 L28,26.5" stroke="#aaa" stroke-width=".7" fill="none"/>
+            <!-- body white with brown points -->
+            <ellipse cx="24" cy="38" rx="11" ry="8" fill="#f0ede8"/>
+            <!-- white paws (snowshoe) -->
+            <ellipse cx="16" cy="44" rx="5" ry="3" fill="#fff" stroke="#c8b8a8" stroke-width=".7"/>
+            <ellipse cx="32" cy="44" rx="5" ry="3" fill="#fff" stroke="#c8b8a8" stroke-width=".7"/>
+            <!-- dark tail -->
+            <path d="M35,37 C42,33 44,40 38,44" fill="none" stroke="#7a4a2a" stroke-width="3.5" stroke-linecap="round"/>
+          </svg>
+          <span class="pet-cameo-name">Tulip</span>
+        </div>
+      </div>
     </div>
 
     <!-- Connection orbits -->
@@ -1321,11 +1593,11 @@ body.timer-active .desktop-layout{padding-top:70px}
 </div>
 
 <nav class="tab-bar">
-  <button class="tab active" id="tab-flow"  onclick="switchTab('flow')"><span class="tab-icon">🗓️</span><span class="tab-label">Flow</span></button>
-  <button class="tab"        id="tab-pt"    onclick="switchTab('pt')"  ><span class="tab-icon">💪</span><span class="tab-label">Move</span></button>
-  <button class="tab"        id="tab-life"  onclick="switchTab('life')"><span class="tab-icon">💜</span><span class="tab-label">Life</span></button>
-  <button class="tab"        id="tab-cal"   onclick="switchTab('cal')" ><span class="tab-icon">📅</span><span class="tab-label">Cal</span></button>
-  <button class="tab"        id="tab-stats" onclick="switchTab('stats')"><span class="tab-icon">📊</span><span class="tab-label">Ref</span></button>
+  <button class="tab active" id="tab-flow"  onclick="switchTab('flow')"><span class="tab-icon"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path class="stroke-icon" d="M6,14 C4,14 2,12.5 2,10.5 C2,8.5 3.5,7 5.5,7 C5.2,6.5 5,6 5,5.5 C5,3.6 6.6,2 8.5,2 C9.8,2 11,2.7 11.6,3.8 C12,3.3 12.7,3 13.5,3 C15,3 16.2,4.2 16.2,5.7 C16.2,5.8 16.2,5.9 16.1,6 C18.3,6.3 20,8.2 20,10.5 C20,12.5 18,14 16,14Z"/><path class="stroke-icon" d="M8,17 L8,21 M12,16 L12,21 M16,17 L16,21"/><circle class="fill-accent" cx="19" cy="5" r="2.5" fill="currentColor" stroke="none"/><path class="stroke-icon" d="M18,4.5 L20,4.5 M19,3.5 L19,5.5" stroke-width="1.2"/></svg></span><span class="tab-label">Flow</span></button>
+  <button class="tab"        id="tab-pt"    onclick="switchTab('pt')"  ><span class="tab-icon"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path class="stroke-icon" d="M5,17 C5,17 4,16 4,14.5 C4,12.5 5.5,11 8,11 L10,11 L10,8 C10,7 10.5,6 12,5.5 C13.5,5 15,5.5 15.5,7 L18,14 C18.5,15.5 18,17 16.5,17.5 L8,17.5 C6.5,17.5 5,17 5,17Z"/><path class="stroke-icon" d="M10,11 L10,17.5"/><circle class="stroke-icon" cx="18" cy="7" r="1.5"/><path class="stroke-icon fill-accent" d="M20,18 C20.5,18.5 21,19.5 20.5,20.5 C20,21.5 19,22 18,21.5" stroke-width="1.2"/><circle class="fill-accent" cx="20" cy="4" r="2" fill="currentColor" stroke="none"/><path class="stroke-icon" d="M19,3.2 L21,3.2 M20,2.2 L20,4.2" stroke-width="1.2"/></svg></span><span class="tab-label">Move</span></button>
+  <button class="tab"        id="tab-life"  onclick="switchTab('life')"><span class="tab-icon"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path class="stroke-icon" d="M12,20.5 C12,20.5 3,14.5 3,8.5 C3,5.5 5.5,3 8.5,3 C10,3 11.3,3.6 12,4.6 C12.7,3.6 14,3 15.5,3 C18.5,3 21,5.5 21,8.5 C21,14.5 12,20.5 12,20.5Z"/><circle cx="17" cy="5" r="1.5" fill="currentColor" class="fill-accent" stroke="none"/><circle cx="19" cy="7" r="1" fill="currentColor" class="fill-accent" stroke="none"/></svg></span><span class="tab-label">Life</span></button>
+  <button class="tab"        id="tab-cal"   onclick="switchTab('cal')" ><span class="tab-icon"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><rect class="stroke-icon" x="3" y="5" width="18" height="16" rx="4"/><path class="stroke-icon" d="M3,10 L21,10"/><path class="stroke-icon" d="M8,3 L8,7 M16,3 L16,7"/><circle cx="8.5" cy="14.5" r="1.5" fill="currentColor" class="fill-accent" stroke="none"/><circle cx="12" cy="14.5" r="1.5" fill="currentColor" class="fill-accent" stroke="none"/><circle cx="15.5" cy="14.5" r="1.5" fill="currentColor" class="fill-accent" stroke="none"/></svg></span><span class="tab-label">Cal</span></button>
+  <button class="tab"        id="tab-stats" onclick="switchTab('stats')"><span class="tab-icon"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path class="stroke-icon" d="M5,3 L19,3 C20.1,3 21,3.9 21,5 L21,19 C21,20.1 20.1,21 19,21 L5,21 C3.9,21 3,20.1 3,19 L3,5 C3,3.9 3.9,3 5,3Z"/><path class="stroke-icon" d="M8,8 L16,8 M8,12 L16,12 M8,16 L12,16"/><path class="stroke-icon fill-accent" d="M17,15 C17.5,14 18.5,14 19,15 L20,17 L15,17Z" stroke-width="1"/></svg></span><span class="tab-label">Ref</span></button>
 </nav>
 
 <!-- DESKTOP / TABLET LAYOUT -->
@@ -2089,7 +2361,8 @@ function renderMilestones(){
   const now = new Date();
   const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
   const html = TIMBER_MILESTONES.map(m => {
-    const d = new Date(m.date);
+    const [y,mo,dy] = m.date.split('-').map(Number);
+    const d = new Date(y, mo-1, dy); // local midnight — avoids UTC parse off-by-one
     const diff = Math.round((d - today) / 86400000);
     let badge = '', itemCls = '';
     if(diff < -7){
@@ -4834,6 +5107,31 @@ function initCalendar(){
   }
 }
 
+// ─── SANRIO BOW INJECTION ─────────────────────────────────────────────────────
+function initSanrioLayer(){
+  // Hello Kitty bow SVG — pink rounded wings + center knot
+  const bowSVG = `<svg class="hk-bow" viewBox="0 0 28 18" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <!-- left wing -->
+    <path d="M13,9 C11,4 4,2 2,5 C0,8 3,13 7,12 C10,11 12,10 13,9Z" fill="#fbbdd2" stroke="#e8618e" stroke-width="1"/>
+    <!-- right wing -->
+    <path d="M15,9 C17,4 24,2 26,5 C28,8 25,13 21,12 C18,11 16,10 15,9Z" fill="#fbbdd2" stroke="#e8618e" stroke-width="1"/>
+    <!-- center knot -->
+    <circle cx="14" cy="9" r="3.2" fill="#fbbdd2" stroke="#e8618e" stroke-width="1"/>
+    <!-- wing bumps left -->
+    <circle cx="6" cy="6" r="2" fill="#fdd0e0" opacity=".6"/>
+    <circle cx="9" cy="4.5" r="1.5" fill="#fdd0e0" opacity=".5"/>
+    <!-- wing bumps right -->
+    <circle cx="22" cy="6" r="2" fill="#fdd0e0" opacity=".6"/>
+    <circle cx="19" cy="4.5" r="1.5" fill="#fdd0e0" opacity=".5"/>
+  </svg>`;
+  // Inject bow into every .card (skip cards that already have one)
+  document.querySelectorAll('.card').forEach(card => {
+    if(!card.querySelector('.hk-bow')){
+      card.insertAdjacentHTML('afterbegin', bowSVG);
+    }
+  });
+}
+
 // ─── INIT ─────────────────────────────────────────────────────────────────────
 window.onload=()=>{
   setupPWA();syncThemeColor();
@@ -4861,6 +5159,8 @@ window.onload=()=>{
   }catch(e){}
   // Open sitter overlay if URL has #sitter or #cats hash
   handleSitterHash();
+  // ✿ Sanrio aesthetic layer
+  initSanrioLayer();
 };
 </script>
 

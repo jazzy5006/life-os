@@ -16,8 +16,11 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
 /* ── TOKENS ── */
+/* Day theme (default): lilac + matcha green
+   Night theme: deep plum + moonlit sage — applied via body.night
+   See applyTheme() in JS for auto+manual override behaviour. */
 :root{
-  /* ── Light Mode: matcha + lilac ── */
+  /* ── Day Mode: lilac + matcha ── */
   --bg:#f4f1f9;--bgc:#fdfcff;--bgp:#ede8f7;--td:#3b3458;--tb:#5c5278;--tm:#9b8fb0;
   --ll:#ede8f7;--lm:#cfc4e8;--la:#9b77d4;
   --ml:#e8f7ee;--mm:#aee8c8;--ma:#3dba87;
@@ -34,33 +37,35 @@
   /* breathe / watermark */
   --breathe-a:#c8a8e8;--breathe-b:#a8d8c0;--breathe-c:#f0b8d8;
 }
-@media(prefers-color-scheme:dark){:root{
-  /* ── Dark Mode: vaporwave ── */
-  --bg:#12102a;--bgc:#1c1a35;--bgp:#18163000;
-  --td:#e8e0ff;--tb:#b8aadc;--tm:#7a6ea8;
-  --ll:#2a2450;--lm:#3a3268;--la:#a07eff;
-  --ml:#162838;--mm:#1e4458;--ma:#30d8c8;
-  --pl:#2a1230;--pm:#4e1e50;--pa:#ff60b8;
-  --sl:#101e38;--sm:#183060;--sa:#40a8ff;
-  --gl:#201a10;--gm:#503c00;--ga:#ffd030;
-  --neu-light:rgba(60,50,100,.5);--neu-dark:rgba(0,0,0,.55);
-  --neu-shadow:6px 6px 18px var(--neu-dark),-4px -4px 12px var(--neu-light);
-  --neu-shadow-sm:3px 3px 9px var(--neu-dark),-2px -2px 6px var(--neu-light);
-  --breathe-a:#6020c0;--breathe-b:#20a0c0;--breathe-c:#c020a0;
-}}
 /* manual override still works */
-body.force-dark{
-  --bg:#12102a;--bgc:#1c1a35;--bgp:#181630;
-  --td:#e8e0ff;--tb:#b8aadc;--tm:#7a6ea8;
-  --ll:#2a2450;--lm:#3a3268;--la:#a07eff;
-  --ml:#162838;--mm:#1e4458;--ma:#30d8c8;
-  --pl:#2a1230;--pm:#4e1e50;--pa:#ff60b8;
-  --sl:#101e38;--sm:#183060;--sa:#40a8ff;
-  --gl:#201a10;--gm:#503c00;--ga:#ffd030;
-  --neu-light:rgba(60,50,100,.5);--neu-dark:rgba(0,0,0,.55);
+/* ── Night Mode: deep plum + moonlit sage ──
+   Triggered by body.night class (set by applyTheme()). */
+body.night{
+  --bg:#1a0f24;--bgc:#251735;--bgp:#1f1330;
+  --td:#f0e8f5;--tb:#c8b8d8;--tm:#8a7a98;
+  --ll:#2e1d3e;--lm:#46305a;--la:#b896d6;     /* deep plum */
+  --ml:#1a2e26;--mm:#2c4a3e;--ma:#8fc4a8;     /* moonlit sage */
+  --pl:#2e1828;--pm:#4a2c3e;--pa:#d68aa8;     /* dusky rose */
+  --sl:#15202e;--sm:#243a52;--sa:#88a8d4;     /* dusk blue */
+  --gl:#2a2410;--gm:#503e1a;--ga:#e8c060;     /* warm gold */
+  --neu-light:rgba(80,50,110,.4);--neu-dark:rgba(0,0,0,.55);
   --neu-shadow:6px 6px 18px var(--neu-dark),-4px -4px 12px var(--neu-light);
   --neu-shadow-sm:3px 3px 9px var(--neu-dark),-2px -2px 6px var(--neu-light);
-  --breathe-a:#6020c0;--breathe-b:#20a0c0;--breathe-c:#c020a0;
+  --breathe-a:#5a3878;--breathe-b:#4a8870;--breathe-c:#8a4a78;
+}
+/* Back-compat: anything still using body.force-dark resolves to night */
+body.force-dark{
+  --bg:#1a0f24;--bgc:#251735;--bgp:#1f1330;
+  --td:#f0e8f5;--tb:#c8b8d8;--tm:#8a7a98;
+  --ll:#2e1d3e;--lm:#46305a;--la:#b896d6;
+  --ml:#1a2e26;--mm:#2c4a3e;--ma:#8fc4a8;
+  --pl:#2e1828;--pm:#4a2c3e;--pa:#d68aa8;
+  --sl:#15202e;--sm:#243a52;--sa:#88a8d4;
+  --gl:#2a2410;--gm:#503e1a;--ga:#e8c060;
+  --neu-light:rgba(80,50,110,.4);--neu-dark:rgba(0,0,0,.55);
+  --neu-shadow:6px 6px 18px var(--neu-dark),-4px -4px 12px var(--neu-light);
+  --neu-shadow-sm:3px 3px 9px var(--neu-dark),-2px -2px 6px var(--neu-light);
+  --breathe-a:#5a3878;--breathe-b:#4a8870;--breathe-c:#8a4a78;
 }
 body,.card,.top-nav,.tab-bar,.tc,.sc,.desk-sc,.desk-pt{
   transition:background-color .4s,border-color .4s,color .4s;
@@ -89,7 +94,22 @@ p{font-size:.8rem;font-weight:600;color:var(--tb);line-height:1.6}
 .btn-f.on.f-wellness{background:var(--la);border-color:var(--la)}
 
 /* ── TAPE ── */
-.cute-tape{height:14px;width:100%;background:repeating-linear-gradient(45deg,var(--ll),var(--ll) 10px,var(--ml) 10px,var(--ml) 20px,var(--pl) 20px,var(--pl) 30px,var(--sl) 30px,var(--sl) 40px);border-bottom:2px solid var(--lm)}
+/* Winding vine banner — replaces the old striped .cute-tape.
+   .cute-tape kept as alias so any leftover JS references survive. */
+.vine-banner,.cute-tape{
+  height:40px;width:100%;
+  color:var(--ma);
+  background:linear-gradient(180deg,var(--bgc) 0%,var(--bg) 100%);
+  border-bottom:2px solid var(--lm);
+  overflow:hidden;line-height:0;
+}
+.vine-banner svg{display:block;width:100%;height:100%}
+.vine-banner .vine-stem{fill:none;stroke:var(--ma);stroke-width:1.8;stroke-linecap:round;opacity:.85}
+.vine-banner .vine-leaf{fill:var(--mm);stroke:var(--ma);stroke-width:.6;opacity:.9}
+.vine-banner .vine-petal{fill:var(--la);opacity:.92}
+.vine-banner .vine-center{fill:var(--gm)}
+body.night .vine-banner .vine-petal{fill:var(--pa)}
+body.night .vine-banner .vine-center{fill:var(--ga)}
 
 /* ── MOBILE NAV ── */
 .top-nav{position:sticky;top:0;z-index:100;background:var(--bgc);box-shadow:0 2px 12px var(--neu-dark);padding:10px 14px 8px;display:flex;align-items:center;justify-content:space-between;gap:8px}
@@ -442,7 +462,7 @@ select{appearance:none;background:transparent;border:none;outline:none;font-fami
 .timer-add{background:rgba(255,255,255,.15);border:1.5px solid rgba(255,255,255,.3);border-radius:var(--rf);padding:5px 10px;font-family:'Nunito',sans-serif;font-size:.58rem;font-weight:900;color:#fff;cursor:pointer;-webkit-tap-highlight-color:transparent}
 
 /* push content down when timer bar is showing */
-body.timer-active .cute-tape{margin-top:48px}
+body.timer-active .cute-tape,body.timer-active .vine-banner{margin-top:48px}
 body.timer-active .top-nav{top:48px}
 body.timer-active .desktop-layout{padding-top:70px}
 
@@ -510,6 +530,10 @@ body.timer-active .desktop-layout{padding-top:70px}
 
 /* ── GIST SYNC ── */
 .gist-bar{display:flex;align-items:center;gap:8px;background:var(--bgp);border:2px solid var(--lm);border-radius:var(--rf);padding:6px 10px;cursor:pointer;flex-shrink:0;-webkit-tap-highlight-color:transparent}
+.theme-toggle{display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;background:var(--bgp);border:2px solid var(--lm);border-radius:var(--rf);cursor:pointer;flex-shrink:0;font-size:1rem;line-height:1;color:var(--la);-webkit-tap-highlight-color:transparent;transition:transform .2s cubic-bezier(.34,1.56,.64,1),background .25s,border-color .25s}
+.theme-toggle:active{transform:scale(.92)}
+.theme-toggle[data-mode="auto"]{border-style:dashed}
+.theme-toggle .tt-glyph{pointer-events:none}
 .gist-dot{width:7px;height:7px;border-radius:50%;background:var(--tm);flex-shrink:0;transition:background .3s}
 .gist-dot.synced{background:var(--ma)}
 .gist-dot.syncing{background:var(--ga);animation:bl 1s ease-in-out infinite}
@@ -953,20 +977,9 @@ body,.card,.top-nav,.tab-bar{position:relative;z-index:1}
   z-index:2;pointer-events:none;width:80px;height:80px;
   opacity:.08;transition:opacity .4s;
 }
-.sanrio-watermark.kuromi-wm{
-  opacity:0;
-  filter:drop-shadow(0 0 8px #ff40c0) drop-shadow(0 0 16px #c020a0);
-}
-/* light mode → cinnamoroll visible, kuromi hidden */
+/* Cinnamoroll watermark — visible in day theme, faded in night */
 .cinna-wm{opacity:.08}
-.kuromi-wm{opacity:0!important}
-/* dark mode → kuromi glows, cinnamoroll hidden */
-@media(prefers-color-scheme:dark){
-  .cinna-wm{opacity:0!important}
-  .kuromi-wm{opacity:.55!important}
-}
-body.force-dark .cinna-wm{opacity:0!important}
-body.force-dark .kuromi-wm{opacity:.55!important}
+body.night .cinna-wm{opacity:.04}
 
 /* ── Hello Kitty Bow Accents ── */
 .hk-bow{
@@ -1007,6 +1020,67 @@ body.force-dark .kuromi-wm{opacity:.55!important}
 </head>
 <body>
 <script>
+// ── DAY / NIGHT THEME ───────────────────────────────────────────────────────
+// Modes: 'auto' (clock-based, default), 'day' (forced), 'night' (forced).
+// A manual override stored as 'day' or 'night' persists for the rest of the
+// calendar day; the next calendar day it falls back to 'auto'. Cycle order on
+// tap: auto → day → night → auto.
+(function bootstrapTheme(){
+  function todayKey(){ var d=new Date(); return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate(); }
+  function read(){
+    try{
+      var mode = localStorage.getItem('themeMode') || 'auto';
+      var when = localStorage.getItem('themeOverrideDate') || '';
+      if((mode==='day'||mode==='night') && when !== todayKey()){
+        // Override is from a previous day — discard it.
+        mode = 'auto';
+        localStorage.setItem('themeMode','auto');
+        localStorage.removeItem('themeOverrideDate');
+      }
+      return mode;
+    }catch(e){ return 'auto'; }
+  }
+  function isNightHour(){ var h=new Date().getHours(); return h<6 || h>=19; } // 6am–7pm = day
+  function resolved(mode){ return (mode==='night') || (mode==='auto' && isNightHour()) ? 'night' : 'day'; }
+  function paint(mode){
+    var actual = resolved(mode);
+    document.body.classList.toggle('night', actual==='night');
+    var meta = document.querySelector('meta[name="theme-color"]');
+    if(meta) meta.setAttribute('content', actual==='night' ? '#1a0f24' : '#f7f2fb');
+    ['themeToggle','deskThemeToggle'].forEach(function(id){
+      var btn = document.getElementById(id);
+      if(!btn) return;
+      btn.dataset.mode = mode;
+      var glyph = btn.querySelector('.tt-glyph');
+      if(glyph) glyph.textContent = actual==='night' ? '☾' : '☀︎';
+      btn.title = mode==='auto'
+        ? 'Theme: auto ('+actual+'). Tap to override.'
+        : 'Theme: '+mode+' (override active until midnight). Tap to cycle.';
+    });
+  }
+  // Apply class to html early so background paints correctly
+  var initial = read();
+  if(resolved(initial)==='night') document.documentElement.classList.add('night-pre');
+  // Re-apply once body exists
+  document.addEventListener('DOMContentLoaded', function(){ paint(read()); });
+  // Public API
+  window.cycleTheme = function(){
+    var order = ['auto','day','night'];
+    var cur = read();
+    var next = order[(order.indexOf(cur)+1) % order.length];
+    try{
+      localStorage.setItem('themeMode', next);
+      if(next==='auto') localStorage.removeItem('themeOverrideDate');
+      else localStorage.setItem('themeOverrideDate', todayKey());
+    }catch(e){}
+    paint(next);
+  };
+  // Re-resolve once an hour in case the auto window crosses
+  setInterval(function(){ paint(read()); }, 15*60*1000);
+  // Apply ASAP (body may already exist by the time this runs)
+  if(document.body) paint(initial);
+})();
+
 // If URL has #sitter or #cats, open overlay as soon as DOM is ready
 (function(){
   var h = '#cats'; // preview override
@@ -1054,40 +1128,6 @@ body.force-dark .kuromi-wm{opacity:.55!important}
   <ellipse cx="66" cy="83" rx="6" ry="4" fill="#e8f4ff" stroke="#c8a890" stroke-width="1"/>
 </svg>
 
-<!-- Kuromi watermark — dark mode -->
-<svg class="sanrio-watermark kuromi-wm" aria-hidden="true" viewBox="0 0 100 110" xmlns="http://www.w3.org/2000/svg">
-  <!-- hood/hat pointed jester shape -->
-  <path d="M50,5 C42,14 28,30 25,48 C35,46 42,52 50,52 C58,52 65,46 75,48 C72,30 58,14 50,5Z" fill="#1a1a2e" stroke="#4a0060" stroke-width="1"/>
-  <!-- pink skull on hood -->
-  <circle cx="50" cy="24" r="7" fill="#ff80d0" stroke="#c020a0" stroke-width="1"/>
-  <circle cx="47" cy="23" r="1.5" fill="#1a1a2e"/>
-  <circle cx="53" cy="23" r="1.5" fill="#1a1a2e"/>
-  <path d="M46,27 L48,27 M50,27 L52,27 M48,27 L50,28 L52,27" stroke="#1a1a2e" stroke-width="1" fill="none"/>
-  <!-- pink bow-like ears from hood sides -->
-  <ellipse cx="27" cy="44" rx="7" ry="5" fill="#ff80d0" transform="rotate(-20,27,44)"/>
-  <ellipse cx="73" cy="44" rx="7" ry="5" fill="#ff80d0" transform="rotate(20,73,44)"/>
-  <!-- head base -->
-  <circle cx="50" cy="62" r="26" fill="#fafafa" stroke="#1a1a2e" stroke-width="1.5"/>
-  <!-- left eye — full circle -->
-  <circle cx="40" cy="60" r="8" fill="#1a1a2e"/>
-  <circle cx="42" cy="58" r="2.5" fill="#fff"/>
-  <!-- right eye — wink curve -->
-  <path d="M53,56 C56,53 62,53 65,56" stroke="#1a1a2e" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-  <!-- grin with fang -->
-  <path d="M38,70 C42,76 58,76 62,70" stroke="#1a1a2e" stroke-width="2" fill="none" stroke-linecap="round"/>
-  <path d="M49,72 L49,78 L51,76 L53,78 L53,72" fill="#1a1a2e"/>
-  <!-- blush -->
-  <ellipse cx="34" cy="66" rx="5" ry="3" fill="#ff80d0" opacity=".5"/>
-  <ellipse cx="66" cy="66" rx="5" ry="3" fill="#ff80d0" opacity=".5"/>
-  <!-- body -->
-  <ellipse cx="50" cy="90" rx="20" ry="15" fill="#fafafa" stroke="#1a1a2e" stroke-width="1.2"/>
-  <!-- devil arrow tail -->
-  <path d="M68,88 C80,82 88,90 82,96 L86,92 L80,96 L84,100" fill="none" stroke="#ff40c0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-  <!-- paws -->
-  <ellipse cx="36" cy="100" rx="7" ry="4.5" fill="#fafafa" stroke="#1a1a2e" stroke-width="1"/>
-  <ellipse cx="64" cy="100" rx="7" ry="4.5" fill="#fafafa" stroke="#1a1a2e" stroke-width="1"/>
-</svg>
-
 <!-- FLOATING TIMER BAR -->
 <div class="timer-bar" id="timerBar">
   <div class="timer-left">
@@ -1103,7 +1143,58 @@ body.force-dark .kuromi-wm{opacity:.55!important}
   </div>
 </div>
 
-<div class="cute-tape"></div>
+<div class="vine-banner cute-tape" aria-hidden="true">
+  <svg viewBox="0 0 800 40" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+    <!-- main winding vine (sine-style sweep) -->
+    <path class="vine-stem" d="M -10 22 Q 100 4 200 22 T 400 22 T 600 22 T 810 22"/>
+    <!-- leaves nestled along the curve, alternating sides -->
+    <g>
+      <ellipse class="vine-leaf" cx="50"  cy="14" rx="6" ry="3" transform="rotate(-30 50 14)"/>
+      <ellipse class="vine-leaf" cx="150" cy="14" rx="6" ry="3" transform="rotate(30 150 14)"/>
+      <ellipse class="vine-leaf" cx="250" cy="30" rx="6" ry="3" transform="rotate(-30 250 30)"/>
+      <ellipse class="vine-leaf" cx="350" cy="30" rx="6" ry="3" transform="rotate(30 350 30)"/>
+      <ellipse class="vine-leaf" cx="450" cy="14" rx="6" ry="3" transform="rotate(-30 450 14)"/>
+      <ellipse class="vine-leaf" cx="550" cy="14" rx="6" ry="3" transform="rotate(30 550 14)"/>
+      <ellipse class="vine-leaf" cx="650" cy="30" rx="6" ry="3" transform="rotate(-30 650 30)"/>
+      <ellipse class="vine-leaf" cx="750" cy="30" rx="6" ry="3" transform="rotate(30 750 30)"/>
+    </g>
+    <!-- 5-petal flowers at curve crests (top) and troughs (bottom) -->
+    <g>
+      <g transform="translate(100,6)">
+        <circle class="vine-petal" r="3.2" cx="0"    cy="-3.2"/>
+        <circle class="vine-petal" r="3.2" cx="3"    cy="-1"/>
+        <circle class="vine-petal" r="3.2" cx="1.9"  cy="2.6"/>
+        <circle class="vine-petal" r="3.2" cx="-1.9" cy="2.6"/>
+        <circle class="vine-petal" r="3.2" cx="-3"   cy="-1"/>
+        <circle class="vine-center" r="1.6"/>
+      </g>
+      <g transform="translate(300,34)">
+        <circle class="vine-petal" r="3.2" cx="0"    cy="-3.2"/>
+        <circle class="vine-petal" r="3.2" cx="3"    cy="-1"/>
+        <circle class="vine-petal" r="3.2" cx="1.9"  cy="2.6"/>
+        <circle class="vine-petal" r="3.2" cx="-1.9" cy="2.6"/>
+        <circle class="vine-petal" r="3.2" cx="-3"   cy="-1"/>
+        <circle class="vine-center" r="1.6"/>
+      </g>
+      <g transform="translate(500,6)">
+        <circle class="vine-petal" r="3.2" cx="0"    cy="-3.2"/>
+        <circle class="vine-petal" r="3.2" cx="3"    cy="-1"/>
+        <circle class="vine-petal" r="3.2" cx="1.9"  cy="2.6"/>
+        <circle class="vine-petal" r="3.2" cx="-1.9" cy="2.6"/>
+        <circle class="vine-petal" r="3.2" cx="-3"   cy="-1"/>
+        <circle class="vine-center" r="1.6"/>
+      </g>
+      <g transform="translate(700,34)">
+        <circle class="vine-petal" r="3.2" cx="0"    cy="-3.2"/>
+        <circle class="vine-petal" r="3.2" cx="3"    cy="-1"/>
+        <circle class="vine-petal" r="3.2" cx="1.9"  cy="2.6"/>
+        <circle class="vine-petal" r="3.2" cx="-1.9" cy="2.6"/>
+        <circle class="vine-petal" r="3.2" cx="-3"   cy="-1"/>
+        <circle class="vine-center" r="1.6"/>
+      </g>
+    </g>
+  </svg>
+</div>
 
 <!-- MOBILE NAV -->
 <nav class="top-nav">
@@ -1112,6 +1203,9 @@ body.force-dark .kuromi-wm{opacity:.55!important}
     <div class="clkbadge"><span class="lbl">Now:</span><span class="clktime" id="mClk">--:-- --</span></div>
   </div>
   <div class="nav-actions">
+    <button type="button" class="theme-toggle" id="themeToggle" data-mode="auto" onclick="cycleTheme()" title="Day / night theme — auto by default, tap to override">
+      <span class="tt-glyph" id="themeToggleGlyph">☀︎</span>
+    </button>
     <div class="gist-bar" id="gistBar" onclick="openGistModal()" title="Cloud sync">
       <span class="gist-dot" id="gistDot"></span>
       <span class="gist-bar-txt" id="gistBarTxt">Sync</span>
@@ -1622,6 +1716,9 @@ body.force-dark .kuromi-wm{opacity:.55!important}
       </div>
     </div>
     <div class="desk-header-right">
+      <button type="button" class="theme-toggle" id="deskThemeToggle" data-mode="auto" onclick="cycleTheme()" title="Day / night theme — auto by default, tap to override">
+        <span class="tt-glyph" id="deskThemeToggleGlyph">☀︎</span>
+      </button>
       <div class="gist-bar" id="deskGistBar" onclick="openGistModal()" title="Cloud sync — Timber memories">
         <span class="gist-dot" id="deskGistDot"></span>
         <span class="gist-bar-txt" id="deskGistBarTxt">Sync</span>
@@ -2020,12 +2117,14 @@ const RLT_DAY = {
 // Day-specific blocks are tagged with days[] — only shown on matching weekday
 // RLT rotating block is handled dynamically
 const S=[
- // ── OVERNIGHT ──────────────────────────────────────────────────────────────
- {t:"04:00 AM",e:"04:15 AM",i:"🌙",h:"Timber Potty — Night Trip",steps:[
-   {c:"timber",txt:"Pick Timber up from crate immediately — no walking.",note:"Carrying prevents accidents in transit. His bladder is full and urgency is real at this age."},
-   {c:"timber",txt:"Carry downstairs. Wait for sit at back door. Open. Out to pee spot."},
-   {c:"timber",txt:"Praise the moment he goes. Back inside. Straight to crate."},
-   {c:"timber",txt:"Lights low. No talking beyond what's needed. Back to bed."},
+ // ── OVERNIGHT (18-week revision) ──────────────────────────────────────────
+ // Fading-out transition trip. At 18 weeks his bladder reliably stretches
+ // past the old 4 AM. Push the alarm later in 30-min increments week by week,
+ // then drop entirely once he's had 7 consecutive dry overnight crates.
+ {t:"05:30 AM",e:"05:40 AM",i:"🌙",h:"Timber Transition Potty",steps:[
+   {c:"timber",txt:"Optional — only fire this alarm if he's whined or scratched in the past few nights.",note:"At 18 weeks he should be on the edge of holding through the night. If he's been quiet for a week, skip this and let him sleep until 7."},
+   {c:"timber",txt:"Pick him up from crate. Carry downstairs. Lights low. Quick out, praise, back to crate.",note:"Same boring routine as before — no play, no eye contact, no wind-down. He goes back to sleep until morning wake."},
+   {c:"timber",txt:"Goal over the next 1–2 weeks: shift this alarm to 06:00, then 06:30, then drop it entirely.",note:"This is the last overnight wake-up. The 1 AM and 11 PM trips have already been retired."},
  ]},
 
  // ── MORNING ────────────────────────────────────────────────────────────────
@@ -2210,11 +2309,8 @@ const S=[
    {c:"wellness",txt:"Keep lights dim. Wind down naturally."},
    {c:"wellness",txt:"One line reflection in Hobonichi if you feel like it."},
  ]},
- {t:"11:00 PM",e:"11:15 PM",i:"🌙",h:"Timber Overnight Potty #1",steps:[
-   {c:"timber",txt:"Pick up from crate. Carry downstairs. Lights low.",note:"This is not a wake-up — he's mid-sleep. Keep it boring. No talking, no play, no eye contact beyond what's needed. Out, praise, straight back in crate."},
-   {c:"timber",txt:"Sit at door. Out. Praise. Back upstairs."},
-   {c:"timber",txt:"Straight back into crate. No wind-down. He goes back to sleep."},
- ]},
+ // 11:00 PM "Overnight Potty #1" retired at 18 weeks — bedtime potty at 8:45 PM
+ // now reliably holds him until the transition trip in the early morning.
  {t:"11:15 PM",e:"11:30 PM",i:"💊",h:"Wind-Down + Meds",steps:[
    {c:"wellness",txt:"Final <a href='https://guavahealth.com' target='_blank' style='color:inherit;text-decoration:underline;text-decoration-style:dotted'>Guava</a> log — pain levels and any notes."},
    {c:"wellness",txt:"Dim all screens. Brush teeth."},
@@ -2224,11 +2320,8 @@ const S=[
    {c:"wellness",txt:"Lights out. Timber is settled. You have done enough today."},
    {c:"wellness",txt:"Glucosamine incorporates into cartilage during deep sleep.",note:"Consistent sleep timing regulates cortisol — directly impacts hypermobility-related inflammation."},
  ]},
- // Partner's trip — 1 AM (reminder only, he sets his own alarm)
- {t:"01:00 AM",e:"01:10 AM",i:"🌙",h:"Timber Potty — Partner's Trip",steps:[
-   {c:"timber",txt:"Partner takes this trip. He sets his own alarm.",note:"As Timber matures over the next 3–4 weeks, this trip gets dropped first when his bladder can hold the full overnight stretch."},
-   {c:"timber",txt:"Same routine: carry, sit at door, out, praise, crate. Lights low."},
- ]},
+ // Partner's 1 AM trip retired — Timber holds the overnight stretch on his own
+ // now that he's 18 weeks old.
 ];
 
 
@@ -2321,13 +2414,15 @@ function setupPWA(){
   if(link)link.href=URL.createObjectURL(blob);
 }
 
-// ─── DARK MODE (system-aware) ─────────────────────────────────────────────────
-// matchMedia handles it via CSS; we just sync theme-color meta
+// ─── DARK MODE — superseded by the day/night theme bootstrap above ───────────
+// The bootstrapTheme() IIFE already manages body.night and the meta theme-color
+// element (auto by clock, manual override via the header toggle). These shims
+// are kept so any legacy callers don't crash.
 function syncThemeColor(){
-  const dark=window.matchMedia('(prefers-color-scheme:dark)').matches;
-  document.querySelector('meta[name="theme-color"]').content=dark?'#2f2b36':'#f7f2fb';
+  const isNight = document.body.classList.contains('night');
+  const meta = document.querySelector('meta[name="theme-color"]');
+  if(meta) meta.setAttribute('content', isNight ? '#1a0f24' : '#f7f2fb');
 }
-window.matchMedia('(prefers-color-scheme:dark)').addEventListener('change',syncThemeColor);
 
 // ─── HTML ESCAPE HELPER (XSS prevention) ─────────────────────────────────────
 const esc = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
@@ -2351,9 +2446,9 @@ setInterval(()=>{
 const TIMBER_MILESTONES = [
   {date:'2026-04-16', icon:'💉', title:'Final puppy vaccines (16 weeks)',      detail:'DA2PP + rabies booster. He\'s fully protected after this — cleared for all public surfaces.'},
   {date:'2026-04-23', icon:'🦮', title:'First on-leash public walk cleared',   detail:'One week post-final vaccines. Safe for footpaths, dog parks, and sniffing everything.'},
-  {date:'2026-05-07', icon:'⏰', title:'4-month schedule review',              detail:'Bladder control matures. Extend potty intervals and consider dropping the 4 AM overnight trip.'},
-  {date:'2026-06-11', icon:'📅', title:'5-month schedule adjustment',          detail:'Daytime gaps can extend to 2.5–3 hrs. Reassess crate nap lengths and tethering windows.'},
-  {date:'2026-07-07', icon:'🐶', title:'6-month vet check + adolescence prep', detail:'Book vet check. Adolescence begins — expect recall and impulse control regression. Stay consistent.'},
+  {date:'2026-04-30', icon:'⏰', title:'4-month schedule review',              detail:'Bladder control matures. Done — 1 AM, 11 PM, and 4 AM trips retired; transition trip at 5:30 AM fading out.'},
+  {date:'2026-05-30', icon:'📅', title:'5-month schedule adjustment',          detail:'Daytime awake windows can stretch to 75–90 min. Drop one nap cycle and consider widening tethered windows from 30 min to 45+ min.'},
+  {date:'2026-06-30', icon:'🐶', title:'6-month vet check + adolescence prep', detail:'Book vet check. Adolescence begins — expect recall and impulse control regression. Stay consistent.'},
   {date:'2026-09-01', icon:'✂️', title:'Neuter assessment window',             detail:'Standard for toy breeds: 7–8 months. Discuss timing with vet at the 6-month check.'},
 ];
 
@@ -6040,130 +6135,3 @@ window.onload=()=>{
           </div>
           <div class="sitter-vet-block">
             <h4>🚨 Emergency Vets</h4>
-            <p>
-              <strong>Animal Emergency Hospital (Crabtree)</strong> · 409 Vick Ave, Raleigh · <a href="tel:+19197815145">919-781-5145</a><br>
-              <strong>NC State Small Animal Emergency</strong> · 1052 William Moore Dr · <a href="tel:+19195136911">919-513-6911</a><br>
-              <strong>Quail Corners Emergency</strong> · 1613 E. Millbrook Rd · <a href="tel:+19196007526">919-600-7526</a><br>
-              <strong>VSH North Raleigh</strong> · 4640 Paragon Park Dr · <a href="tel:+19198610109">919-861-0109</a><br>
-              <strong>VSH Cary</strong> · 6405-100 Tryon Rd, Cary · <a href="tel:+19192334911">919-233-4911</a><br>
-              <strong>VSH Durham</strong> · 7015 NC Hwy 751, Durham · <a href="tel:+19196006600">919-600-6600</a>
-            </p>
-          </div>
-        </div>
-
-          </div>
-    </div><!-- end ella & michael -->
-
-  </div><!-- end cat tab -->
-
-</div><!-- end sitter overlay -->
-
-<script>
-// ── SITTER HASH ROUTING ──
-
-
-function sitterScrollTo(id){
-  const overlay = document.getElementById('sitterOverlay');
-  const target = document.getElementById(id);
-  if(!overlay || !target) return;
-  const overlayTop = overlay.getBoundingClientRect().top;
-  const targetTop = target.getBoundingClientRect().top;
-  const offset = targetTop - overlayTop + overlay.scrollTop - 110;
-  overlay.scrollTo({top: offset, behavior:'smooth'});
-}
-function initSitterTocLinks(){
-  document.querySelectorAll('.sitter-toc-pill, .sitter-toc-link').forEach(a=>{
-    a.addEventListener('click', function(e){
-      e.preventDefault();
-      const id = this.getAttribute('href').slice(1);
-      sitterScrollTo(id);
-    });
-  });
-}
-function initSitterToc(){
-  const links = document.querySelectorAll('.sitter-toc-link');
-  if(!links.length) return;
-  const ids = [...links].map(l=>l.getAttribute('href').slice(1));
-  const obs = new IntersectionObserver(entries=>{
-    entries.forEach(e=>{
-      if(e.isIntersecting){
-        links.forEach(l=>l.classList.remove('active'));
-        const a = document.querySelector('.sitter-toc-link[href="#'+e.target.id+'"]');
-        if(a) a.classList.add('active');
-      }
-    });
-  },{rootMargin:'-10% 0px -80% 0px'});
-  ids.forEach(id=>{const el=document.getElementById(id);if(el)obs.observe(el);});
-}
-function showCatSub(tab){
-  document.querySelectorAll('.cat-sub-content').forEach(el=>el.classList.remove('active'));
-  document.querySelectorAll('.cat-sub-tab').forEach(el=>el.classList.remove('active'));
-  document.getElementById('csub-'+tab)?.classList.add('active');
-  document.getElementById('cst-'+tab)?.classList.add('active');
-  window.scrollTo(0,0);
-  setTimeout(()=>{initSitterToc();initSitterTocLinks();},100);
-}
-function showSitterTab(tab){
-  document.querySelectorAll('.sitter-tab-content').forEach(el=>el.classList.remove('active'));
-  document.querySelectorAll('.sitter-nav-pill').forEach(el=>el.classList.remove('active'));
-  document.getElementById('sitterTab'+tab.charAt(0).toUpperCase()+tab.slice(1))?.classList.add('active');
-  document.getElementById('pill'+tab.charAt(0).toUpperCase()+tab.slice(1))?.classList.add('active');
-  const titles={dog:'🐶 Timber — Care Guide',cat:'🐱 Cat Care Guide'};
-  document.getElementById('sitterBackTitle').textContent=titles[tab]||'Care Guide';
-  window.scrollTo(0,0);
-}
-function openSitter(tab){
-  const overlay = document.getElementById('sitterOverlay');
-  if(!overlay) return;
-  overlay.classList.add('active');
-  overlay.scrollTop = 0;
-  document.body.style.overflow='hidden';
-  showSitterTab(tab||'dog');
-}
-function closeSitter(){
-  document.getElementById('sitterOverlay').classList.remove('active');
-  document.body.style.overflow='';
-  try{history.pushState('',document.title,window.location.pathname+window.location.search);}catch(e){}
-}
-function handleSitterHash(){
-  const h=window.location.hash;
-  if(h==='#sitter'){openSitter('dog');}
-  else if(h==='#cats'){openSitter('cat');}
-  else{
-    const o=document.getElementById('sitterOverlay');
-    if(o&&o.classList.contains('active'))closeSitter();
-  }
-}
-
-function setViviTime(day, when){
-  ['apr1','apr3'].forEach(d=>{
-    if(d !== day) return;
-    ['before','after'].forEach(w=>{
-      const btn = document.getElementById('vv-'+d+'-'+w);
-      const inst = document.getElementById('vv-'+d+'-'+w+'-inst');
-      if(btn) btn.classList.toggle('active', w===when);
-      if(inst) inst.style.display = (w===when)?'block':'none';
-    });
-  });
-}
-function setEmTime(day, when){
-  if(day==='apr8'){
-    ['before','after'].forEach(w=>{
-      const btn=document.getElementById('em-apr8-'+w);
-      const inst=document.getElementById('em-apr8-'+w+'-inst');
-      if(btn) btn.classList.toggle('active',w===when);
-      if(inst) inst.style.display=(w===when)?'block':'none';
-    });
-  }
-}
-
-document.getElementById('sitterOverlay')?.addEventListener('scroll', function(){
-  const btn = document.getElementById('sitterScrollTop');
-  if(!btn) return;
-  btn.classList.toggle('visible', this.scrollTop > 300);
-});
-window.addEventListener('hashchange',handleSitterHash);
-// Hash routing handled inside window.onload
-</script>
-</body>
-</html>

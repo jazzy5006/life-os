@@ -1083,7 +1083,7 @@ body.night .cinna-wm{opacity:.04}
 
 // If URL has #sitter or #cats, open overlay as soon as DOM is ready
 (function(){
-  var h = '#cats'; // preview override
+  var h = window.location.hash;
   if(h === '#sitter' || h === '#cats') {
     document.addEventListener('DOMContentLoaded', function(){
       var overlay = document.getElementById('sitterOverlay');
@@ -6135,3 +6135,130 @@ window.onload=()=>{
           </div>
           <div class="sitter-vet-block">
             <h4>🚨 Emergency Vets</h4>
+            <p>
+              <strong>Animal Emergency Hospital (Crabtree)</strong> · 409 Vick Ave, Raleigh · <a href="tel:+19197815145">919-781-5145</a><br>
+              <strong>NC State Small Animal Emergency</strong> · 1052 William Moore Dr · <a href="tel:+19195136911">919-513-6911</a><br>
+              <strong>Quail Corners Emergency</strong> · 1613 E. Millbrook Rd · <a href="tel:+19196007526">919-600-7526</a><br>
+              <strong>VSH North Raleigh</strong> · 4640 Paragon Park Dr · <a href="tel:+19198610109">919-861-0109</a><br>
+              <strong>VSH Cary</strong> · 6405-100 Tryon Rd, Cary · <a href="tel:+19192334911">919-233-4911</a><br>
+              <strong>VSH Durham</strong> · 7015 NC Hwy 751, Durham · <a href="tel:+19196006600">919-600-6600</a>
+            </p>
+          </div>
+        </div>
+
+          </div>
+    </div><!-- end ella & michael -->
+
+  </div><!-- end cat tab -->
+
+</div><!-- end sitter overlay -->
+
+<script>
+// ── SITTER HASH ROUTING ──
+
+
+function sitterScrollTo(id){
+  const overlay = document.getElementById('sitterOverlay');
+  const target = document.getElementById(id);
+  if(!overlay || !target) return;
+  const overlayTop = overlay.getBoundingClientRect().top;
+  const targetTop = target.getBoundingClientRect().top;
+  const offset = targetTop - overlayTop + overlay.scrollTop - 110;
+  overlay.scrollTo({top: offset, behavior:'smooth'});
+}
+function initSitterTocLinks(){
+  document.querySelectorAll('.sitter-toc-pill, .sitter-toc-link').forEach(a=>{
+    a.addEventListener('click', function(e){
+      e.preventDefault();
+      const id = this.getAttribute('href').slice(1);
+      sitterScrollTo(id);
+    });
+  });
+}
+function initSitterToc(){
+  const links = document.querySelectorAll('.sitter-toc-link');
+  if(!links.length) return;
+  const ids = [...links].map(l=>l.getAttribute('href').slice(1));
+  const obs = new IntersectionObserver(entries=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){
+        links.forEach(l=>l.classList.remove('active'));
+        const a = document.querySelector('.sitter-toc-link[href="#'+e.target.id+'"]');
+        if(a) a.classList.add('active');
+      }
+    });
+  },{rootMargin:'-10% 0px -80% 0px'});
+  ids.forEach(id=>{const el=document.getElementById(id);if(el)obs.observe(el);});
+}
+function showCatSub(tab){
+  document.querySelectorAll('.cat-sub-content').forEach(el=>el.classList.remove('active'));
+  document.querySelectorAll('.cat-sub-tab').forEach(el=>el.classList.remove('active'));
+  document.getElementById('csub-'+tab)?.classList.add('active');
+  document.getElementById('cst-'+tab)?.classList.add('active');
+  window.scrollTo(0,0);
+  setTimeout(()=>{initSitterToc();initSitterTocLinks();},100);
+}
+function showSitterTab(tab){
+  document.querySelectorAll('.sitter-tab-content').forEach(el=>el.classList.remove('active'));
+  document.querySelectorAll('.sitter-nav-pill').forEach(el=>el.classList.remove('active'));
+  document.getElementById('sitterTab'+tab.charAt(0).toUpperCase()+tab.slice(1))?.classList.add('active');
+  document.getElementById('pill'+tab.charAt(0).toUpperCase()+tab.slice(1))?.classList.add('active');
+  const titles={dog:'🐶 Timber — Care Guide',cat:'🐱 Cat Care Guide'};
+  document.getElementById('sitterBackTitle').textContent=titles[tab]||'Care Guide';
+  window.scrollTo(0,0);
+}
+function openSitter(tab){
+  const overlay = document.getElementById('sitterOverlay');
+  if(!overlay) return;
+  overlay.classList.add('active');
+  overlay.scrollTop = 0;
+  document.body.style.overflow='hidden';
+  showSitterTab(tab||'dog');
+}
+function closeSitter(){
+  document.getElementById('sitterOverlay').classList.remove('active');
+  document.body.style.overflow='';
+  try{history.pushState('',document.title,window.location.pathname+window.location.search);}catch(e){}
+}
+function handleSitterHash(){
+  const h=window.location.hash;
+  if(h==='#sitter'){openSitter('dog');}
+  else if(h==='#cats'){openSitter('cat');}
+  else{
+    const o=document.getElementById('sitterOverlay');
+    if(o&&o.classList.contains('active'))closeSitter();
+  }
+}
+
+function setViviTime(day, when){
+  ['apr1','apr3'].forEach(d=>{
+    if(d !== day) return;
+    ['before','after'].forEach(w=>{
+      const btn = document.getElementById('vv-'+d+'-'+w);
+      const inst = document.getElementById('vv-'+d+'-'+w+'-inst');
+      if(btn) btn.classList.toggle('active', w===when);
+      if(inst) inst.style.display = (w===when)?'block':'none';
+    });
+  });
+}
+function setEmTime(day, when){
+  if(day==='apr8'){
+    ['before','after'].forEach(w=>{
+      const btn=document.getElementById('em-apr8-'+w);
+      const inst=document.getElementById('em-apr8-'+w+'-inst');
+      if(btn) btn.classList.toggle('active',w===when);
+      if(inst) inst.style.display=(w===when)?'block':'none';
+    });
+  }
+}
+
+document.getElementById('sitterOverlay')?.addEventListener('scroll', function(){
+  const btn = document.getElementById('sitterScrollTop');
+  if(!btn) return;
+  btn.classList.toggle('visible', this.scrollTop > 300);
+});
+window.addEventListener('hashchange',handleSitterHash);
+// Hash routing handled inside window.onload
+</script>
+</body>
+</html>

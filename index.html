@@ -1016,6 +1016,72 @@ body.night .cinna-wm{opacity:.04}
 /* ── Neumorphic button squish ── */
 .btn{transition:transform .15s cubic-bezier(.34,1.56,.64,1),box-shadow .15s}
 .btn:active{transform:scale(.93);box-shadow:var(--neu-shadow-sm)}
+
+/* ══════════════════════════════════════════════════════════
+   TRAIN TAB — Timber's Training Reference
+   ══════════════════════════════════════════════════════════ */
+
+/* Deep-link badge for Flow timeline (mirrors .stats-link) */
+.train-link{display:inline-flex;align-items:center;gap:3px;margin-left:5px;padding:2px 7px;border-radius:var(--rf);border:1.5px solid var(--pa);background:var(--pl);color:var(--pa);font-family:'Nunito',sans-serif;font-size:.44rem;font-weight:900;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;white-space:nowrap;flex-shrink:0;vertical-align:middle;-webkit-tap-highlight-color:transparent;transition:background .15s}
+.train-link:hover,.train-link:active{background:var(--pm)}
+
+/* Page wrapper */
+#page-train{padding:0 0 80px}
+#dpanel-train{overflow-y:auto}
+
+/* Section headers */
+.train-section-hd{font-family:'Nunito',sans-serif;font-size:.62rem;font-weight:900;letter-spacing:.13em;text-transform:uppercase;color:var(--ma);margin:18px 0 8px;padding-left:2px}
+
+/* Daily rotation banner */
+.train-rotation-card{background:var(--pl);border:2px solid var(--pm);border-radius:16px;padding:14px 16px;margin:14px 14px 0}
+.train-rotation-day{font-family:'Nunito',sans-serif;font-size:.58rem;font-weight:900;letter-spacing:.12em;text-transform:uppercase;color:var(--pa);margin-bottom:4px}
+.train-rotation-list{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.train-rotation-pill{background:var(--ll);border:1.5px solid var(--lm);border-radius:20px;padding:4px 12px;font-family:'Nunito',sans-serif;font-size:.65rem;font-weight:800;color:var(--la)}
+
+/* Session tips */
+.train-tip-card{background:var(--ll);border:1.5px solid var(--lm);border-radius:12px;padding:10px 14px;margin:10px 14px 0;font-size:.68rem;line-height:1.55;color:var(--td)}
+.train-tip-card strong{color:var(--la)}
+
+/* Cue cards grid */
+.train-cue-grid{display:grid;grid-template-columns:1fr;gap:10px;padding:0 14px}
+@media(min-width:480px){.train-cue-grid{grid-template-columns:1fr 1fr}}
+@media(min-width:900px){.train-cue-grid{grid-template-columns:1fr 1fr 1fr}}
+
+.train-cue-card{background:var(--card-bg,var(--ll));border:1.5px solid var(--lm);border-radius:14px;padding:13px 14px;display:flex;flex-direction:column;gap:6px;transition:box-shadow .15s}
+.train-cue-card:hover{box-shadow:0 2px 12px rgba(0,0,0,.08)}
+
+.train-cue-top{display:flex;align-items:flex-start;justify-content:space-between;gap:8px}
+.train-cue-name{font-family:'Nunito',sans-serif;font-size:.8rem;font-weight:900;color:var(--td)}
+.train-cue-icon{font-size:1.1rem;line-height:1;flex-shrink:0}
+
+/* Status badge cycle */
+.train-status{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:20px;font-family:'Nunito',sans-serif;font-size:.52rem;font-weight:900;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent;transition:background .15s,border-color .15s;border:1.5px solid transparent;flex-shrink:0}
+.train-status.mastered{background:#d4f5e0;border-color:#7bc99c;color:#2a7a50}
+.train-status.practicing{background:var(--ll);border-color:var(--lm);color:var(--la)}
+.train-status.new{background:var(--pl);border-color:var(--pm);color:var(--pa)}
+body.night .train-status.mastered{background:#1a3d2a;border-color:#3a7d56;color:#6fcf97}
+body.night .train-status.practicing{background:var(--ll);border-color:var(--lm);color:var(--la)}
+body.night .train-status.new{background:var(--pl);border-color:var(--pm);color:var(--pa)}
+
+.train-cue-cue{font-family:'Nunito',sans-serif;font-size:.65rem;font-weight:800;color:var(--ma)}
+.train-cue-body{font-size:.66rem;line-height:1.5;color:var(--td)}
+.train-cue-note{font-size:.6rem;color:var(--tm);line-height:1.45;font-style:italic;margin-top:2px}
+.train-cue-tags{display:flex;flex-wrap:wrap;gap:4px;margin-top:2px}
+.train-cue-tag{background:var(--ml);border-radius:20px;padding:2px 8px;font-family:'Nunito',sans-serif;font-size:.5rem;font-weight:800;color:var(--ma)}
+
+/* Filter strip */
+.train-filter-strip{display:flex;gap:7px;flex-wrap:wrap;padding:10px 14px 0;align-items:center}
+.train-filter-btn{background:var(--ll);border:1.5px solid var(--lm);border-radius:20px;padding:4px 12px;font-family:'Nunito',sans-serif;font-size:.58rem;font-weight:900;color:var(--la);cursor:pointer;transition:background .12s;-webkit-tap-highlight-color:transparent}
+.train-filter-btn.active,.train-filter-btn:hover{background:var(--la);color:#fff;border-color:var(--la)}
+
+/* Progress bar */
+.train-progress-wrap{margin:14px 14px 0;background:var(--ll);border:1.5px solid var(--lm);border-radius:14px;padding:12px 14px}
+.train-progress-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.train-progress-label{font-family:'Nunito',sans-serif;font-size:.62rem;font-weight:900;color:var(--ma)}
+.train-progress-pct{font-family:'Nunito',sans-serif;font-size:.62rem;font-weight:900;color:var(--la)}
+.train-prog-bar-track{height:8px;border-radius:20px;background:var(--ml);overflow:hidden}
+.train-prog-bar-fill{height:100%;border-radius:20px;background:linear-gradient(90deg,var(--la),var(--ma));transition:width .4s cubic-bezier(.4,0,.2,1)}
+.train-progress-sub{font-size:.58rem;color:var(--tm);margin-top:5px;text-align:right}
 </style>
 </head>
 <body>
@@ -1692,7 +1758,63 @@ body.night .cinna-wm{opacity:.04}
   <button class="tab"        id="tab-life"  onclick="switchTab('life')"><span class="tab-icon"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path class="stroke-icon" d="M12,20.5 C12,20.5 3,14.5 3,8.5 C3,5.5 5.5,3 8.5,3 C10,3 11.3,3.6 12,4.6 C12.7,3.6 14,3 15.5,3 C18.5,3 21,5.5 21,8.5 C21,14.5 12,20.5 12,20.5Z"/><circle cx="17" cy="5" r="1.5" fill="currentColor" class="fill-accent" stroke="none"/><circle cx="19" cy="7" r="1" fill="currentColor" class="fill-accent" stroke="none"/></svg></span><span class="tab-label">Life</span></button>
   <button class="tab"        id="tab-cal"   onclick="switchTab('cal')" ><span class="tab-icon"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><rect class="stroke-icon" x="3" y="5" width="18" height="16" rx="4"/><path class="stroke-icon" d="M3,10 L21,10"/><path class="stroke-icon" d="M8,3 L8,7 M16,3 L16,7"/><circle cx="8.5" cy="14.5" r="1.5" fill="currentColor" class="fill-accent" stroke="none"/><circle cx="12" cy="14.5" r="1.5" fill="currentColor" class="fill-accent" stroke="none"/><circle cx="15.5" cy="14.5" r="1.5" fill="currentColor" class="fill-accent" stroke="none"/></svg></span><span class="tab-label">Cal</span></button>
   <button class="tab"        id="tab-stats" onclick="switchTab('stats')"><span class="tab-icon"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path class="stroke-icon" d="M5,3 L19,3 C20.1,3 21,3.9 21,5 L21,19 C21,20.1 20.1,21 19,21 L5,21 C3.9,21 3,20.1 3,19 L3,5 C3,3.9 3.9,3 5,3Z"/><path class="stroke-icon" d="M8,8 L16,8 M8,12 L16,12 M8,16 L12,16"/><path class="stroke-icon fill-accent" d="M17,15 C17.5,14 18.5,14 19,15 L20,17 L15,17Z" stroke-width="1"/></svg></span><span class="tab-label">Ref</span></button>
+  <button class="tab"        id="tab-train" onclick="switchTab('train')"><span class="tab-icon"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><ellipse class="stroke-icon" cx="12" cy="9" rx="5" ry="4"/><path class="stroke-icon" d="M7,11 C5,12 3.5,14 4,16.5 C4.5,19 7,20 9,19.5"/><path class="stroke-icon" d="M17,11 C19,12 20.5,14 20,16.5 C19.5,19 17,20 15,19.5"/><path class="stroke-icon" d="M9,19.5 C10,20.5 11,21 12,21 C13,21 14,20.5 15,19.5"/><path class="stroke-icon fill-accent" d="M10,7 Q12,5.5 14,7" stroke-width="1.5"/><circle class="fill-accent" cx="19" cy="5" r="2.2" fill="currentColor" stroke="none"/><path class="stroke-icon" d="M18.2,4.2 L19.8,4.2 M19,3.4 L19,5.6" stroke-width="1.2"/></svg></span><span class="tab-label">Train</span></button>
 </nav>
+
+<!-- ── TRAIN PAGE (mobile) ─────────────────────────────────────────────── -->
+<div class="page" id="page-train">
+  <div class="vine-banner" role="presentation" aria-hidden="true">
+    <svg viewBox="0 0 360 38" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:38px">
+      <path d="M0,20 Q45,6 90,20 Q135,34 180,20 Q225,6 270,20 Q315,34 360,20" fill="none" stroke="var(--ma)" stroke-width="1.5" opacity=".35"/>
+      <circle cx="45"  cy="12" r="3.5" fill="var(--la)" opacity=".45"/>
+      <circle cx="135" cy="28" r="2.8" fill="var(--pa)" opacity=".4"/>
+      <circle cx="225" cy="12" r="3.5" fill="var(--la)" opacity=".45"/>
+      <circle cx="315" cy="28" r="2.8" fill="var(--pa)" opacity=".4"/>
+    </svg>
+  </div>
+
+  <div style="padding:0 14px;margin-top:4px;display:flex;align-items:center;justify-content:space-between">
+    <h2 style="font-family:'Nunito',sans-serif;font-size:.92rem;font-weight:900;color:var(--td)">🎓 Timber's Training</h2>
+    <span style="font-size:.58rem;color:var(--tm);font-weight:700">tap badge to update</span>
+  </div>
+
+  <!-- Progress bar -->
+  <div class="train-progress-wrap">
+    <div class="train-progress-row">
+      <span class="train-progress-label">🐾 Cues Mastered</span>
+      <span class="train-progress-pct" id="trainProgressPct">0%</span>
+    </div>
+    <div class="train-prog-bar-track"><div class="train-prog-bar-fill" id="trainProgressBar" style="width:0%"></div></div>
+    <p class="train-progress-sub" id="trainProgressSub">0 of 0 mastered</p>
+  </div>
+
+  <!-- Daily rotation -->
+  <div class="train-rotation-card">
+    <div class="train-rotation-day" id="trainRotationDay">Today's focus</div>
+    <p style="font-size:.66rem;color:var(--td);line-height:1.5;margin-top:2px">Run these 3–5 cues this morning before your walk — use his breakfast kibble as rewards.</p>
+    <div class="train-rotation-list" id="trainRotationList"></div>
+  </div>
+
+  <!-- Session tip -->
+  <div class="train-tip-card">
+    <strong>Session tips:</strong> Keep it to <strong>5–10 min</strong>, end on a win, never work a tired or distracted puppy. Use <strong>yes!</strong> or a clicker the moment he gets it right, then treat within 1–2 sec. If he fails 3× in a row, make it easier.
+  </div>
+
+  <!-- Filter strip -->
+  <div class="train-filter-strip" id="trainFilterStrip">
+    <button class="train-filter-btn active" onclick="filterTrain('all',this)">All</button>
+    <button class="train-filter-btn" onclick="filterTrain('new',this)">🌱 New</button>
+    <button class="train-filter-btn" onclick="filterTrain('practicing',this)">🔄 Practicing</button>
+    <button class="train-filter-btn" onclick="filterTrain('mastered',this)">⭐ Mastered</button>
+    <button class="train-filter-btn" onclick="filterTrain('class',this)">📚 Class</button>
+    <button class="train-filter-btn" onclick="filterTrain('zigzag',this)">📱 ZigZag</button>
+  </div>
+
+  <div class="train-section-hd" style="padding:0 14px">Cue Library</div>
+  <div class="train-cue-grid" id="trainCueGrid"></div>
+
+  <div style="height:20px"></div>
+</div>
 
 <!-- DESKTOP / TABLET LAYOUT -->
 <div class="desktop-layout" id="desktopLayout">
@@ -1814,6 +1936,7 @@ body.night .cinna-wm{opacity:.04}
         <button class="desk-tab"        id="dtab-life"  onclick="deskSwitchPanel('life')"  >💜 Life</button>
         <button class="desk-tab"        id="dtab-cal"   onclick="deskSwitchPanel('cal')"   >📅 Calendar</button>
         <button class="desk-tab"        id="dtab-stats" onclick="deskSwitchPanel('stats')">📊 Stats</button>
+        <button class="desk-tab"        id="dtab-train" onclick="deskSwitchPanel('train')">🎓 Train</button>
       </div>
 
       <!-- PT panel -->
@@ -1996,6 +2119,46 @@ body.night .cinna-wm{opacity:.04}
       </div>
 
       <!-- Timber panel -->
+
+      <!-- Train panel (desktop) -->
+      <div class="desk-panel" id="dpanel-train">
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:0 2px 10px">
+          <h2 style="font-family:'Nunito',sans-serif;font-size:.88rem;font-weight:900;color:var(--td)">🎓 Timber's Training</h2>
+          <span style="font-size:.55rem;color:var(--tm);font-weight:700">tap badge to update</span>
+        </div>
+
+        <!-- Progress -->
+        <div class="train-progress-wrap" style="margin:0 0 12px">
+          <div class="train-progress-row">
+            <span class="train-progress-label">🐾 Cues Mastered</span>
+            <span class="train-progress-pct" id="deskTrainProgressPct">0%</span>
+          </div>
+          <div class="train-prog-bar-track"><div class="train-prog-bar-fill" id="deskTrainProgressBar" style="width:0%"></div></div>
+          <p class="train-progress-sub" id="deskTrainProgressSub">0 of 0 mastered</p>
+        </div>
+
+        <!-- Daily rotation -->
+        <div class="train-rotation-card" style="margin:0 0 10px">
+          <div class="train-rotation-day" id="deskTrainRotationDay">Today's focus</div>
+          <p style="font-size:.64rem;color:var(--td);line-height:1.5;margin-top:2px">Run these cues this morning before your walk — 5–10 min max, use his breakfast kibble.</p>
+          <div class="train-rotation-list" id="deskTrainRotationList"></div>
+        </div>
+
+        <!-- Filter -->
+        <div class="train-filter-strip" style="padding:0 0 8px">
+          <button class="train-filter-btn active" onclick="filterTrainDesk('all',this)">All</button>
+          <button class="train-filter-btn" onclick="filterTrainDesk('new',this)">🌱 New</button>
+          <button class="train-filter-btn" onclick="filterTrainDesk('practicing',this)">🔄 Practicing</button>
+          <button class="train-filter-btn" onclick="filterTrainDesk('mastered',this)">⭐ Mastered</button>
+          <button class="train-filter-btn" onclick="filterTrainDesk('class',this)">📚 Class</button>
+          <button class="train-filter-btn" onclick="filterTrainDesk('zigzag',this)">📱 ZigZag</button>
+        </div>
+
+        <div class="train-section-hd" style="padding:0;margin-top:4px">Cue Library</div>
+        <div class="train-cue-grid" id="deskTrainCueGrid"></div>
+        <div style="height:14px"></div>
+      </div>
+
     </div>
   </div>
 </div>
@@ -2130,7 +2293,7 @@ const S=[
    {c:"timber",txt:"Wait for sit at back door. Open. Out to pee spot.",note:"The sit at the door threshold is the Learn to Earn moment — the door opening is the reward. Keep this consistent every single trip."},
    {c:"timber",txt:"Praise heavily the moment he goes. This is the most important praise of the day."},
  ]},
- {t:"08:35 AM",e:"08:45 AM",i:"🎓",h:"Vyvanse + Timber Breakfast Training",steps:[
+ {t:"08:35 AM",e:"08:45 AM",i:"🎓",h:"Vyvanse + Timber Breakfast Training",trainTarget:true,steps:[
    {c:"wellness",txt:"Back inside — Vyvanse from the pantry. Take it now with water.",note:"Taking it right after the potty trip gives it time to kick in before your focus blocks start."},
    {c:"timber",txt:"Fill and put out the downstairs water bowl.",note:"10 hours overnight is a long stretch. Water before training."},
    {c:"timber",txt:"Training right here downstairs — food is already here, low distractions, robot vacuum cleared the floor.",note:"He's just relieved himself, slightly hungry, freshly stimulated from outside. Best training state of the day."},
@@ -2142,14 +2305,14 @@ const S=[
    {c:"wellness",txt:"Get dressed, brush teeth, skincare. You have 10 minutes.",},
  ]},
  {t:"08:55 AM",e:"09:10 AM",i:"🦮",h:"Morning Leash Walk — 15 min",steps:[
-   {c:"timber",txt:"Harness and leash on in the office. Walk is the reward after training — he's earned it.",note:"Training first burns mental energy. The walk is the release. Let him sniff freely."},
+   {c:"timber",txt:"Harness and leash on in the office. Carry snuffle mat downstairs to put away, then straight out the door.",note:"Training first burns mental energy. The walk is the release. Let him sniff freely."},
    {c:"timber",txt:"Reward loose-leash walking with quiet praise. Stop and wait if he pulls — don't drag."},
    {c:"wellness",txt:"Your first fresh air of the day."},
  ]},
  {t:"09:10 AM",e:"09:15 AM",i:"🐾",h:"Timber Post-Walk Paw Wipe",steps:[
    {c:"timber",txt:"Back inside — grab a wipe from the gray dog bag on the entry closet door.",},
    {c:"timber",txt:"Wipe all four paws, then spray with deodorant.",},
-   {c:"timber",txt:"Bring the snuffle mat back downstairs to put away. Timber into the gated office.",},
+   {c:"timber",txt:"Timber into the gated office for the morning awake window.",},
  ]},
  {t:"09:15 AM",e:"09:45 AM",i:"🍳",h:"Your Breakfast",steps:[
    {c:"wellness",txt:"Eat while Timber free-roams the office. He's settled after the walk — you're free.",note:"Protein breakfast supports sustained focus. He's had a potty trip, training, and a walk — his needs are met."},
@@ -2640,6 +2803,7 @@ function buildTL(f,containerId,btnPrefix){
     const badge=isNow?`<span class="nbadge"><span class="ndot"></span>Now</span>`:'';
     const rltBadge=item.isRltRotating?`<span class="rlt-day-badge">🔴 ${RLT_DAY[new Date().getDay()].target}</span>`:'';
     const statsLink=item.statsTarget?`<button class="stats-link" onclick="event.stopPropagation();navToStats('${item.statsTarget}')">📊 Ref</button>`:'';
+    const trainLink=item.trainTarget?`<button class="train-link" onclick="event.stopPropagation();navToTrain()">🎓 Train</button>`:'';
 
     // Show shifted times (with visual indicator if shifted future block)
     const dispT = isShifted&&i>ni ? fmtMin12(effSmin) : item.t;
@@ -2661,7 +2825,7 @@ function buildTL(f,containerId,btnPrefix){
           ${item.timers.map((t,ti)=>`<button class="timer-launch" onclick="launchTimer('${t.label}',${t.mins},'${t.emoji}',${i})">${t.emoji} ${t.label} ${t.mins}m</button>`).join('')}
         </div>` : '';
 
-    d.innerHTML=`<div class="tdc"><div class="tdot">${item.i}</div><div class="tln"></div></div><div class="tc" onclick="openSheet(${origIdx})"><div class="thd"><h4>${item.h}${badge}${ovBadge}${rltBadge}${statsLink}</h4><span class="ttime">${dispT}–${dispE}${shiftedDot}</span></div><div class="steps">${stepsHtml}</div>${timerRow}</div>`;
+    d.innerHTML=`<div class="tdc"><div class="tdot">${item.i}</div><div class="tln"></div></div><div class="tc" onclick="openSheet(${origIdx})"><div class="thd"><h4>${item.h}${badge}${ovBadge}${rltBadge}${statsLink}${trainLink}</h4><span class="ttime">${dispT}–${dispE}${shiftedDot}</span></div><div class="steps">${stepsHtml}</div>${timerRow}</div>`;
     frag.appendChild(d);
   });
   c.innerHTML='';
@@ -5253,6 +5417,285 @@ window.onload=()=>{
   handleSitterHash();
   // ✿ Sanrio aesthetic layer
   initSanrioLayer();
+  // 🎓 Train tab
+  renderTrainTab();
+};
+
+// ══════════════════════════════════════════════════════════════════════════════
+// TRAIN TAB — Timber's Training Reference
+// ══════════════════════════════════════════════════════════════════════════════
+
+const TRAIN_CUES = [
+  // ── CLASS CUES ─────────────────────────────────────────────────────────────
+  {
+    id:'sit', name:'Sit', icon:'🪑',
+    source:'class', tags:['foundation','impulse'],
+    cue:'Hand: palm facing up, lift. Word: "sit"',
+    howTo:'Lure nose slightly up and back until bottom touches. Mark + treat the moment bottom lands.',
+    status_default:'mastered',
+    note:'Both hand + word cue solid. Foundation for everything else.',
+    rotation:[1,3,5]  // Mon/Wed/Fri
+  },
+  {
+    id:'down', name:'Down', icon:'🐾',
+    source:'class', tags:['foundation','impulse'],
+    cue:'Hand: flat palm sweep down. Word: "down"',
+    howTo:'From sit, lure nose toward floor between paws. Mark the moment elbows touch.',
+    status_default:'practicing',
+    note:'Hand cue solid. Word cue still in progress — keep pairing word before hand signal.',
+    rotation:[2,4,6]  // Tue/Thu/Sat
+  },
+  {
+    id:'name', name:'Name Recognition', icon:'👂',
+    source:'class', tags:['foundation','recall'],
+    cue:'"Timber!" — one time only',
+    howTo:'Say his name once. The instant he looks at you: mark + treat. Never repeat his name — one call = one chance.',
+    status_default:'mastered',
+    note:'Solid. Run this daily to keep it sharp. Never say his name if you\'re not prepared to reward.',
+    rotation:[0,1,2,3,4,5,6]  // every day
+  },
+  {
+    id:'recall', name:'Recall / Come', icon:'🏃',
+    source:'class', tags:['safety','recall'],
+    cue:'Hand: open arms. Word: "come"',
+    howTo:'Start close, call once warmly. The moment he moves toward you: mark. Big reward when he arrives. Never punish a recall.',
+    status_default:'mastered',
+    note:'Solid on both hand + word. Keep building distance slowly.',
+    rotation:[1,3,5]
+  },
+  {
+    id:'leave-it', name:'Leave It', icon:'✋',
+    source:'class', tags:['impulse','safety'],
+    cue:'Word: "leave it"',
+    howTo:'Stage 1: treat in closed fist. When he backs off/stops nosing: mark + treat from OTHER hand. Never give the treat he was targeting.',
+    status_default:'practicing',
+    note:'Stage 1 in progress. Do not move to Stage 2 (floor treat) until fist version is automatic.',
+    rotation:[2,4]
+  },
+  {
+    id:'touch', name:'Touch (Nose to Hand)', icon:'🤚',
+    source:'class', tags:['focus','foundation'],
+    cue:'Hand: flat palm extended. Word: "touch"',
+    howTo:'Present palm close. Mark the instant nose makes contact. Gradually extend distance.',
+    status_default:'practicing',
+    note:'Good for focus and recall recall foundation. Can use as a checkpoint cue during walks.',
+    rotation:[0,3,6]
+  },
+  {
+    id:'paw', name:'Paw / Shake', icon:'🐾',
+    source:'class', tags:['trick','grooming'],
+    cue:'Hand: extend open palm low. Word: "paw"',
+    howTo:'Lure with treat in closed fist — when he paws at it, open hand, mark + treat. Then fade lure to just open palm.',
+    status_default:'practicing',
+    note:'Also great for grooming tolerance — gets him comfortable with paw handling.',
+    rotation:[0,2,4]
+  },
+  {
+    id:'magnetic-hand', name:'Magnetic Hand', icon:'🧲',
+    source:'class', tags:['focus','leash'],
+    cue:'Treat pinched between fingers, present at your hip/thigh',
+    howTo:'Hold treat at your side. Let him follow your hand. Mark + treat every few steps. Builds the "glued to you" walk foundation.',
+    status_default:'practicing',
+    note:'Foundation for loose-leash. Practice at home first, then on walks.',
+    rotation:[1,4]
+  },
+  {
+    id:'loose-leash', name:'Loose Leash Walking', icon:'🦮',
+    source:'class', tags:['leash','foundation'],
+    cue:'Loose J-shape in leash. Stop the moment it goes tight.',
+    howTo:'Walk, stop dead the instant leash tightens. Wait for him to return to your side — mark + treat. Keep sessions short (2–3 min).',
+    status_default:'practicing',
+    note:'In-house practice sessions only for now. Graduate to walks once he\'s consistent indoors.',
+    rotation:[3,5]
+  },
+  // ── ZIGZAG / HOME TRAINING ─────────────────────────────────────────────────
+  {
+    id:'eye-contact', name:'Eye Contact / Check-In', icon:'👀',
+    source:'zigzag', tags:['focus','foundation'],
+    cue:'No cue — wait for it to happen naturally',
+    howTo:'Any time he looks at your face: mark + treat. Don\'t ask for it — capture it. Makes him want to check in with you.',
+    status_default:'practicing',
+    note:'Run this on every walk — any time he glances up at you, mark + treat.',
+    rotation:[0,2,5]
+  },
+  {
+    id:'alone-time', name:'Being Alone', icon:'🏠',
+    source:'zigzag', tags:['independence','separation'],
+    cue:'Gate + frozen treat = you\'re stepping away',
+    howTo:'Build duration in tiny increments. Leave gated office, return before he fusses. Treat on return. Currently holding ~3 min.',
+    status_default:'practicing',
+    note:'Do NOT extend beyond his comfort threshold. Always return before any distress starts.',
+    rotation:[1,3,5]
+  },
+  {
+    id:'two-toy-fetch', name:'Fetch (Two-Toy)', icon:'🎾',
+    source:'zigzag', tags:['play','impulse'],
+    cue:'Toss toy 1. When he picks it up: produce toy 2 excitedly.',
+    howTo:'Never chase him — produce the second toy to make him want to bring the first back. Exchange and repeat.',
+    status_default:'mastered',
+    note:'Solid! Great mental outlet — use in short bursts before quiet time.',
+    rotation:[2,6]
+  },
+  {
+    id:'grooming-tolerance', name:'Grooming Tolerance', icon:'✂️',
+    source:'zigzag', tags:['grooming','health'],
+    cue:'No cue — ongoing desensitisation',
+    howTo:'Touch paws, ears, mouth, brush for 3–5 seconds. Mark + treat. Build duration week by week.',
+    status_default:'practicing',
+    note:'Do a little each day — paw handling during paw wipe is a natural opportunity.',
+    rotation:[1,4,6]
+  },
+  {
+    id:'snuffle-mat', name:'Snuffle Mat / Food Puzzles', icon:'🌿',
+    source:'zigzag', tags:['enrichment','calm'],
+    cue:'Present mat — no verbal cue needed',
+    howTo:'Load with kibble, set down in office. Let him work it. Counts as a mental workout — as tiring as a walk.',
+    status_default:'mastered',
+    note:'Currently used as getting-ready cue. Can layer with "find it" word once mastered.',
+    rotation:[]  // wired into routine, no need to schedule
+  },
+  {
+    id:'crate-happy', name:'Crate = Happy Place', icon:'🏡',
+    source:'zigzag', tags:['independence','calm'],
+    cue:'High-value treat tossed in. Word: "bed"',
+    howTo:'Never use crate as punishment. Toss treat in, let him choose to follow. Build up duration by closing door briefly then opening.',
+    status_default:'practicing',
+    note:'Night crate routine is solid. Daytime crate door stays open — he chooses fluffy bed over crate now.',
+    rotation:[0,4]
+  },
+];
+
+// Daily rotation: 5 cues per day distributed across the week
+const TRAIN_ROTATION_MAP = (() => {
+  const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  const map = {};
+  days.forEach((_,dow) => {
+    map[dow] = TRAIN_CUES
+      .filter(c => c.rotation && c.rotation.includes(dow))
+      .map(c => c.name);
+  });
+  return map;
+})();
+
+const TRAIN_STATUS_KEY = 'jlos_train_status';
+
+function getTrainStatuses() {
+  try { return JSON.parse(localStorage.getItem(TRAIN_STATUS_KEY)) || {}; } catch{ return {}; }
+}
+function saveTrainStatus(id, status) {
+  const s = getTrainStatuses();
+  s[id] = status;
+  localStorage.setItem(TRAIN_STATUS_KEY, JSON.stringify(s));
+}
+
+const STATUS_CYCLE = ['new','practicing','mastered'];
+const STATUS_LABEL = {new:'🌱 New', practicing:'🔄 Practicing', mastered:'⭐ Mastered'};
+
+function cycleTrainStatus(id, isDesk) {
+  const s = getTrainStatuses();
+  const cur = s[id] || (TRAIN_CUES.find(c=>c.id===id)?.status_default || 'new');
+  const next = STATUS_CYCLE[(STATUS_CYCLE.indexOf(cur)+1) % STATUS_CYCLE.length];
+  saveTrainStatus(id, next);
+  renderTrainTab();
+}
+
+function buildCueCard(cue, statuses) {
+  const status = statuses[cue.id] || cue.status_default || 'new';
+  const tagHtml = cue.tags.map(t=>`<span class="train-cue-tag">${t}</span>`).join('');
+  const srcBadge = cue.source === 'class'
+    ? `<span class="train-cue-tag" style="background:var(--pl);color:var(--pa)">📚 class</span>`
+    : `<span class="train-cue-tag" style="background:var(--ml);color:var(--ma)">📱 zigzag</span>`;
+  return `
+    <div class="train-cue-card" data-status="${status}" data-source="${cue.source}" data-id="${cue.id}">
+      <div class="train-cue-top">
+        <span class="train-cue-name">${cue.icon} ${cue.name}</span>
+        <button class="train-status ${status}" onclick="cycleTrainStatus('${cue.id}')" title="Tap to update status">${STATUS_LABEL[status]}</button>
+      </div>
+      <div class="train-cue-cue">Cue: ${cue.cue}</div>
+      <div class="train-cue-body">${cue.howTo}</div>
+      ${cue.note ? `<div class="train-cue-note">${cue.note}</div>` : ''}
+      <div class="train-cue-tags">${tagHtml}${srcBadge}</div>
+    </div>`;
+}
+
+function updateTrainProgress(statuses, prefix='') {
+  const total = TRAIN_CUES.length;
+  const mastered = TRAIN_CUES.filter(c=>(statuses[c.id]||c.status_default)==='mastered').length;
+  const pct = Math.round((mastered/total)*100);
+  const pctEl = document.getElementById(prefix+'TrainProgressPct');
+  const barEl = document.getElementById(prefix+'TrainProgressBar');
+  const subEl = document.getElementById(prefix+'TrainProgressSub');
+  if(pctEl) pctEl.textContent = pct+'%';
+  if(barEl) barEl.style.width = pct+'%';
+  if(subEl) subEl.textContent = `${mastered} of ${total} mastered`;
+}
+
+function updateTrainRotation(prefix='') {
+  const dow = new Date().getDay();
+  const dayNames = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  const cues = TRAIN_ROTATION_MAP[dow] || [];
+  const dayEl = document.getElementById(prefix+'TrainRotationDay');
+  const listEl = document.getElementById(prefix+'TrainRotationList');
+  if(dayEl) dayEl.textContent = `${dayNames[dow]}'s Focus Cues`;
+  if(listEl) {
+    if(cues.length) {
+      listEl.innerHTML = cues.map(n=>`<span class="train-rotation-pill">${n}</span>`).join('');
+    } else {
+      listEl.innerHTML = `<span class="train-rotation-pill">Rest day — short name + recall warmup only</span>`;
+    }
+  }
+}
+
+let _trainFilter = 'all';
+let _trainFilterDesk = 'all';
+
+function renderTrainTabGrid(gridId, filter) {
+  const el = document.getElementById(gridId);
+  if(!el) return;
+  const statuses = getTrainStatuses();
+  const cues = TRAIN_CUES.filter(c => {
+    if(filter === 'all') return true;
+    if(filter === 'class' || filter === 'zigzag') return c.source === filter;
+    return (statuses[c.id] || c.status_default) === filter;
+  });
+  el.innerHTML = cues.map(c=>buildCueCard(c, statuses)).join('') || `<p style="font-size:.7rem;color:var(--tm);padding:8px">No cues match this filter.</p>`;
+}
+
+function renderTrainTab() {
+  const statuses = getTrainStatuses();
+  // Mobile
+  updateTrainProgress(statuses, '');
+  updateTrainRotation('');
+  renderTrainTabGrid('trainCueGrid', _trainFilter);
+  // Desktop
+  updateTrainProgress(statuses, 'desk');
+  updateTrainRotation('desk');
+  renderTrainTabGrid('deskTrainCueGrid', _trainFilterDesk);
+}
+
+function filterTrain(f, btn) {
+  _trainFilter = f;
+  document.querySelectorAll('#trainFilterStrip .train-filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderTrainTabGrid('trainCueGrid', f);
+}
+
+function filterTrainDesk(f, btn) {
+  _trainFilterDesk = f;
+  btn.closest('.train-filter-strip').querySelectorAll('.train-filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderTrainTabGrid('deskTrainCueGrid', f);
+}
+
+// ─── TRAIN DEEP-LINK ──────────────────────────────────────────────────────────
+window.navToTrain = () => {
+  const isDesktop = window.innerWidth >= 768;
+  if(!isDesktop){
+    switchTab('train');
+  } else {
+    deskSwitchPanel('train');
+  }
+  showToast('🎓 Training reference', 1800);
 };
 </script>
 

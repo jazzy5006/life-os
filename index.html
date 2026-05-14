@@ -2117,99 +2117,92 @@ const RLT_DAY = {
 // Day-specific blocks are tagged with days[] — only shown on matching weekday
 // RLT rotating block is handled dynamically
 const S=[
- // ── OVERNIGHT (18-week revision) ──────────────────────────────────────────
- // Fading-out transition trip. At 18 weeks his bladder reliably stretches
- // past the old 4 AM. Push the alarm later in 30-min increments week by week,
- // then drop entirely once he's had 7 consecutive dry overnight crates.
- {t:"05:30 AM",e:"05:40 AM",i:"🌙",h:"Timber Transition Potty",steps:[
-   {c:"timber",txt:"Optional — only fire this alarm if he's whined or scratched in the past few nights.",note:"At 18 weeks he should be on the edge of holding through the night. If he's been quiet for a week, skip this and let him sleep until 7."},
-   {c:"timber",txt:"Pick him up from crate. Carry downstairs. Lights low. Quick out, praise, back to crate.",note:"Same boring routine as before — no play, no eye contact, no wind-down. He goes back to sleep until morning wake."},
-   {c:"timber",txt:"Goal over the next 1–2 weeks: shift this alarm to 06:00, then 06:30, then drop it entirely.",note:"This is the last overnight wake-up. The 1 AM and 11 PM trips have already been retired."},
- ]},
-
  // ── MORNING ────────────────────────────────────────────────────────────────
- {t:"08:00 AM",e:"08:10 AM",i:"🌅",h:"Timber Wake + Potty #1",steps:[
-   {c:"timber",txt:"Pick Timber up from crate immediately."},
-   {c:"timber",txt:"Carry downstairs. Wait for sit at back door. Open. Out to pee spot.",note:"The sit at the door threshold is the Learn to Earn moment — the door opening is the reward. Keep this consistent every single trip."},
+ // 17-week revision (2026-05-05): collapsed to 2 naps × 2 hrs. Wake 9 AM.
+ // 20-week revision (2026-05-14): naps → quiet time. Free-roam office (gated). Frozen treat is the quiet-time cue — location self-selected (dog bed, crate, floor). Crate stays open.
+ // Morning restructure: training before walk. Living room for training. Snuffle mat while Jazzy gets ready.
+ // Post-walk routine: entryway paw wipe + deodorant spray (no backyard potty).
+ // Bedtime shifted to 10:30 PM → bedroom travel crate. Wake 8:30 AM. Overnight = 10 hrs.
+ // Overnight = 10 hrs. Daytime = 6 hrs. Total = 16 hrs.
+ // Morning order: wake+potty → train (5–10 min) → walk (pottys on walk) → desk window → crate.
+ {t:"08:30 AM",e:"08:35 AM",i:"🌅",h:"Timber Wake + Potty",steps:[
+   {c:"timber",txt:"He'll wake when you do — pick him up and carry him downstairs.",note:"His bladder has been held for 10 hours. Downstairs is the priority."},
+   {c:"timber",txt:"Wait for sit at back door. Open. Out to pee spot.",note:"The sit at the door threshold is the Learn to Earn moment — the door opening is the reward. Keep this consistent every single trip."},
    {c:"timber",txt:"Praise heavily the moment he goes. This is the most important praise of the day."},
  ]},
- {t:"08:10 AM",e:"08:25 AM",i:"🦮",h:"Morning Leash Walk — 15 min",steps:[
-   {c:"wellness",txt:"Take Vyvanse and glucosamine before you head out the door.",note:"Taking Vyvanse at the start of the walk gives it time to kick in. Glucosamine with a small sip of water is fine before food."},
-   {c:"timber",txt:"Clip the leash. Let him sniff the yard for 30 seconds before moving — this reduces pulling.",note:"He's vaccinated now! Paws on the ground are fine. Let him set the sniff pace for the first half, then guide the way home."},
-   {c:"timber",txt:"15-minute loop. Reward loose-leash walking with quiet praise. Stop and wait if he pulls — don't drag."},
-   {c:"wellness",txt:"Your first fresh air of the day. Walk at your own pace."},
+ {t:"08:35 AM",e:"08:45 AM",i:"🎓",h:"Vyvanse + Timber Breakfast Training",steps:[
+   {c:"wellness",txt:"Back inside — Vyvanse from the pantry. Take it now with water.",note:"Taking it right after the potty trip gives it time to kick in before your focus blocks start."},
+   {c:"timber",txt:"Fill and put out the downstairs water bowl.",note:"10 hours overnight is a long stretch. Water before training."},
+   {c:"timber",txt:"Training right here downstairs — food is already here, low distractions, robot vacuum cleared the floor.",note:"He's just relieved himself, slightly hungry, freshly stimulated from outside. Best training state of the day."},
+   {c:"timber",txt:"Work on: sit, eye contact, name recognition, come. Use his full breakfast as rewards. 5–10 reps max per cue.",note:"End on a win. Remaining kibble → into the snuffle mat."},
  ]},
- {t:"08:25 AM",e:"08:30 AM",i:"🚽",h:"Timber Potty #2",steps:[
-   {c:"timber",txt:"Back from walk — carry him straight outside.",note:"The walk is stimulating. Post-walk potty is non-negotiable — bladder gets squeezed by movement and excitement."},
-   {c:"timber",txt:"Sit at door. Out. Praise. Back inside for training."},
+ {t:"08:45 AM",e:"08:55 AM",i:"🐾",h:"Snuffle Mat Upstairs + You Get Ready",steps:[
+   {c:"timber",txt:"Load remaining kibble into the snuffle mat. Carry it and Timber upstairs.",},
+   {c:"timber",txt:"Set him up in the gated office with the snuffle mat. Fill and put out the upstairs water bowl.",note:"He'll work the mat while you get ready — no need to interact."},
+   {c:"wellness",txt:"Get dressed, brush teeth, skincare. You have 10 minutes.",},
  ]},
- {t:"08:30 AM",e:"08:45 AM",i:"🎓",h:"Timber Breakfast Training (Learn to Earn)",steps:[
-   {c:"timber",txt:"Use full breakfast portion as training rewards — no bowl.",note:"Learn to Earn: his entire breakfast is earned here as training rewards — no bowl. You eat YOUR breakfast while he naps after this."},
-   {c:"timber",txt:"Work on: sit, eye contact, name recognition, come. 5–10 reps max per cue."},
-   {c:"timber",txt:"Remaining food → puzzle feeder if training reps are done."},
-   {c:"timber",txt:"Timber tethered to you the entire time."},
-   {c:"timber",txt:"Into crate. Cover on. Walk away calmly — no long goodbye.",note:"After training his brain is tired and belly full — ideal crate moment."},
+ {t:"08:55 AM",e:"09:10 AM",i:"🦮",h:"Morning Leash Walk — 15 min",steps:[
+   {c:"timber",txt:"Harness and leash on in the office. Walk is the reward after training — he's earned it.",note:"Training first burns mental energy. The walk is the release. Let him sniff freely."},
+   {c:"timber",txt:"Reward loose-leash walking with quiet praise. Stop and wait if he pulls — don't drag."},
+   {c:"wellness",txt:"Your first fresh air of the day."},
  ]},
- {t:"08:45 AM",e:"09:00 AM",i:"🍳",h:"Your Breakfast",steps:[
-   {c:"wellness",txt:"Eat high-protein breakfast while Timber naps.",note:"Protein breakfast supports sustained focus. Timber is in the crate — eat without rushing."},
+ {t:"09:10 AM",e:"09:15 AM",i:"🐾",h:"Timber Post-Walk Paw Wipe",steps:[
+   {c:"timber",txt:"Back inside — grab a wipe from the gray dog bag on the entry closet door.",},
+   {c:"timber",txt:"Wipe all four paws, then spray with deodorant.",},
+   {c:"timber",txt:"Bring the snuffle mat back downstairs to put away. Timber into the gated office.",},
+ ]},
+ {t:"09:15 AM",e:"09:45 AM",i:"🍳",h:"Your Breakfast",steps:[
+   {c:"wellness",txt:"Eat while Timber free-roams the office. He's settled after the walk — you're free.",note:"Protein breakfast supports sustained focus. He's had a potty trip, training, and a walk — his needs are met."},
+   {c:"wellness",txt:"Take iron + glucosamine with your first food of the day.",note:"Iron absorbs better with food. Glucosamine incorporates into cartilage over time — consistency matters more than timing."},
    {c:"wellness",txt:"Log breakfast in <a href='https://cronometer.com' target='_blank' style='color:inherit;text-decoration:underline;text-decoration-style:dotted'>Cronometer</a>."},
  ]},
 
- // ── TIMBER NAP CYCLE 1 ──────────────────────────────────────────────────────
- {t:"08:45 AM",e:"09:00 AM",i:"🚽",h:"Timber Potty → Crate + Treat #1",steps:[
-   {c:"timber",txt:"Carry outside. Give him 5 minutes to go.",note:"Every nap starts with a potty trip. This is non-negotiable — it's what builds the overnight hold."},
-   {c:"timber",txt:"Back inside. Crate with a high-value treat — something special he only gets in the crate.",note:"The treat makes the crate the best place on earth. Kong with peanut butter, small piece of chicken, whatever he goes crazy for."},
-   {c:"timber",txt:"Cover crate. Walk away calmly. No goodbye."},
+ // ── TIMBER QUIET TIME 1 ─────────────────────────────────────────────────────
+ {t:"10:05 AM",e:"10:30 AM",i:"🚽",h:"Timber Potty + Frozen Treat — Quiet Time",steps:[
+   {c:"timber",txt:"Carry outside. Give him 5 minutes to go.",note:"Every quiet time starts with a potty trip. He's calm and full — this should be quick."},
+   {c:"timber",txt:"Back inside. Give him his frozen treat (Kong, licki mat, calming frozen mix) — let him take it wherever he wants.",note:"The frozen treat is the quiet-time signal, not a crate cue. Licking is neurologically calming — he'll wind down naturally in 10–15 minutes. Don't direct him to the crate."},
+   {c:"timber",txt:"Crate stays open. He may settle on his dog bed, in the crate, or on the floor — all fine.",note:"He's self-regulating now. The goal is rest, not location. If he's showing tired signals (yawning, slowing down), he'll find his spot."},
  ]},
- {t:"09:00 AM",e:"11:00 AM",i:"💤",h:"Timber Nap #1 (2 hrs)",steps:[
-   {c:"timber",txt:"Timber is down. Focus Block 1 continues.",note:"2-hour nap cycle. He wakes at 11:00 AM."},
+ {t:"10:30 AM",e:"12:30 PM",i:"💤",h:"Timber Quiet Time #1 (1.5–2 hrs)",steps:[
+   {c:"timber",txt:"Timber is in quiet time — dog bed, crate, or wherever he settled. Focus Block 1 begins.",note:"He should wind down within 20–30 min of finishing the frozen treat. If he's restless and not settling by 10:50, try the crate today. If he sleeps past 12:30, let him go up to 1:00 PM."},
  ]},
 
- // ── TIMBER AWAKE WINDOW 2 ───────────────────────────────────────────────────
- {t:"11:00 AM",e:"11:15 AM",i:"🌅",h:"Timber Wake + Potty — 11:00 AM",steps:[
-   {c:"timber",txt:"Pick up from crate. Carry straight outside — no detours.",note:"Bladder is full after 2 hours. Outside before paws touch the floor inside."},
+ // ── TIMBER MIDDAY AWAKE WINDOW ──────────────────────────────────────────────
+ {t:"12:30 PM",e:"12:45 PM",i:"🌅",h:"Timber Wake + Potty — Midday",steps:[
+   {c:"timber",txt:"If he's still asleep, let him wake naturally. When he stirs, carry him downstairs for potty.",note:"Bladder is full after 2+ hours. Downstairs before he wanders."},
    {c:"timber",txt:"Sit at door. Out. Praise. Back upstairs."},
    {c:"timber",txt:"Tethered to you for the awake window."},
  ]},
- {t:"11:15 AM",e:"11:45 AM",i:"🪢",h:"Tethered Desk Time — 11:15 AM",steps:[
-   {c:"timber",txt:"Tethered beside you at the desk. Reward calm settled behaviour.",note:"30 minutes of tethered time. Watch for tired signals — yawning, losing interest, getting nippy. If you see them, start the crate routine early."},
-   {c:"timber",txt:"Drop kibble pieces when he's calm or playing quietly with a toy.",note:"This is his midday meal — small pieces throughout the window, not all at once. No kibble for jumping, mouthing, or demanding attention."},
-   {c:"focus",txt:"Continue work. Pomodoro cycles."},
+ {t:"12:45 PM",e:"02:00 PM",i:"🪢",h:"Tethered Midday Time",steps:[
+   {c:"timber",txt:"Free in the office with you. Watch for tired signals — yawning, losing interest, getting nippy.",note:"At ~20 weeks his awake window is stretching to 1.5–2 hrs. If you see tired signals before 2:00, start quiet time early with the frozen treat — don't push through overtired."},
+   {c:"timber",txt:"Drop kibble pieces when he's calm or playing quietly with a toy.",note:"This is his midday meal — reward the behaviour you want to see. Calm = kibble. Demanding = nothing."},
+   {c:"wellness",txt:"Your lunch. Eat while he's tethered at your feet."},
+   {c:"focus",txt:"Low-intensity work, email, or admin while he settles beside you."},
  ]},
 
- // ── TIMBER NAP CYCLE 2 ──────────────────────────────────────────────────────
- {t:"11:45 AM",e:"12:00 PM",i:"🚽",h:"Timber Potty → Crate + Treat #2",steps:[
+ // ── TIMBER QUIET TIME 2 ─────────────────────────────────────────────────────
+ {t:"02:00 PM",e:"02:15 PM",i:"🚽",h:"Timber Potty + Frozen Treat — Quiet Time",steps:[
    {c:"timber",txt:"Carry outside. Give him 5 minutes to go."},
-   {c:"timber",txt:"Back inside. Crate with treat. Cover. Walk away."},
+   {c:"timber",txt:"Back inside. Give his afternoon frozen treat — let him settle wherever he chooses. Crate stays open.",note:"Same routine as morning quiet time: treat is the signal, location is his choice. No directing to the crate."},
  ]},
- {t:"12:00 PM",e:"02:00 PM",i:"💤",h:"Timber Nap #2 (2 hrs)",steps:[
-   {c:"timber",txt:"Timber is down until 2:00 PM.",note:"Your lunch and afternoon focus block happen during this nap."},
- ]},
-
- // ── TIMBER AWAKE WINDOW 3 ───────────────────────────────────────────────────
- {t:"02:00 PM",e:"02:15 PM",i:"🌅",h:"Timber Wake + Potty — 2:00 PM",steps:[
-   {c:"timber",txt:"Carry straight outside. Bladder full after 2 hours."},
-   {c:"timber",txt:"Out. Praise. Back upstairs. Tethered."},
- ]},
- {t:"02:15 PM",e:"02:45 PM",i:"🪢",h:"Tethered Desk Time — 2:15 PM",steps:[
-   {c:"timber",txt:"Tethered beside you. 30 minutes awake window.",note:"Keep stimulation low. Tethered chewing on a toy counts as enrichment. No rough play."},
-   {c:"timber",txt:"Drop kibble pieces when he's calm or playing quietly with a toy.",note:"This is his afternoon meal — reward the behaviour you want to see. Calm = kibble. Demanding = nothing."},
-   {c:"focus",txt:"Continue deep work."},
+ {t:"02:15 PM",e:"04:15 PM",i:"💤",h:"Timber Quiet Time #2 (1.5–2 hrs)",steps:[
+   {c:"timber",txt:"Timber is in quiet time. Focus Block 2 begins.",note:"He should self-settle after the frozen treat. If he's restless and not napping by 2:45, use the crate today — your focus block runs regardless. Let him sleep as long as he needs."},
  ]},
 
- // ── TIMBER NAP CYCLE 3 ──────────────────────────────────────────────────────
- {t:"02:45 PM",e:"03:00 PM",i:"🚽",h:"Timber Potty → Crate + Treat #3",steps:[
-   {c:"timber",txt:"Carry outside. Give him 5 minutes to go."},
-   {c:"timber",txt:"Crate with treat. Cover. Walk away."},
+ // ── TIMBER AFTERNOON AWAKE WINDOW ──────────────────────────────────────────
+ {t:"04:15 PM",e:"04:30 PM",i:"🌅",h:"Timber Wake + Potty — Afternoon",steps:[
+   {c:"timber",txt:"Carry straight outside. Bladder full after 2+ hours."},
+   {c:"timber",txt:"Out. Praise. Tethered for the afternoon window."},
  ]},
- {t:"03:00 PM",e:"05:00 PM",i:"💤",h:"Timber Nap #3 (2 hrs)",steps:[
-   {c:"timber",txt:"Timber is down until 5:00 PM.",note:"Focus Block 3 — deep work. His longest nap of the day."},
+ {t:"04:30 PM",e:"05:00 PM",i:"🪢",h:"Tethered Afternoon Time",steps:[
+   {c:"timber",txt:"Tethered beside you. About 30 min of calm afternoon awake time before dinner and the walk.",note:"A long chew, bully stick, or puzzle feeder works well here — self-directed activity that doesn't require you to entertain him."},
+   {c:"timber",txt:"Drop kibble pieces for calm settled behaviour.",note:"This is his afternoon meal — reward calm. No kibble for jumping, mouthing, or demanding attention."},
+   {c:"focus",txt:"Wrap up work for the day. Close loops and save files."},
  ]},
 
- // ── TIMBER AWAKE WINDOW 4 + DINNER ─────────────────────────────────────────
- {t:"05:00 PM",e:"05:15 PM",i:"🌅",h:"Timber Wake + Potty — 5:00 PM",steps:[
-   {c:"wellness",txt:"Work day ends. Close the laptop — Timber's wake is your transition signal."},
-   {c:"timber",txt:"Carry straight outside. Bladder full after 2 hours."},
+ // ── TIMBER DINNER + WALK ────────────────────────────────────────────────────
+ {t:"05:00 PM",e:"05:15 PM",i:"🌅",h:"Timber Dinner Training",steps:[
+   {c:"wellness",txt:"Work day ends. Close the laptop — this is your transition signal."},
    {c:"timber",txt:"Do dinner training right here in the backyard. Use his full meal as rewards.",note:"5 minutes max. Sit, eye contact, come, stay. End on a win. Remaining food in a puzzle feeder."},
    {c:"timber",txt:"Clip the leash — afternoon walk with your partner starts now."},
  ]},
@@ -2218,57 +2211,60 @@ const S=[
    {c:"timber",txt:"Reward loose-leash walking with quiet praise. Short stops to sniff are encouraged — sniffing is mentally tiring."},
    {c:"wellness",txt:"Your end-of-day decompression. Walk and talk with your partner."},
  ]},
-
- // ── TIMBER NAP CYCLE 4 ──────────────────────────────────────────────────────
- {t:"05:45 PM",e:"06:00 PM",i:"🚽",h:"Timber Potty → Crate + Treat #4",steps:[
-   {c:"timber",txt:"Back from walk — carry straight outside for potty.",note:"Post-walk bladder check. Then straight into crate for the evening nap."},
-   {c:"timber",txt:"Crate with treat. Cover. Walk away calmly.",note:"Last meal of the day. Water stays available until 8:30 PM."},
- ]},
- {t:"06:00 PM",e:"08:00 PM",i:"💤",h:"Timber Nap #4 (2 hrs)",steps:[
-   {c:"timber",txt:"Timber is down until 8:00 PM.",note:"Cook dinner and eat together during this nap. He wakes for TV family time."},
+ {t:"05:45 PM",e:"05:50 PM",i:"🐾",h:"Timber Post-Walk Paw Wipe",steps:[
+   {c:"timber",txt:"Back inside — grab a wipe from the gray dog bag on the entry closet door.",},
+   {c:"timber",txt:"Wipe all four paws, then spray with deodorant.",},
+   {c:"timber",txt:"Into the kitchen or living room for evening family time.",},
  ]},
 
  // ── TIMBER EVENING WINDOW ───────────────────────────────────────────────────
- {t:"08:00 PM",e:"08:15 PM",i:"🌅",h:"Timber Wake + Potty — 8:00 PM",steps:[
-   {c:"timber",txt:"Carry straight outside. Bladder full after 2 hours."},
-   {c:"timber",txt:"Out. Praise. Back inside. Tethered for TV."},
+ // No 4th nap at 20 weeks — long calm evening with supervised family time.
+ {t:"06:00 PM",e:"08:00 PM",i:"🛋️",h:"Timber — Evening Family Time",steps:[
+   {c:"timber",txt:"Free in the kitchen or living room with you during cooking and dinner. Reward calm settled behaviour.",note:"This is intentional family integration — he learns to settle while the household is active. A stuffed Kong or long chew will help if he's buzzy."},
+   {c:"timber",txt:"No rough play or exciting games in the evening — you want him naturally winding down toward 10:30 PM."},
  ]},
- {t:"08:15 PM",e:"08:45 PM",i:"🛋️",h:"Timber — Tethered Evening Time",steps:[
-   {c:"timber",txt:"Tether him near you on the couch. Calm presence during TV.",note:"This is intentional family integration — he learns to settle while the household is relaxed. Ignore excitement, reward calm. If he won't settle within 10 minutes, crate him early."},
-   {c:"timber",txt:"No rough play, no exciting interaction. You want him drowsy by 8:45."},
-   {c:"wellness",txt:"8:30 PM — pick up Timber's water bowl.",note:"Last water of the day. Bedtime potty is at 8:45 — 15 minutes is enough time for his bladder."},
+ {t:"08:00 PM",e:"09:30 PM",i:"🛋️",h:"Timber — Free Evening Time",steps:[
+   {c:"timber",txt:"He can settle in the office, on his bed, or wherever he chooses. Low-key evening.",note:"This is his long wind-down window. He's tired from the day — he'll naturally slow down. A chew or licki mat works well here if he's restless."},
+   {c:"wellness",txt:"Your evening — TV, Switch, office, whatever you feel like.",},
+   {c:"wellness",txt:"9:45 PM — pick up Timber's water bowl.",note:"Last water of the day. Bedtime potty is at 10:20 — 30 minutes is plenty of time for his bladder."},
+ ]},
+ {t:"09:30 PM",e:"09:45 PM",i:"🚽",h:"Timber Evening Potty",steps:[
+   {c:"timber",txt:"Carry downstairs for a mid-evening potty trip.",note:"He's been awake since the afternoon quiet time — several hours. This trip bridges him to bedtime comfortably."},
+   {c:"timber",txt:"Out. Praise. Back inside for the final wind-down."},
+ ]},
+ {t:"09:45 PM",e:"10:20 PM",i:"🛋️",h:"Timber — Final Wind-Down",steps:[
+   {c:"timber",txt:"Calm, low-stimulation time. Couch, TV, or just quiet presence.",note:"You want him drowsy by 10:20. No rough play, no exciting interaction. A licki mat or chew helps him settle naturally."},
+   {c:"timber",txt:"He doesn't need to be perfectly still — just not ramped up. Keep your own energy calm and boring.",},
  ]},
 
  // ── TIMBER BEDTIME ──────────────────────────────────────────────────────────
- {t:"08:45 PM",e:"09:00 PM",i:"🚽",h:"Timber Potty → Crate + Treat — Bedtime",steps:[
-   {c:"timber",txt:"Carry outside for final potty of the night.",note:"Last chance before the overnight stretch. Take your time — give him a full 5 minutes."},
-   {c:"timber",txt:"High-value treat in crate. Cover. Lights low. Walk away.",note:"No goodbyes, no lingering. The more boring the crate routine, the faster he settles."},
+ {t:"10:20 PM",e:"10:30 PM",i:"🚽",h:"Timber Potty → Crate + Treat — Bedtime",steps:[
+   {c:"timber",txt:"Carry downstairs for final potty of the night.",note:"Last chance before the overnight stretch. Give him a full 5 minutes."},
+   {c:"timber",txt:"Back upstairs — high-value treat into the travel crate in the bedroom. Cover. Walk away.",note:"Bedroom travel crate. No goodbyes, no lingering. He sleeps from 10:30 PM to 8:30 AM — the more boring the routine, the faster he settles."},
  ]},
 
  // ── WORK BLOCK 1 ───────────────────────────────────────────────────────────
- {t:"09:00 AM",e:"11:00 AM",i:"🔄",h:"Focus Block 1 — Pomodoro",days:[1,2,3,4,5],steps:[
+ {t:"10:30 AM",e:"12:30 PM",i:"🔄",h:"Focus Block 1 — Pomodoro",days:[1,2,3,4,5],steps:[
    {c:"focus",   txt:"25 min deep work. Timer on."},
    {c:"wellness",txt:"5-min break: open the Move tab and do one PT exercise for today.",note:"This is how your PT gets done — a few reps each break adds up to a full session across the day without needing a dedicated block."},
-   {c:"wellness",txt:"Use one break for <a href='https://sweepy.app' target='_blank' style='color:inherit;text-decoration:underline;text-decoration-style:dotted'>Sweepy</a> — open app, run today's 5–10 min cleaning task.",note:"Timber is crated — this is a good low-focus break task. Prioritise accident spots and the office floor."},
-   {c:"focus",   txt:"Repeat cycles. Timber is crated — guard this block.",note:"Timber is safely napping. This is your first clean focus window of the day. Protect it."},
+   {c:"wellness",txt:"Use one break for <a href='https://sweepy.app' target='_blank' style='color:inherit;text-decoration:underline;text-decoration-style:dotted'>Sweepy</a> — open app, run today's 5–10 min cleaning task.",note:"Timber is in quiet time — good low-focus break task. Prioritise accident spots and the office floor."},
+   {c:"focus",   txt:"Repeat cycles. Timber is in quiet time — guard this block.",note:"Timber is settled and resting. This is your first clean focus window of the day. Protect it."},
  ]},
 
  // ── MIDDAY ─────────────────────────────────────────────────────────────────
- {t:"12:00 PM",e:"12:30 PM",i:"🍽️",h:"Your Lunch",days:[1,2,3,4,5],steps:[
+ {t:"12:45 PM",e:"01:15 PM",i:"🍽️",h:"Your Lunch",days:[1,2,3,4,5],steps:[
    {c:"wellness",txt:"Eat lunch. Take iron supplement with food.",note:"Iron with food reduces stomach upset."},
    {c:"wellness",txt:"Log in <a href='https://cronometer.com' target='_blank' style='color:inherit;text-decoration:underline;text-decoration-style:dotted'>Cronometer</a> + <a href='https://guavahealth.com' target='_blank' style='color:inherit;text-decoration:underline;text-decoration-style:dotted'>Guava</a>."},
  ]},
- {t:"03:00 PM",e:"05:00 PM",i:"🔄",h:"Focus Block 3 — Deep Work",days:[1,2,3,4,5],steps:[
-   {c:"focus",  txt:"Timber crated — longest uninterrupted focus window.",note:"Protect this block. Timber is napping and fed. This is your best deep work window of the afternoon."},
+ {t:"02:15 PM",e:"04:15 PM",i:"🔄",h:"Focus Block 2 — Deep Work",days:[1,2,3,4,5],steps:[
+   {c:"focus",  txt:"Timber in quiet time — your deepest uninterrupted focus window.",note:"Protect this block. Timber is resting. This is your best deep work window of the afternoon."},
    {c:"focus",  txt:"Pomodoro cycles. Sit/stand desk if you have one."},
    {c:"wellness",txt:"5-min breaks: PT movement."},
  ]},
 
- // ── LATE AFTERNOON ─────────────────────────────────────────────────────────
-
  // ── EVENING ────────────────────────────────────────────────────────────────
  {t:"06:00 PM",e:"07:30 PM",i:"🍳",h:"Cook Dinner Together",steps:[
-   {c:"wellness",txt:"Cook with your partner. Timber is crated — this is your time.",note:"The evening nap is the one most likely to get disrupted by a well-meaning partner who just got home. Brief him: no letting Timber out early, even if he whines."},
+   {c:"wellness",txt:"Cook with your partner. Timber tethered nearby.",note:"Brief your partner: Timber stays tethered and supervised during cooking — he's still in training and the kitchen is stimulating."},
    {c:"wellness",txt:"Prep tomorrow's frozen Kongs or puzzle feeders now while you cook.",},
    {c:"wellness",txt:"Take Sertraline + Sronyx with dinner.",note:"SSRIs and contraceptives taken with food reduce nausea. Consistent evening timing maintains steady serum levels."},
  ]},
@@ -2280,7 +2276,7 @@ const S=[
 
  // ── NIGHT ROUTINE ──────────────────────────────────────────────────────────
  {t:"09:10 PM",e:"09:25 PM",i:"🚿",h:"Shower",steps:[
-   {c:"wellness",txt:"Shower immediately after Timber goes into crate.",note:"Bare skin for RLT — no oils, no moisturiser, no sunscreen. Shower anchors the RLT sequence every night."},
+   {c:"wellness",txt:"Shower now — Timber is in the bedroom crate. Running water is white noise for him.",note:"Bare skin for RLT — no oils, no moisturiser, no sunscreen. Shower anchors the RLT sequence every night."},
    {c:"wellness",txt:"No products on skin until after RLT is complete."},
  ]},
  {t:"09:25 PM",e:"09:35 PM",i:"🔴",h:"RLT — Face (10 min)",statsTarget:'rlt',steps:[
@@ -2305,23 +2301,21 @@ const S=[
    {c:"wellness",txt:"Bent-Over Rows — 3×12.",note:"ATP from RLT peaks 5–10 min post-session. Resistance work in this window maximises collagen synthesis and muscle adaptation."},
  ]},
  {t:"10:30 PM",e:"11:00 PM",i:"🎮",h:"Gaming + Discord Wind-Down",steps:[
-   {c:"wellness",txt:"PC gaming with Discord friends. Timber crated in office beside you.",note:"You are present without managing him. He hears your voice and knows you are here — this builds calm independence gradually."},
+   {c:"wellness",txt:"PC gaming and Discord — your office is yours again. Timber is in the bedroom travel crate.",note:"He's settled in the bedroom away from your voice. You have your space back."},
    {c:"wellness",txt:"Keep lights dim. Wind down naturally."},
    {c:"wellness",txt:"One line reflection in Hobonichi if you feel like it."},
  ]},
- // 11:00 PM "Overnight Potty #1" retired at 18 weeks — bedtime potty at 8:45 PM
- // now reliably holds him until the transition trip in the early morning.
+ // 5:30 AM transition trip retired at 17 weeks — Timber now holds from 9 PM to 9 AM overnight.
+ // 11:00 PM overnight potty also retired. 1 AM partner trip retired. He holds the full night.
  {t:"11:15 PM",e:"11:30 PM",i:"💊",h:"Wind-Down + Meds",steps:[
    {c:"wellness",txt:"Final <a href='https://guavahealth.com' target='_blank' style='color:inherit;text-decoration:underline;text-decoration-style:dotted'>Guava</a> log — pain levels and any notes."},
    {c:"wellness",txt:"Dim all screens. Brush teeth."},
-   {c:"timber",  txt:"Timber tethered quietly. Low stimulation only."},
+   {c:"timber",  txt:"Timber is sleeping. You have done enough today."},
  ]},
  {t:"11:30 PM",e:"11:35 PM",i:"🌙",h:"Your Bedtime",steps:[
    {c:"wellness",txt:"Lights out. Timber is settled. You have done enough today."},
    {c:"wellness",txt:"Glucosamine incorporates into cartilage during deep sleep.",note:"Consistent sleep timing regulates cortisol — directly impacts hypermobility-related inflammation."},
  ]},
- // Partner's 1 AM trip retired — Timber holds the overnight stretch on his own
- // now that he's 18 weeks old.
 ];
 
 
@@ -2446,8 +2440,8 @@ setInterval(()=>{
 const TIMBER_MILESTONES = [
   {date:'2026-04-16', icon:'💉', title:'Final puppy vaccines (16 weeks)',      detail:'DA2PP + rabies booster. He\'s fully protected after this — cleared for all public surfaces.'},
   {date:'2026-04-23', icon:'🦮', title:'First on-leash public walk cleared',   detail:'One week post-final vaccines. Safe for footpaths, dog parks, and sniffing everything.'},
-  {date:'2026-04-30', icon:'⏰', title:'4-month schedule review',              detail:'Bladder control matures. Done — 1 AM, 11 PM, and 4 AM trips retired; transition trip at 5:30 AM fading out.'},
-  {date:'2026-05-30', icon:'📅', title:'5-month schedule adjustment',          detail:'Daytime awake windows can stretch to 75–90 min. Drop one nap cycle and consider widening tethered windows from 30 min to 45+ min.'},
+  {date:'2026-04-30', icon:'⏰', title:'4-month schedule review', done:true,   detail:'Done 2026-05-05 — all overnight trips retired. Collapsed from 4 naps to 2 naps of 2–3 hrs. Wake shifted to 9 AM. 5:30 AM transition trip retired. Two focus blocks: 10:30 AM–12:30 PM and 2:15–4:15 PM.'},
+  {date:'2026-05-30', icon:'📅', title:'5-month schedule adjustment',          detail:'Completed early at 20 weeks (2026-05-14) — free-roam office, frozen treat as quiet-time cue, self-selected sleep location. Next: watch if awake windows stretch past 2 hrs naturally and consider consolidating to 1 midday rest.'},
   {date:'2026-06-30', icon:'🐶', title:'6-month vet check + adolescence prep', detail:'Book vet check. Adolescence begins — expect recall and impulse control regression. Stay consistent.'},
   {date:'2026-09-01', icon:'✂️', title:'Neuter assessment window',             detail:'Standard for toy breeds: 7–8 months. Discuss timing with vet at the 6-month check.'},
 ];
@@ -2460,7 +2454,10 @@ function renderMilestones(){
     const d = new Date(y, mo-1, dy); // local midnight — avoids UTC parse off-by-one
     const diff = Math.round((d - today) / 86400000);
     let badge = '', itemCls = '';
-    if(diff < -7){
+    if(m.done){
+      itemCls = 'ms-past';
+      badge = `<span class="milestone-badge ms-done">done</span>`;
+    } else if(diff < -7){
       itemCls = 'ms-past';
       badge = `<span class="milestone-badge ms-done">done</span>`;
     } else if(diff < 0){
@@ -5435,38 +5432,33 @@ window.onload=()=>{
       <div id="s-schedule"><!-- anchor --></div>
       <div class="sitter-section">
         <div class="sitter-section-title">🗓️ Daily Schedule</div>
-        <div class="sitter-tip" style="margin-bottom:10px">The pattern all day: <strong>45 min awake → potty → crate + treat → 2 hr nap → repeat.</strong> Every nap starts with a potty trip and a treat in the crate. This is what keeps accidents minimal and helps him settle happily.<br><br><strong>The schedule below is an example</strong> — it's what Timber does at home every day so he'll feel right at home with it. Don't worry if you can't follow it to the minute. The core rhythm (awake, potty, crate, nap) matters more than the exact times.</div>
+        <div class="sitter-tip" style="margin-bottom:10px">The pattern all day: <strong>awake window → potty → crate + treat → 2–3 hr nap → repeat.</strong> Every nap starts with a potty trip and a treat in the crate. He has <strong>two naps a day</strong> and sleeps from 9 PM to 9 AM overnight — no middle-of-the-night trips needed.<br><br><strong>The schedule below is an example</strong> — it's what Timber does at home every day so he'll feel right at home with it. Don't worry if you can't follow it to the minute. The core rhythm (awake, potty, crate, nap) matters more than the exact times.</div>
         <div class="sitter-card orange">
           <h3>🌅 Morning</h3>
-          <div class="sitter-schedule-row orange"><span class="sitter-icon">🌅</span><span class="sitter-time">8:00 AM</span><div class="sitter-event">Wake + potty<small>Carry straight outside — bladder is full</small></div></div>
-          <div class="sitter-schedule-row orange"><span class="sitter-icon">🍽️</span><span class="sitter-time">8:00–8:45</span><div class="sitter-event">Breakfast (Learn to Earn)<small>Hand-feed full breakfast as training rewards — see the 🎓 Training section below for exactly what to work on. 5–10 min max, then puzzle feeder or snuffle mat for any remainder.</small></div></div>
-          <div class="sitter-schedule-row orange"><span class="sitter-icon">🚽</span><span class="sitter-time">8:45 AM</span><div class="sitter-event">Potty → crate + treat<small>Outside first, then high-value treat in crate. Cover crate, walk away.</small></div></div>
-          <div class="sitter-schedule-row orange"><span class="sitter-icon">💤</span><span class="sitter-time">9:00–11:00</span><div class="sitter-event">Nap #1 — 2 hours</div></div>
-          <div class="sitter-schedule-row orange"><span class="sitter-icon">🌅</span><span class="sitter-time">11:00 AM</span><div class="sitter-event">Wake + potty<small>Carry straight outside</small></div></div>
-          <div class="sitter-schedule-row orange"><span class="sitter-icon">🪢</span><span class="sitter-time">11:00–11:45</span><div class="sitter-event">Awake window + midday meal<small>Tethered to you or anchored nearby — close enough to supervise so he can't chew something he shouldn't. Drop kibble for calm behaviour or quiet toy play.</small></div></div>
-          <div class="sitter-schedule-row orange"><span class="sitter-icon">🚽</span><span class="sitter-time">11:45 AM</span><div class="sitter-event">Potty → crate + treat</div></div>
-          <div class="sitter-schedule-row orange"><span class="sitter-icon">💤</span><span class="sitter-time">12:00–2:00</span><div class="sitter-event">Nap #2 — 2 hours</div></div>
+          <div class="sitter-schedule-row orange"><span class="sitter-icon">🌅</span><span class="sitter-time">9:00 AM</span><div class="sitter-event">Wake + potty<small>Carry straight outside — bladder is full after the night</small></div></div>
+          <div class="sitter-schedule-row orange"><span class="sitter-icon">🍽️</span><span class="sitter-time">9:00–9:45</span><div class="sitter-event">Breakfast (Learn to Earn)<small>Hand-feed full breakfast as training rewards — see the 🎓 Training section below for exactly what to work on. 5–10 min max, then puzzle feeder or snuffle mat for any remainder.</small></div></div>
+          <div class="sitter-schedule-row orange"><span class="sitter-icon">🚽</span><span class="sitter-time">9:45 AM</span><div class="sitter-event">Potty → crate + treat<small>Outside first, then high-value treat in crate. Cover crate, walk away.</small></div></div>
+          <div class="sitter-schedule-row orange"><span class="sitter-icon">💤</span><span class="sitter-time">10:00–12:00</span><div class="sitter-event">Nap #1 — 2–3 hours<small>Minimum 2 hours. If he's still asleep at noon, let him sleep up to 1:00 PM — he'll wake when ready.</small></div></div>
         </div>
         <div class="sitter-card orange">
           <h3>☀️ Afternoon</h3>
-          <div class="sitter-schedule-row orange"><span class="sitter-icon">🌅</span><span class="sitter-time">2:00 PM</span><div class="sitter-event">Wake + potty</div></div>
-          <div class="sitter-schedule-row orange"><span class="sitter-icon">🪢</span><span class="sitter-time">2:00–2:45</span><div class="sitter-event">Awake window + afternoon meal<small>Tethered to you or anchored nearby — close enough that you can see him and he can't get into mischief. Drop kibble for calm behaviour or quiet toy play.</small></div></div>
-          <div class="sitter-schedule-row orange"><span class="sitter-icon">🚽</span><span class="sitter-time">2:45 PM</span><div class="sitter-event">Potty → crate + treat</div></div>
-          <div class="sitter-schedule-row orange"><span class="sitter-icon">💤</span><span class="sitter-time">3:00–5:00</span><div class="sitter-event">Nap #3 — 2 hours</div></div>
-          <div class="sitter-schedule-row orange"><span class="sitter-icon">🌅</span><span class="sitter-time">5:00 PM</span><div class="sitter-event">Wake + potty</div></div>
-          <div class="sitter-schedule-row orange"><span class="sitter-icon">🍽️</span><span class="sitter-time">8:00–8:30</span><div class="sitter-event">Dinner (Learn to Earn)<small>Hand-feed full dinner as training rewards — same cues as breakfast (see 🎓 Training section). 5–10 min max, then puzzle feeder or snuffle mat for any remainder.</small></div></div>
-          <div class="sitter-schedule-row orange"><span class="sitter-icon">🚶</span><span class="sitter-time">5:15–5:45</span><div class="sitter-event">Afternoon walk<small>Stroller walk — paws off the ground. He can only be set down on the ground in a private backyard, not on public sidewalks or at the dog park.</small></div></div>
-          <div class="sitter-schedule-row orange"><span class="sitter-icon">🚽</span><span class="sitter-time">5:45 PM</span><div class="sitter-event">Potty → crate + treat</div></div>
-          <div class="sitter-schedule-row orange"><span class="sitter-icon">💤</span><span class="sitter-time">6:00–8:00</span><div class="sitter-event">Nap #4 — 2 hours</div></div>
+          <div class="sitter-schedule-row orange"><span class="sitter-icon">🌅</span><span class="sitter-time">12:00 PM</span><div class="sitter-event">Wake + potty<small>Carry straight outside — bladder is full</small></div></div>
+          <div class="sitter-schedule-row orange"><span class="sitter-icon">🪢</span><span class="sitter-time">12:00–1:30</span><div class="sitter-event">Awake window + midday meal<small>Tethered to you or anchored nearby. Drop kibble for calm behaviour or quiet toy play. Watch for tired signals (yawning, nippy) — crate him early if needed.</small></div></div>
+          <div class="sitter-schedule-row orange"><span class="sitter-icon">🚽</span><span class="sitter-time">1:30 PM</span><div class="sitter-event">Potty → crate + treat</div></div>
+          <div class="sitter-schedule-row orange"><span class="sitter-icon">💤</span><span class="sitter-time">1:45–3:45</span><div class="sitter-event">Nap #2 — 2–3 hours<small>Minimum 2 hours. If he's still asleep at 3:45, let him sleep up to 4:45 PM.</small></div></div>
+          <div class="sitter-schedule-row orange"><span class="sitter-icon">🌅</span><span class="sitter-time">3:45 PM</span><div class="sitter-event">Wake + potty</div></div>
+          <div class="sitter-schedule-row orange"><span class="sitter-icon">🪢</span><span class="sitter-time">3:45–5:00</span><div class="sitter-event">Awake window + afternoon meal<small>Tethered nearby. Drop kibble for calm behaviour. A chew or puzzle feeder works well here.</small></div></div>
+          <div class="sitter-schedule-row orange"><span class="sitter-icon">🍽️</span><span class="sitter-time">5:00 PM</span><div class="sitter-event">Dinner (Learn to Earn)<small>Hand-feed full dinner as training rewards in the backyard — same cues as breakfast (see 🎓 Training section). 5–10 min max, then puzzle feeder for any remainder.</small></div></div>
+          <div class="sitter-schedule-row orange"><span class="sitter-icon">🚶</span><span class="sitter-time">5:15–5:45</span><div class="sitter-event">Afternoon walk — 30 min<small>Paws on the ground are fine for neighbourhood walks. Let him sniff freely.</small></div></div>
+          <div class="sitter-schedule-row orange"><span class="sitter-icon">🚽</span><span class="sitter-time">5:45 PM</span><div class="sitter-event">Post-walk potty<small>He's been moving — almost always needs to go after a walk.</small></div></div>
         </div>
         <div class="sitter-card orange">
           <h3>🌙 Evening & Overnight</h3>
-          <div class="sitter-schedule-row orange"><span class="sitter-icon">🌅</span><span class="sitter-time">8:00 PM</span><div class="sitter-event">Wake + potty</div></div>
-          <div class="sitter-schedule-row orange"><span class="sitter-icon">💧</span><span class="sitter-time">8:15 PM</span><div class="sitter-event">Pick up water bowl<small>No water after this — helps him sleep through the night</small></div></div>
-          <div class="sitter-schedule-row orange"><span class="sitter-icon">🪢</span><span class="sitter-time">8:00–8:45</span><div class="sitter-event">Calm evening awake window<small>Tethered, low stimulation. No rough play — you want him drowsy.</small></div></div>
-          <div class="sitter-schedule-row orange"><span class="sitter-icon">🌙</span><span class="sitter-time">8:45 PM</span><div class="sitter-event">Potty → crate + treat — Bedtime<small>High-value treat, cover crate, lights low, walk away calmly. He is asleep by 9:00 PM.</small></div></div>
-          <div class="sitter-schedule-row orange"><span class="sitter-icon">🌙</span><span class="sitter-time">11:00 PM</span><div class="sitter-event">Quiet overnight potty<small>No play, no talking — out, praise, straight back to crate</small></div></div>
-          <div class="sitter-schedule-row orange"><span class="sitter-icon">🌙</span><span class="sitter-time">4:00 AM</span><div class="sitter-event">Overnight potty if needed<small>He may start sleeping through — follow his lead</small></div></div>
+          <div class="sitter-schedule-row orange"><span class="sitter-icon">🛋️</span><span class="sitter-time">6:00–8:00</span><div class="sitter-event">Calm tethered evening<small>Tethered nearby. No rough play — low stimulation so he winds down naturally. A stuffed Kong or chew helps him settle.</small></div></div>
+          <div class="sitter-schedule-row orange"><span class="sitter-icon">🚽</span><span class="sitter-time">8:00 PM</span><div class="sitter-event">Evening potty<small>He's been awake 4+ hours — this trip bridges him to bedtime</small></div></div>
+          <div class="sitter-schedule-row orange"><span class="sitter-icon">💧</span><span class="sitter-time">8:30 PM</span><div class="sitter-event">Pick up water bowl<small>No water after this — helps him sleep through the night</small></div></div>
+          <div class="sitter-schedule-row orange"><span class="sitter-icon">🪢</span><span class="sitter-time">8:15–8:45</span><div class="sitter-event">Final wind-down<small>Tethered, low stimulation. No rough play — you want him drowsy.</small></div></div>
+          <div class="sitter-schedule-row orange"><span class="sitter-icon">🌙</span><span class="sitter-time">8:45 PM</span><div class="sitter-event">Potty → crate + treat — Bedtime<small>High-value treat, cover crate, lights low, walk away calmly. He sleeps from 9 PM to 9 AM — no overnight trips needed.</small></div></div>
         </div>
       </div>
 

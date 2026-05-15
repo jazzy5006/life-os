@@ -1047,8 +1047,19 @@ body.night .cinna-wm{opacity:.04}
 @media(min-width:480px){.train-cue-grid{grid-template-columns:1fr 1fr}}
 @media(min-width:900px){.train-cue-grid{grid-template-columns:1fr 1fr 1fr}}
 
-.train-cue-card{background:var(--card-bg,var(--ll));border:1.5px solid var(--lm);border-radius:14px;padding:13px 14px;display:flex;flex-direction:column;gap:6px;transition:box-shadow .15s}
+.train-cue-card{background:var(--ll);border:1.5px solid var(--lm);border-radius:14px;padding:13px 14px;display:flex;flex-direction:column;gap:6px;transition:box-shadow .15s}
 .train-cue-card:hover{box-shadow:0 2px 12px rgba(0,0,0,.08)}
+/* Enrichment / tool cards — softer pink tint, dashed border */
+.train-cue-card.enrichment{background:var(--pl);border:1.5px dashed var(--pm)}
+.train-enrichment-label{display:inline-flex;align-items:center;gap:3px;padding:2px 8px;border-radius:20px;background:var(--pm);color:var(--pa);font-family:'Nunito',sans-serif;font-size:.5rem;font-weight:900;letter-spacing:.06em;text-transform:uppercase;align-self:flex-start}
+/* Technique cards — sage/matcha tint, solid sage border */
+.train-cue-card.technique{background:var(--ml);border:1.5px solid var(--mm)}
+.train-technique-label{display:inline-flex;align-items:center;gap:3px;padding:2px 8px;border-radius:20px;background:var(--mm);color:var(--ma);font-family:'Nunito',sans-serif;font-size:.5rem;font-weight:900;letter-spacing:.06em;text-transform:uppercase;align-self:flex-start}
+/* Conditioning cards — warm amber/cream tint */
+.train-cue-card.conditioning{background:#fef5eb;border:1.5px solid #e8b87c}
+.train-conditioning-label{display:inline-flex;align-items:center;gap:3px;padding:2px 8px;border-radius:20px;background:#f5d4a0;color:#8a5c25;font-family:'Nunito',sans-serif;font-size:.5rem;font-weight:900;letter-spacing:.06em;text-transform:uppercase;align-self:flex-start}
+body.night .train-cue-card.conditioning{background:#2a1c08;border-color:#7a5030}
+body.night .train-conditioning-label{background:#5a3a15;color:#f0c080}
 
 .train-cue-top{display:flex;align-items:flex-start;justify-content:space-between;gap:8px}
 .train-cue-name{font-family:'Nunito',sans-serif;font-size:.8rem;font-weight:900;color:var(--td)}
@@ -1763,13 +1774,41 @@ body.night .train-status.new{background:var(--pl);border-color:var(--pm);color:v
 
 <!-- ── TRAIN PAGE (mobile) ─────────────────────────────────────────────── -->
 <div class="page" id="page-train">
-  <div class="vine-banner" role="presentation" aria-hidden="true">
-    <svg viewBox="0 0 360 38" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:38px">
-      <path d="M0,20 Q45,6 90,20 Q135,34 180,20 Q225,6 270,20 Q315,34 360,20" fill="none" stroke="var(--ma)" stroke-width="1.5" opacity=".35"/>
-      <circle cx="45"  cy="12" r="3.5" fill="var(--la)" opacity=".45"/>
-      <circle cx="135" cy="28" r="2.8" fill="var(--pa)" opacity=".4"/>
-      <circle cx="225" cy="12" r="3.5" fill="var(--la)" opacity=".45"/>
-      <circle cx="315" cy="28" r="2.8" fill="var(--pa)" opacity=".4"/>
+  <div class="vine-banner cute-tape" aria-hidden="true">
+    <svg viewBox="0 0 800 40" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+      <path class="vine-stem" d="M -10 22 Q 100 4 200 22 T 400 22 T 600 22 T 810 22"/>
+      <g>
+        <ellipse class="vine-leaf" cx="50"  cy="14" rx="6" ry="3" transform="rotate(-30 50 14)"/>
+        <ellipse class="vine-leaf" cx="150" cy="14" rx="6" ry="3" transform="rotate(30 150 14)"/>
+        <ellipse class="vine-leaf" cx="250" cy="30" rx="6" ry="3" transform="rotate(-30 250 30)"/>
+        <ellipse class="vine-leaf" cx="350" cy="30" rx="6" ry="3" transform="rotate(30 350 30)"/>
+        <ellipse class="vine-leaf" cx="450" cy="14" rx="6" ry="3" transform="rotate(-30 450 14)"/>
+        <ellipse class="vine-leaf" cx="550" cy="14" rx="6" ry="3" transform="rotate(30 550 14)"/>
+        <ellipse class="vine-leaf" cx="650" cy="30" rx="6" ry="3" transform="rotate(-30 650 30)"/>
+        <ellipse class="vine-leaf" cx="750" cy="30" rx="6" ry="3" transform="rotate(30 750 30)"/>
+      </g>
+      <g>
+        <g transform="translate(100,6)">
+          <circle class="vine-petal" r="3.2" cx="0" cy="-3.2"/><circle class="vine-petal" r="3.2" cx="3" cy="-1"/>
+          <circle class="vine-petal" r="3.2" cx="1.9" cy="2.6"/><circle class="vine-petal" r="3.2" cx="-1.9" cy="2.6"/>
+          <circle class="vine-petal" r="3.2" cx="-3" cy="-1"/><circle class="vine-center" r="1.6"/>
+        </g>
+        <g transform="translate(300,34)">
+          <circle class="vine-petal" r="3.2" cx="0" cy="-3.2"/><circle class="vine-petal" r="3.2" cx="3" cy="-1"/>
+          <circle class="vine-petal" r="3.2" cx="1.9" cy="2.6"/><circle class="vine-petal" r="3.2" cx="-1.9" cy="2.6"/>
+          <circle class="vine-petal" r="3.2" cx="-3" cy="-1"/><circle class="vine-center" r="1.6"/>
+        </g>
+        <g transform="translate(500,6)">
+          <circle class="vine-petal" r="3.2" cx="0" cy="-3.2"/><circle class="vine-petal" r="3.2" cx="3" cy="-1"/>
+          <circle class="vine-petal" r="3.2" cx="1.9" cy="2.6"/><circle class="vine-petal" r="3.2" cx="-1.9" cy="2.6"/>
+          <circle class="vine-petal" r="3.2" cx="-3" cy="-1"/><circle class="vine-center" r="1.6"/>
+        </g>
+        <g transform="translate(700,34)">
+          <circle class="vine-petal" r="3.2" cx="0" cy="-3.2"/><circle class="vine-petal" r="3.2" cx="3" cy="-1"/>
+          <circle class="vine-petal" r="3.2" cx="1.9" cy="2.6"/><circle class="vine-petal" r="3.2" cx="-1.9" cy="2.6"/>
+          <circle class="vine-petal" r="3.2" cx="-3" cy="-1"/><circle class="vine-center" r="1.6"/>
+        </g>
+      </g>
     </svg>
   </div>
 
@@ -1782,17 +1821,17 @@ body.night .train-status.new{background:var(--pl);border-color:var(--pm);color:v
   <div class="train-progress-wrap">
     <div class="train-progress-row">
       <span class="train-progress-label">🐾 Cues Mastered</span>
-      <span class="train-progress-pct" id="trainProgressPct">0%</span>
+      <span class="train-progress-pct" id="TrainProgressPct">0%</span>
     </div>
-    <div class="train-prog-bar-track"><div class="train-prog-bar-fill" id="trainProgressBar" style="width:0%"></div></div>
-    <p class="train-progress-sub" id="trainProgressSub">0 of 0 mastered</p>
+    <div class="train-prog-bar-track"><div class="train-prog-bar-fill" id="TrainProgressBar" style="width:0%"></div></div>
+    <p class="train-progress-sub" id="TrainProgressSub">0 of 0 mastered</p>
   </div>
 
   <!-- Daily rotation -->
   <div class="train-rotation-card">
-    <div class="train-rotation-day" id="trainRotationDay">Today's focus</div>
-    <p style="font-size:.66rem;color:var(--td);line-height:1.5;margin-top:2px">Run these 3–5 cues this morning before your walk — use his breakfast kibble as rewards.</p>
-    <div class="train-rotation-list" id="trainRotationList"></div>
+    <div class="train-rotation-day" id="TrainRotationDay">Today's focus</div>
+    <p style="font-size:.66rem;color:var(--td);line-height:1.5;margin-top:2px">Run these cues this morning before your walk — use his breakfast kibble as rewards.</p>
+    <div class="train-rotation-list" id="TrainRotationList"></div>
   </div>
 
   <!-- Session tip -->
@@ -1803,8 +1842,12 @@ body.night .train-status.new{background:var(--pl);border-color:var(--pm);color:v
   <!-- Filter strip -->
   <div class="train-filter-strip" id="trainFilterStrip">
     <button class="train-filter-btn active" onclick="filterTrain('all',this)">All</button>
-    <button class="train-filter-btn" onclick="filterTrain('new',this)">🌱 New</button>
-    <button class="train-filter-btn" onclick="filterTrain('practicing',this)">🔄 Practicing</button>
+    <button class="train-filter-btn" onclick="filterTrain('cues',this)">🎯 Cues</button>
+    <button class="train-filter-btn" onclick="filterTrain('technique',this)">🔧 Technique</button>
+    <button class="train-filter-btn" onclick="filterTrain('conditioning',this)">🌱 Conditioning</button>
+    <button class="train-filter-btn" onclick="filterTrain('enrichment',this)">🌿 Enrichment</button>
+    <button class="train-filter-btn" onclick="filterTrain('new',this)">New</button>
+    <button class="train-filter-btn" onclick="filterTrain('practicing',this)">Practicing</button>
     <button class="train-filter-btn" onclick="filterTrain('mastered',this)">⭐ Mastered</button>
     <button class="train-filter-btn" onclick="filterTrain('class',this)">📚 Class</button>
     <button class="train-filter-btn" onclick="filterTrain('zigzag',this)">📱 ZigZag</button>
@@ -2147,8 +2190,12 @@ body.night .train-status.new{background:var(--pl);border-color:var(--pm);color:v
         <!-- Filter -->
         <div class="train-filter-strip" style="padding:0 0 8px">
           <button class="train-filter-btn active" onclick="filterTrainDesk('all',this)">All</button>
-          <button class="train-filter-btn" onclick="filterTrainDesk('new',this)">🌱 New</button>
-          <button class="train-filter-btn" onclick="filterTrainDesk('practicing',this)">🔄 Practicing</button>
+          <button class="train-filter-btn" onclick="filterTrainDesk('cues',this)">🎯 Cues</button>
+          <button class="train-filter-btn" onclick="filterTrainDesk('technique',this)">🔧 Technique</button>
+          <button class="train-filter-btn" onclick="filterTrainDesk('conditioning',this)">🌱 Conditioning</button>
+          <button class="train-filter-btn" onclick="filterTrainDesk('enrichment',this)">🌿 Enrichment</button>
+          <button class="train-filter-btn" onclick="filterTrainDesk('new',this)">New</button>
+          <button class="train-filter-btn" onclick="filterTrainDesk('practicing',this)">Practicing</button>
           <button class="train-filter-btn" onclick="filterTrainDesk('mastered',this)">⭐ Mastered</button>
           <button class="train-filter-btn" onclick="filterTrainDesk('class',this)">📚 Class</button>
           <button class="train-filter-btn" onclick="filterTrainDesk('zigzag',this)">📱 ZigZag</button>
@@ -2364,7 +2411,7 @@ const S=[
  ]},
 
  // ── TIMBER DINNER + WALK ────────────────────────────────────────────────────
- {t:"05:00 PM",e:"05:15 PM",i:"🌅",h:"Timber Dinner Training",steps:[
+ {t:"05:00 PM",e:"05:15 PM",i:"🌅",h:"Timber Dinner Training",trainTarget:true,steps:[
    {c:"wellness",txt:"Work day ends. Close the laptop — this is your transition signal."},
    {c:"timber",txt:"Do dinner training right here in the backyard. Use his full meal as rewards.",note:"5 minutes max. Sit, eye contact, come, stay. End on a win. Remaining food in a puzzle feeder."},
    {c:"timber",txt:"Clip the leash — afternoon walk with your partner starts now."},
@@ -2724,6 +2771,7 @@ window.switchTab=(tab)=>{
   document.getElementById('jumpNowBtn').style.display=tab==='flow'?'flex':'none';
   if(tab==='life'){renderOrbits();renderBattery();renderMemories('memList');}
   if(tab==='cal')loadCalendar();
+  if(tab==='train')renderTrainTab();
 };
 
 window.deskSwitchPanel=(panel)=>{
@@ -2733,6 +2781,7 @@ window.deskSwitchPanel=(panel)=>{
   document.getElementById('dtab-'+panel).classList.add('active');
   if(panel==='life'){renderOrbits();renderBattery();renderMemories('memListD');}
   if(panel==='cal')loadCalendar();
+  if(panel==='train')renderTrainTab();
 };
 
 // ─── SCHEDULE FILTER (day-aware) ──────────────────────────────────────────────
@@ -5418,7 +5467,7 @@ window.onload=()=>{
   // ✿ Sanrio aesthetic layer
   initSanrioLayer();
   // 🎓 Train tab
-  renderTrainTab();
+  try { renderTrainTab(); } catch(e) { setTimeout(renderTrainTab, 200); }
 };
 
 // ══════════════════════════════════════════════════════════════════════════════
@@ -5492,6 +5541,7 @@ const TRAIN_CUES = [
   },
   {
     id:'magnetic-hand', name:'Magnetic Hand', icon:'🧲',
+    category:'technique',
     source:'class', tags:['focus','leash'],
     cue:'Treat pinched between fingers, present at your hip/thigh',
     howTo:'Hold treat at your side. Let him follow your hand. Mark + treat every few steps. Builds the "glued to you" walk foundation.',
@@ -5501,6 +5551,7 @@ const TRAIN_CUES = [
   },
   {
     id:'loose-leash', name:'Loose Leash Walking', icon:'🦮',
+    category:'technique',
     source:'class', tags:['leash','foundation'],
     cue:'Loose J-shape in leash. Stop the moment it goes tight.',
     howTo:'Walk, stop dead the instant leash tightens. Wait for him to return to your side — mark + treat. Keep sessions short (2–3 min).',
@@ -5511,6 +5562,7 @@ const TRAIN_CUES = [
   // ── ZIGZAG / HOME TRAINING ─────────────────────────────────────────────────
   {
     id:'eye-contact', name:'Eye Contact / Check-In', icon:'👀',
+    category:'conditioning',
     source:'zigzag', tags:['focus','foundation'],
     cue:'No cue — wait for it to happen naturally',
     howTo:'Any time he looks at your face: mark + treat. Don\'t ask for it — capture it. Makes him want to check in with you.',
@@ -5520,6 +5572,7 @@ const TRAIN_CUES = [
   },
   {
     id:'alone-time', name:'Being Alone', icon:'🏠',
+    category:'conditioning',
     source:'zigzag', tags:['independence','separation'],
     cue:'Gate + frozen treat = you\'re stepping away',
     howTo:'Build duration in tiny increments. Leave gated office, return before he fusses. Treat on return. Currently holding ~3 min.',
@@ -5529,6 +5582,7 @@ const TRAIN_CUES = [
   },
   {
     id:'two-toy-fetch', name:'Fetch (Two-Toy)', icon:'🎾',
+    category:'enrichment',
     source:'zigzag', tags:['play','impulse'],
     cue:'Toss toy 1. When he picks it up: produce toy 2 excitedly.',
     howTo:'Never chase him — produce the second toy to make him want to bring the first back. Exchange and repeat.',
@@ -5538,6 +5592,7 @@ const TRAIN_CUES = [
   },
   {
     id:'grooming-tolerance', name:'Grooming Tolerance', icon:'✂️',
+    category:'conditioning',
     source:'zigzag', tags:['grooming','health'],
     cue:'No cue — ongoing desensitisation',
     howTo:'Touch paws, ears, mouth, brush for 3–5 seconds. Mark + treat. Build duration week by week.',
@@ -5547,6 +5602,7 @@ const TRAIN_CUES = [
   },
   {
     id:'snuffle-mat', name:'Snuffle Mat / Food Puzzles', icon:'🌿',
+    category:'enrichment',
     source:'zigzag', tags:['enrichment','calm'],
     cue:'Present mat — no verbal cue needed',
     howTo:'Load with kibble, set down in office. Let him work it. Counts as a mental workout — as tiring as a walk.',
@@ -5599,19 +5655,28 @@ function cycleTrainStatus(id, isDesk) {
   renderTrainTab();
 }
 
+const CATEGORY_META = {
+  cue:          { cardClass:'train-cue-card',              label:'',                                                                    cueLabel:'Cue' },
+  technique:    { cardClass:'train-cue-card technique',    label:'<span class="train-technique-label">🔧 Technique</span>',             cueLabel:'How to use' },
+  conditioning: { cardClass:'train-cue-card conditioning', label:'<span class="train-conditioning-label">🌱 Conditioning</span>',       cueLabel:'Practice' },
+  enrichment:   { cardClass:'train-cue-card enrichment',   label:'<span class="train-enrichment-label">🌿 Enrichment Tool</span>',      cueLabel:'How to use' },
+};
+
 function buildCueCard(cue, statuses) {
   const status = statuses[cue.id] || cue.status_default || 'new';
+  const cat = CATEGORY_META[cue.category] || CATEGORY_META.cue;
   const tagHtml = cue.tags.map(t=>`<span class="train-cue-tag">${t}</span>`).join('');
   const srcBadge = cue.source === 'class'
     ? `<span class="train-cue-tag" style="background:var(--pl);color:var(--pa)">📚 class</span>`
     : `<span class="train-cue-tag" style="background:var(--ml);color:var(--ma)">📱 zigzag</span>`;
   return `
-    <div class="train-cue-card" data-status="${status}" data-source="${cue.source}" data-id="${cue.id}">
+    <div class="${cat.cardClass}" data-status="${status}" data-source="${cue.source}" data-category="${cue.category||'cue'}" data-id="${cue.id}">
+      ${cat.label}
       <div class="train-cue-top">
         <span class="train-cue-name">${cue.icon} ${cue.name}</span>
         <button class="train-status ${status}" onclick="cycleTrainStatus('${cue.id}')" title="Tap to update status">${STATUS_LABEL[status]}</button>
       </div>
-      <div class="train-cue-cue">Cue: ${cue.cue}</div>
+      <div class="train-cue-cue">${cat.cueLabel}: ${cue.cue}</div>
       <div class="train-cue-body">${cue.howTo}</div>
       ${cue.note ? `<div class="train-cue-note">${cue.note}</div>` : ''}
       <div class="train-cue-tags">${tagHtml}${srcBadge}</div>
@@ -5656,6 +5721,8 @@ function renderTrainTabGrid(gridId, filter) {
   const cues = TRAIN_CUES.filter(c => {
     if(filter === 'all') return true;
     if(filter === 'class' || filter === 'zigzag') return c.source === filter;
+    if(filter === 'enrichment' || filter === 'technique' || filter === 'conditioning') return c.category === filter;
+    if(filter === 'cues') return !c.category || c.category === 'cue';
     return (statuses[c.id] || c.status_default) === filter;
   });
   el.innerHTML = cues.map(c=>buildCueCard(c, statuses)).join('') || `<p style="font-size:.7rem;color:var(--tm);padding:8px">No cues match this filter.</p>`;

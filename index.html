@@ -97,15 +97,17 @@ p{font-size:.8rem;font-weight:600;color:var(--tb);line-height:1.6}
 /* Winding vine banner — replaces the old striped .cute-tape.
    .cute-tape kept as alias so any leftover JS references survive. */
 .vine-banner,.cute-tape{
-  height:40px;width:100%;
+  height:64px;width:100%;
   color:var(--ma);
   background:linear-gradient(180deg,var(--bgc) 0%,var(--bg) 100%);
   border-bottom:2px solid var(--lm);
   overflow:hidden;line-height:0;
 }
 .vine-banner svg{display:block;width:100%;height:100%}
-.vine-banner .vine-stem{fill:none;stroke:var(--ma);stroke-width:1.8;stroke-linecap:round;opacity:.85}
-.vine-banner .vine-leaf{fill:var(--mm);stroke:var(--ma);stroke-width:.6;opacity:.9}
+.vine-banner .vine-stem{fill:none;stroke:var(--ma);stroke-width:1.6;stroke-linecap:round;opacity:.8}
+.vine-banner .vine-leaf{fill:var(--mm);stroke:var(--ma);stroke-width:.4;opacity:.9}
+.vine-banner .vine-petiole{fill:none;stroke:var(--ma);stroke-width:.9;stroke-linecap:round;opacity:.75}
+.vine-banner .vine-midrib{fill:none;stroke:var(--ma);stroke-width:.35;stroke-linecap:round;opacity:.55}
 .vine-banner .vine-petal{fill:var(--la);opacity:.92}
 .vine-banner .vine-center{fill:var(--gm)}
 body.night .vine-banner .vine-petal{fill:var(--pa)}
@@ -128,7 +130,7 @@ body.night .vine-banner .vine-center{fill:var(--ga)}
 .pfo{background:var(--sl);color:var(--sa);border:1.5px solid var(--sm)}
 
 /* ── TAB BAR ── */
-.tab-bar{display:flex;position:fixed;bottom:0;left:0;right:0;z-index:100;background:var(--bgc);box-shadow:0 -2px 14px var(--neu-dark);padding-bottom:env(safe-area-inset-bottom)}
+.tab-bar{display:flex;position:sticky;top:0;left:0;right:0;z-index:99;background:var(--bgc);box-shadow:0 2px 10px var(--neu-dark);border-bottom:1.5px solid var(--lm)}
 .tab{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:10px 4px;min-height:44px;cursor:pointer;gap:2px;border:none;background:none;font-family:'Nunito',sans-serif;-webkit-tap-highlight-color:transparent;transition:background .15s}
 .tab:active{background:var(--ll)}
 .tab-icon{font-size:1.15rem;line-height:1}
@@ -137,7 +139,7 @@ body.night .vine-banner .vine-center{fill:var(--ga)}
 .tab.active .tab-icon{filter:drop-shadow(0 0 4px rgba(184,157,224,.5))}
 
 /* ── PAGES ── */
-.page{display:none;flex-direction:column;padding:12px 12px calc(var(--tab-h) + 12px + env(safe-area-inset-bottom));min-height:calc(100vh - var(--nav-h))}
+.page{display:none;flex-direction:column;padding:12px 12px 80px;min-height:calc(100vh - 120px)}
 .page.active{display:flex}
 .filter-row{display:flex;gap:6px;margin-bottom:10px;position:sticky;top:0;z-index:50;background:var(--bgp);padding:8px 0 6px;margin-left:-14px;margin-right:-14px;padding-left:14px;padding-right:14px;border-bottom:1.5px solid var(--ll);overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
 
@@ -462,7 +464,6 @@ select{appearance:none;background:transparent;border:none;outline:none;font-fami
 .timer-add{background:rgba(255,255,255,.15);border:1.5px solid rgba(255,255,255,.3);border-radius:var(--rf);padding:5px 10px;font-family:'Nunito',sans-serif;font-size:.58rem;font-weight:900;color:#fff;cursor:pointer;-webkit-tap-highlight-color:transparent}
 
 /* push content down when timer bar is showing */
-body.timer-active .cute-tape,body.timer-active .vine-banner{margin-top:48px}
 body.timer-active .top-nav{top:48px}
 body.timer-active .desktop-layout{padding-top:70px}
 
@@ -1093,6 +1094,125 @@ body.night .train-status.new{background:var(--pl);border-color:var(--pm);color:v
 .train-prog-bar-track{height:8px;border-radius:20px;background:var(--ml);overflow:hidden}
 .train-prog-bar-fill{height:100%;border-radius:20px;background:linear-gradient(90deg,var(--la),var(--ma));transition:width .4s cubic-bezier(.4,0,.2,1)}
 .train-progress-sub{font-size:.58rem;color:var(--tm);margin-top:5px;text-align:right}
+
+/* ── CHECKLIST ── */
+.cl-section{margin-bottom:6px}
+.cl-section-hd{display:flex;align-items:center;justify-content:space-between;padding:10px 0 6px;cursor:pointer;-webkit-tap-highlight-color:transparent;user-select:none}
+.cl-section-title{font-size:.68rem;font-weight:900;letter-spacing:.12em;text-transform:uppercase;color:var(--tm);display:flex;align-items:center;gap:6px}
+.cl-section-streak{font-size:.5rem;font-weight:900;padding:2px 7px;border-radius:var(--rf);background:var(--gl);color:var(--ga);border:1.5px solid var(--gm)}
+.cl-section-chevron{font-size:.7rem;color:var(--tm);transition:transform .25s;flex-shrink:0}
+.cl-section-body{display:flex;flex-direction:column;gap:5px;overflow:hidden;transition:max-height .35s ease,opacity .25s ease}
+.cl-section-body.cl-hidden{max-height:0!important;opacity:0;pointer-events:none}
+.cl-item{display:flex;align-items:center;gap:10px;background:var(--bgc);border-radius:var(--rmd);border:2px solid var(--lm);padding:10px 12px;transition:border-color .2s,background .15s;cursor:pointer;-webkit-tap-highlight-color:transparent;position:relative}
+.cl-item:active{background:var(--bgp)}
+.cl-item.done{border-color:var(--mm);background:var(--ml)}
+.cl-item.done .cl-label{text-decoration:line-through;opacity:.5}
+.cl-check{width:22px;height:22px;min-width:22px;border-radius:50%;border:2.5px solid var(--lm);background:var(--bg);display:flex;align-items:center;justify-content:center;font-size:.8rem;transition:all .2s cubic-bezier(.34,1.56,.64,1);flex-shrink:0}
+.cl-item.done .cl-check{background:var(--ma);border-color:var(--ma);color:#fff}
+.cl-label{font-size:.82rem;font-weight:700;color:var(--td);flex:1;line-height:1.3}
+.cl-note{font-size:.59rem;font-weight:600;color:var(--tm);display:block;margin-top:1px;line-height:1.4}
+.cl-badge{font-size:.48rem;font-weight:900;letter-spacing:.1em;text-transform:uppercase;padding:2px 6px;border-radius:var(--rf);background:var(--gl);color:var(--ga);border:1.5px solid var(--gm);flex-shrink:0}
+.cl-skip-btn{background:none;border:1.5px solid var(--lm);border-radius:var(--rf);padding:3px 9px;font-family:'Nunito',sans-serif;font-size:.5rem;font-weight:900;color:var(--tm);cursor:pointer;flex-shrink:0;-webkit-tap-highlight-color:transparent}
+.cl-skip-btn.skipped{background:var(--ll);color:var(--la);border-color:var(--la)}
+.cl-open-btn{background:none;border:1.5px solid var(--sm);border-radius:var(--rf);padding:3px 8px;font-family:'Nunito',sans-serif;font-size:.48rem;font-weight:900;color:var(--sa);cursor:pointer;flex-shrink:0;-webkit-tap-highlight-color:transparent}
+.cl-complete-banner{background:linear-gradient(135deg,var(--ml),var(--ll));border:2px solid var(--mm);border-radius:var(--rlg);padding:10px 14px;display:flex;align-items:center;gap:9px;margin-bottom:6px;animation:cl-pop .4s cubic-bezier(.34,1.56,.64,1)}
+@keyframes cl-pop{from{transform:scale(.9);opacity:0}to{transform:scale(1);opacity:1}}
+.cl-complete-icon{font-size:1.4rem}
+.cl-complete-text{font-size:.78rem;font-weight:900;color:var(--td)}
+/* ── WALK INDICATOR ── */
+.walk-indicator{display:none;position:fixed;bottom:16px;right:14px;z-index:89;background:var(--pa);color:#fff;border-radius:var(--rf);padding:8px 14px;font-family:'Nunito',sans-serif;font-size:.65rem;font-weight:900;box-shadow:0 4px 14px rgba(247,154,122,.4);align-items:center;gap:6px;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.walk-indicator.active{display:flex}
+/* ── NFC MODAL ── */
+.nfc-modal{display:none;position:fixed;inset:0;z-index:410;background:rgba(0,0,0,.45);align-items:flex-end;justify-content:center}
+.nfc-modal.open{display:flex}
+.nfc-modal-box{background:var(--bgc);border-radius:24px 24px 0 0;border-top:2px solid var(--lm);padding:20px 18px calc(32px + env(safe-area-inset-bottom));width:100%;max-width:520px}
+.nfc-handle{width:38px;height:4px;background:var(--lm);border-radius:var(--rf);margin:0 auto 14px}
+.nfc-title{font-size:1rem;font-weight:900;color:var(--td);margin-bottom:3px}
+.nfc-sub{font-size:.68rem;color:var(--tm);margin-bottom:13px;line-height:1.5}
+.nfc-items{display:flex;flex-direction:column;gap:7px;margin-bottom:14px}
+.nfc-btn-row{display:flex;gap:8px}
+.nfc-confirm{flex:1;background:var(--la);color:#fff;border:none;border-radius:var(--rf);padding:12px;font-family:'Nunito',sans-serif;font-size:.7rem;font-weight:900;text-transform:uppercase;cursor:pointer;transition:transform .15s}
+.nfc-confirm:active{transform:scale(.96)}
+.nfc-dismiss{background:var(--bgc);color:var(--tm);border:2px solid var(--lm);border-radius:var(--rf);padding:12px 16px;font-family:'Nunito',sans-serif;font-size:.68rem;font-weight:900;cursor:pointer}
+/* ── DAY BUILDER ── */
+.db-modal{display:none;position:fixed;inset:0;z-index:410;background:rgba(0,0,0,.5);align-items:flex-end;justify-content:center}
+.db-modal.open{display:flex}
+.db-box{background:var(--bgc);border-radius:24px 24px 0 0;border-top:2px solid var(--lm);width:100%;max-width:640px;max-height:94vh;display:flex;flex-direction:column;overflow:hidden}
+.db-handle{width:38px;height:4px;background:var(--lm);border-radius:var(--rf);margin:12px auto 0}
+.db-hd{padding:10px 16px 8px;border-bottom:1.5px solid var(--ll);flex-shrink:0}
+.db-title{font-size:1rem;font-weight:900;color:var(--td);margin-bottom:2px}
+.db-sub{font-size:.62rem;color:var(--tm)}
+.db-body{flex:1;overflow-y:auto;padding:12px 16px;display:flex;flex-direction:column;gap:14px}
+.db-lbl{font-size:.58rem;font-weight:900;letter-spacing:.12em;text-transform:uppercase;color:var(--tm);margin-bottom:6px}
+.db-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.db-chip{background:var(--bgp);border:2px solid var(--lm);border-radius:12px;padding:9px 5px;text-align:center;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:border-color .15s,background .15s}
+.db-chip:active{background:var(--ll);border-color:var(--la)}
+.db-chip .dci{font-size:1.1rem;display:block;margin-bottom:2px}
+.db-chip .dcn{font-size:.6rem;font-weight:900;color:var(--td)}
+.db-chip .dcd{font-size:.52rem;color:var(--tm)}
+.db-queue{display:flex;flex-direction:column;gap:5px}
+.db-q-item{display:flex;align-items:center;gap:8px;background:var(--bgc);border:2px solid var(--lm);border-radius:var(--rmd);padding:8px 11px}
+.db-q-icon{font-size:1rem;flex-shrink:0}
+.db-q-name{flex:1;font-size:.78rem;font-weight:700;color:var(--td)}
+.db-q-dur{font-size:.62rem;color:var(--tm);margin-right:2px}
+.db-q-del{background:none;border:none;cursor:pointer;color:var(--tm);font-size:.85rem;opacity:.5;padding:2px;-webkit-tap-highlight-color:transparent}
+.db-q-del:hover,.db-q-del:active{opacity:1;color:var(--pa)}
+.db-freeform{display:flex;gap:6px;align-items:stretch}
+.db-ff-input{flex:1;background:var(--bgp);border:2px solid var(--lm);border-radius:var(--rf);padding:8px 11px;font-family:'Nunito',sans-serif;font-size:.78rem;font-weight:700;color:var(--td);outline:none}
+.db-ff-input:focus{border-color:var(--la)}
+.db-dur-in{width:68px;background:var(--bgp);border:2px solid var(--lm);border-radius:var(--rf);padding:8px;font-family:'Nunito',sans-serif;font-size:.78rem;font-weight:700;color:var(--td);outline:none;text-align:center}
+.db-dur-in:focus{border-color:var(--la)}
+.db-add-btn{background:var(--la);color:#fff;border:none;border-radius:var(--rf);padding:8px 13px;font-family:'Nunito',sans-serif;font-size:.62rem;font-weight:900;cursor:pointer;white-space:nowrap}
+.db-start-row{display:flex;align-items:center;gap:8px;background:var(--bgp);border:2px solid var(--lm);border-radius:var(--rf);padding:9px 12px}
+.db-start-lbl{font-size:.62rem;font-weight:900;color:var(--tm);flex-shrink:0}
+.db-start-in{background:none;border:none;font-family:'Nunito',sans-serif;font-size:.85rem;font-weight:900;color:var(--td);outline:none;flex:1;cursor:pointer}
+.db-footer{padding:12px 16px calc(14px + env(safe-area-inset-bottom));border-top:1.5px solid var(--ll);display:flex;gap:8px;flex-shrink:0}
+.db-gen-btn{flex:1;background:linear-gradient(135deg,var(--la),var(--sa));color:#fff;border:none;border-radius:var(--rf);padding:12px;font-family:'Nunito',sans-serif;font-size:.7rem;font-weight:900;text-transform:uppercase;letter-spacing:.08em;cursor:pointer;transition:transform .15s}
+.db-gen-btn:active{transform:scale(.96)}
+.db-cancel-btn{background:var(--bgc);color:var(--tm);border:2px solid var(--lm);border-radius:var(--rf);padding:12px 16px;font-family:'Nunito',sans-serif;font-size:.68rem;font-weight:900;cursor:pointer}
+/* ── AGENDA WIDGET ── */
+.agenda-widget{background:var(--bgp);border-radius:var(--rlg);padding:11px 13px;margin-bottom:10px;box-shadow:var(--neu-shadow-sm)}
+.agenda-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:7px}
+.agenda-ttl{font-size:.62rem;font-weight:900;letter-spacing:.12em;text-transform:uppercase;color:var(--sa)}
+.agenda-clear{background:none;border:none;cursor:pointer;font-size:.6rem;font-weight:900;color:var(--tm)}
+.agenda-block{display:flex;gap:8px;padding:5px 0;border-bottom:1px solid var(--ll)}
+.agenda-block:last-child{border-bottom:none;padding-bottom:0}
+.agenda-time{font-size:.6rem;font-weight:900;color:var(--tm);min-width:46px;padding-top:2px;flex-shrink:0}
+.agenda-name{font-size:.78rem;font-weight:700;color:var(--td);flex:1;line-height:1.3}
+.agenda-dur{font-size:.56rem;color:var(--tm);display:block;margin-top:1px}
+/* ── HOME WIDGETS ── */
+.dash-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
+.dash-w{background:var(--bgc);border-radius:var(--rlg);padding:12px;box-shadow:var(--neu-shadow-sm);display:flex;flex-direction:column;gap:3px}
+.dash-w.wide{grid-column:span 2}
+.dash-w-ico{font-size:1.3rem;margin-bottom:2px}
+.dash-w-lbl{font-size:.5rem;font-weight:900;letter-spacing:.12em;text-transform:uppercase;color:var(--tm)}
+.dash-w-val{font-size:.95rem;font-weight:900;color:var(--td);line-height:1.2}
+.dash-w-sub{font-size:.58rem;color:var(--tm);line-height:1.4}
+.dash-cal-list{display:flex;flex-direction:column;gap:4px;margin-top:4px}
+.dash-cal-i{display:flex;gap:6px;align-items:flex-start;padding:4px 7px;background:var(--bgp);border-radius:8px;border-left:3px solid var(--sa)}
+.dash-cal-t{font-size:.6rem;font-weight:900;color:var(--tm);min-width:44px;flex-shrink:0;padding-top:1px}
+.dash-cal-n{font-size:.68rem;font-weight:700;color:var(--td);flex:1;line-height:1.35}
+/* ── TIMBER TAB ── */
+.timber-banner{background:linear-gradient(135deg,var(--pl),var(--ll));border:2px solid var(--pm);border-radius:var(--rlg);padding:12px 14px;margin-bottom:10px;display:flex;align-items:center;gap:10px}
+.tb-icon{font-size:1.5rem;flex-shrink:0}
+.tb-info{flex:1}
+.tb-title{font-size:.72rem;font-weight:900;color:var(--td)}
+.tb-sub{font-size:.62rem;color:var(--tm);line-height:1.4;margin-top:1px}
+.tb-prog{height:7px;background:var(--ll);border-radius:var(--rf);margin-top:7px;overflow:hidden}
+.tb-fill{height:100%;background:linear-gradient(90deg,var(--pa),var(--la));border-radius:var(--rf);transition:width .4s ease}
+/* ── STATS HEAT MAP ── */
+.heat-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin:6px 0}
+.heat-cell{aspect-ratio:1;border-radius:5px;background:var(--ll);display:flex;align-items:center;justify-content:center;font-size:.44rem;font-weight:900;color:var(--tm)}
+.heat-cell.h-full{background:var(--ma);color:#fff}
+.heat-cell.h-good{background:var(--mm);color:var(--td)}
+.heat-cell.h-part{background:var(--lm);color:var(--tm)}
+.heat-lbl{font-size:.44rem;font-weight:900;letter-spacing:.1em;text-transform:uppercase;color:var(--tm);text-align:center}
+/* ── CONFETTI ── */
+#confettiCanvas{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:999;display:none}
+/* ── SITTER PAGE ── */
+#page-sitter{padding:0}
+.sitter-tab-wrap{display:flex;align-items:center;justify-content:center;flex-direction:column;padding:40px 20px;gap:16px;text-align:center}
+
 </style>
 </head>
 <body>
@@ -1175,6 +1295,8 @@ body.night .train-status.new{background:var(--pl);border-color:var(--pm);color:v
 
 <!-- ✿ SANRIO AESTHETIC LAYER ✿ -->
 <div class="breathe-layer" aria-hidden="true"></div>
+<canvas id="confettiCanvas"></canvas>
+<div class="walk-indicator" id="walkIndicator" onclick="switchTab('timber')">🐾 Walk — <span id="walkTimerDisplay">0:00</span></div>
 
 <!-- Cinnamoroll watermark — light mode -->
 <svg class="sanrio-watermark cinna-wm" aria-hidden="true" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
@@ -1221,55 +1343,8 @@ body.night .train-status.new{background:var(--pl);border-color:var(--pm);color:v
 </div>
 
 <div class="vine-banner cute-tape" aria-hidden="true">
-  <svg viewBox="0 0 800 40" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-    <!-- main winding vine (sine-style sweep) -->
-    <path class="vine-stem" d="M -10 22 Q 100 4 200 22 T 400 22 T 600 22 T 810 22"/>
-    <!-- leaves nestled along the curve, alternating sides -->
-    <g>
-      <ellipse class="vine-leaf" cx="50"  cy="14" rx="6" ry="3" transform="rotate(-30 50 14)"/>
-      <ellipse class="vine-leaf" cx="150" cy="14" rx="6" ry="3" transform="rotate(30 150 14)"/>
-      <ellipse class="vine-leaf" cx="250" cy="30" rx="6" ry="3" transform="rotate(-30 250 30)"/>
-      <ellipse class="vine-leaf" cx="350" cy="30" rx="6" ry="3" transform="rotate(30 350 30)"/>
-      <ellipse class="vine-leaf" cx="450" cy="14" rx="6" ry="3" transform="rotate(-30 450 14)"/>
-      <ellipse class="vine-leaf" cx="550" cy="14" rx="6" ry="3" transform="rotate(30 550 14)"/>
-      <ellipse class="vine-leaf" cx="650" cy="30" rx="6" ry="3" transform="rotate(-30 650 30)"/>
-      <ellipse class="vine-leaf" cx="750" cy="30" rx="6" ry="3" transform="rotate(30 750 30)"/>
-    </g>
-    <!-- 5-petal flowers at curve crests (top) and troughs (bottom) -->
-    <g>
-      <g transform="translate(100,6)">
-        <circle class="vine-petal" r="3.2" cx="0"    cy="-3.2"/>
-        <circle class="vine-petal" r="3.2" cx="3"    cy="-1"/>
-        <circle class="vine-petal" r="3.2" cx="1.9"  cy="2.6"/>
-        <circle class="vine-petal" r="3.2" cx="-1.9" cy="2.6"/>
-        <circle class="vine-petal" r="3.2" cx="-3"   cy="-1"/>
-        <circle class="vine-center" r="1.6"/>
-      </g>
-      <g transform="translate(300,34)">
-        <circle class="vine-petal" r="3.2" cx="0"    cy="-3.2"/>
-        <circle class="vine-petal" r="3.2" cx="3"    cy="-1"/>
-        <circle class="vine-petal" r="3.2" cx="1.9"  cy="2.6"/>
-        <circle class="vine-petal" r="3.2" cx="-1.9" cy="2.6"/>
-        <circle class="vine-petal" r="3.2" cx="-3"   cy="-1"/>
-        <circle class="vine-center" r="1.6"/>
-      </g>
-      <g transform="translate(500,6)">
-        <circle class="vine-petal" r="3.2" cx="0"    cy="-3.2"/>
-        <circle class="vine-petal" r="3.2" cx="3"    cy="-1"/>
-        <circle class="vine-petal" r="3.2" cx="1.9"  cy="2.6"/>
-        <circle class="vine-petal" r="3.2" cx="-1.9" cy="2.6"/>
-        <circle class="vine-petal" r="3.2" cx="-3"   cy="-1"/>
-        <circle class="vine-center" r="1.6"/>
-      </g>
-      <g transform="translate(700,34)">
-        <circle class="vine-petal" r="3.2" cx="0"    cy="-3.2"/>
-        <circle class="vine-petal" r="3.2" cx="3"    cy="-1"/>
-        <circle class="vine-petal" r="3.2" cx="1.9"  cy="2.6"/>
-        <circle class="vine-petal" r="3.2" cx="-1.9" cy="2.6"/>
-        <circle class="vine-petal" r="3.2" cx="-3"   cy="-1"/>
-        <circle class="vine-center" r="1.6"/>
-      </g>
-    </g>
+  <svg viewBox="0 0 2000 64" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+    <path class="vine-stem" d="M -10 32 C 90 6 560 58 650 32 C 740 6 1210 58 1300 32 C 1390 6 1860 58 2010 32"/>
   </svg>
 </div>
 
@@ -1289,19 +1364,66 @@ body.night .train-status.new{background:var(--pl);border-color:var(--pm);color:v
     </div>
   </div>
 </nav>
+<nav class="tab-bar" id="mainTabBar">
+  <button class="tab active" id="tab-home"   onclick="switchTab('home')"><span class="tab-icon">🏠</span><span class="tab-label">Home</span></button>
+  <button class="tab"        id="tab-timber" onclick="switchTab('timber')"><span class="tab-icon">🐾</span><span class="tab-label">Timber</span></button>
+  <button class="tab"        id="tab-pt"     onclick="switchTab('pt')"><span class="tab-icon">🌿</span><span class="tab-label">Move</span></button>
+  <button class="tab"        id="tab-stats"  onclick="switchTab('stats')"><span class="tab-icon">📊</span><span class="tab-label">Stats</span></button>
+  <button class="tab"        id="tab-cal"    onclick="switchTab('cal')"><span class="tab-icon">📅</span><span class="tab-label">Cal</span></button>
+  <button class="tab"        id="tab-sitter" onclick="switchTab('sitter')"><span class="tab-icon">🏠</span><span class="tab-label">Sitter</span></button>
+</nav>
 
-<div class="pills-row">
-  <span class="pill ppe">🌿 Wellness</span>
-  <span class="pill pmi">🐾 Timber</span>
-  <span class="pill pfo">💻 Focus</span>
+<!-- HOME PAGE -->
+<div class="page active" id="page-home">
+  <!-- Day Builder agenda (hidden until plan is built) -->
+  <div class="agenda-widget" id="agendaWidget" style="display:none">
+    <div class="agenda-hd">
+      <span class="agenda-ttl">📋 Today's Plan</span>
+      <button class="agenda-clear" onclick="clearAgenda()">Clear ✕</button>
+    </div>
+    <div id="agendaBlocks"></div>
+  </div>
+
+  <!-- Dashboard widgets -->
+  <div class="dash-grid">
+    <div class="dash-w">
+      <span class="dash-w-ico">🕐</span>
+      <span class="dash-w-lbl">Right now</span>
+      <span class="dash-w-val" id="homeClock">--:--</span>
+      <span class="dash-w-sub" id="homeDate">Loading…</span>
+    </div>
+    <div class="dash-w">
+      <span class="dash-w-ico">🐾</span>
+      <span class="dash-w-lbl">Timber needs</span>
+      <div class="dash-timber-mini" id="dashTimberMini"></div>
+    </div>
+    <div class="dash-w wide">
+      <span class="dash-w-ico">📅</span>
+      <span class="dash-w-lbl">Today &amp; tomorrow</span>
+      <div class="dash-cal-list" id="dashCalList"><span class="dash-w-sub">Loading calendar…</span></div>
+    </div>
+  </div>
+
+  <!-- Build My Day button -->
+  <button class="btn" style="width:100%;background:linear-gradient(135deg,var(--la),var(--sa));color:#fff;border:none;padding:13px;font-size:.72rem;margin-bottom:12px;border-radius:var(--rlg)" onclick="openDayBuilder()">✨ Build My Day</button>
+
+  <!-- Brain Dump -->
+  <div class="card" style="margin-bottom:10px">
+    <div class="scratch-lbl" style="margin-bottom:6px"><span style="font-size:.65rem;font-weight:900;color:var(--la)">💭 Brain Dump</span><span style="font-size:.58rem;color:var(--tm);margin-left:6px">— get it out of your head</span></div>
+    <div style="display:flex;gap:6px;margin-bottom:8px">
+      <textarea class="lab-ta scratch-ta" id="brainDumpInput" placeholder="Type anything… 💜" rows="2" style="flex:1;margin-bottom:0;min-height:60px" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();addBrainDump();}"></textarea>
+      <button onclick="addBrainDump()" style="background:var(--la);color:#fff;border:none;border-radius:var(--rf);padding:0 14px;font-family:'Nunito',sans-serif;font-size:.7rem;font-weight:900;cursor:pointer;flex-shrink:0;align-self:stretch">Add</button>
+    </div>
+    <div id="brainDumpList" style="display:flex;flex-direction:column;gap:5px"></div>
+  </div>
+
+  <!-- Morning checklist section -->
+  <div id="homeChecklist"></div>
 </div>
 
-
-<button id="jumpNowBtn" class="fab-now" onclick="jumpToNow()">🎯 Now</button>
-<button id="jumpTopBtn" class="fab-top" onclick="scrollToTop()">↑ Top</button>
-
-<!-- FLOW PAGE -->
-<div class="page active" id="page-flow">
+<!-- FLOW PAGE (preserved, not active) -->
+<!--
+<div class="page" id="page-flow">
   <!-- Shift undo bar — visible when schedule is shifted -->
   <div class="shift-undo-bar" id="shiftUndoBar" style="margin-top:12px">
     <span class="shift-undo-txt" id="shiftUndoTxt">⏩ Schedule shifted</span>
@@ -1357,7 +1479,7 @@ body.night .train-status.new{background:var(--pl);border-color:var(--pm);color:v
       </button>
       <!-- AI result with accept buttons -->
       <div class="shape-ai-result" id="shapeAiResult">
-        <div class="shape-ai-result-hd">✨ Gemini's suggestions — tap to apply</div>
+        <div class="shape-ai-result-hd">✨ AI suggestions — tap to apply</div>
         <div id="shapeAiSuggestions"></div>
       </div>
       <!-- Timber rebuild result -->
@@ -1389,6 +1511,7 @@ body.night .train-status.new{background:var(--pl);border-color:var(--pm);color:v
   </div>
   <div class="tl-wrap" id="mTlb"></div>
 </div>
+-->
 
 <!-- MOVE PAGE -->
 <div class="page" id="page-pt">
@@ -1424,32 +1547,7 @@ body.night .train-status.new{background:var(--pl);border-color:var(--pm);color:v
   <div style="margin-top:12px;display:flex;flex-direction:column;gap:12px">
 
   <!-- AI Keys button — mobile trigger for API settings panel -->
-  <button onclick="toggleApiSettings()" style="display:flex;align-items:center;gap:7px;background:var(--bgp);border:2px solid var(--sm);border-radius:var(--rf);padding:9px 14px;font-family:'Nunito',sans-serif;font-size:.62rem;font-weight:900;letter-spacing:.1em;text-transform:uppercase;color:var(--sa);cursor:pointer;width:100%" id="apiSettingsToggleBtn">
-    <span style="font-size:.9rem">⚙️</span> AI Integration Keys
-    <span style="margin-left:auto;font-size:.7rem;color:var(--tm)" id="apiSettingsBtnArrow">▾</span>
-  </button>
 
-  <!-- API Settings Panel (hidden by default) -->
-  <div class="api-settings-panel" id="apiSettingsPanel">
-    <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
-      <h3 style="font-size:.82rem">⚙️ AI Integration Keys</h3>
-      <button onclick="toggleApiSettings()" style="background:none;border:none;cursor:pointer;color:var(--tm);font-size:.9rem;padding:2px">✕</button>
-    </div>
-    <!-- Gemini -->
-    <div>
-      <p class="lbl" style="color:var(--sa);margin-bottom:5px">🔵 Google Gemini API Key</p>
-      <input class="api-key-input" id="geminiKeyInput" type="password" placeholder="AIzaSy…" autocomplete="off">
-      <div class="api-save-row" style="margin-top:6px">
-        <button class="api-save-btn" onclick="saveGeminiKey()">Save Key</button>
-        <span class="api-status-lbl" id="geminiKeyStatus"></span>
-      </div>
-      <p class="api-note" style="margin-top:5px">Get a free key at <strong>aistudio.google.com</strong> → Create API Key. Uses <strong>gemini-3.1-flash-lite-preview</strong> — fastest Gemini 3 model, free tier. Stored only in your browser — never leaves your device except to Google's API.</p>
-    </div>
-    <div style="border-top:1.5px solid var(--lm);padding-top:9px">
-      <p class="lbl" style="color:var(--la);margin-bottom:3px">🤖 Claude API (optional)</p>
-      <p class="api-note">Claude integration uses the built-in proxy when running inside claude.ai. No key needed here.</p>
-    </div>
-  </div>
 
     <!-- Timber Milestone Flags -->
     <div class="milestone-card" id="milestoneCard">
@@ -1544,7 +1642,7 @@ body.night .train-status.new{background:var(--pl);border-color:var(--pm);color:v
       <!-- 7-day energy arc -->
       <div class="energy-arc-wrap" id="batteryHistory"></div>
       <button class="battery-compress-btn" id="batteryCompressBtn" onclick="runCapacityScaler()" style="display:none">
-        ⚡ Battery low — ask Gemini for Ruthless Compression
+        ⚡ Battery low — time for Ruthless Compression mode
       </button>
       <div class="battery-compress-result" id="batteryCompressResult"></div>
       <!-- ✿ Pet Cameos ✿ -->
@@ -1763,52 +1861,12 @@ body.night .train-status.new{background:var(--pl);border-color:var(--pm);color:v
   </div>
 </div>
 
-<nav class="tab-bar">
-  <button class="tab active" id="tab-flow"  onclick="switchTab('flow')"><span class="tab-icon"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path class="stroke-icon" d="M6,14 C4,14 2,12.5 2,10.5 C2,8.5 3.5,7 5.5,7 C5.2,6.5 5,6 5,5.5 C5,3.6 6.6,2 8.5,2 C9.8,2 11,2.7 11.6,3.8 C12,3.3 12.7,3 13.5,3 C15,3 16.2,4.2 16.2,5.7 C16.2,5.8 16.2,5.9 16.1,6 C18.3,6.3 20,8.2 20,10.5 C20,12.5 18,14 16,14Z"/><path class="stroke-icon" d="M8,17 L8,21 M12,16 L12,21 M16,17 L16,21"/><circle class="fill-accent" cx="19" cy="5" r="2.5" fill="currentColor" stroke="none"/><path class="stroke-icon" d="M18,4.5 L20,4.5 M19,3.5 L19,5.5" stroke-width="1.2"/></svg></span><span class="tab-label">Flow</span></button>
-  <button class="tab"        id="tab-pt"    onclick="switchTab('pt')"  ><span class="tab-icon"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path class="stroke-icon" d="M5,17 C5,17 4,16 4,14.5 C4,12.5 5.5,11 8,11 L10,11 L10,8 C10,7 10.5,6 12,5.5 C13.5,5 15,5.5 15.5,7 L18,14 C18.5,15.5 18,17 16.5,17.5 L8,17.5 C6.5,17.5 5,17 5,17Z"/><path class="stroke-icon" d="M10,11 L10,17.5"/><circle class="stroke-icon" cx="18" cy="7" r="1.5"/><path class="stroke-icon fill-accent" d="M20,18 C20.5,18.5 21,19.5 20.5,20.5 C20,21.5 19,22 18,21.5" stroke-width="1.2"/><circle class="fill-accent" cx="20" cy="4" r="2" fill="currentColor" stroke="none"/><path class="stroke-icon" d="M19,3.2 L21,3.2 M20,2.2 L20,4.2" stroke-width="1.2"/></svg></span><span class="tab-label">Move</span></button>
-  <button class="tab"        id="tab-life"  onclick="switchTab('life')"><span class="tab-icon"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path class="stroke-icon" d="M12,20.5 C12,20.5 3,14.5 3,8.5 C3,5.5 5.5,3 8.5,3 C10,3 11.3,3.6 12,4.6 C12.7,3.6 14,3 15.5,3 C18.5,3 21,5.5 21,8.5 C21,14.5 12,20.5 12,20.5Z"/><circle cx="17" cy="5" r="1.5" fill="currentColor" class="fill-accent" stroke="none"/><circle cx="19" cy="7" r="1" fill="currentColor" class="fill-accent" stroke="none"/></svg></span><span class="tab-label">Life</span></button>
-  <button class="tab"        id="tab-cal"   onclick="switchTab('cal')" ><span class="tab-icon"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><rect class="stroke-icon" x="3" y="5" width="18" height="16" rx="4"/><path class="stroke-icon" d="M3,10 L21,10"/><path class="stroke-icon" d="M8,3 L8,7 M16,3 L16,7"/><circle cx="8.5" cy="14.5" r="1.5" fill="currentColor" class="fill-accent" stroke="none"/><circle cx="12" cy="14.5" r="1.5" fill="currentColor" class="fill-accent" stroke="none"/><circle cx="15.5" cy="14.5" r="1.5" fill="currentColor" class="fill-accent" stroke="none"/></svg></span><span class="tab-label">Cal</span></button>
-  <button class="tab"        id="tab-stats" onclick="switchTab('stats')"><span class="tab-icon"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path class="stroke-icon" d="M5,3 L19,3 C20.1,3 21,3.9 21,5 L21,19 C21,20.1 20.1,21 19,21 L5,21 C3.9,21 3,20.1 3,19 L3,5 C3,3.9 3.9,3 5,3Z"/><path class="stroke-icon" d="M8,8 L16,8 M8,12 L16,12 M8,16 L12,16"/><path class="stroke-icon fill-accent" d="M17,15 C17.5,14 18.5,14 19,15 L20,17 L15,17Z" stroke-width="1"/></svg></span><span class="tab-label">Ref</span></button>
-  <button class="tab"        id="tab-train" onclick="switchTab('train')"><span class="tab-icon"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><ellipse class="stroke-icon" cx="12" cy="9" rx="5" ry="4"/><path class="stroke-icon" d="M7,11 C5,12 3.5,14 4,16.5 C4.5,19 7,20 9,19.5"/><path class="stroke-icon" d="M17,11 C19,12 20.5,14 20,16.5 C19.5,19 17,20 15,19.5"/><path class="stroke-icon" d="M9,19.5 C10,20.5 11,21 12,21 C13,21 14,20.5 15,19.5"/><path class="stroke-icon fill-accent" d="M10,7 Q12,5.5 14,7" stroke-width="1.5"/><circle class="fill-accent" cx="19" cy="5" r="2.2" fill="currentColor" stroke="none"/><path class="stroke-icon" d="M18.2,4.2 L19.8,4.2 M19,3.4 L19,5.6" stroke-width="1.2"/></svg></span><span class="tab-label">Train</span></button>
-</nav>
 
 <!-- ── TRAIN PAGE (mobile) ─────────────────────────────────────────────── -->
 <div class="page" id="page-train">
   <div class="vine-banner cute-tape" aria-hidden="true">
-    <svg viewBox="0 0 800 40" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-      <path class="vine-stem" d="M -10 22 Q 100 4 200 22 T 400 22 T 600 22 T 810 22"/>
-      <g>
-        <ellipse class="vine-leaf" cx="50"  cy="14" rx="6" ry="3" transform="rotate(-30 50 14)"/>
-        <ellipse class="vine-leaf" cx="150" cy="14" rx="6" ry="3" transform="rotate(30 150 14)"/>
-        <ellipse class="vine-leaf" cx="250" cy="30" rx="6" ry="3" transform="rotate(-30 250 30)"/>
-        <ellipse class="vine-leaf" cx="350" cy="30" rx="6" ry="3" transform="rotate(30 350 30)"/>
-        <ellipse class="vine-leaf" cx="450" cy="14" rx="6" ry="3" transform="rotate(-30 450 14)"/>
-        <ellipse class="vine-leaf" cx="550" cy="14" rx="6" ry="3" transform="rotate(30 550 14)"/>
-        <ellipse class="vine-leaf" cx="650" cy="30" rx="6" ry="3" transform="rotate(-30 650 30)"/>
-        <ellipse class="vine-leaf" cx="750" cy="30" rx="6" ry="3" transform="rotate(30 750 30)"/>
-      </g>
-      <g>
-        <g transform="translate(100,6)">
-          <circle class="vine-petal" r="3.2" cx="0" cy="-3.2"/><circle class="vine-petal" r="3.2" cx="3" cy="-1"/>
-          <circle class="vine-petal" r="3.2" cx="1.9" cy="2.6"/><circle class="vine-petal" r="3.2" cx="-1.9" cy="2.6"/>
-          <circle class="vine-petal" r="3.2" cx="-3" cy="-1"/><circle class="vine-center" r="1.6"/>
-        </g>
-        <g transform="translate(300,34)">
-          <circle class="vine-petal" r="3.2" cx="0" cy="-3.2"/><circle class="vine-petal" r="3.2" cx="3" cy="-1"/>
-          <circle class="vine-petal" r="3.2" cx="1.9" cy="2.6"/><circle class="vine-petal" r="3.2" cx="-1.9" cy="2.6"/>
-          <circle class="vine-petal" r="3.2" cx="-3" cy="-1"/><circle class="vine-center" r="1.6"/>
-        </g>
-        <g transform="translate(500,6)">
-          <circle class="vine-petal" r="3.2" cx="0" cy="-3.2"/><circle class="vine-petal" r="3.2" cx="3" cy="-1"/>
-          <circle class="vine-petal" r="3.2" cx="1.9" cy="2.6"/><circle class="vine-petal" r="3.2" cx="-1.9" cy="2.6"/>
-          <circle class="vine-petal" r="3.2" cx="-3" cy="-1"/><circle class="vine-center" r="1.6"/>
-        </g>
-        <g transform="translate(700,34)">
-          <circle class="vine-petal" r="3.2" cx="0" cy="-3.2"/><circle class="vine-petal" r="3.2" cx="3" cy="-1"/>
-          <circle class="vine-petal" r="3.2" cx="1.9" cy="2.6"/><circle class="vine-petal" r="3.2" cx="-1.9" cy="2.6"/>
-          <circle class="vine-petal" r="3.2" cx="-3" cy="-1"/><circle class="vine-center" r="1.6"/>
-        </g>
-      </g>
+    <svg viewBox="0 0 2000 64" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+      <path class="vine-stem" d="M -10 32 C 90 6 560 58 650 32 C 740 6 1210 58 1300 32 C 1390 6 1860 58 2010 32"/>
     </svg>
   </div>
 
@@ -1857,6 +1915,75 @@ body.night .train-status.new{background:var(--pl);border-color:var(--pm);color:v
   <div class="train-cue-grid" id="trainCueGrid"></div>
 
   <div style="height:20px"></div>
+</div>
+
+
+<!-- TIMBER PAGE -->
+<div class="page" id="page-timber">
+  <!-- Age-aware exercise banner -->
+  <div class="timber-banner" id="timberBanner">
+    <span class="tb-icon">🐾</span>
+    <div class="tb-info">
+      <div class="tb-title" id="timberAgeTitle">Timber's Daily Exercise</div>
+      <div class="tb-sub" id="timberAgeSub">Loading…</div>
+      <div class="tb-prog"><div class="tb-fill" id="timberExerciseProg" style="width:0%"></div></div>
+    </div>
+  </div>
+
+  <!-- Needs-based daily checklist -->
+  <div class="card" style="margin-bottom:10px">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+      <h3>🐾 Today's Needs</h3>
+      <button onclick="logWalkNFC()" style="background:var(--pa);color:#fff;border:none;border-radius:var(--rf);padding:6px 13px;font-family:'Nunito',sans-serif;font-size:.6rem;font-weight:900;cursor:pointer" id="walkToggleBtn">▶ Start Walk</button>
+    </div>
+    <div id="timberNeedsChecklist" style="display:flex;flex-direction:column;gap:6px"></div>
+  </div>
+
+  <!-- Walk log -->
+  <div class="card" style="margin-bottom:10px;display:none" id="walkLogCard">
+    <h3 style="margin-bottom:8px">🦮 Today's Walk Log</h3>
+    <div id="walkLogList" style="display:flex;flex-direction:column;gap:4px"></div>
+  </div>
+
+  <!-- Timber Memories (preserved) -->
+  <div class="card" style="margin-bottom:10px">
+    <h3 style="margin-bottom:10px">📸 Timber's Memories</h3>
+    <div class="mem-cats" id="memCatsT">
+      <button class="mem-cat-btn cat-soc sel" onclick="selMemCat(this,'soc','T')"><span class="cat-icon">🐕</span>Social</button>
+      <button class="mem-cat-btn cat-home" onclick="selMemCat(this,'home','T')"><span class="cat-icon">🏠</span>Home</button>
+      <button class="mem-cat-btn cat-health" onclick="selMemCat(this,'health','T')"><span class="cat-icon">🩺</span>Health</button>
+      <button class="mem-cat-btn cat-train" onclick="selMemCat(this,'train','T')"><span class="cat-icon">🎓</span>Train</button>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:3px">
+      <input class="mem-datetime" type="datetime-local" id="memDatetimeT">
+      <div class="mem-presets" id="memPresetsT"></div>
+    </div>
+    <div class="mem-add">
+      <input class="mem-input" id="memInputT" placeholder="A memory with Timber… 💜" onkeydown="if(event.key==='Enter')addMemory('T')">
+      <button class="mem-add-btn" onclick="addMemory('T')">Add</button>
+    </div>
+    <div class="mem-list" id="memListT"></div>
+  </div>
+
+  <!-- Training section -->
+  <div class="card">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+      <h3>🎓 Training</h3>
+      <button onclick="switchTab('train')" style="background:none;border:1.5px solid var(--lm);border-radius:var(--rf);padding:5px 11px;font-family:'Nunito',sans-serif;font-size:.58rem;font-weight:900;color:var(--tm);cursor:pointer">Full library →</button>
+    </div>
+    <div class="train-rotation-card" id="timberDailyRotation" style="margin-bottom:8px"></div>
+    <div class="train-tip-card">Keep sessions <strong>5–10 min</strong>, end on a win. Mark with <strong>"yes!"</strong> within 1–2 sec.</div>
+  </div>
+</div>
+
+<!-- SITTER PAGE -->
+<div class="page" id="page-sitter">
+  <div class="sitter-tab-wrap">
+    <div style="font-size:3rem">🐾</div>
+    <h2 style="color:var(--td)">Pet Care Guide</h2>
+    <p style="font-size:.78rem;color:var(--tm);line-height:1.6;max-width:300px">The full sitter guide for Milo &amp; Lili — Timber, Tigris &amp; Tulip care instructions.</p>
+    <button onclick="document.getElementById('sitterOverlay').classList.add('active');document.body.style.overflow='hidden'" style="background:var(--pa);color:#fff;border:none;border-radius:var(--rf);padding:13px 28px;font-family:'Nunito',sans-serif;font-size:.72rem;font-weight:900;cursor:pointer;margin-top:8px">Open Care Guide 🏠</button>
+  </div>
 </div>
 
 <!-- DESKTOP / TABLET LAYOUT -->
@@ -1948,7 +2075,7 @@ body.night .train-status.new{background:var(--pl);border-color:var(--pm);color:v
                 ✨ Suggest what to compress or skip
               </button>
               <div class="shape-ai-result" id="deskShapeAiResult">
-                <div class="shape-ai-result-hd">✨ Gemini's suggestions — tap to apply</div>
+                <div class="shape-ai-result-hd">✨ AI suggestions — tap to apply</div>
                 <div id="deskShapeAiSuggestions"></div>
               </div>
             </div>
@@ -2091,22 +2218,6 @@ body.night .train-status.new{background:var(--pl);border-color:var(--pm);color:v
       </div>
 
       <div class="desk-panel" id="dpanel-stats">
-        <!-- Desktop API Settings (toggled by gear in header) -->
-        <div class="api-settings-panel" id="deskApiSettingsPanel">
-          <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
-            <h3 style="font-size:.82rem">⚙️ AI Integration Keys</h3>
-            <button onclick="toggleDeskApiSettings()" style="background:none;border:none;cursor:pointer;color:var(--tm);font-size:.9rem;padding:2px">✕</button>
-          </div>
-          <div>
-            <p class="lbl" style="color:var(--sa);margin-bottom:5px">🔵 Google Gemini API Key</p>
-            <input class="api-key-input" id="deskGeminiKeyInput" type="password" placeholder="AIzaSy…" autocomplete="off">
-            <div class="api-save-row" style="margin-top:6px">
-              <button class="api-save-btn" onclick="saveDeskGeminiKey()">Save Key</button>
-              <span class="api-status-lbl" id="deskGeminiKeyStatus"></span>
-            </div>
-            <p class="api-note" style="margin-top:5px">Get a free key at <strong>aistudio.google.com</strong>. Stored only in your browser's localStorage.</p>
-          </div>
-        </div>
         <!-- Weekly PT chart -->
         <div class="card" style="padding:14px">
           <p class="lbl" style="text-align:center;margin-bottom:3px">📅 Weekly PT Consistency</p>
@@ -2240,19 +2351,6 @@ body.night .train-status.new{background:var(--pl);border-color:var(--pm);color:v
         <button class="sheet-ov-btn ov-skip"     id="ovBtnSkip"     onclick="applyBlockOverride('skipped')">✗ Skip</button>
         <button class="sheet-ov-btn ov-move"     id="ovBtnMove"     onclick="applyBlockOverride('moved')">↕ Move later</button>
         <button class="sheet-ov-btn ov-clear"    id="ovBtnClear"    onclick="applyBlockOverride(null)">↺ Clear</button>
-      </div>
-    </div>
-    <button class="sheet-btn sheet-btn-gemini" onclick="copyGeminiPrompt()">
-      ✨ Copy Gemini Prompt (Clipboard)
-    </button>
-    <button class="sheet-btn sheet-btn-gemini-native" onclick="replanWithGemini()">
-      🚀 Replan with Gemini — In-App AI
-    </button>
-    <!-- Gemini response panel -->
-    <div class="gemini-panel" id="geminiPanel">
-      <div class="gemini-response thinking" id="geminiResponse">
-        <span class="gemini-thinking-dots"><span></span><span></span><span></span></span>
-        <span>Gemini is thinking…</span>
       </div>
     </div>
     <button class="sheet-btn sheet-btn-claude" onclick="toggleClaudePanel()">
@@ -2766,12 +2864,16 @@ window.addEventListener('scroll',()=>{
 window.switchTab=(tab)=>{
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
-  document.getElementById('page-'+tab).classList.add('active');
-  document.getElementById('tab-'+tab).classList.add('active');
-  document.getElementById('jumpNowBtn').style.display=tab==='flow'?'flex':'none';
+  const pg=document.getElementById('page-'+tab);
+  const tb=document.getElementById('tab-'+tab);
+  if(pg)pg.classList.add('active');
+  if(tb)tb.classList.add('active');
+  if(tab==='home'){renderHomeCalWidget();renderDashTimberMini();}
+  if(tab==='timber'){renderTimberNeeds();renderTimberBanner();renderMemories('memListT');renderTimberDailyRotation();}
   if(tab==='life'){renderOrbits();renderBattery();renderMemories('memList');}
   if(tab==='cal')loadCalendar();
   if(tab==='train')renderTrainTab();
+  if(tab==='stats')renderStatsTab();
 };
 
 window.deskSwitchPanel=(panel)=>{
@@ -4667,7 +4769,7 @@ CRITICAL RULES:
     renderDeskShapeAiResult(suggestions);
   } catch(err){
     if(resultEl){
-      resultEl.innerHTML = `<div class="shape-ai-result-hd">✨ Gemini's suggestions</div><div style="font-size:.72rem;color:var(--pa)">⚠️ ${err.message||'Could not get suggestions'}</div>`;
+      resultEl.innerHTML = `<div class="shape-ai-result-hd">✨ AI suggestions</div><div style="font-size:.72rem;color:var(--pa)">⚠️ ${err.message||'Could not get suggestions'}</div>`;
       resultEl.classList.add('visible');
     }
   } finally {
@@ -5440,34 +5542,31 @@ function initSanrioLayer(){
 // ─── INIT ─────────────────────────────────────────────────────────────────────
 window.onload=()=>{
   setupPWA();syncThemeColor();
-  syncDaySelectors();updateClock();updateWhatsNext();updateRltToday();
-  buildTL('all','mTlb','mb');
-  buildTL('all','dTlb','db');
+  syncDaySelectors();updateRltToday();
   renderPT();initCharts();renderAllMemories();
   initDatetimeInputs();
-  loadScratch();
   initGistSync();
   initClaudeInput();
-  initGeminiKey();
   checkBirthday();
-  buildTomorrowPeek();
   renderBattery();
   renderOrbits();
   renderMilestones();
   initCalendar();
-  updateShapeHeader();
-  document.getElementById('jumpNowBtn').style.display='flex';
-  // Midnight override reset — purge any stale shape keys from yesterday
-  try{
-    const yesterday = new Date(); yesterday.setDate(yesterday.getDate()-1);
-    localStorage.removeItem(`jlos_shape_${yesterday.toDateString()}`);
-  }catch(e){}
-  // Open sitter overlay if URL has #sitter or #cats hash
   handleSitterHash();
-  // ✿ Sanrio aesthetic layer
   initSanrioLayer();
-  // 🎓 Train tab
   try { renderTrainTab(); } catch(e) { setTimeout(renderTrainTab, 200); }
+  initChecklist();
+  initBrainDump();
+  renderHomeCalWidget();
+  renderDashTimberMini();
+  renderTimberBanner();
+  renderTimberNeeds();
+  initTimberMemories();
+  renderStatsTab();
+  handleNFCHash();
+  initMidnightReset();
+  startHomeClock();
+  initWalkTimer();
 };
 
 // ══════════════════════════════════════════════════════════════════════════════
@@ -5764,6 +5863,76 @@ window.navToTrain = () => {
   }
   showToast('🎓 Training reference', 1800);
 };
+
+// ─── VINE BANNER ──────────────────────────────────────────────────────────────
+function initVineBanners(){
+  const ns = 'http://www.w3.org/2000/svg';
+  document.querySelectorAll('.vine-banner').forEach(function(banner){
+    const svg = banner.querySelector('svg');
+    const vp  = svg && svg.querySelector('.vine-stem');
+    if(!vp) return;
+    const total = vp.getTotalLength();
+    if(!total) return;
+
+    function ptAt(l){ return vp.getPointAtLength(Math.max(0,Math.min(total,l))); }
+    function angAt(l){
+      const a=ptAt(l-2), b=ptAt(l+2);
+      return Math.atan2(b.y-a.y, b.x-a.x);
+    }
+    function mk(tag,attrs){
+      const e=document.createElementNS(ns,tag);
+      for(const k in attrs) e.setAttribute(k,attrs[k]);
+      return e;
+    }
+
+    // leaves: branch off the vine via a short petiole stem
+    const nLeaves=16;
+    for(let i=0;i<nLeaves;i++){
+      const frac=(i+0.45)/nLeaves;
+      const p=ptAt(frac*total);
+      const θ=angAt(frac*total);
+      const side=i%2===0?1:-1;
+      const pAng=θ+side*(Math.PI/2)-side*0.35;
+      const pLen=10;
+      const lx=p.x+Math.cos(pAng)*pLen;
+      const ly=p.y+Math.sin(pAng)*pLen;
+      // petiole
+      svg.insertBefore(mk('line',{x1:p.x,y1:p.y,x2:lx,y2:ly,'class':'vine-petiole'}),vp);
+      // leaf ellipse (centered at end of petiole, not on the vine)
+      const lRot=(θ+side*0.45)*180/Math.PI;
+      svg.insertBefore(mk('ellipse',{rx:'8',ry:'3.2','class':'vine-leaf',
+        transform:'translate('+lx+','+ly+') rotate('+lRot+')'}),vp);
+      // midrib vein
+      const lr=θ+side*0.45;
+      svg.insertBefore(mk('line',{
+        x1:lx-Math.cos(lr)*6.5, y1:ly-Math.sin(lr)*6.5,
+        x2:lx+Math.cos(lr)*6.5, y2:ly+Math.sin(lr)*6.5,
+        'class':'vine-midrib'}),vp);
+    }
+
+    // flowers: evenly spaced along the path (10 blooms)
+    const nFlowers=10;
+    for(let i=0;i<nFlowers;i++){
+      const p=ptAt(((i+0.5)/nFlowers)*total);
+      const g=mk('g',{transform:'translate('+p.x+','+p.y+')'});
+      // 5 oval petals
+      for(let k=0;k<5;k++){
+        const a=(k*72-90)*Math.PI/180;
+        const pcx=Math.cos(a)*4.5, pcy=Math.sin(a)*4.5;
+        g.appendChild(mk('ellipse',{rx:'2.8',ry:'6',cx:pcx,cy:pcy,
+          'class':'vine-petal',transform:'rotate('+(k*72)+','+pcx+','+pcy+')'}));
+      }
+      // stamen ring
+      for(let k=0;k<5;k++){
+        const a=(k*72-90)*Math.PI/180;
+        g.appendChild(mk('circle',{r:'0.9',cx:Math.cos(a)*2.2,cy:Math.sin(a)*2.2,'class':'vine-center'}));
+      }
+      g.appendChild(mk('circle',{r:'2','class':'vine-center'}));
+      svg.appendChild(g);
+    }
+  });
+}
+initVineBanners();
 </script>
 
 <!-- ══════════════════════════════════════════════════════ -->
@@ -6762,5 +6931,951 @@ document.getElementById('sitterOverlay')?.addEventListener('scroll', function(){
 window.addEventListener('hashchange',handleSitterHash);
 // Hash routing handled inside window.onload
 </script>
+
+<!-- NFC MODAL -->
+<div class="nfc-modal" id="nfcModal">
+  <div class="nfc-modal-box">
+    <div class="nfc-handle"></div>
+    <div class="nfc-title" id="nfcTitle">Meds</div>
+    <div class="nfc-sub" id="nfcSub">Tap each one:</div>
+    <div class="nfc-items" id="nfcItems"></div>
+    <div class="nfc-btn-row">
+      <button class="nfc-confirm" id="nfcConfirm">Done ✓</button>
+      <button class="nfc-dismiss" onclick="closeNFCModal()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- DAY BUILDER MODAL -->
+<div class="db-modal" id="dbModal">
+  <div class="db-box">
+    <div class="db-handle"></div>
+    <div class="db-hd">
+      <div class="db-title">✨ Build My Day</div>
+      <div class="db-sub">Tap tasks to queue them, set a start time, generate your timeline</div>
+    </div>
+    <div class="db-body">
+      <!-- Task library -->
+      <div>
+        <div class="db-lbl">Task library</div>
+        <div class="db-grid">
+          <div class="db-chip" onclick="addDBTask('🧠','Deep Work',90)"><span class="dci">🧠</span><span class="dcn">Deep Work</span><span class="dcd">90m</span></div>
+          <div class="db-chip" onclick="addDBTask('🦮','Walk',30)"><span class="dci">🦮</span><span class="dcn">Walk</span><span class="dcd">30m</span></div>
+          <div class="db-chip" onclick="addDBTask('🎓','Training',15)"><span class="dci">🎓</span><span class="dcn">Training</span><span class="dcd">15m</span></div>
+          <div class="db-chip" onclick="addDBTask('🍽️','Meal',30)"><span class="dci">🍽️</span><span class="dcn">Meal</span><span class="dcd">30m</span></div>
+          <div class="db-chip" onclick="addDBTask('😴','Rest',60)"><span class="dci">😴</span><span class="dcn">Rest</span><span class="dcd">60m</span></div>
+          <div class="db-chip" onclick="addDBTask('📋','Admin',30)"><span class="dci">📋</span><span class="dcn">Admin</span><span class="dcd">30m</span></div>
+          <div class="db-chip" onclick="addDBTask('🏋️','PT',45)"><span class="dci">🏋️</span><span class="dcn">PT</span><span class="dcd">45m</span></div>
+          <div class="db-chip" onclick="addDBTask('🔴','Red Light',40)"><span class="dci">🔴</span><span class="dcn">Red Light</span><span class="dcd">40m</span></div>
+          <div class="db-chip" onclick="addDBTask('🐾','Timber Time',20)"><span class="dci">🐾</span><span class="dcn">Timber Time</span><span class="dcd">20m</span></div>
+        </div>
+      </div>
+      <!-- Freeform add -->
+      <div>
+        <div class="db-lbl">Add custom task</div>
+        <div class="db-freeform">
+          <input class="db-ff-input" id="dbFfName" placeholder="Task name…" onkeydown="if(event.key==='Enter')addDBFreeform()">
+          <input class="db-dur-in" id="dbFfDur" type="number" value="30" min="5" max="480">
+          <button class="db-add-btn" onclick="addDBFreeform()">Add</button>
+        </div>
+      </div>
+      <!-- Queue -->
+      <div>
+        <div class="db-lbl">Today\'s queue <span style="font-weight:600;text-transform:none;letter-spacing:0;font-size:.6rem;color:var(--tm)">(tap ✕ to remove)</span></div>
+        <div class="db-queue" id="dbQueueList"></div>
+      </div>
+      <!-- Start time -->
+      <div class="db-start-row">
+        <span class="db-start-lbl">Start at:</span>
+        <input class="db-start-in" type="time" id="dbStartTime" value="09:00">
+      </div>
+    </div>
+    <div class="db-footer">
+      <button class="db-gen-btn" onclick="generateAgenda()">Generate Timeline ✨</button>
+      <button class="db-cancel-btn" onclick="closeDayBuilder()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════════════════════════════════════════
+// JASMINE OS — NEW FEATURES (Home checklist, Day Builder, NFC, Timber needs)
+// ══════════════════════════════════════════════════════════════════════════════
+
+// ── HOME CLOCK ────────────────────────────────────────────────────────────────
+function startHomeClock(){
+  function tick(){
+    const now = new Date();
+    const h=now.getHours(), m=now.getMinutes();
+    const ap = h>=12?'PM':'AM';
+    const h12 = h%12||12;
+    const el = document.getElementById('homeClock');
+    if(el) el.textContent = `${h12}:${String(m).padStart(2,'0')} ${ap}`;
+    const de = document.getElementById('homeDate');
+    if(de) de.textContent = now.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});
+  }
+  tick();
+  setInterval(tick, 15000);
+}
+
+// ── CHECKLIST ENGINE ──────────────────────────────────────────────────────────
+const CL_KEY   = 'jlos_checklist_v2';
+const STK_KEY  = 'jlos_cl_streaks';
+const isWeekend = () => [0,6].includes(new Date().getDay());
+
+const CHECKLIST = [
+  {
+    id:'morning', label:'🌅 Morning', icon:'🌅',
+    autoOpen: (h) => h < 12,
+    items:[
+      {id:'timber-out-am',  label:'Timber outside',        icon:'🐾', note:''},
+      {id:'glucosamine',    label:'Glucosamine',            icon:'💊', note:''},
+      {id:'iron',           label:'Iron',                   icon:'🩸', note:'Try with lunch or dinner for better absorption', badge:'try w/ meal'},
+      {id:'vitamins',       label:'Vitamins',               icon:'💊', note:''},
+      {id:'vyvanse',        label:'Vyvanse',                icon:'🔵', note:'Best taken within 30 min of waking',
+        weekendSkip:true, skipLabel:'Skip today (weekend)'},
+      {id:'brush-teeth',    label:'Brush teeth',            icon:'🦷', note:'', nfcKey:'teeth'},
+      {id:'log-breakfast',  label:'Log breakfast in Cronometer', icon:'📱', note:'', openUrl:'intent://cronometer.com/#Intent;scheme=https;package=com.cronometer.android;end', nfcKey:'cronometer'},
+    ]
+  },
+  {
+    id:'midday', label:'☀️ Midday', icon:'☀️',
+    autoOpen: (h) => h >= 11 && h < 15,
+    items:[
+      {id:'iron-midday', label:'Iron (if not taken this morning)', icon:'🩸', note:'Only if morning iron was skipped', dependsOn:'iron', showIfSkipped:true},
+    ]
+  },
+  {
+    id:'evening', label:'🌙 Evening', icon:'🌙',
+    autoOpen: (h) => h >= 17,
+    items:[
+      {id:'birth-control',  label:'Birth control',          icon:'💊', note:'', nfcKey:'meds-evening'},
+      {id:'zoloft',         label:'Zoloft',                 icon:'💊', note:'', nfcKey:'meds-evening'},
+      {id:'timber-out-pm',  label:'Timber last out before bed', icon:'🐾', note:''},
+      {id:'log-dinner',     label:'Log dinner in Cronometer', icon:'📱', note:'', nfcKey:'cronometer'},
+    ]
+  },
+  {
+    id:'wellness', label:'🌿 Wellness', icon:'🌿',
+    autoOpen: (h) => false,
+    items:[
+      {id:'red-light',      label:'Red light therapy',      icon:'🔴', note:'Face 10m → Hips 20m → Rotating 10m'},
+      {id:'exercise',       label:'Exercise / PT',          icon:'🏃', note:''},
+    ]
+  }
+];
+
+function getTodayKey(){ const d=new Date(); return `${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}`; }
+
+function loadCL(){
+  try{
+    const raw = JSON.parse(localStorage.getItem(CL_KEY)||'{}');
+    const key = getTodayKey();
+    if(raw.date !== key) return {date:key, items:{}};
+    return raw;
+  }catch(e){ return {date:getTodayKey(), items:{}}; }
+}
+function saveCL(state){ try{ localStorage.setItem(CL_KEY, JSON.stringify(state)); }catch(e){} }
+function getCLState(id){ return loadCL().items[id]||'pending'; }
+function setCLState(id, val){
+  const s = loadCL(); s.items[id]=val; saveCL(s);
+}
+
+// Load streaks
+function loadStreaks(){ try{ return JSON.parse(localStorage.getItem(STK_KEY)||'{}'); }catch(e){ return {}; } }
+function saveStreaks(s){ try{ localStorage.setItem(STK_KEY, JSON.stringify(s)); }catch(e){} }
+function getStreak(sectionId){
+  const s = loadStreaks(); return s[sectionId]||0;
+}
+
+function isSectionComplete(sectionId){
+  const section = CHECKLIST.find(s=>s.id===sectionId);
+  if(!section) return false;
+  const today = new Date();
+  return section.items
+    .filter(it => {
+      if(it.weekendSkip && isWeekend()) return false;
+      if(it.dependsOn && getCLState(it.dependsOn)!=='skipped') return false;
+      return true;
+    })
+    .every(it => ['done','skipped'].includes(getCLState(it.id)));
+}
+
+function countSectionDone(sectionId){
+  const section = CHECKLIST.find(s=>s.id===sectionId);
+  if(!section) return {done:0,total:0};
+  const visible = section.items.filter(it => {
+    if(it.weekendSkip && isWeekend()) return false;
+    if(it.dependsOn && getCLState(it.dependsOn)!=='skipped') return false;
+    return true;
+  });
+  return {done: visible.filter(it=>['done','skipped'].includes(getCLState(it.id))).length, total:visible.length};
+}
+
+function initChecklist(){
+  const container = document.getElementById('homeChecklist');
+  if(!container) return;
+  container.innerHTML = '';
+  const h = new Date().getHours();
+
+  CHECKLIST.forEach(section => {
+    const {done, total} = countSectionDone(section.id);
+    const complete = done === total && total > 0;
+    const streak = getStreak(section.id);
+    const isOpen = section.autoOpen(h) || (done>0 && !complete);
+
+    const div = document.createElement('div');
+    div.className = 'cl-section';
+    div.id = 'cl-section-' + section.id;
+
+    let streakHtml = streak >= 2 ? `<span class="cl-section-streak">🔥 ${streak} day streak</span>` : '';
+
+    div.innerHTML = `
+      <div class="cl-section-hd" onclick="toggleCLSection('${section.id}')">
+        <span class="cl-section-title">${section.label} ${streakHtml}</span>
+        <span style="display:flex;align-items:center;gap:8px">
+          <span style="font-size:.62rem;font-weight:900;color:${complete?'var(--ma)':'var(--tm)'}">${done}/${total}</span>
+          <span class="cl-section-chevron${isOpen?'':' collapsed'}" id="cl-chev-${section.id}">▾</span>
+        </span>
+      </div>
+      ${complete ? `<div class="cl-complete-banner"><span class="cl-complete-icon">✨</span><span class="cl-complete-text">${section.label.split(' ').slice(1).join(' ')} done! 💜</span></div>` : ''}
+      <div class="cl-section-body${isOpen?'':' cl-hidden'}" id="cl-body-${section.id}" style="max-height:${isOpen?'1000px':'0'}">
+        ${renderCLItems(section)}
+      </div>`;
+    container.appendChild(div);
+  });
+}
+
+function renderCLItems(section){
+  const weekend = isWeekend();
+  return section.items.map(item => {
+    // Iron midday: only show if morning iron was skipped
+    if(item.dependsOn && getCLState(item.dependsOn) !== 'skipped') return '';
+    // Vyvanse weekend: show as skip-default
+    const state = getCLState(item.id);
+    const isWeekendSkip = item.weekendSkip && weekend && state === 'pending';
+
+    let extraBtns = '';
+    if(item.weekendSkip && weekend && state === 'pending'){
+      extraBtns = `<button class="cl-skip-btn" onclick="event.stopPropagation();clSkip('${item.id}')">Skip (weekend)</button>`;
+    } else if(item.weekendSkip && weekend && state === 'skipped'){
+      extraBtns = `<button class="cl-skip-btn skipped" onclick="event.stopPropagation();clUndo('${item.id}')">Skipped ✓</button>`;
+    }
+    if(item.openUrl && state !== 'done'){
+      extraBtns += `<button class="cl-open-btn" onclick="event.stopPropagation();clCheck('${item.id}');window.open('${item.openUrl}','_blank')">Open app</button>`;
+    }
+    const done = state === 'done';
+    const skipped = state === 'skipped';
+    const badgeHtml = item.badge ? `<span class="cl-badge">${item.badge}</span>` : '';
+    return `<div class="cl-item${done?' done':skipped?' done':''}" onclick="clToggle('${item.id}','${section.id}')">
+      <span class="cl-check">${done||skipped?'✓':''}</span>
+      <span style="flex:1">
+        <span class="cl-label">${item.icon} ${item.label} ${badgeHtml}</span>
+        ${item.note?`<span class="cl-note">${item.note}</span>`:''}
+      </span>
+      ${extraBtns}
+    </div>`;
+  }).join('');
+}
+
+function toggleCLSection(id){
+  const body = document.getElementById('cl-body-'+id);
+  const chev = document.getElementById('cl-chev-'+id);
+  if(!body) return;
+  const isOpen = !body.classList.contains('cl-hidden');
+  body.classList.toggle('cl-hidden', isOpen);
+  body.style.maxHeight = isOpen ? '0' : '1000px';
+  if(chev) chev.classList.toggle('collapsed', isOpen);
+}
+
+function clToggle(itemId, sectionId){
+  const cur = getCLState(itemId);
+  if(cur === 'done') { setCLState(itemId, 'pending'); }
+  else { clCheck(itemId); }
+  refreshCLSection(sectionId);
+  refreshDashTimberMini();
+}
+
+function clCheck(itemId){
+  setCLState(itemId, 'done');
+}
+function clSkip(itemId){
+  setCLState(itemId, 'skipped');
+  initChecklist();
+}
+function clUndo(itemId){
+  setCLState(itemId, 'pending');
+  initChecklist();
+}
+
+function refreshCLSection(sectionId){
+  const section = CHECKLIST.find(s=>s.id===sectionId);
+  if(!section) return;
+  const body = document.getElementById('cl-body-'+sectionId);
+  if(body) body.innerHTML = renderCLItems(section);
+  // Check completion
+  const {done,total} = countSectionDone(sectionId);
+  const complete = done===total && total>0;
+  // Update counter
+  const hd = document.querySelector(`#cl-section-${sectionId} .cl-section-hd span:last-child span:first-child`);
+  if(hd) hd.textContent=`${done}/${total}`;
+  // Show completion banner
+  const existingBanner = document.querySelector(`#cl-section-${sectionId} .cl-complete-banner`);
+  if(complete && !existingBanner){
+    const streak = getStreak(sectionId);
+    const banner = document.createElement('div');
+    banner.className = 'cl-complete-banner';
+    banner.innerHTML = `<span class="cl-complete-icon">✨</span><span class="cl-complete-text">${section.label.split(' ').slice(1).join(' ')} done! 💜</span>`;
+    const sDiv = document.getElementById('cl-section-'+sectionId);
+    if(sDiv) sDiv.insertBefore(banner, body);
+    fireConfetti();
+  }
+  refreshDashTimberMini();
+}
+
+function refreshDashTimberMini(){
+  renderDashTimberMini();
+}
+
+// ── BRAIN DUMP ────────────────────────────────────────────────────────────────
+const BD_KEY = 'jlos_braindump';
+function loadBD(){ try{ return JSON.parse(localStorage.getItem(BD_KEY)||'[]'); }catch(e){ return []; } }
+function saveBD(a){ try{ localStorage.setItem(BD_KEY, JSON.stringify(a)); }catch(e){} }
+
+function initBrainDump(){ renderBD(); }
+
+function addBrainDump(){
+  const inp = document.getElementById('brainDumpInput');
+  if(!inp) return;
+  const text = inp.value.trim();
+  if(!text) return;
+  const items = loadBD();
+  items.unshift({id: Date.now(), text, ts: Date.now()});
+  saveBD(items);
+  inp.value = '';
+  renderBD();
+}
+
+function renderBD(){
+  const list = document.getElementById('brainDumpList');
+  if(!list) return;
+  const items = loadBD();
+  if(!items.length){ list.innerHTML='<p style="font-size:.68rem;color:var(--tm);font-style:italic;text-align:center;padding:8px 0">Empty — type above to capture a thought 💜</p>'; return; }
+  list.innerHTML = items.map(it => `
+    <div style="display:flex;align-items:center;gap:8px;padding:8px 11px;background:var(--bgp);border:2px solid var(--lm);border-radius:var(--rmd)">
+      <span style="flex:1;font-size:.78rem;font-weight:700;color:var(--td);line-height:1.4">${esc(it.text)}</span>
+      <button onclick="addBDToDay(${it.id})" style="background:none;border:1.5px solid var(--sa);border-radius:var(--rf);padding:3px 8px;font-family:'Nunito',sans-serif;font-size:.48rem;font-weight:900;color:var(--sa);cursor:pointer;flex-shrink:0">+ Day</button>
+      <button onclick="deleteBD(${it.id})" style="background:none;border:none;cursor:pointer;color:var(--tm);font-size:.85rem;opacity:.5;padding:2px;flex-shrink:0">✕</button>
+    </div>`).join('');
+}
+
+function deleteBD(id){
+  const items = loadBD().filter(i=>i.id!==id);
+  saveBD(items);
+  renderBD();
+}
+
+function addBDToDay(id){
+  const item = loadBD().find(i=>i.id===id);
+  if(!item) return;
+  // Add to Day Builder queue
+  const q = loadDBQueue();
+  q.push({icon:'💭', name:item.text, dur:30});
+  saveDBQueue(q);
+  showToast('Added to today\'s plan 📋');
+}
+
+// ── HOME CALENDAR WIDGET ───────────────────────────────────────────────────────
+function renderHomeCalWidget(){
+  const el = document.getElementById('dashCalList');
+  if(!el) return;
+  el.innerHTML = '<span class="dash-w-sub">Loading…</span>';
+  fetchCalEvents().then(events => {
+    if(!events){ el.innerHTML = '<span class="dash-w-sub" style="color:var(--tm)">No calendar connected — <a onclick="switchTab(\'cal\')" style="color:var(--sa);cursor:pointer;text-decoration:underline">set up in Cal</a></span>'; return; }
+    const today = new Date().toDateString();
+    const tomorrow = new Date(); tomorrow.setDate(tomorrow.getDate()+1);
+    const tmrStr = tomorrow.toDateString();
+    const fmt12 = d => { let h=d.getHours(),m=d.getMinutes(),ap=h>=12?'PM':'AM'; h=h%12||12; return `${h}:${String(m).padStart(2,'0')} ${ap}`; };
+    const todayEvs = events.filter(e=>e.start.toDateString()===today).slice(0,2);
+    const tmrEvs   = events.filter(e=>e.start.toDateString()===tmrStr).slice(0,2);
+    const combined = [
+      ...todayEvs.map(e=>({...e, day:'Today'})),
+      ...tmrEvs.map(e=>({...e, day:'Tomorrow'}))
+    ];
+    if(!combined.length){ el.innerHTML='<span class="dash-w-sub" style="color:var(--tm);font-style:italic">Nothing upcoming ✨</span>'; return; }
+    el.innerHTML = combined.map(e=>`
+      <div class="dash-cal-i">
+        <span class="dash-cal-t">${e.allDay?e.day:fmt12(e.start)}</span>
+        <span class="dash-cal-n">${esc(e.summary)}</span>
+      </div>`).join('');
+  }).catch(()=>{ el.innerHTML='<span class="dash-w-sub" style="color:var(--pa)">⚠ Calendar unavailable</span>'; });
+}
+
+// ── DASHBOARD TIMBER MINI ─────────────────────────────────────────────────────
+const TIMBER_NEEDS_MINI = [
+  {id:'timber-out-am',  label:'First outside'},
+  {id:'timber-walk',    label:'Walk / play'},
+  {id:'timber-out-pm',  label:'Last out before bed'},
+];
+function renderDashTimberMini(){
+  const el = document.getElementById('dashTimberMini');
+  if(!el) return;
+  el.innerHTML = TIMBER_NEEDS_MINI.map(n => {
+    const done = getCLState(n.id)==='done' || getTimberNeedDone(n.id);
+    return `<div class="dash-timber-need${done?' done':''}" onclick="switchTab('timber')">
+      ${done?'✓':''} ${n.label}</div>`;
+  }).join('');
+}
+
+// ── TIMBER NEEDS CHECKLIST ────────────────────────────────────────────────────
+const TIMBER_NEEDS_KEY = 'jlos_timber_needs';
+const TIMBER_WALK_KEY  = 'jlos_timber_walks';
+
+const TIMBER_NEEDS = [
+  {id:'timber-out-am',   label:'First outside (morning)',          icon:'🌅'},
+  {id:'timber-walk',     label:'Walk / active play',               icon:'🦮', showLog:true},
+  {id:'timber-training', label:'Training or enrichment session',    icon:'🎓'},
+  {id:'timber-out-pm',   label:'Last out before bed',              icon:'🌙'},
+];
+
+function loadTimberNeeds(){
+  try{
+    const raw = JSON.parse(localStorage.getItem(TIMBER_NEEDS_KEY)||'{}');
+    const key = getTodayKey();
+    if(raw.date !== key) return {date:key, items:{}};
+    return raw;
+  }catch(e){ return {date:getTodayKey(), items:{}}; }
+}
+function saveTimberNeeds(s){ try{ localStorage.setItem(TIMBER_NEEDS_KEY, JSON.stringify(s)); }catch(e){} }
+function getTimberNeedDone(id){ return loadTimberNeeds().items[id]===true; }
+
+function renderTimberNeeds(){
+  const el = document.getElementById('timberNeedsChecklist');
+  if(!el) return;
+  const s = loadTimberNeeds();
+  el.innerHTML = TIMBER_NEEDS.map(n => {
+    const done = s.items[n.id]===true;
+    const walks = loadTimberWalks();
+    const totalMins = walks.reduce((acc,w)=>acc+w.mins,0);
+    let extra = '';
+    if(n.showLog && walks.length){
+      extra = `<span style="font-size:.6rem;color:var(--ma);margin-top:2px;display:block">${totalMins} min logged today</span>`;
+    }
+    return `<div class="cl-item${done?' done':''}" onclick="toggleTimberNeed('${n.id}')">
+      <span class="cl-check">${done?'✓':''}</span>
+      <span style="flex:1"><span class="cl-label">${n.icon} ${n.label}</span>${extra}</span>
+    </div>`;
+  }).join('');
+  // Update dashboard
+  renderDashTimberMini();
+  // Update exercise progress
+  const walks = loadTimberWalks();
+  const totalMins = walks.reduce((acc,w)=>acc+w.mins,0);
+  updateTimberExerciseProg(totalMins);
+  // Show/hide walk log card
+  const card = document.getElementById('walkLogCard');
+  if(card) card.style.display = walks.length ? 'block' : 'none';
+  renderWalkLog();
+}
+
+function toggleTimberNeed(id){
+  const s = loadTimberNeeds();
+  s.items[id] = !s.items[id];
+  saveTimberNeeds(s);
+  renderTimberNeeds();
+}
+
+// ── WALK TIMER ────────────────────────────────────────────────────────────────
+const WALK_TIMER_KEY = 'jlos_walk_timer';
+
+function loadTimberWalks(){ try{ const r=JSON.parse(localStorage.getItem(TIMBER_WALK_KEY)||'{}'); const k=getTodayKey(); return r.date===k?r.walks:[]; }catch(e){ return []; } }
+function saveTimberWalks(w){ try{ localStorage.setItem(TIMBER_WALK_KEY, JSON.stringify({date:getTodayKey(),walks:w})); }catch(e){} }
+
+function initWalkTimer(){
+  // Check if walk was in progress (app reloaded)
+  try{
+    const st = JSON.parse(localStorage.getItem(WALK_TIMER_KEY)||'null');
+    if(st && st.active){
+      window._walkStart = st.start;
+      startWalkIndicator();
+    }
+  }catch(e){}
+}
+
+let _walkInterval = null;
+function startWalkIndicator(){
+  const ind = document.getElementById('walkIndicator');
+  if(ind) ind.classList.add('active');
+  clearInterval(_walkInterval);
+  _walkInterval = setInterval(()=>{
+    const elapsed = Math.floor((Date.now() - window._walkStart) / 1000);
+    const m = Math.floor(elapsed/60), s = elapsed%60;
+    const disp = document.getElementById('walkTimerDisplay');
+    if(disp) disp.textContent = `${m}:${String(s).padStart(2,'0')}`;
+    // Also update Timber tab if open
+    const btn = document.getElementById('walkToggleBtn');
+    if(btn) btn.textContent = `⏹ Stop Walk (${m}m)`;
+  }, 1000);
+}
+
+function stopWalkIndicator(mins){
+  const ind = document.getElementById('walkIndicator');
+  if(ind) ind.classList.remove('active');
+  clearInterval(_walkInterval);
+  const btn = document.getElementById('walkToggleBtn');
+  if(btn) btn.textContent = '▶ Start Walk';
+  // Log the walk
+  const walks = loadTimberWalks();
+  walks.push({ts: Date.now(), mins});
+  saveTimberWalks(walks);
+  try{ localStorage.removeItem(WALK_TIMER_KEY); }catch(e){}
+  window._walkStart = null;
+  // Mark Timber need done
+  const s = loadTimberNeeds();
+  s.items['timber-walk'] = true;
+  saveTimberNeeds(s);
+  renderTimberNeeds();
+  showToast(`🐾 Walk logged: ${mins} min!`);
+}
+
+// Called by button and NFC
+window.logWalkNFC = function(){
+  if(window._walkStart){
+    // Stop walk
+    const mins = Math.max(1, Math.round((Date.now() - window._walkStart) / 60000));
+    stopWalkIndicator(mins);
+  } else {
+    // Start walk
+    window._walkStart = Date.now();
+    try{ localStorage.setItem(WALK_TIMER_KEY, JSON.stringify({active:true, start:window._walkStart})); }catch(e){}
+    startWalkIndicator();
+    const btn = document.getElementById('walkToggleBtn');
+    if(btn) btn.textContent = '⏹ Stop Walk';
+    showToast('🐾 Walk started!');
+  }
+};
+
+function renderWalkLog(){
+  const el = document.getElementById('walkLogList');
+  if(!el) return;
+  const walks = loadTimberWalks();
+  if(!walks.length){ el.innerHTML='<p style="font-size:.68rem;color:var(--tm);font-style:italic">No walks logged yet</p>'; return; }
+  const fmt = ts => new Date(ts).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+  el.innerHTML = walks.map(w=>`<div style="display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid var(--ll);font-size:.72rem;font-weight:700;color:var(--td)"><span style="color:var(--tm);min-width:60px">${fmt(w.ts)}</span><span>${w.mins} min 🦮</span></div>`).join('');
+}
+
+// ── TIMBER EXERCISE BANNER ────────────────────────────────────────────────────
+const TIMBER_BDAY = new Date(2025, 11, 30); // Dec 30 2025
+
+function renderTimberBanner(){
+  const now = new Date();
+  const ageMs = now - TIMBER_BDAY;
+  const ageMonths = ageMs / (30.44 * 24 * 3600 * 1000);
+  const ageMo = Math.floor(ageMonths);
+  const targetMinsPerSession = ageMo * 5;
+  const targetTotal = targetMinsPerSession * 2;
+  const walks = loadTimberWalks();
+  const totalMins = walks.reduce((acc,w)=>acc+w.mins,0);
+  const pct = Math.min(100, targetTotal > 0 ? Math.round(totalMins/targetTotal*100) : 0);
+
+  const titleEl = document.getElementById('timberAgeTitle');
+  const subEl   = document.getElementById('timberAgeSub');
+  const progEl  = document.getElementById('timberExerciseProg');
+  if(titleEl) titleEl.textContent = `Timber — ${ageMo} months old 🐾`;
+  if(subEl)   subEl.textContent = `Recommended: ${targetMinsPerSession} min × 2 daily (${targetTotal} min total) · ${totalMins} min logged today`;
+
+  // Over-exercise warning for young pup
+  if(totalMins > targetTotal * 1.5 && ageMo < 6){
+    if(subEl) subEl.textContent += ' · ⚠️ Consider resting — young joints!';
+  }
+  updateTimberExerciseProg(totalMins);
+}
+
+function updateTimberExerciseProg(totalMins){
+  const ageMs = new Date() - TIMBER_BDAY;
+  const ageMo = Math.floor(ageMs / (30.44 * 24 * 3600 * 1000));
+  const targetTotal = ageMo * 5 * 2;
+  const pct = targetTotal > 0 ? Math.min(100, Math.round(totalMins/targetTotal*100)) : 0;
+  const el = document.getElementById('timberExerciseProg');
+  if(el) el.style.width = pct + '%';
+}
+
+function initTimberMemories(){
+  renderMemories('memListT');
+  initDatetimeInputs();
+}
+
+function renderTimberDailyRotation(){
+  const el = document.getElementById('timberDailyRotation');
+  if(!el) return;
+  // Re-use training rotation from Train tab
+  try{
+    const today = new Date().getDay();
+    const todayCues = TRAIN_CUES.filter(c=>c.rotation&&c.rotation.includes(today)).slice(0,3);
+    if(!todayCues.length){ el.innerHTML='<div style="font-size:.7rem;color:var(--tm);font-style:italic;padding:8px 0">No specific rotation today — free practice!</div>'; return; }
+    el.innerHTML = '<div class="train-rotation-day" style="font-size:.72rem;font-weight:900;margin-bottom:6px">Today\'s Cues</div>' +
+      todayCues.map(cu=>`<div style="display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid var(--ll);font-size:.76rem;font-weight:700;color:var(--td)"><span>${cu.icon}</span><span>${cu.name}</span><span style="font-size:.58rem;color:var(--tm);margin-left:auto">${cu.cue}</span></div>`).join('');
+  }catch(e){ el.innerHTML='<div class="train-tip-card">Open the Train tab for today\'s rotation</div>'; }
+}
+
+// ── STATS TAB ─────────────────────────────────────────────────────────────────
+function renderStatsTab(){
+  renderHeatGrid();
+  // Morning streak
+  const streak = getStreak('morning');
+  const el = document.getElementById('statsMorningStreak');
+  if(el) el.textContent = streak + (streak===1?' day':' days');
+  // Timber walk mins this week
+  let totalWalkMins = 0;
+  try{
+    for(let i=0;i<7;i++){
+      const d = new Date(); d.setDate(d.getDate()-i);
+      const k = `${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}`;
+      const raw = JSON.parse(localStorage.getItem(TIMBER_WALK_KEY+'_'+k)||'null');
+      if(raw && raw.walks) totalWalkMins += raw.walks.reduce((acc,w)=>acc+w.mins,0);
+    }
+    // Also today
+    totalWalkMins += loadTimberWalks().reduce((acc,w)=>acc+w.mins,0);
+  }catch(e){}
+  const wEl = document.getElementById('statsTimberWalks');
+  if(wEl) wEl.textContent = totalWalkMins + ' min';
+}
+
+function renderHeatGrid(){
+  const el = document.getElementById('statsHeatGrid');
+  if(!el) return;
+  const cells = [];
+  for(let i=6;i>=0;i--){
+    const d = new Date(); d.setDate(d.getDate()-i);
+    const key = `${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}`;
+    const isToday = i===0;
+    let cls = '';
+    if(isToday){
+      // Count today's completion
+      const sections = CHECKLIST;
+      const totalSec = sections.length;
+      const doneSec = sections.filter(s=>isSectionComplete(s.id)).length;
+      if(doneSec===totalSec) cls='h-full';
+      else if(doneSec>=totalSec*.7) cls='h-good';
+      else if(doneSec>0) cls='h-part';
+    } else {
+      // Check history key
+      try{
+        const hist = JSON.parse(localStorage.getItem('jlos_cl_history_'+key)||'null');
+        if(hist){
+          if(hist.pct>=100) cls='h-full';
+          else if(hist.pct>=70) cls='h-good';
+          else if(hist.pct>0) cls='h-part';
+        }
+      }catch(e){}
+    }
+    const day = ['S','M','T','W','T','F','S'][d.getDay()];
+    cells.push(`<div class="heat-cell${cls?' '+cls:''}">${isToday?'·':''}</div>`);
+  }
+  el.innerHTML = cells.join('');
+}
+
+// ── MIDNIGHT RESET ─────────────────────────────────────────────────────────────
+function initMidnightReset(){
+  scheduleMidnight();
+}
+
+function scheduleMidnight(){
+  const now = new Date();
+  const midnight = new Date(now);
+  midnight.setHours(24,0,0,500);
+  const ms = midnight - now;
+  setTimeout(()=>{
+    doMidnightReset();
+    scheduleMidnight();
+  }, ms);
+}
+
+function doMidnightReset(){
+  // Calculate completion % before resetting
+  const totalItems = CHECKLIST.flatMap(s=>s.items).length;
+  const state = loadCL();
+  const doneItems = Object.values(state.items||{}).filter(v=>v==='done'||v==='skipped').length;
+  const pct = totalItems > 0 ? Math.round(doneItems/totalItems*100) : 0;
+
+  // Save history
+  const yesterday = new Date(); yesterday.setDate(yesterday.getDate()-1);
+  const yKey = `${yesterday.getFullYear()}-${yesterday.getMonth()+1}-${yesterday.getDate()}`;
+  try{ localStorage.setItem('jlos_cl_history_'+yKey, JSON.stringify({pct})); }catch(e){}
+
+  // Update streaks
+  const streaks = loadStreaks();
+  CHECKLIST.forEach(section => {
+    // We can't check yesterday's section completion, so just increment if >0 done today
+    const {done} = countSectionDone(section.id);
+    if(done > 0){
+      streaks[section.id] = (streaks[section.id]||0) + 1;
+    } else {
+      streaks[section.id] = 0;
+    }
+  });
+  saveStreaks(streaks);
+
+  // Celebrate if 80%+
+  if(pct >= 80){
+    showToast('✨ You showed up today! 💜 Resetting for tomorrow…', 4000);
+    setTimeout(fireConfetti, 500);
+  }
+
+  // Reset checklist
+  try{ localStorage.removeItem(CL_KEY); }catch(e){}
+  // Reset Timber needs
+  try{ localStorage.removeItem(TIMBER_NEEDS_KEY); }catch(e){}
+
+  // Re-render
+  setTimeout(()=>{ initChecklist(); renderTimberNeeds(); renderStatsTab(); }, 1000);
+}
+
+// ── CONFETTI ──────────────────────────────────────────────────────────────────
+function fireConfetti(){
+  const canvas = document.getElementById('confettiCanvas');
+  if(!canvas) return;
+  canvas.style.display = 'block';
+  const ctx = canvas.getContext('2d');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  const pieces = Array.from({length:80}, ()=>({
+    x: Math.random()*canvas.width,
+    y: Math.random()*-canvas.height*.5,
+    w: 6+Math.random()*8,
+    h: 4+Math.random()*6,
+    r: Math.random()*Math.PI*2,
+    dr: (Math.random()-.5)*.15,
+    dy: 2+Math.random()*3,
+    dx: (Math.random()-.5)*1.5,
+    color: ['#b89de0','#8fc4a8','#f0b8d8','#f7e08c','#88c8ff'][Math.floor(Math.random()*5)]
+  }));
+  let frame=0;
+  function draw(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    pieces.forEach(p=>{
+      ctx.save();
+      ctx.translate(p.x,p.y);
+      ctx.rotate(p.r);
+      ctx.fillStyle=p.color;
+      ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h);
+      ctx.restore();
+      p.x+=p.dx; p.y+=p.dy; p.r+=p.dr;
+    });
+    frame++;
+    if(frame<120) requestAnimationFrame(draw);
+    else{ ctx.clearRect(0,0,canvas.width,canvas.height); canvas.style.display='none'; }
+  }
+  draw();
+}
+
+// ── DAY BUILDER ───────────────────────────────────────────────────────────────
+const DB_LIBRARY = [
+  {icon:'🧠', name:'Deep Work',     dur:90},
+  {icon:'🦮', name:'Walk',           dur:30},
+  {icon:'🎓', name:'Training',       dur:15},
+  {icon:'🍽️', name:'Meal',           dur:30},
+  {icon:'😴', name:'Rest',           dur:60},
+  {icon:'📋', name:'Admin',          dur:30},
+  {icon:'🏋️', name:'PT',             dur:45},
+  {icon:'🔴', name:'Red Light',      dur:40},
+  {icon:'🐾', name:'Timber Time',    dur:20},
+];
+
+const DB_QUEUE_KEY = 'jlos_db_queue';
+function loadDBQueue(){ try{ const r=JSON.parse(localStorage.getItem(DB_QUEUE_KEY)||'{}'); const k=getTodayKey(); return r.date===k?(r.queue||[]):[]; }catch(e){ return []; } }
+function saveDBQueue(q){ try{ localStorage.setItem(DB_QUEUE_KEY, JSON.stringify({date:getTodayKey(), queue:q})); }catch(e){} }
+
+window.openDayBuilder = function(){
+  const modal = document.getElementById('dbModal');
+  if(modal){ modal.classList.add('open'); renderDBQueue(); }
+};
+window.closeDayBuilder = function(){
+  const modal = document.getElementById('dbModal');
+  if(modal) modal.classList.remove('open');
+};
+window.clearAgenda = function(){
+  saveDBQueue([]);
+  const el = document.getElementById('agendaWidget');
+  if(el) el.style.display='none';
+};
+
+function renderDBQueue(){
+  const q = loadDBQueue();
+  const el = document.getElementById('dbQueueList');
+  if(!el) return;
+  if(!q.length){ el.innerHTML='<p style="font-size:.7rem;color:var(--tm);font-style:italic;text-align:center;padding:12px 0">Tap tasks above to queue them ↑</p>'; return; }
+  el.innerHTML = q.map((t,i)=>`
+    <div class="db-q-item">
+      <span class="db-q-icon">${t.icon}</span>
+      <span class="db-q-name">${esc(t.name)}</span>
+      <span class="db-q-dur">${t.dur} min</span>
+      <button class="db-q-del" onclick="removeDBTask(${i})">✕</button>
+    </div>`).join('');
+}
+
+window.addDBTask = function(icon, name, dur){
+  const q = loadDBQueue();
+  q.push({icon, name, dur});
+  saveDBQueue(q);
+  renderDBQueue();
+};
+
+window.removeDBTask = function(idx){
+  const q = loadDBQueue();
+  q.splice(idx,1);
+  saveDBQueue(q);
+  renderDBQueue();
+};
+
+window.addDBFreeform = function(){
+  const nameEl = document.getElementById('dbFfName');
+  const durEl  = document.getElementById('dbFfDur');
+  if(!nameEl||!durEl) return;
+  const name = nameEl.value.trim();
+  const dur  = parseInt(durEl.value)||30;
+  if(!name) return;
+  addDBTask('💭', name, dur);
+  nameEl.value=''; durEl.value='30';
+};
+
+window.generateAgenda = function(){
+  const q = loadDBQueue();
+  if(!q.length){ showToast('Add some tasks first!'); return; }
+  const startEl = document.getElementById('dbStartTime');
+  let startTime = '09:00';
+  if(startEl && startEl.value) startTime = startEl.value;
+  const [sh, sm] = startTime.split(':').map(Number);
+  let cursor = sh*60+sm;
+
+  const blocks = q.map(t => {
+    const hh = Math.floor(cursor/60)%24;
+    const mm  = cursor%60;
+    const ap  = hh>=12?'PM':'AM';
+    const h12 = hh%12||12;
+    const label = `${h12}:${String(mm).padStart(2,'0')} ${ap}`;
+    cursor += t.dur;
+    return {label, ...t};
+  });
+
+  // Save and render
+  localStorage.setItem('jlos_agenda', JSON.stringify({date:getTodayKey(), blocks}));
+  renderAgenda(blocks);
+  closeDayBuilder();
+  showToast('📋 Day planned! ✨');
+};
+
+function renderAgenda(blocks){
+  const widget = document.getElementById('agendaWidget');
+  const el     = document.getElementById('agendaBlocks');
+  if(!widget || !el) return;
+  if(!blocks || !blocks.length){ widget.style.display='none'; return; }
+  widget.style.display='block';
+  el.innerHTML = blocks.map(b=>`
+    <div class="agenda-block">
+      <span class="agenda-time">${b.label}</span>
+      <span>
+        <span class="agenda-name">${b.icon} ${esc(b.name)}</span>
+        <span class="agenda-dur">${b.dur} min</span>
+      </span>
+    </div>`).join('');
+}
+
+// Restore agenda on load
+(function restoreAgenda(){
+  try{
+    const raw = JSON.parse(localStorage.getItem('jlos_agenda')||'null');
+    if(raw && raw.date === getTodayKey()) renderAgenda(raw.blocks);
+  }catch(e){}
+})();
+
+// ── NFC HANDLER ───────────────────────────────────────────────────────────────
+function handleNFCHash(){
+  const hash = window.location.hash;
+  if(!hash.startsWith('#nfc=')) return;
+  const action = hash.slice(5);
+  // Clear hash
+  history.replaceState(null,'',window.location.pathname);
+
+  switch(action){
+    case 'teeth':
+      setCLState('brush-teeth','done');
+      refreshCLSection('morning');
+      showToast('🦷 Teeth brushed ✓');
+      break;
+    case 'meds-morning':
+      openNFCModal('meds-morning');
+      break;
+    case 'meds-evening':
+      openNFCModal('meds-evening');
+      break;
+    case 'walk':
+      logWalkNFC();
+      switchTab('timber');
+      break;
+    case 'cronometer':
+      setCLState('log-breakfast','done');
+      refreshCLSection('morning');
+      showToast('📱 Logged! Opening Cronometer…');
+      setTimeout(()=>{ window.open('intent://cronometer.com/#Intent;scheme=https;package=com.cronometer.android;end','_blank'); },600);
+      break;
+  }
+}
+
+// Also watch for hash changes (app is open when NFC tapped)
+window.addEventListener('hashchange', ()=>{ handleNFCHash(); });
+
+function openNFCModal(type){
+  const modal = document.getElementById('nfcModal');
+  if(!modal) return;
+  const title  = document.getElementById('nfcTitle');
+  const sub    = document.getElementById('nfcSub');
+  const items  = document.getElementById('nfcItems');
+  const confEl = document.getElementById('nfcConfirm');
+
+  if(type==='meds-morning'){
+    if(title) title.textContent = '💊 Morning Meds';
+    if(sub)   sub.textContent   = 'Tap each one you\'re taking:';
+    const medIds = ['glucosamine','iron','vitamins','vyvanse'];
+    if(items) items.innerHTML = medIds.map(id=>{
+      const it = CHECKLIST.flatMap(s=>s.items).find(i=>i.id===id);
+      if(!it) return '';
+      const weekend = isWeekend() && id==='vyvanse';
+      return `<div class="cl-item${getCLState(id)==='done'?' done':''}" onclick="clCheck('${id}');this.classList.toggle('done',true);this.querySelector('.cl-check').textContent='✓'">
+        <span class="cl-check">${getCLState(id)==='done'?'✓':''}</span>
+        <span class="cl-label">${it.icon} ${it.label}${weekend?' <span class="cl-badge">skip option</span>':''}</span>
+      </div>`;
+    }).join('');
+    if(confEl) confEl.onclick = ()=>{ refreshCLSection('morning'); closeNFCModal(); showToast('💊 Morning meds logged ✓'); };
+  } else if(type==='meds-evening'){
+    if(title) title.textContent = '🌙 Evening Meds';
+    if(sub)   sub.textContent   = 'Tap each one you\'re taking:';
+    const medIds = ['birth-control','zoloft'];
+    if(items) items.innerHTML = medIds.map(id=>{
+      const it = CHECKLIST.flatMap(s=>s.items).find(i=>i.id===id);
+      if(!it) return '';
+      return `<div class="cl-item${getCLState(id)==='done'?' done':''}" onclick="clCheck('${id}');this.classList.toggle('done',true);this.querySelector('.cl-check').textContent='✓'">
+        <span class="cl-check">${getCLState(id)==='done'?'✓':''}</span>
+        <span class="cl-label">${it.icon} ${it.label}</span>
+      </div>`;
+    }).join('');
+    if(confEl) confEl.onclick = ()=>{ refreshCLSection('evening'); closeNFCModal(); showToast('🌙 Evening meds logged ✓'); };
+  }
+
+  modal.classList.add('open');
+}
+
+window.closeNFCModal = function(){
+  const modal = document.getElementById('nfcModal');
+  if(modal) modal.classList.remove('open');
+};
+
+// ── MISC HELPERS ──────────────────────────────────────────────────────────────
+// Safe esc if not already defined
+if(typeof esc === 'undefined'){
+  window.esc = t => String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+</script>
+
 </body>
 </html>

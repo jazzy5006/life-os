@@ -679,8 +679,14 @@ body.timer-active .desktop-layout{padding-top:70px}
 .lab-chip.processing{background:var(--ll);border:1.5px solid var(--lm);opacity:.85}.lab-chip.processing .lab-chip-hd{color:var(--la)}
 
 @media(min-width:1024px){
-  .tab-bar,.page,.fab-now,.top-nav,.pills-row{display:none!important}
-  .desktop-layout{display:flex!important;flex-direction:column;min-height:100vh;padding:22px 24px 28px}
+  .desktop-layout{display:none!important}
+  .fab-now,.pills-row{display:none!important}
+  .tab-bar{max-width:860px;margin:0 auto;width:100%}
+  .top-nav{max-width:860px;margin:0 auto;width:100%;box-sizing:border-box}
+  #page-home,#page-timber,#page-pt,#page-stats,#page-cal,#page-sitter,#page-train,#page-life{max-width:860px;margin:0 auto;width:100%;box-sizing:border-box}
+  body{background:var(--bg)}
+  /* dead rule kept for compat: */
+  .desktop-layout-compat{display:flex!important;flex-direction:column;min-height:100vh;padding:22px 24px 28px}
   .desk-header{display:flex;align-items:center;justify-content:space-between;gap:14px;padding-bottom:18px;margin-bottom:18px;border-bottom:2px solid var(--lm);flex-wrap:wrap}
   .desk-brand{display:flex;flex-direction:column;gap:4px;flex-shrink:0}
   .desk-brand h1{font-size:1.9rem}
@@ -743,8 +749,11 @@ body.timer-active .desktop-layout{padding-top:70px}
 
 /* ── TABLET (768–1023px) ── */
 @media(min-width:768px) and (max-width:1023px){
-  .tab-bar,.page,.fab-now,.top-nav,.pills-row{display:none!important}
-  .desktop-layout{display:flex!important;flex-direction:column;min-height:100vh;padding:18px 18px 24px}
+  .desktop-layout{display:none!important}
+  .fab-now,.pills-row{display:none!important}
+  .tab-bar{max-width:680px;margin:0 auto;width:100%}
+  .top-nav{max-width:680px;margin:0 auto;width:100%;box-sizing:border-box}
+  #page-home,#page-timber,#page-pt,#page-stats,#page-cal,#page-sitter,#page-train,#page-life{max-width:680px;margin:0 auto;width:100%;box-sizing:border-box}
   .desk-header{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-bottom:16px;margin-bottom:16px;border-bottom:2px solid var(--lm);flex-wrap:wrap}
   .desk-brand h1{font-size:1.5rem}
   .desk-pills{display:flex;gap:6px;margin-bottom:4px;flex-wrap:wrap}
@@ -1545,8 +1554,25 @@ body.night .train-status.new{background:var(--pl);border-color:var(--pm);color:v
 <!-- STATS PAGE -->
 <div class="page" id="page-stats">
   <div style="margin-top:12px;display:flex;flex-direction:column;gap:12px">
+  <!-- Streaks & progress summary -->
+  <div class="card" style="margin-bottom:10px">
+    <div style="font-size:.58rem;font-weight:900;letter-spacing:.12em;text-transform:uppercase;color:var(--tm);margin-bottom:10px">📊 This Week</div>
+    <!-- 7-day heatmap -->
+    <div id="statsHeatGrid" style="display:flex;gap:5px;justify-content:center;margin-bottom:12px"></div>
+    <!-- Stat chips -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+      <div style="background:var(--ll);border:2px solid var(--lm);border-radius:var(--rmd);padding:10px 12px;text-align:center">
+        <div style="font-size:.55rem;font-weight:900;text-transform:uppercase;letter-spacing:.1em;color:var(--la);margin-bottom:3px">🔥 Morning Streak</div>
+        <div id="statsMorningStreak" style="font-size:1.3rem;font-weight:900;color:var(--td)">0 days</div>
+      </div>
+      <div style="background:var(--pl);border:2px solid var(--pm);border-radius:var(--rmd);padding:10px 12px;text-align:center">
+        <div style="font-size:.55rem;font-weight:900;text-transform:uppercase;letter-spacing:.1em;color:var(--pa);margin-bottom:3px">🐾 Walk Mins</div>
+        <div id="statsTimberWalks" style="font-size:1.3rem;font-weight:900;color:var(--td)">0 min</div>
+      </div>
+    </div>
+  </div>
 
-  <!-- AI Keys button — mobile trigger for API settings panel -->
+
 
 
     <!-- Timber Milestone Flags -->
@@ -4006,87 +4032,6 @@ window.toggleApiSettings = () => {
   }
 };
 
-window.replanWithGemini = async () => {
-  const key = getGeminiKey();
-  if(!key){
-    showToast('⚙️ Add your Gemini key in Stats → ⚙️ first', 3500);
-    // Open settings
-    switchTab('stats');
-    setTimeout(()=>{ toggleApiSettings(); closeSheet(); }, 200);
-    return;
-  }
-
-  const panel  = document.getElementById('geminiPanel');
-  const respEl = document.getElementById('geminiResponse');
-  panel.classList.add('open');
-  respEl.className = 'gemini-response thinking';
-  respEl.innerHTML = `<span class="gemini-thinking-dots"><span></span><span></span><span></span></span><span>Gemini is thinking…</span>`;
-
-  // Build context identical to Claude engine
-  const nowMin = getNowMin();
-  const dayItems = getFilteredSchedule('all');
-  const now = new Date();
-  const h12 = now.getHours()%12||12, ap = now.getHours()>=12?'PM':'AM';
-  const timeStr = `${h12}:${String(now.getMinutes()).padStart(2,'0')} ${ap}`;
-  const abs = Math.abs(offsetMin);
-  const shiftStr = offsetMin > 2 ? `${abs} minutes behind schedule`
-    : offsetMin < -2 ? `${abs} minutes ahead of schedule`
-    : 'on schedule';
-
-  const remaining = [];
-  dayItems.forEach(item => {
-    const eff = isShifted ? item.smin + offsetMin : item.smin;
-    if(eff > nowMin){
-      const steps = item.isRltRotating ? getRltRotatingSteps() : item.steps;
-      const priority = steps.filter(s => s.c === 'timber' || s.c === 'wellness');
-      if(priority.length){
-        const cats = [...new Set(priority.map(s => s.c === 'timber' ? 'Puppy' : 'Medical'))].join('/');
-        remaining.push(`• [${cats}] ${item.h} at ${fmtMin12(eff)}`);
-      }
-    }
-  });
-
-  const userPrompt =
-    `Current time: ${timeStr}\n` +
-    `Schedule status: ${shiftStr}\n` +
-    `Remaining priority tasks (Medical & Puppy care):\n${remaining.slice(0,12).join('\n')}\n\n` +
-    `What is the smartest way to compress or reorder these tasks to protect my 12:00 AM sleep goal and my 8:30 AM fasting window?`;
-
-  const systemInstruction =
-    `You are a productivity expert for a scientist with hypermobility and a young puppy named Timber. ` +
-    `Your goal is to help her compress or skip non-essential tasks to protect her 12:00 AM sleep goal and her 8:30 AM fasting window. ` +
-    `Tasks tagged [Puppy] are non-negotiable — Timber's feeding, potty, and sleep schedule must be honoured. ` +
-    `Tasks tagged [Medical] are high priority — RLT, PT, and medications should not be skipped unless absolutely necessary. ` +
-    `Be concise, warm, and practical. Use bullet points. Max 200 words.`;
-
-  try{
-    // Dynamic import of Google GenAI SDK
-    const { GoogleGenAI } = await import('https://esm.run/@google/genai');
-    const ai = new GoogleGenAI({ apiKey: key });
-
-    const result = await ai.models.generateContent({
-      model: 'gemini-3.1-flash-lite-preview',
-      contents: userPrompt,
-      config: {
-        systemInstruction: systemInstruction,
-        thinkingConfig: { thinkingLevel: 'minimal' }
-      }
-    });
-    const text = result.text;
-    respEl.className = 'gemini-response';
-    respEl.textContent = text;
-  } catch(err){
-    respEl.className = 'gemini-response';
-    const msg = err.message || String(err);
-    if(msg.includes('API_KEY') || msg.includes('400') || msg.includes('403')){
-      respEl.textContent = '⚠️ Invalid API key. Go to Stats → ⚙️ and re-enter your key from aistudio.google.com';
-    } else if(msg.includes('429')){
-      respEl.textContent = '⚠️ Rate limit hit (429). Visit Google AI Studio and click "Set up billing" to verify your identity — you can stay on the free tier, it just unlocks the quota.';
-    } else {
-      respEl.textContent = `⚠️ Gemini error: ${msg}\n\nTry the clipboard prompt instead.`;
-    }
-  }
-};
 
 window.toggleDeskApiSettings = () => {
   const panel = document.getElementById('deskApiSettingsPanel');

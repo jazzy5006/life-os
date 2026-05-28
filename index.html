@@ -1402,15 +1402,6 @@ body.night .train-status.new{background:var(--pl);border-color:var(--pm);color:v
 
 <!-- HOME PAGE -->
 <div class="page active" id="page-home">
-  <!-- Day Builder agenda (hidden until plan is built) -->
-  <div class="agenda-widget" id="agendaWidget" style="display:none">
-    <div class="agenda-hd">
-      <span class="agenda-ttl">📋 Today's Plan</span>
-      <button class="agenda-clear" onclick="clearAgenda()">Clear ✕</button>
-    </div>
-    <div id="agendaBlocks"></div>
-  </div>
-
   <!-- Dashboard widgets -->
   <div class="dash-grid">
     <div class="dash-w">
@@ -1456,6 +1447,15 @@ body.night .train-status.new{background:var(--pl);border-color:var(--pm);color:v
 
   <!-- Morning checklist section -->
   <div id="homeChecklist"></div>
+
+  <!-- Day Builder agenda (hidden until plan is built) -->
+  <div class="agenda-widget" id="agendaWidget" style="display:none">
+    <div class="agenda-hd">
+      <span class="agenda-ttl">📋 Today's Plan</span>
+      <button class="agenda-clear" onclick="clearAgenda()">Clear ✕</button>
+    </div>
+    <div id="agendaBlocks"></div>
+  </div>
 </div>
 
 <!-- FLOW PAGE (preserved, not active) -->

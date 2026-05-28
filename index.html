@@ -1236,6 +1236,18 @@ body.night .train-status.new{background:var(--pl);border-color:var(--pm);color:v
 .flow-drawer-hd{display:flex;align-items:center;justify-content:space-between;padding:0 14px 10px;border-bottom:1.5px solid var(--ll);margin-bottom:4px}
 .flow-drawer #page-flow{display:flex!important;flex-direction:column;padding:8px 12px 60px;min-height:unset}
 
+
+/* ── HOME REORDER — calendar collapse + scroll button ───────────────────── */
+.tmr-toggle{display:flex;align-items:center;justify-content:space-between;width:100%;background:none;border:none;border-top:1.5px solid var(--ll);margin-top:8px;padding:7px 0 0;cursor:pointer;font-family:'Nunito',sans-serif;font-size:.65rem;font-weight:900;color:var(--tm);text-align:left}
+.tmr-toggle:hover{color:var(--td)}
+.tmr-body{margin-top:6px}
+.dash-timber-mini-row{display:flex;flex-wrap:wrap;gap:5px;margin-top:4px}
+.dash-timber-need{font-size:.63rem;font-weight:700;color:var(--tm);padding:3px 8px;background:var(--bgp);border-radius:var(--rf);border:1.5px solid var(--ll);cursor:pointer;transition:all .15s}
+.dash-timber-need.done{color:var(--sa);border-color:var(--sa);background:var(--mll, #e8f5e8);text-decoration:line-through}
+/* Floating scroll button */
+.scroll-fab{position:fixed;bottom:calc(18px + env(safe-area-inset-bottom));right:16px;z-index:290;width:38px;height:38px;border-radius:50%;border:none;background:var(--la);color:#fff;font-size:1rem;cursor:pointer;box-shadow:0 3px 12px rgba(0,0,0,.22);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;transform:scale(.8)}
+.scroll-fab.visible{opacity:1;pointer-events:all;transform:scale(1)}
+
 </style>
 </head>
 <body>
@@ -1402,31 +1414,38 @@ body.night .train-status.new{background:var(--pl);border-color:var(--pm);color:v
 
 <!-- HOME PAGE -->
 <div class="page active" id="page-home">
-  <!-- Dashboard widgets -->
-  <div class="dash-grid">
-    <div class="dash-w">
-      <span class="dash-w-ico">🕐</span>
-      <span class="dash-w-lbl">Right now</span>
-      <span class="dash-w-val" id="homeClock">--:--</span>
-      <span class="dash-w-sub" id="homeDate">Loading…</span>
+
+  <!-- ① Calendar: Today open, Tomorrow collapsible -->
+  <div class="card" style="margin-bottom:10px">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+      <span style="font-size:.58rem;font-weight:900;letter-spacing:.12em;text-transform:uppercase;color:var(--sa)">📅 Today</span>
+      <button onclick="switchTab('cal')" style="background:none;border:none;font-size:.55rem;font-weight:900;color:var(--tm);cursor:pointer;padding:0;font-family:'Nunito',sans-serif">Full cal →</button>
     </div>
-    <div class="dash-w">
-      <span class="dash-w-ico">🐾</span>
-      <span class="dash-w-lbl">Timber needs</span>
-      <div class="dash-timber-mini" id="dashTimberMini"></div>
-    </div>
-    <div class="dash-w wide">
-      <span class="dash-w-ico">📅</span>
-      <span class="dash-w-lbl">Today &amp; tomorrow</span>
-      <div class="dash-cal-list" id="dashCalList"><span class="dash-w-sub">Loading calendar…</span></div>
-    </div>
+    <div class="dash-cal-list" id="dashCalToday"><span class="dash-w-sub">Loading calendar…</span></div>
+    <button class="tmr-toggle" id="tmrToggle" onclick="toggleTomorrow()">
+      <span>📆 Tomorrow</span>
+      <span id="tmrChevron" style="font-size:.65rem;transition:transform .2s">▶</span>
+    </button>
+    <div class="dash-cal-list tmr-body" id="dashCalTmr" style="display:none"></div>
   </div>
 
-  <!-- Build My Day button -->
+  <!-- ② Timber needs mini (taps through to Timber tab) -->
+  <div class="card" style="margin-bottom:10px;cursor:pointer" onclick="switchTab('timber')">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+      <span style="font-size:.58rem;font-weight:900;letter-spacing:.12em;text-transform:uppercase;color:var(--tm)">🐾 Timber needs</span>
+      <span style="font-size:.55rem;font-weight:900;color:var(--sa)">Timber tab →</span>
+    </div>
+    <div class="dash-timber-mini" id="dashTimberMini"></div>
+  </div>
+
+  <!-- ③ Build My Day -->
   <button class="btn" style="width:100%;background:linear-gradient(135deg,var(--la),var(--sa));color:#fff;border:none;padding:13px;font-size:.72rem;margin-bottom:12px;border-radius:var(--rlg)" onclick="openDayBuilder()">✨ Build My Day</button>
 
-  <!-- Brain Dump -->
-  <div class="card" style="margin-bottom:10px">
+  <!-- ④ Daily checklist -->
+  <div id="homeChecklist"></div>
+
+  <!-- ⑤ Brain Dump -->
+  <div class="card" style="margin-bottom:10px;margin-top:10px">
     <div class="scratch-lbl" style="margin-bottom:6px"><span style="font-size:.65rem;font-weight:900;color:var(--la)">💭 Brain Dump</span><span style="font-size:.58rem;color:var(--tm);margin-left:6px">— get it out of your head</span></div>
     <div style="display:flex;gap:6px;margin-bottom:8px">
       <textarea class="lab-ta scratch-ta" id="brainDumpInput" placeholder="Type anything… 💜" rows="2" style="flex:1;margin-bottom:0;min-height:60px" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();addBrainDump();}"></textarea>
@@ -1435,20 +1454,16 @@ body.night .train-status.new{background:var(--pl);border-color:var(--pm);color:v
     <div id="brainDumpList" style="display:flex;flex-direction:column;gap:5px"></div>
   </div>
 
-
-  <!-- Today's Training Focus -->
+  <!-- ⑥ Today's Training Focus -->
   <div class="card" style="margin-bottom:10px">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
-      <span style="font-size:.58rem;font-weight:900;letter-spacing:.12em;text-transform:uppercase;color:var(--tm)">&#127891; Today's Training</span>
+      <span style="font-size:.58rem;font-weight:900;letter-spacing:.12em;text-transform:uppercase;color:var(--tm)">🎓 Today's Training</span>
       <button onclick="switchTab('train')" style="background:none;border:none;font-size:.55rem;font-weight:900;color:var(--sa);cursor:pointer;padding:0;font-family:'Nunito',sans-serif">See all →</button>
     </div>
     <div id="homeTrainingFocus"></div>
   </div>
 
-  <!-- Morning checklist section -->
-  <div id="homeChecklist"></div>
-
-  <!-- Day Builder agenda (hidden until plan is built) -->
+  <!-- ⑦ Today's Plan (shown once Day Builder is used) -->
   <div class="agenda-widget" id="agendaWidget" style="display:none">
     <div class="agenda-hd">
       <span class="agenda-ttl">📋 Today's Plan</span>
@@ -1456,6 +1471,7 @@ body.night .train-status.new{background:var(--pl);border-color:var(--pm);color:v
     </div>
     <div id="agendaBlocks"></div>
   </div>
+
 </div>
 
 <!-- FLOW PAGE (preserved, not active) -->
@@ -5545,7 +5561,6 @@ window.onload=()=>{
   renderStatsTab();
   handleNFCHash();
   initMidnightReset();
-  startHomeClock();
   initWalkTimer();
 };
 
@@ -7267,35 +7282,26 @@ function addBDToDay(id){
 
 // ── HOME CALENDAR WIDGET ───────────────────────────────────────────────────────
 function renderHomeCalWidget(){
-  const el = document.getElementById('dashCalList');
-  if(!el) return;
-  el.innerHTML = '<span class="dash-w-sub">Loading…</span>';
+  const todayEl = document.getElementById('dashCalToday');
+  const tmrEl   = document.getElementById('dashCalTmr');
+  if(!todayEl) return;
+  todayEl.innerHTML = '<span class="dash-w-sub">Loading…</span>';
   fetchCalEvents().then(events => {
-    if(!events){ el.innerHTML = '<span class="dash-w-sub" style="color:var(--tm)">No calendar connected — <a onclick="switchTab(\'cal\')" style="color:var(--sa);cursor:pointer;text-decoration:underline">set up in Cal</a></span>'; return; }
-    const today = new Date().toDateString();
+    if(!events){ todayEl.innerHTML = '<span class="dash-w-sub" style="color:var(--tm)">No calendar connected — <a onclick="switchTab('cal')" style="color:var(--sa);cursor:pointer;text-decoration:underline">set up in Cal</a></span>'; return; }
+    const todayStr = new Date().toDateString();
     const tomorrow = new Date(); tomorrow.setDate(tomorrow.getDate()+1);
-    const tmrStr = tomorrow.toDateString();
+    const tmrStr   = tomorrow.toDateString();
     const fmt12 = d => { let h=d.getHours(),m=d.getMinutes(),ap=h>=12?'PM':'AM'; h=h%12||12; return `${h}:${String(m).padStart(2,'0')} ${ap}`; };
-    const todayEvs = events.filter(e=>e.start.toDateString()===today).slice(0,2);
-    const tmrEvs   = events.filter(e=>e.start.toDateString()===tmrStr).slice(0,2);
-    const combined = [
-      ...todayEvs.map(e=>({...e, day:'Today'})),
-      ...tmrEvs.map(e=>({...e, day:'Tomorrow'}))
-    ];
-    if(!combined.length){ el.innerHTML='<span class="dash-w-sub" style="color:var(--tm);font-style:italic">Nothing upcoming ✨</span>'; return; }
-    let html = '';
-    ['Today','Tomorrow'].forEach(dayLabel => {
-      const evs = combined.filter(e=>e.day===dayLabel);
-      if(!evs.length) return;
-      html += `<div class="dash-cal-day-hd">${dayLabel}</div>`;
-      html += evs.map(e=>`
-        <div class="dash-cal-i">
-          <span class="dash-cal-t">${e.allDay?'All day':fmt12(e.start)}</span>
-          <span class="dash-cal-n">${esc(e.summary)}</span>
-        </div>`).join('');
-    });
-    el.innerHTML = html;
-  }).catch(()=>{ el.innerHTML='<span class="dash-w-sub" style="color:var(--pa)">⚠ Calendar unavailable</span>'; });
+    const evHtml = evs => evs.map(e=>`
+      <div class="dash-cal-i">
+        <span class="dash-cal-t">${e.allDay?'All day':fmt12(e.start)}</span>
+        <span class="dash-cal-n">${esc(e.summary)}</span>
+      </div>`).join('');
+    const todayEvs = events.filter(e=>e.start.toDateString()===todayStr).slice(0,5);
+    const tmrEvs   = events.filter(e=>e.start.toDateString()===tmrStr).slice(0,5);
+    todayEl.innerHTML = todayEvs.length ? evHtml(todayEvs) : '<span class="dash-w-sub" style="color:var(--tm);font-style:italic">Nothing today ✨</span>';
+    if(tmrEl) tmrEl.innerHTML = tmrEvs.length ? evHtml(tmrEvs) : '<span class="dash-w-sub" style="color:var(--tm);font-style:italic;padding:4px 0;display:block">Nothing tomorrow ✨</span>';
+  }).catch(()=>{ todayEl.innerHTML='<span class="dash-w-sub" style="color:var(--pa)">⚠ Calendar unavailable</span>'; });
 }
 
 // ── DASHBOARD TIMBER MINI ─────────────────────────────────────────────────────
@@ -7914,5 +7920,6 @@ window.closeFlowDrawer = () => {
 
 </script>
 
+<button class="scroll-fab" id="scrollFab" onclick="scrollFabClick()" aria-label="Scroll">↓</button>
 </body>
 </html>

@@ -1222,6 +1222,10 @@ body.night .train-status.new{background:var(--pl);border-color:var(--pm);color:v
 #page-sitter{padding:0}
 .sitter-tab-wrap{display:flex;align-items:center;justify-content:center;flex-direction:column;padding:40px 20px;gap:16px;text-align:center}
 
+
+/* -- HOME CAL DAY HEADER -- */
+.dash-cal-day-hd{font-size:.52rem;font-weight:900;letter-spacing:.12em;text-transform:uppercase;color:var(--la);padding:6px 0 3px;border-bottom:1.5px solid var(--ll);margin-bottom:4px;margin-top:6px}
+.dash-cal-day-hd:first-child{margin-top:0}
 </style>
 </head>
 <body>
@@ -1426,12 +1430,22 @@ body.night .train-status.new{background:var(--pl);border-color:var(--pm);color:v
     <div id="brainDumpList" style="display:flex;flex-direction:column;gap:5px"></div>
   </div>
 
+
+  <!-- Today's Training Focus -->
+  <div class="card" style="margin-bottom:10px">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+      <span style="font-size:.58rem;font-weight:900;letter-spacing:.12em;text-transform:uppercase;color:var(--tm)">&#127891; Today's Training</span>
+      <button onclick="switchTab('train')" style="background:none;border:none;font-size:.55rem;font-weight:900;color:var(--sa);cursor:pointer;padding:0;font-family:'Nunito',sans-serif">See all →</button>
+    </div>
+    <div id="homeTrainingFocus"></div>
+  </div>
+
   <!-- Morning checklist section -->
   <div id="homeChecklist"></div>
 </div>
 
 <!-- FLOW PAGE (preserved, not active) -->
-<!--
+<div style="display:none" aria-hidden="true" id="flowPagePreserved">
 <div class="page" id="page-flow">
   <!-- Shift undo bar — visible when schedule is shifted -->
   <div class="shift-undo-bar" id="shiftUndoBar" style="margin-top:12px">
@@ -1520,7 +1534,7 @@ body.night .train-status.new{background:var(--pl);border-color:var(--pm);color:v
   </div>
   <div class="tl-wrap" id="mTlb"></div>
 </div>
--->
+</div></div>
 
 <!-- MOVE PAGE -->
 <div class="page" id="page-pt">
@@ -2894,7 +2908,7 @@ window.switchTab=(tab)=>{
   const tb=document.getElementById('tab-'+tab);
   if(pg)pg.classList.add('active');
   if(tb)tb.classList.add('active');
-  if(tab==='home'){renderHomeCalWidget();renderDashTimberMini();}
+  if(tab==='home'){renderHomeCalWidget();renderDashTimberMini();renderHomeTrainingFocus();}
   if(tab==='timber'){renderTimberNeeds();renderTimberBanner();renderMemories('memListT');renderTimberDailyRotation();}
   if(tab==='life'){renderOrbits();renderBattery();renderMemories('memList');}
   if(tab==='cal')loadCalendar();
@@ -5504,6 +5518,7 @@ window.onload=()=>{
   initBrainDump();
   renderHomeCalWidget();
   renderDashTimberMini();
+  renderHomeTrainingFocus();
   renderTimberBanner();
   renderTimberNeeds();
   initTimberMemories();
@@ -7248,11 +7263,18 @@ function renderHomeCalWidget(){
       ...tmrEvs.map(e=>({...e, day:'Tomorrow'}))
     ];
     if(!combined.length){ el.innerHTML='<span class="dash-w-sub" style="color:var(--tm);font-style:italic">Nothing upcoming ✨</span>'; return; }
-    el.innerHTML = combined.map(e=>`
-      <div class="dash-cal-i">
-        <span class="dash-cal-t">${e.allDay?e.day:fmt12(e.start)}</span>
-        <span class="dash-cal-n">${esc(e.summary)}</span>
-      </div>`).join('');
+    let html = '';
+    ['Today','Tomorrow'].forEach(dayLabel => {
+      const evs = combined.filter(e=>e.day===dayLabel);
+      if(!evs.length) return;
+      html += `<div class="dash-cal-day-hd">${dayLabel}</div>`;
+      html += evs.map(e=>`
+        <div class="dash-cal-i">
+          <span class="dash-cal-t">${e.allDay?'All day':fmt12(e.start)}</span>
+          <span class="dash-cal-n">${esc(e.summary)}</span>
+        </div>`).join('');
+    });
+    el.innerHTML = html;
   }).catch(()=>{ el.innerHTML='<span class="dash-w-sub" style="color:var(--pa)">⚠ Calendar unavailable</span>'; });
 }
 
@@ -7464,6 +7486,32 @@ function renderTimberDailyRotation(){
 }
 
 // ── STATS TAB ─────────────────────────────────────────────────────────────────
+// -- HOME TRAINING FOCUS --
+function renderHomeTrainingFocus(){
+  const el = document.getElementById('homeTrainingFocus');
+  if(!el) return;
+  try{
+    const today = new Date().getDay();
+    const cues = (typeof TRAIN_CUES !== 'undefined')
+      ? TRAIN_CUES.filter(cu=>cu.rotation&&cu.rotation.includes(today)).slice(0,3)
+      : [];
+    if(!cues.length){
+      el.innerHTML='<div style="font-size:.72rem;color:var(--tm);font-style:italic;padding:4px 0">Free practice today — pick any cue Timber loves 🐾</div>';
+      return;
+    }
+    el.innerHTML = cues.map(cu=>`
+      <div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--ll)">
+        <span style="font-size:.85rem">${cu.icon||'🎯'}</span>
+        <div style="flex:1">
+          <div style="font-size:.75rem;font-weight:800;color:var(--td)">${cu.name}</div>
+          <div style="font-size:.58rem;color:var(--tm);text-transform:capitalize">${cu.type||''}</div>
+        </div>
+      </div>`).join('');
+  }catch(e){
+    el.innerHTML='<div style="font-size:.7rem;color:var(--tm)">Open Train tab first to load cues</div>';
+  }
+}
+
 function renderStatsTab(){
   renderHeatGrid();
   // Morning streak

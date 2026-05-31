@@ -16,14 +16,14 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
 /* ── TOKENS ── */
-/* Day theme (default): lilac + matcha green
+/* Day theme (default): pastel sky blue
    Night theme: deep plum + moonlit sage — applied via body.night
    See applyTheme() in JS for auto+manual override behaviour. */
 :root{
-  /* ── Day Mode: lilac + matcha ── */
-  --bg:#f4f1f9;--bgc:#fdfcff;--bgp:#ede8f7;--td:#3b3458;--tb:#5c5278;--tm:#9b8fb0;
-  --ll:#ede8f7;--lm:#cfc4e8;--la:#9b77d4;
-  --ml:#e8f7ee;--mm:#aee8c8;--ma:#3dba87;
+  /* ── Day Mode: pastel sky blue ── */
+  --bg:#edf4ff;--bgc:#f7fbff;--bgp:#deeaf8;--td:#1c3a5e;--tb:#3a6090;--tm:#6a90b8;
+  --ll:#dde8ff;--lm:#a8c4f5;--la:#4d7ee0;
+  --ml:#d8f0f8;--mm:#96ccec;--ma:#2596c8;
   --pl:#fdf0f5;--pm:#f7c8df;--pa:#e8608f;
   --sl:#eaf3ff;--sm:#b8d8ff;--sa:#5ba0f0;
   --gl:#fdf8e8;--gm:#f7e08c;--ga:#c8940a;
@@ -31,11 +31,11 @@
   --nav-h:60px;--tab-h:56px;
   --col-r:360px;
   /* neumorphic shadow tokens */
-  --neu-light:rgba(255,255,255,.85);--neu-dark:rgba(180,165,210,.35);
+  --neu-light:rgba(255,255,255,.88);--neu-dark:rgba(120,160,220,.32);
   --neu-shadow:6px 6px 16px var(--neu-dark),-6px -6px 16px var(--neu-light);
   --neu-shadow-sm:3px 3px 8px var(--neu-dark),-3px -3px 8px var(--neu-light);
   /* breathe / watermark */
-  --breathe-a:#c8a8e8;--breathe-b:#a8d8c0;--breathe-c:#f0b8d8;
+  --breathe-a:#a0c4f8;--breathe-b:#88d0f0;--breathe-c:#c0aef5;
 }
 /* manual override still works */
 /* ── Night Mode: deep plum + moonlit sage ──
@@ -981,15 +981,7 @@ body.timer-active .desktop-layout{padding-top:70px}
 }
 body,.card,.top-nav,.tab-bar{position:relative;z-index:1}
 
-/* ── Character Watermarks ── */
-.sanrio-watermark{
-  position:fixed;bottom:calc(var(--tab-h) + 20px);right:12px;
-  z-index:2;pointer-events:none;width:80px;height:80px;
-  opacity:.08;transition:opacity .4s;
-}
-/* Cinnamoroll watermark — visible in day theme, faded in night */
-.cinna-wm{opacity:.08}
-body.night .cinna-wm{opacity:.04}
+/* ── Character Watermarks ── (watermark removed) ── */
 
 /* ── Hello Kitty Bow Accents ── */
 .hk-bow{
@@ -1209,6 +1201,20 @@ body.night .train-status.new{background:var(--pl);border-color:var(--pm);color:v
 .tb-sub{font-size:.62rem;color:var(--tm);line-height:1.4;margin-top:1px}
 .tb-prog{height:7px;background:var(--ll);border-radius:var(--rf);margin-top:7px;overflow:hidden}
 .tb-fill{height:100%;background:linear-gradient(90deg,var(--pa),var(--la));border-radius:var(--rf);transition:width .4s ease}
+/* ── TIMBER ACTIVITY LOG BUTTONS ── */
+.activity-log-btn{width:100%;padding:13px 8px;border:none;border-radius:var(--rlg);font-family:'Nunito',sans-serif;font-size:.76rem;font-weight:900;cursor:pointer;transition:transform .12s,box-shadow .2s;box-shadow:var(--neu-shadow-sm);-webkit-tap-highlight-color:transparent}
+.activity-log-btn:active{transform:scale(.95)}
+.walk-btn{background:var(--sl);color:var(--sa)}
+.walk-btn.walk-active{background:var(--sa);color:#fff;animation:pulse-walk 1.2s ease-in-out infinite}
+.train-btn{background:var(--ml);color:var(--ma)}
+.train-btn:active{background:var(--mm)}
+.feed-btn{background:var(--gl);color:var(--ga)}
+.feed-btn:active{background:var(--gm)}
+@keyframes pulse-walk{0%,100%{box-shadow:0 0 0 0 rgba(91,160,240,.4)}60%{box-shadow:0 0 0 8px rgba(91,160,240,0)}}
+.activity-meta{font-size:.6rem;color:var(--tm);text-align:center;line-height:1.5;min-height:1.5em}
+.activity-timeline-row{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid var(--ll);font-size:.72rem}
+.activity-timeline-time{color:var(--tm);min-width:52px;font-weight:700;font-size:.65rem}
+.activity-timeline-label{color:var(--td);font-weight:800}
 /* ── STATS HEAT MAP ── */
 .heat-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin:6px 0}
 .heat-cell{aspect-ratio:1;border-radius:5px;background:var(--ll);display:flex;align-items:center;justify-content:center;font-size:.44rem;font-weight:900;color:var(--tm)}
@@ -1333,34 +1339,6 @@ body.night .train-status.new{background:var(--pl);border-color:var(--pm);color:v
 <canvas id="confettiCanvas"></canvas>
 <div class="walk-indicator" id="walkIndicator" onclick="switchTab('timber')">🐾 Walk — <span id="walkTimerDisplay">0:00</span></div>
 
-<!-- Cinnamoroll watermark — light mode -->
-<svg class="sanrio-watermark cinna-wm" aria-hidden="true" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-  <!-- body -->
-  <ellipse cx="50" cy="72" rx="22" ry="16" fill="#e8f4ff" stroke="#c8a890" stroke-width="1.2"/>
-  <!-- head -->
-  <circle cx="50" cy="46" r="28" fill="#f0f8ff" stroke="#c8a890" stroke-width="1.2"/>
-  <!-- left ear - long drooping -->
-  <path d="M27,32 C18,20 12,50 20,68 C24,60 26,52 30,48 C32,40 30,34 27,32Z" fill="#ddeeff" stroke="#c8a890" stroke-width="1.2"/>
-  <!-- right ear - long drooping -->
-  <path d="M73,32 C82,20 88,50 80,68 C76,60 74,52 70,48 C68,40 70,34 73,32Z" fill="#ddeeff" stroke="#c8a890" stroke-width="1.2"/>
-  <!-- left eye -->
-  <circle cx="42" cy="46" r="5" fill="#2255aa"/>
-  <circle cx="43.5" cy="44.5" r="1.8" fill="#fff"/>
-  <!-- right eye -->
-  <circle cx="58" cy="46" r="5" fill="#2255aa"/>
-  <circle cx="59.5" cy="44.5" r="1.8" fill="#fff"/>
-  <!-- nose -->
-  <ellipse cx="50" cy="53" rx="3" ry="2" fill="#f0a0b8"/>
-  <!-- blush left -->
-  <ellipse cx="36" cy="52" rx="5" ry="3" fill="#ffb8cc" opacity=".6"/>
-  <!-- blush right -->
-  <ellipse cx="64" cy="52" rx="5" ry="3" fill="#ffb8cc" opacity=".6"/>
-  <!-- cinnamon-roll tail -->
-  <path d="M60,82 C70,80 75,72 68,68 C65,70 67,75 62,76 C58,77 56,74 58,71" fill="none" stroke="#c8a890" stroke-width="2" stroke-linecap="round"/>
-  <!-- small paws -->
-  <ellipse cx="34" cy="83" rx="6" ry="4" fill="#e8f4ff" stroke="#c8a890" stroke-width="1"/>
-  <ellipse cx="66" cy="83" rx="6" ry="4" fill="#e8f4ff" stroke="#c8a890" stroke-width="1"/>
-</svg>
 
 <!-- FLOATING TIMER BAR -->
 <div class="timer-bar" id="timerBar">
@@ -2006,19 +1984,66 @@ body.night .train-status.new{background:var(--pl);border-color:var(--pm);color:v
     </div>
   </div>
 
-  <!-- Needs-based daily checklist -->
-  <div class="card" style="margin-bottom:10px">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
-      <h3>🐾 Today's Needs</h3>
-      <button onclick="logWalkNFC()" style="background:var(--pa);color:#fff;border:none;border-radius:var(--rf);padding:6px 13px;font-family:'Nunito',sans-serif;font-size:.6rem;font-weight:900;cursor:pointer" id="walkToggleBtn">▶ Start Walk</button>
+  <!-- Activity tracker: tap-to-log + timeline -->
+  <div class="card" id="timberActivityCard" style="margin-bottom:10px">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:13px">
+      <h3 style="margin-bottom:0">🐾 Today's Activity</h3>
+      <button onclick="openPartnerModal()" style="background:none;border:1.5px solid var(--lm);border-radius:var(--rf);padding:4px 11px;font-family:'Nunito',sans-serif;font-size:.58rem;font-weight:900;color:var(--tm);cursor:pointer;display:flex;align-items:center;gap:4px" title="Share with partner">🔗 Partner</button>
     </div>
-    <div id="timberNeedsChecklist" style="display:flex;flex-direction:column;gap:6px"></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:6px">
+      <div style="display:flex;flex-direction:column;gap:5px;align-items:center">
+        <button id="walkToggleBtn" onclick="logWalkNFC()" class="activity-log-btn walk-btn">🦮 Walk</button>
+        <div id="walkActivityMeta" class="activity-meta">No walks</div>
+        <button onclick="toggleManualWalkEntry()" style="background:none;border:none;font-family:'Nunito',sans-serif;font-size:.58rem;font-weight:800;color:var(--sa);cursor:pointer;padding:0;margin-top:-2px">+ manual</button>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:5px;align-items:center">
+        <button id="trainLogBtn" onclick="logTrainingSession()" class="activity-log-btn train-btn">🎓 Train</button>
+        <div id="trainActivityMeta" class="activity-meta">No sessions</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:5px;align-items:center">
+        <button id="feedLogBtn" onclick="toggleFeedEntry()" class="activity-log-btn feed-btn">🍽️ Fed</button>
+        <div id="feedActivityMeta" class="activity-meta">No feedings</div>
+      </div>
+    </div>
+    <!-- Feed entry row (slides in when Fed is tapped) -->
+    <div id="feedEntryRow" style="display:none;margin:10px 0 4px;padding:10px;background:var(--gl);border-radius:var(--rmd)">
+      <div style="font-size:.62rem;font-weight:900;color:var(--ga);margin-bottom:7px">🍽️ Log feeding</div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <input id="feedAmountInput" class="mem-input" placeholder="Amount &amp; note… e.g. ½ cup, ate well" onkeydown="if(event.key==='Enter')confirmFeedLog()" style="flex:1;font-size:.7rem">
+        <button onclick="confirmFeedLog()" style="background:var(--ga);color:#fff;border:none;border-radius:var(--rf);padding:8px 14px;font-family:'Nunito',sans-serif;font-size:.68rem;font-weight:900;cursor:pointer;flex-shrink:0">Log</button>
+        <button onclick="toggleFeedEntry()" style="background:none;border:1px solid var(--lm);border-radius:var(--rf);padding:8px 10px;font-family:'Nunito',sans-serif;font-size:.68rem;font-weight:900;color:var(--tm);cursor:pointer;flex-shrink:0">✕</button>
+      </div>
+    </div>
+    <!-- Manual walk entry row -->
+    <div id="manualWalkRow" style="display:none;margin:10px 0 4px;padding:10px;background:var(--sl);border-radius:var(--rmd)">
+      <div style="font-size:.62rem;font-weight:900;color:var(--sa);margin-bottom:8px">🦮 Log walk manually</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
+        <div>
+          <div style="font-size:.58rem;font-weight:800;color:var(--tm);margin-bottom:3px">Duration (mins)</div>
+          <input id="manualWalkMins" type="number" min="1" max="300" placeholder="e.g. 20" class="mem-input" style="width:100%;font-size:.7rem">
+        </div>
+        <div>
+          <div style="font-size:.58rem;font-weight:800;color:var(--tm);margin-bottom:3px">Distance (optional)</div>
+          <input id="manualWalkDist" type="text" placeholder="e.g. 1.2 km" class="mem-input" style="width:100%;font-size:.7rem">
+        </div>
+      </div>
+      <div style="display:flex;gap:8px">
+        <button onclick="confirmManualWalk()" style="flex:1;background:var(--sa);color:#fff;border:none;border-radius:var(--rf);padding:9px;font-family:'Nunito',sans-serif;font-size:.7rem;font-weight:900;cursor:pointer">Log Walk</button>
+        <button onclick="toggleManualWalkEntry()" style="background:none;border:1.5px solid var(--sm);border-radius:var(--rf);padding:9px 12px;font-family:'Nunito',sans-serif;font-size:.7rem;font-weight:900;color:var(--tm);cursor:pointer">✕</button>
+      </div>
+    </div>
+    <div id="activityTimeline" style="margin-top:8px"></div>
   </div>
 
-  <!-- Walk log -->
-  <div class="card" style="margin-bottom:10px;display:none" id="walkLogCard">
-    <h3 style="margin-bottom:8px">🦮 Today's Walk Log</h3>
-    <div id="walkLogList" style="display:flex;flex-direction:column;gap:4px"></div>
+  <!-- Partner share modal -->
+  <div id="partnerModal" style="display:none;position:fixed;inset:0;z-index:300;background:rgba(0,0,0,.45);align-items:flex-end;justify-content:center" onclick="if(event.target===this)closePartnerModal()">
+    <div style="background:var(--bgc);border-radius:var(--rlg) var(--rlg) 0 0;padding:22px 20px 32px;width:100%;max-width:500px;box-shadow:0 -8px 32px rgba(0,0,0,.2)">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+        <h3 style="margin:0">🔗 Partner View</h3>
+        <button onclick="closePartnerModal()" style="background:none;border:none;font-size:1.1rem;cursor:pointer;color:var(--tm);padding:4px">✕</button>
+      </div>
+      <div id="partnerModalBody"></div>
+    </div>
   </div>
 
   <!-- Timber Memories (preserved) -->
@@ -2945,7 +2970,7 @@ window.switchTab=(tab)=>{
   if(pg)pg.classList.add('active');
   if(tb)tb.classList.add('active');
   if(tab==='home'){renderHomeCalWidget();renderDashTimberMini();renderHomeTrainingFocus();}
-  if(tab==='timber'){renderTimberNeeds();renderTimberBanner();renderMemories('memListT');renderTimberDailyRotation();}
+  if(tab==='timber'){renderTimberNeeds();renderTimberBanner();renderMemories('memListT');renderTimberDailyRotation();loadPartnerActivity();}
   if(tab==='life'){renderOrbits();renderBattery();renderMemories('memList');}
   if(tab==='cal')loadCalendar();
   if(tab==='train')renderTrainTab();
@@ -7355,32 +7380,12 @@ function saveTimberNeeds(s){ try{ localStorage.setItem(TIMBER_NEEDS_KEY, JSON.st
 function getTimberNeedDone(id){ return loadTimberNeeds().items[id]===true; }
 
 function renderTimberNeeds(){
-  const el = document.getElementById('timberNeedsChecklist');
-  if(!el) return;
-  const s = loadTimberNeeds();
-  el.innerHTML = TIMBER_NEEDS.map(n => {
-    const done = s.items[n.id]===true;
-    const walks = loadTimberWalks();
-    const totalMins = walks.reduce((acc,w)=>acc+w.mins,0);
-    let extra = '';
-    if(n.showLog && walks.length){
-      extra = `<span style="font-size:.6rem;color:var(--ma);margin-top:2px;display:block">${totalMins} min logged today</span>`;
-    }
-    return `<div class="cl-item${done?' done':''}" onclick="toggleTimberNeed('${n.id}')">
-      <span class="cl-check">${done?'✓':''}</span>
-      <span style="flex:1"><span class="cl-label">${n.icon} ${n.label}</span>${extra}</span>
-    </div>`;
-  }).join('');
-  // Update dashboard
+  // Update dashboard mini-summary and exercise banner, then render activity tracker
   renderDashTimberMini();
-  // Update exercise progress
   const walks = loadTimberWalks();
   const totalMins = walks.reduce((acc,w)=>acc+w.mins,0);
   updateTimberExerciseProg(totalMins);
-  // Show/hide walk log card
-  const card = document.getElementById('walkLogCard');
-  if(card) card.style.display = walks.length ? 'block' : 'none';
-  renderWalkLog();
+  renderTimberActivity();
 }
 
 function toggleTimberNeed(id){
@@ -7419,7 +7424,10 @@ function startWalkIndicator(){
     if(disp) disp.textContent = `${m}:${String(s).padStart(2,'0')}`;
     // Also update Timber tab if open
     const btn = document.getElementById('walkToggleBtn');
-    if(btn) btn.textContent = `⏹ Stop Walk (${m}m)`;
+    if(btn){
+      btn.textContent = `⏹ ${m}m`;
+      btn.className = 'activity-log-btn walk-btn walk-active';
+    }
   }, 1000);
 }
 
@@ -7427,8 +7435,6 @@ function stopWalkIndicator(mins){
   const ind = document.getElementById('walkIndicator');
   if(ind) ind.classList.remove('active');
   clearInterval(_walkInterval);
-  const btn = document.getElementById('walkToggleBtn');
-  if(btn) btn.textContent = '▶ Start Walk';
   // Log the walk
   const walks = loadTimberWalks();
   walks.push({ts: Date.now(), mins});
@@ -7439,7 +7445,9 @@ function stopWalkIndicator(mins){
   const s = loadTimberNeeds();
   s.items['timber-walk'] = true;
   saveTimberNeeds(s);
-  renderTimberNeeds();
+  renderTimberActivity();
+  renderDashTimberMini();
+  partnerPush();
   showToast(`🐾 Walk logged: ${mins} min!`);
 }
 
@@ -7455,20 +7463,748 @@ window.logWalkNFC = function(){
     try{ localStorage.setItem(WALK_TIMER_KEY, JSON.stringify({active:true, start:window._walkStart})); }catch(e){}
     startWalkIndicator();
     const btn = document.getElementById('walkToggleBtn');
-    if(btn) btn.textContent = '⏹ Stop Walk';
+    if(btn){
+      btn.textContent = '⏹ Stop';
+      btn.className = 'activity-log-btn walk-btn walk-active';
+    }
     showToast('🐾 Walk started!');
   }
 };
 
 function renderWalkLog(){
-  const el = document.getElementById('walkLogList');
-  if(!el) return;
-  const walks = loadTimberWalks();
-  if(!walks.length){ el.innerHTML='<p style="font-size:.68rem;color:var(--tm);font-style:italic">No walks logged yet</p>'; return; }
-  const fmt = ts => new Date(ts).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
-  el.innerHTML = walks.map(w=>`<div style="display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid var(--ll);font-size:.72rem;font-weight:700;color:var(--td)"><span style="color:var(--tm);min-width:60px">${fmt(w.ts)}</span><span>${w.mins} min 🦮</span></div>`).join('');
+  // Legacy — now handled by renderTimberActivity
+  renderTimberActivity();
 }
 
+// ── TIMBER ACTIVITY TRACKER ───────────────────────────────────────────────────
+const TIMBER_TRAIN_KEY = 'jlos_timber_trains';
+
+function loadTimberTrains(){
+  try{
+    const r = JSON.parse(localStorage.getItem(TIMBER_TRAIN_KEY)||'{}');
+    const k = getTodayKey();
+    return r.date===k ? r.sessions : [];
+  }catch(e){ return []; }
+}
+function saveTimberTrains(s){ try{ localStorage.setItem(TIMBER_TRAIN_KEY, JSON.stringify({date:getTodayKey(),sessions:s})); }catch(e){} }
+
+window.logTrainingSession = function(){
+  const sessions = loadTimberTrains();
+  sessions.push({ts: Date.now()});
+  saveTimberTrains(sessions);
+  // Mark training need done so Home tab mini-summary updates
+  const s = loadTimberNeeds();
+  s.items['timber-training'] = true;
+  saveTimberNeeds(s);
+  renderTimberActivity();
+  renderDashTimberMini();
+  partnerPush();
+  showToast('🎓 Training logged!');
+};
+
+// ── FEEDING ────────────────────────────────────────────────────────────────────
+const TIMBER_FEED_KEY = 'jlos_timber_feeds';
+
+function loadTimberFeeds(){
+  try{
+    const r = JSON.parse(localStorage.getItem(TIMBER_FEED_KEY)||'{}');
+    const k = getTodayKey();
+    return r.date===k ? r.feeds : [];
+  }catch(e){ return []; }
+}
+function saveTimberFeeds(f){ try{ localStorage.setItem(TIMBER_FEED_KEY, JSON.stringify({date:getTodayKey(),feeds:f})); }catch(e){} }
+
+window.toggleFeedEntry = function(){
+  const row = document.getElementById('feedEntryRow');
+  if(!row) return;
+  const open = row.style.display !== 'none';
+  row.style.display = open ? 'none' : 'block';
+  if(!open){
+    const manual = document.getElementById('manualWalkRow');
+    if(manual) manual.style.display='none';
+    setTimeout(()=>{ const inp=document.getElementById('feedAmountInput'); if(inp){ inp.value=''; inp.focus(); }}, 80);
+  }
+};
+
+window.toggleManualWalkEntry = function(){
+  const row = document.getElementById('manualWalkRow');
+  if(!row) return;
+  const open = row.style.display !== 'none';
+  row.style.display = open ? 'none' : 'block';
+  if(!open){
+    const feed = document.getElementById('feedEntryRow');
+    if(feed) feed.style.display='none';
+    setTimeout(()=>{ const inp=document.getElementById('manualWalkMins'); if(inp){ inp.value=''; inp.focus(); }}, 80);
+  }
+};
+
+window.confirmManualWalk = function(){
+  const minsRaw = document.getElementById('manualWalkMins')?.value;
+  const dist = document.getElementById('manualWalkDist')?.value.trim()||'';
+  const mins = minsRaw ? Math.max(1, parseInt(minsRaw)||1) : 0;
+  const walks = loadTimberWalks();
+  walks.push({ts: Date.now(), mins, dist, manual:true});
+  saveTimberWalks(walks);
+  const s = loadTimberNeeds();
+  s.items['timber-walk'] = true;
+  saveTimberNeeds(s);
+  const row = document.getElementById('manualWalkRow');
+  if(row) row.style.display = 'none';
+  renderTimberActivity();
+  renderDashTimberMini();
+  partnerPush();
+  const parts = [];
+  if(mins) parts.push(mins+' min');
+  if(dist) parts.push(dist);
+  showToast('🦮 Walk logged' + (parts.length ? ': '+parts.join(' · ') : '!'));
+};
+
+window.confirmFeedLog = function(){
+  const inp = document.getElementById('feedAmountInput');
+  const note = inp ? inp.value.trim() : '';
+  const feeds = loadTimberFeeds();
+  feeds.push({ts: Date.now(), note});
+  saveTimberFeeds(feeds);
+  // Mark feeding need done
+  const s = loadTimberNeeds();
+  s.items['timber-feeding'] = true;
+  saveTimberNeeds(s);
+  const row = document.getElementById('feedEntryRow');
+  if(row) row.style.display = 'none';
+  renderTimberActivity();
+  renderDashTimberMini();
+  partnerPush();
+  const msg = note ? `🍽️ Feeding logged: ${note}` : '🍽️ Feeding logged!';
+  showToast(msg);
+};
+
+function renderTimberActivity(){
+  const walks = loadTimberWalks();
+  const trains = loadTimberTrains();
+  const feeds = loadTimberFeeds();
+  const fmt = ts => new Date(ts).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+
+  // Walk button state + meta
+  const walkBtn = document.getElementById('walkToggleBtn');
+  if(walkBtn){
+    if(window._walkStart){
+      walkBtn.className = 'activity-log-btn walk-btn walk-active';
+      // text updated by interval
+    } else {
+      walkBtn.className = 'activity-log-btn walk-btn';
+      walkBtn.textContent = '🦮 Walk';
+    }
+  }
+  const walkMeta = document.getElementById('walkActivityMeta');
+  if(walkMeta){
+    if(walks.length){
+      const last = walks[walks.length-1];
+      const totalMins = walks.reduce((a,w)=>a+w.mins,0);
+      walkMeta.textContent = walks.length===1
+        ? `${totalMins} min · ${fmt(last.ts)}`
+        : `${walks.length}× · ${totalMins} min`;
+    } else {
+      walkMeta.textContent = 'No walks';
+    }
+  }
+
+  // Train button meta
+  const trainMeta = document.getElementById('trainActivityMeta');
+  if(trainMeta){
+    if(trains.length){
+      const last = trains[trains.length-1];
+      trainMeta.textContent = trains.length===1
+        ? `1 session · ${fmt(last.ts)}`
+        : `${trains.length} sessions`;
+    } else {
+      trainMeta.textContent = 'No sessions';
+    }
+  }
+
+  // Feed button meta
+  const feedMeta = document.getElementById('feedActivityMeta');
+  if(feedMeta){
+    if(feeds.length){
+      const last = feeds[feeds.length-1];
+      feedMeta.textContent = feeds.length===1
+        ? `1 meal · ${fmt(last.ts)}`
+        : `${feeds.length} meals`;
+    } else {
+      feedMeta.textContent = 'No feedings';
+    }
+  }
+
+  // Combined timeline (newest first)
+  const tl = document.getElementById('activityTimeline');
+  if(!tl) return;
+
+    const walkLabel = w => {
+    const parts = [];
+    if(w.mins) parts.push(w.mins+' min');
+    if(w.dist) parts.push(w.dist);
+    return '🦮 Walk' + (parts.length ? ' · '+parts.join(' · ') : '');
+  };
+
+  let events = [
+    ...walks.map(w  => ({ts:w.ts, label:walkLabel(w), by:'you'})),
+    ...trains.map(t => ({ts:t.ts, label:'🎓 Training session', by:'you'})),
+    ...feeds.map(f  => ({ts:f.ts, label: f.note ? `🍽️ Fed — ${f.note}` : '🍽️ Fed', by:'you'})),
+  ];
+  // Merge partner activity if cached
+  const partnerCache = window._partnerActivityCache;
+  if(partnerCache && Array.isArray(partnerCache)){
+    events = events.concat(partnerCache.map(e=>({...e, by:'partner'})));
+  }
+  events.sort((a,b) => b.ts - a.ts);
+
+  if(!events.length){
+    tl.innerHTML = '<p style="font-size:.66rem;color:var(--tm);font-style:italic;padding:4px 0 2px">Tap a button above to log today's first activity ✨</p>';
+    return;
+  }
+
+  const byBadge = by => by==='partner'
+    ? '<span style="font-size:.55rem;font-weight:900;color:var(--pa);background:var(--pl);border-radius:var(--rf);padding:1px 6px;margin-left:6px;flex-shrink:0">👥 partner</span>'
+    : '';
+
+  tl.innerHTML =
+    '<div style="font-size:.58rem;font-weight:900;color:var(--tm);letter-spacing:.06em;text-transform:uppercase;margin-bottom:6px">Today</div>' +
+    events.map(e =>
+      `<div class="activity-timeline-row">
+        <span class="activity-timeline-time">${fmt(e.ts)}</span>
+        <span class="activity-timeline-label" style="flex:1">${e.label}</span>${byBadge(e.by)}
+      </div>`
+    ).join('');
+
+  // Also keep exercise banner in sync
+  const totalMins = walks.reduce((a,w)=>a+w.mins,0);
+  updateTimberExerciseProg(totalMins);
+}
+
+// ── PARTNER GIST SYNC ──────────────────────────────────────────────────────────
+const PARTNER_GIST_ID_KEY  = 'jlos_partner_gist_id';
+const PARTNER_GIST_RAW_KEY = 'jlos_partner_raw_url';
+const PARTNER_FILE = 'timber-today.json';
+const PARTNER_LOG_FILE = 'timber-partner.json';
+
+// Fetch partner's logged activity and cache it for renderTimberActivity
+async function loadPartnerActivity(){
+  const gistId = localStorage.getItem(PARTNER_GIST_ID_KEY)||'';
+  const token = _getGistToken();
+  if(!gistId || !token) return;
+  try{
+    const r = await fetch('https://api.github.com/gists/'+gistId, {headers:{'Authorization':'token '+token}});
+    if(!r.ok) return;
+    const d = await r.json();
+    const raw = d.files?.[PARTNER_LOG_FILE]?.content;
+    if(raw){
+      const parsed = JSON.parse(raw);
+      const todayKey = new Date().toISOString().slice(0,10);
+      window._partnerActivityCache = (parsed.date===todayKey ? parsed.logs : []) || [];
+      renderTimberActivity(); // re-render with partner data
+    }
+  }catch(e){ /* silent — partner data is bonus */ }
+}
+
+function buildPartnerPayload(){
+  const walks = loadTimberWalks();
+  const trains = loadTimberTrains();
+  const feeds = loadTimberFeeds();
+  const fmt = ts => new Date(ts).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+  const today = new Date().toLocaleDateString([],{weekday:'long',month:'long',day:'numeric'});
+  // Today's training rotation
+  let trainingFocus = [];
+  try{
+    const dow = new Date().getDay();
+    trainingFocus = TRAIN_CUES
+      .filter(c=>c.rotation&&c.rotation.includes(dow))
+      .slice(0,4)
+      .map(c=>({
+        name: c.name,
+        icon: c.icon||'🎯',
+        cue: c.cue||'',
+        howTo: c.howTo||'',
+        status: (getTrainStatuses()[c.id]||c.status_default||'new'),
+        tip: c.note||''
+      }));
+  }catch(e){}
+  const statuses = getTrainStatuses();
+  const allSkills = [];
+  try{
+    TRAIN_CUES.forEach(c=>{
+      allSkills.push({name:c.name, icon:c.icon||'🎯', cue:c.cue||'', howTo:c.howTo||'', status:statuses[c.id]||c.status_default||'new', category:c.category||'cue', tip:c.note||''});
+    });
+  }catch(e){}
+  return {
+    date: today,
+    updated: new Date().toISOString(),
+    walks: walks.map(w=>({time:fmt(w.ts), mins:w.mins, dist:w.dist||'', ts:w.ts})),
+    training: trains.map(t=>({time:fmt(t.ts), ts:t.ts})),
+    feedings: feeds.map(f=>({time:fmt(f.ts), note:f.note||'', ts:f.ts})),
+    totalWalkMins: walks.reduce((a,w)=>a+w.mins,0),
+    trainingFocus,
+    allSkills,
+  };
+}
+
+async function partnerPush(){
+  const token = _getGistToken();
+  const gistId = localStorage.getItem(PARTNER_GIST_ID_KEY)||'';
+  if(!token || !gistId) return;
+  try{
+    const content = JSON.stringify(buildPartnerPayload(), null, 2);
+    await fetch(`https://api.github.com/gists/${gistId}`,{
+      method:'PATCH',
+      headers:{'Authorization':'token '+token,'Content-Type':'application/json'},
+      body: JSON.stringify({files:{[PARTNER_FILE]:{content}}})
+    });
+  }catch(e){ /* silent */ }
+}
+
+async function createPartnerGist(){
+  const token = _getGistToken();
+  if(!token){ showToast('⚠️ Set up Gist sync first (tap the sync icon in the header)'); return null; }
+  const content = JSON.stringify(buildPartnerPayload(), null, 2);
+  try{
+    const r = await fetch('https://api.github.com/gists',{
+      method:'POST',
+      headers:{'Authorization':'token '+token,'Content-Type':'application/json'},
+      body: JSON.stringify({
+        description:'Timber\'s Daily Activity Log — shared view',
+        public: true,
+        files:{[PARTNER_FILE]:{content}}
+      })
+    });
+    if(!r.ok) throw new Error('API error '+r.status);
+    const data = await r.json();
+    const gistId = data.id;
+    const ownerLogin = data.owner?.login || '';
+    const rawUrl = `https://gist.githubusercontent.com/${ownerLogin}/${gistId}/raw/${PARTNER_FILE}`;
+    localStorage.setItem(PARTNER_GIST_ID_KEY, gistId);
+    localStorage.setItem(PARTNER_GIST_RAW_KEY, rawUrl);
+    return rawUrl;
+  }catch(e){
+    showToast('❌ Could not create partner link: '+e.message);
+    return null;
+  }
+}
+
+window.openPartnerModal = function(){
+  const modal = document.getElementById('partnerModal');
+  if(modal){ modal.style.display='flex'; renderPartnerModal(); }
+};
+window.closePartnerModal = function(){
+  const modal = document.getElementById('partnerModal');
+  if(modal) modal.style.display='none';
+};
+
+function renderPartnerModal(){
+  const body = document.getElementById('partnerModalBody');
+  if(!body) return;
+  const rawUrl = localStorage.getItem(PARTNER_GIST_RAW_KEY)||'';
+  const token = _getGistToken();
+
+  if(!token){
+    body.innerHTML = `
+      <p style="font-size:.72rem;color:var(--tm);line-height:1.6;margin-bottom:14px">To enable partner sharing, you first need to set up Gist sync. Tap the <strong>sync icon</strong> in the top header and connect your GitHub token.</p>
+      <button onclick="closePartnerModal();openGistModal()" style="width:100%;background:var(--la);color:#fff;border:none;border-radius:var(--rf);padding:12px;font-family:'Nunito',sans-serif;font-size:.72rem;font-weight:900;cursor:pointer">Set up Gist sync first →</button>`;
+    return;
+  }
+
+  if(!rawUrl){
+    body.innerHTML = `
+      <p style="font-size:.72rem;color:var(--tm);line-height:1.6;margin-bottom:6px">Create a <strong>public partner link</strong> — your partner saves the <code style="background:var(--ll);padding:1px 5px;border-radius:4px">partner-view.html</code> file and bookmarks it. It shows Timber's live activity, refreshing automatically.</p>
+      <p style="font-size:.66rem;color:var(--tm);line-height:1.5;margin-bottom:14px">One-time setup. After this, every walk, training, and feeding you log syncs automatically.</p>
+      <button id="createPartnerBtn" onclick="doCreatePartner()" style="width:100%;background:var(--la);color:#fff;border:none;border-radius:var(--rf);padding:13px;font-family:'Nunito',sans-serif;font-size:.76rem;font-weight:900;cursor:pointer">✨ Create Partner Link</button>`;
+  } else {
+    body.innerHTML = `
+      <p style="font-size:.68rem;color:var(--ma);font-weight:900;margin-bottom:10px">✅ Partner sharing is active — syncs automatically when you log activity.</p>
+      <p style="font-size:.66rem;color:var(--tm);margin-bottom:6px">1. Save <strong>partner-view.html</strong> to your partner's phone once (share via AirDrop / email).</p>
+      <p style="font-size:.66rem;color:var(--tm);margin-bottom:14px">2. They open it — done. It refreshes every 5 minutes automatically.</p>
+      <button onclick="downloadPartnerView()" style="width:100%;background:var(--sa);color:#fff;border:none;border-radius:var(--rf);padding:12px;font-family:'Nunito',sans-serif;font-size:.72rem;font-weight:900;cursor:pointer;margin-bottom:10px">📥 Download partner-view.html</button>
+      <button onclick="copyPartnerUrl()" style="width:100%;background:var(--ll);color:var(--la);border:1.5px solid var(--lm);border-radius:var(--rf);padding:11px;font-family:'Nunito',sans-serif;font-size:.68rem;font-weight:900;cursor:pointer;margin-bottom:10px">📋 Copy raw data link</button>
+      <button onclick="resetPartnerGist()" style="background:none;border:none;font-family:'Nunito',sans-serif;font-size:.62rem;color:var(--tm);cursor:pointer;display:block;margin:0 auto">Reset partner link</button>`;
+  }
+}
+
+window.doCreatePartner = async function(){
+  const btn = document.getElementById('createPartnerBtn');
+  if(btn){ btn.textContent='Creating…'; btn.disabled=true; }
+  const url = await createPartnerGist();
+  if(url) renderPartnerModal();
+};
+
+window.copyPartnerUrl = function(){
+  const url = localStorage.getItem(PARTNER_GIST_RAW_KEY)||'';
+  if(!url) return;
+  navigator.clipboard.writeText(url).then(()=>showToast('📋 Link copied!')).catch(()=>{
+    prompt('Copy this link:', url);
+  });
+};
+
+window.resetPartnerGist = function(){
+  if(!confirm('Remove partner link? Your partner\'s viewer will stop working.')) return;
+  localStorage.removeItem(PARTNER_GIST_ID_KEY);
+  localStorage.removeItem(PARTNER_GIST_RAW_KEY);
+  renderPartnerModal();
+};
+
+window.downloadPartnerView = function(){
+  const rawUrl = localStorage.getItem(PARTNER_GIST_RAW_KEY)||'';
+  const gistId = localStorage.getItem(PARTNER_GIST_ID_KEY)||'';
+  const token = _getGistToken();
+  if(!rawUrl){ showToast('⚠️ Create a partner link first'); return; }
+  const html = generatePartnerViewHtml(rawUrl, gistId, token);
+  const blob = new Blob([html],{type:'text/html'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'partner-view.html';
+  a.click();
+  setTimeout(()=>URL.revokeObjectURL(a.href), 5000);
+  showToast('📥 Downloading partner-view.html…');
+};
+
+function generatePartnerViewHtml(rawUrl, gistId, token){
+  const safeRaw = rawUrl.replace(/`/g,'\\`').replace(/\$/g,'\\$');
+  const safeGistId = (gistId||'').replace(/`/g,'\\`');
+  const safeToken = (token||'').replace(/`/g,'\\`');
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Timber's Day \u{1F43E}</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:#edf4ff;color:#1c3a5e;min-height:100vh;padding:0 0 50px}
+.top-bar{background:linear-gradient(135deg,#a8c4f5,#96ccec);padding:20px 18px 16px;text-align:center}
+.top-bar h1{font-size:1.25rem;font-weight:800;color:#1c3a5e;margin-bottom:2px}
+.sub{font-size:.72rem;color:#3a6090}
+.tabs{display:flex;background:#dde8ff;border-radius:0}
+.tab-btn{flex:1;padding:11px 0;border:none;background:none;font-family:inherit;font-size:.72rem;font-weight:800;color:#6a90b8;cursor:pointer;transition:all .2s}
+.tab-btn.active{background:#f7fbff;color:#4d7ee0;border-bottom:2px solid #4d7ee0}
+.tab-pane{display:none;padding:0 0 60px}
+.tab-pane.active{display:block}
+.card{background:#f7fbff;border-radius:18px;padding:16px;margin:12px 14px;box-shadow:4px 4px 12px rgba(120,160,220,.2),-4px -4px 10px rgba(255,255,255,.8)}
+h2{font-size:.85rem;font-weight:800;color:#1c3a5e;margin-bottom:12px}
+.row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid #dde8ff;font-size:.78rem}
+.row:last-child{border-bottom:none}
+.time{color:#6a90b8;min-width:58px;font-weight:700;font-size:.68rem}
+.event{font-weight:700;color:#1c3a5e;flex:1}
+.by-badge{font-size:.54rem;font-weight:900;color:#e8608f;background:#fdf0f5;border-radius:999px;padding:1px 7px;flex-shrink:0}
+.empty{font-size:.72rem;color:#6a90b8;font-style:italic;padding:8px 0}
+.stat-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:12px 14px 0}
+.stat{background:#f7fbff;border-radius:14px;padding:12px 10px;text-align:center;box-shadow:4px 4px 12px rgba(120,160,220,.2)}
+.stat-num{font-size:1.4rem;font-weight:900;color:#4d7ee0;line-height:1}
+.stat-lbl{font-size:.6rem;color:#6a90b8;margin-top:3px;font-weight:700}
+.log-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
+.log-btn{width:100%;padding:12px 6px;border:none;border-radius:14px;font-family:inherit;font-size:.74rem;font-weight:900;cursor:pointer;transition:transform .1s;box-shadow:3px 3px 8px rgba(120,160,220,.2)}
+.log-btn:active{transform:scale(.95)}
+.log-btn.walk{background:#eaf3ff;color:#5ba0f0}
+.log-btn.feed{background:#fdf8e8;color:#c8940a}
+.log-btn.train{background:#d8f0f8;color:#2596c8;grid-column:1/-1}
+.meta-txt{font-size:.6rem;color:#6a90b8;text-align:center;margin-top:3px;min-height:1em}
+.entry-row{display:none;background:#edf4ff;border-radius:12px;padding:10px;margin-bottom:10px;gap:8px}
+.entry-row.open{display:flex;align-items:center}
+input.log-input{flex:1;background:#fff;border:1.5px solid #a8c4f5;border-radius:10px;padding:8px 10px;font-family:inherit;font-size:.72rem;color:#1c3a5e;outline:none}
+.confirm-btn{background:#5ba0f0;color:#fff;border:none;border-radius:10px;padding:8px 14px;font-family:inherit;font-size:.7rem;font-weight:900;cursor:pointer}
+.skill-card{background:#f7fbff;border-radius:14px;padding:12px;margin-bottom:8px;border-left:3px solid #a8c4f5;box-shadow:2px 2px 8px rgba(120,160,220,.15)}
+.skill-name{font-size:.8rem;font-weight:900;color:#1c3a5e;margin-bottom:4px}
+.skill-cue{font-size:.72rem;color:#6a90b8;margin-bottom:6px}
+.skill-how{font-size:.7rem;color:#1c3a5e;line-height:1.5;margin-bottom:4px}
+.skill-tip{font-size:.66rem;color:#6a90b8;font-style:italic}
+.skill-status{display:inline-block;font-size:.58rem;font-weight:900;padding:2px 8px;border-radius:999px;margin-bottom:6px}
+.skill-status.new{background:#ede8f7;color:#9b77d4}
+.skill-status.practicing{background:#d8f0f8;color:#2596c8}
+.skill-status.mastered{background:#d8f7ee;color:#3dba87}
+.section-hd{font-size:.62rem;font-weight:900;color:#6a90b8;letter-spacing:.06em;text-transform:uppercase;margin:14px 14px 2px}
+.refresh-bar{text-align:center;padding:12px 0;font-size:.64rem;color:#6a90b8}
+.status-badge{display:inline-block;padding:2px 10px;border-radius:999px;font-size:.62rem;font-weight:900;background:#d8f0f8;color:#2596c8;margin-bottom:4px}
+.status-badge.err{background:#ffe8e8;color:#c84444}
+.filter-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.filter-btn{background:#edf4ff;border:1.5px solid #a8c4f5;border-radius:999px;padding:4px 12px;font-family:inherit;font-size:.64rem;font-weight:800;color:#4d7ee0;cursor:pointer}
+.filter-btn.active{background:#4d7ee0;color:#fff;border-color:#4d7ee0}
+@media(prefers-color-scheme:dark){
+  body{background:#1a0f24;color:#f0e8f5}
+  .card,.stat,.skill-card{background:#251735;box-shadow:4px 4px 14px rgba(0,0,0,.4),-2px -2px 8px rgba(80,50,110,.3)}
+  .top-bar{background:linear-gradient(135deg,#46305a,#2c4a3e)}
+  .top-bar h1,.event,.skill-name,.skill-how{color:#f0e8f5}
+  .sub,.time,.stat-lbl,.empty,.skill-cue,.skill-tip,.meta-txt,.section-hd,.refresh-bar{color:#8a7a98}
+  .stat-num{color:#b896d6}
+  .row{border-bottom-color:#2e1d3e}
+  .tabs{background:#1f1330}
+  .tab-btn{color:#8a7a98}
+  .tab-btn.active{background:#251735;color:#b896d6;border-bottom-color:#b896d6}
+  .log-btn.walk{background:#15202e;color:#88a8d4}
+  .log-btn.feed{background:#2a2410;color:#e8c060}
+  .log-btn.train{background:#1a2e26;color:#8fc4a8}
+  input.log-input{background:#2e1d3e;border-color:#46305a;color:#f0e8f5}
+  .entry-row{background:#1f1330}
+  .filter-btn{background:#1f1330;border-color:#46305a;color:#b896d6}
+  .filter-btn.active{background:#46305a;color:#f0e8f5}
+  .skill-card{border-left-color:#46305a}
+}
+</style>
+</head>
+<body>
+<div class="top-bar">
+  <div style="font-size:2rem;margin-bottom:5px">\u{1F43E}</div>
+  <h1>Timber's Day</h1>
+  <div class="sub" id="dateLabel">Loading…</div>
+</div>
+<div class="tabs">
+  <button class="tab-btn active" onclick="showTab('today')">Today</button>
+  <button class="tab-btn" onclick="showTab('log')">Log Activity</button>
+  <button class="tab-btn" onclick="showTab('training')">Training</button>
+</div>
+
+<!-- TODAY TAB -->
+<div class="tab-pane active" id="tab-today">
+  <div class="stat-row">
+    <div class="stat"><div class="stat-num" id="statWalks">—</div><div class="stat-lbl">Walks</div></div>
+    <div class="stat"><div class="stat-num" id="statMins">—</div><div class="stat-lbl">Walk mins</div></div>
+    <div class="stat"><div class="stat-num" id="statFeeds">—</div><div class="stat-lbl">Meals</div></div>
+  </div>
+  <div class="card">
+    <h2>📋 Timeline</h2>
+    <div id="timelineBody"><div class="empty">Loading…</div></div>
+  </div>
+</div>
+
+<!-- LOG ACTIVITY TAB -->
+<div class="tab-pane" id="tab-log">
+  <div class="card">
+    <h2 style="margin-bottom:4px">Log for Timber</h2>
+    <p style="font-size:.68rem;color:#6a90b8;margin-bottom:14px">Your logs sync to Jasmine's app automatically.</p>
+    <div class="log-grid">
+      <div>
+        <button class="log-btn walk" onclick="toggleEntry('walkEntry')">\u{1F9AE} Log Walk</button>
+        <div class="meta-txt" id="pWalkMeta">No walks today</div>
+      </div>
+      <div>
+        <button class="log-btn feed" onclick="toggleEntry('feedEntry')">\u{1F37D}️ Log Feeding</button>
+        <div class="meta-txt" id="pFeedMeta">No feedings today</div>
+      </div>
+      <button class="log-btn train" onclick="logPartnerTrain()">\u{1F393} Log Training Session</button>
+    </div>
+    <!-- Walk entry -->
+    <div class="entry-row" id="walkEntry">
+      <input class="log-input" id="pWalkMins" type="number" min="1" max="300" placeholder="Mins (e.g. 20)">
+      <input class="log-input" id="pWalkDist" type="text" placeholder="Distance (optional)">
+      <button class="confirm-btn" onclick="confirmPartnerWalk()">Log</button>
+    </div>
+    <!-- Feed entry -->
+    <div class="entry-row" id="feedEntry">
+      <input class="log-input" id="pFeedNote" type="text" placeholder="Amount / note… e.g. ½ cup" onkeydown="if(event.key==='Enter')confirmPartnerFeed()">
+      <button class="confirm-btn" style="background:#c8940a" onclick="confirmPartnerFeed()">Log</button>
+    </div>
+    <div id="partnerSyncStatus" style="font-size:.64rem;color:#6a90b8;text-align:center;margin-top:8px"></div>
+  </div>
+</div>
+
+<!-- TRAINING TAB -->
+<div class="tab-pane" id="tab-training">
+  <div class="card" id="focusCard">
+    <h2>Today's Focus</h2>
+    <div id="focusList"><div class="empty">Loading…</div></div>
+  </div>
+  <div class="section-hd">All Skills</div>
+  <div style="padding:0 14px;margin-top:6px">
+    <div class="filter-row">
+      <button class="filter-btn active" onclick="filterSkills('all',this)">All</button>
+      <button class="filter-btn" onclick="filterSkills('new',this)">\u{1F331} New</button>
+      <button class="filter-btn" onclick="filterSkills('practicing',this)">\u{1F504} Practicing</button>
+      <button class="filter-btn" onclick="filterSkills('mastered',this)">⭐ Mastered</button>
+    </div>
+  </div>
+  <div id="allSkillsList" style="padding:0 14px 20px"></div>
+</div>
+
+<div class="refresh-bar">
+  <div class="status-badge" id="statusBadge">Loading…</div><br>
+  <button onclick="fetchData()" style="background:none;border:1.5px solid #a8c4f5;border-radius:999px;padding:5px 14px;font-family:inherit;font-size:.64rem;font-weight:800;color:#4d7ee0;cursor:pointer;margin-top:6px">↻ Refresh</button>
+</div>
+
+<script>
+const RAW_URL   = '${safeRaw}';
+const GIST_ID   = '${safeGistId}';
+const TOKEN     = '${safeToken}';
+const PARTNER_FILE = 'timber-partner.json';
+let _data = null;
+let _partnerLogs = [];
+let _refreshTimer = null;
+let _activeFilter = 'all';
+
+function showTab(t){
+  document.querySelectorAll('.tab-pane').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tab-'+t).classList.add('active');
+  event.target.classList.add('active');
+}
+
+function toggleEntry(id){
+  const el = document.getElementById(id);
+  const open = el.classList.contains('open');
+  document.querySelectorAll('.entry-row').forEach(r=>r.classList.remove('open'));
+  if(!open) el.classList.add('open');
+}
+
+function fmtTime(ts){ return new Date(ts).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}); }
+
+// ── Load Jasmine's data ──
+async function fetchData(){
+  const badge = document.getElementById('statusBadge');
+  badge.textContent = 'Refreshing…'; badge.className='status-badge';
+  try{
+    const r = await fetch(RAW_URL+'?t='+Date.now());
+    if(!r.ok) throw new Error('HTTP '+r.status);
+    _data = await r.json();
+    await fetchPartnerLogs();
+    render(_data);
+    const t = new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+    badge.textContent = 'Updated '+t; badge.className='status-badge';
+  }catch(e){
+    badge.textContent = 'Could not load — check connection'; badge.className='status-badge err';
+  }
+  clearInterval(_refreshTimer);
+  _refreshTimer = setInterval(fetchData, 5*60*1000);
+}
+
+// ── Load partner logs ──
+async function fetchPartnerLogs(){
+  if(!GIST_ID || !TOKEN) return;
+  try{
+    const r = await fetch('https://api.github.com/gists/'+GIST_ID, {headers:{'Authorization':'token '+TOKEN}});
+    if(!r.ok) return;
+    const d = await r.json();
+    const raw = d.files?.[PARTNER_FILE]?.content;
+    if(raw){
+      const parsed = JSON.parse(raw);
+      const todayKey = new Date().toISOString().slice(0,10);
+      _partnerLogs = (parsed.date===todayKey ? parsed.logs : []) || [];
+    }
+  }catch(e){ _partnerLogs = []; }
+}
+
+// ── Render ──
+function render(d){
+  document.getElementById('dateLabel').textContent = d.date||'';
+  document.getElementById('statWalks').textContent = (d.walks||[]).length;
+  document.getElementById('statMins').textContent = d.totalWalkMins||0;
+  document.getElementById('statFeeds').textContent = (d.feedings||[]).length;
+  renderTimeline(d);
+  renderTraining(d);
+  updatePartnerMeta();
+}
+
+function renderTimeline(d){
+  const events = [
+    ...(d.walks||[]).map(w=>({ts:w.ts, label:'\u{1F9AE} Walk'+(w.mins?' · '+w.mins+' min':'')+(w.dist?' · '+w.dist:''), by:'jasmine'})),
+    ...(d.training||[]).map(t=>({ts:t.ts, label:'\u{1F393} Training session', by:'jasmine'})),
+    ...(d.feedings||[]).map(f=>({ts:f.ts, label:f.note?'\u{1F37D}️ Fed — '+f.note:'\u{1F37D}️ Fed', by:'jasmine'})),
+    ..._partnerLogs.map(e=>({...e, by:'partner'})),
+  ].sort((a,b)=>b.ts-a.ts);
+
+  const body = document.getElementById('timelineBody');
+  if(!events.length){ body.innerHTML='<div class="empty">Nothing logged yet today ✨</div>'; return; }
+  body.innerHTML = events.map(e=>'<div class="row"><span class="time">'+fmtTime(e.ts)+'</span><span class="event">'+e.label+'</span>'+(e.by==='partner'?'<span class="by-badge">\u{1F465} you</span>':'')+'</div>').join('');
+}
+
+function renderTraining(d){
+  const focus = d.trainingFocus||[];
+  const focusList = document.getElementById('focusList');
+  if(!focus.length){ focusList.innerHTML='<div class="empty">No focus rotation today — free practice! \u{1F43E}</div>'; }
+  else{
+    focusList.innerHTML = '<p style="font-size:.68rem;color:#6a90b8;margin-bottom:10px">Keep sessions 5–10 min. Always end on a win! Mark with “yes!” within 1–2 sec.</p>' +
+      focus.map(s=>`<div class="skill-card">
+        <div class="skill-name">${s.icon} ${s.name}</div>
+        <div class="skill-cue"><strong>Cue:</strong> ${s.cue}</div>
+        <div class="skill-how">${s.howTo}</div>
+        ${s.tip?'<div class="skill-tip">'+s.tip+'</div>':''}
+      </div>`).join('');
+  }
+  renderAllSkills(d.allSkills||[]);
+}
+
+let _allSkills = [];
+function renderAllSkills(skills){
+  _allSkills = skills;
+  filterSkills(_activeFilter, null);
+}
+
+function filterSkills(f, btn){
+  _activeFilter = f;
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+  const list = document.getElementById('allSkillsList');
+  const filtered = f==='all' ? _allSkills : _allSkills.filter(s=>s.status===f);
+  if(!filtered.length){ list.innerHTML='<div class="empty" style="padding:16px 0">No skills in this category yet.</div>'; return; }
+  const statusLabel = {new:'\u{1F331} New',practicing:'\u{1F504} Practicing',mastered:'⭐ Mastered'};
+  list.innerHTML = filtered.map(s=>`<div class="skill-card">
+    <div class="skill-name">${s.icon} ${s.name}</div>
+    <span class="skill-status ${s.status}">${statusLabel[s.status]||s.status}</span>
+    <div class="skill-cue"><strong>Cue:</strong> ${s.cue}</div>
+    <div class="skill-how">${s.howTo}</div>
+    ${s.tip?'<div class="skill-tip">'+s.tip+'</div>':''}
+  </div>`).join('');
+}
+
+// ── Partner meta text ──
+function updatePartnerMeta(){
+  const myWalks = _partnerLogs.filter(e=>e.type==='walk');
+  const myFeeds = _partnerLogs.filter(e=>e.type==='feed');
+  document.getElementById('pWalkMeta').textContent = myWalks.length ? myWalks.length+'x today' : 'No walks today';
+  document.getElementById('pFeedMeta').textContent = myFeeds.length ? myFeeds.length+' meal'+(myFeeds.length>1?'s':'')+ ' today' : 'No feedings today';
+}
+
+// ── Partner logging ──
+async function pushPartnerLog(entry){
+  if(!GIST_ID || !TOKEN){ showSync('⚠️ No write access — re-download partner view'); return; }
+  const todayKey = new Date().toISOString().slice(0,10);
+  _partnerLogs.push(entry);
+  const payload = {date:todayKey, logs:_partnerLogs};
+  showSync('Syncing…');
+  try{
+    const r = await fetch('https://api.github.com/gists/'+GIST_ID,{
+      method:'PATCH',
+      headers:{'Authorization':'token '+TOKEN,'Content-Type':'application/json'},
+      body: JSON.stringify({files:{[PARTNER_FILE]:{content:JSON.stringify(payload,null,2)}}})
+    });
+    if(!r.ok) throw new Error(r.status);
+    showSync('✅ Synced!');
+    if(_data) renderTimeline(_data);
+    updatePartnerMeta();
+  }catch(e){ showSync('❌ Sync failed — check connection'); _partnerLogs.pop(); }
+}
+
+function showSync(msg){ const el=document.getElementById('partnerSyncStatus'); if(el) el.textContent=msg; setTimeout(()=>{ if(el) el.textContent=''; },3000); }
+
+function confirmPartnerWalk(){
+  const mins = parseInt(document.getElementById('pWalkMins').value)||0;
+  const dist = document.getElementById('pWalkDist').value.trim()||'';
+  const label = '\u{1F9AE} Walk'+(mins?' · '+mins+' min':'')+(dist?' · '+dist:'');
+  pushPartnerLog({ts:Date.now(), type:'walk', label, mins, dist});
+  document.getElementById('walkEntry').classList.remove('open');
+  document.getElementById('pWalkMins').value='';
+  document.getElementById('pWalkDist').value='';
+}
+
+function confirmPartnerFeed(){
+  const note = document.getElementById('pFeedNote').value.trim()||'';
+  const label = note ? '\u{1F37D}️ Fed — '+note : '\u{1F37D}️ Fed';
+  pushPartnerLog({ts:Date.now(), type:'feed', label, note});
+  document.getElementById('feedEntry').classList.remove('open');
+  document.getElementById('pFeedNote').value='';
+}
+
+function logPartnerTrain(){
+  pushPartnerLog({ts:Date.now(), type:'train', label:'\u{1F393} Training session'});
+}
+
+fetchData();
+<\/script>
+</body>
+</html>`;
+}
 // ── TIMBER EXERCISE BANNER ────────────────────────────────────────────────────
 const TIMBER_BDAY = new Date(2025, 11, 30); // Dec 30 2025
 
@@ -7479,459 +8215,4 @@ function renderTimberBanner(){
   const ageMo = Math.floor(ageMonths);
   const targetMinsPerSession = ageMo * 5;
   const targetTotal = targetMinsPerSession * 2;
-  const walks = loadTimberWalks();
-  const totalMins = walks.reduce((acc,w)=>acc+w.mins,0);
-  const pct = Math.min(100, targetTotal > 0 ? Math.round(totalMins/targetTotal*100) : 0);
-
-  const titleEl = document.getElementById('timberAgeTitle');
-  const subEl   = document.getElementById('timberAgeSub');
-  const progEl  = document.getElementById('timberExerciseProg');
-  if(titleEl) titleEl.textContent = `Timber — ${ageMo} months old 🐾`;
-  if(subEl)   subEl.textContent = `Recommended: ${targetMinsPerSession} min × 2 daily (${targetTotal} min total) · ${totalMins} min logged today`;
-
-  // Over-exercise warning for young pup
-  if(totalMins > targetTotal * 1.5 && ageMo < 6){
-    if(subEl) subEl.textContent += ' · ⚠️ Consider resting — young joints!';
-  }
-  updateTimberExerciseProg(totalMins);
-}
-
-function updateTimberExerciseProg(totalMins){
-  const ageMs = new Date() - TIMBER_BDAY;
-  const ageMo = Math.floor(ageMs / (30.44 * 24 * 3600 * 1000));
-  const targetTotal = ageMo * 5 * 2;
-  const pct = targetTotal > 0 ? Math.min(100, Math.round(totalMins/targetTotal*100)) : 0;
-  const el = document.getElementById('timberExerciseProg');
-  if(el) el.style.width = pct + '%';
-}
-
-function initTimberMemories(){
-  renderMemories('memListT');
-  initDatetimeInputs();
-}
-
-function renderTimberDailyRotation(){
-  const el = document.getElementById('timberDailyRotation');
-  if(!el) return;
-  // Re-use training rotation from Train tab
-  try{
-    const today = new Date().getDay();
-    const todayCues = TRAIN_CUES.filter(c=>c.rotation&&c.rotation.includes(today)).slice(0,3);
-    if(!todayCues.length){ el.innerHTML='<div style="font-size:.7rem;color:var(--tm);font-style:italic;padding:8px 0">No specific rotation today — free practice!</div>'; return; }
-    el.innerHTML = '<div class="train-rotation-day" style="font-size:.72rem;font-weight:900;margin-bottom:6px">Today\'s Cues</div>' +
-      todayCues.map(cu=>`<div style="display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid var(--ll);font-size:.76rem;font-weight:700;color:var(--td)"><span>${cu.icon}</span><span>${cu.name}</span><span style="font-size:.58rem;color:var(--tm);margin-left:auto">${cu.cue}</span></div>`).join('');
-  }catch(e){ el.innerHTML='<div class="train-tip-card">Open the Train tab for today\'s rotation</div>'; }
-}
-
-// ── STATS TAB ─────────────────────────────────────────────────────────────────
-// -- HOME TRAINING FOCUS --
-function renderHomeTrainingFocus(){
-  const el = document.getElementById('homeTrainingFocus');
-  if(!el) return;
-  try{
-    const today = new Date().getDay();
-    const cues = (typeof TRAIN_CUES !== 'undefined')
-      ? TRAIN_CUES.filter(cu=>cu.rotation&&cu.rotation.includes(today)).slice(0,3)
-      : [];
-    if(!cues.length){
-      el.innerHTML='<div style="font-size:.72rem;color:var(--tm);font-style:italic;padding:4px 0">Free practice today — pick any cue Timber loves 🐾</div>';
-      return;
-    }
-    el.innerHTML = cues.map(cu=>`
-      <div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--ll)">
-        <span style="font-size:.85rem">${cu.icon||'🎯'}</span>
-        <div style="flex:1">
-          <div style="font-size:.75rem;font-weight:800;color:var(--td)">${cu.name}</div>
-          <div style="font-size:.58rem;color:var(--tm);text-transform:capitalize">${cu.type||''}</div>
-        </div>
-      </div>`).join('');
-  }catch(e){
-    el.innerHTML='<div style="font-size:.7rem;color:var(--tm)">Open Train tab first to load cues</div>';
-  }
-}
-
-function renderStatsTab(){
-  renderHeatGrid();
-  // Morning streak
-  const streak = getStreak('morning');
-  const el = document.getElementById('statsMorningStreak');
-  if(el) el.textContent = streak + (streak===1?' day':' days');
-  // Timber walk mins this week
-  let totalWalkMins = 0;
-  try{
-    for(let i=0;i<7;i++){
-      const d = new Date(); d.setDate(d.getDate()-i);
-      const k = `${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}`;
-      const raw = JSON.parse(localStorage.getItem(TIMBER_WALK_KEY+'_'+k)||'null');
-      if(raw && raw.walks) totalWalkMins += raw.walks.reduce((acc,w)=>acc+w.mins,0);
-    }
-    // Also today
-    totalWalkMins += loadTimberWalks().reduce((acc,w)=>acc+w.mins,0);
-  }catch(e){}
-  const wEl = document.getElementById('statsTimberWalks');
-  if(wEl) wEl.textContent = totalWalkMins + ' min';
-}
-
-function renderHeatGrid(){
-  const el = document.getElementById('statsHeatGrid');
-  if(!el) return;
-  const cells = [];
-  for(let i=6;i>=0;i--){
-    const d = new Date(); d.setDate(d.getDate()-i);
-    const key = `${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}`;
-    const isToday = i===0;
-    let cls = '';
-    if(isToday){
-      // Count today's completion
-      const sections = CHECKLIST;
-      const totalSec = sections.length;
-      const doneSec = sections.filter(s=>isSectionComplete(s.id)).length;
-      if(doneSec===totalSec) cls='h-full';
-      else if(doneSec>=totalSec*.7) cls='h-good';
-      else if(doneSec>0) cls='h-part';
-    } else {
-      // Check history key
-      try{
-        const hist = JSON.parse(localStorage.getItem('jlos_cl_history_'+key)||'null');
-        if(hist){
-          if(hist.pct>=100) cls='h-full';
-          else if(hist.pct>=70) cls='h-good';
-          else if(hist.pct>0) cls='h-part';
-        }
-      }catch(e){}
-    }
-    const day = ['S','M','T','W','T','F','S'][d.getDay()];
-    cells.push(`<div class="heat-cell${cls?' '+cls:''}">${isToday?'·':''}</div>`);
-  }
-  el.innerHTML = cells.join('');
-}
-
-// ── MIDNIGHT RESET ─────────────────────────────────────────────────────────────
-function initMidnightReset(){
-  scheduleMidnight();
-}
-
-function scheduleMidnight(){
-  const now = new Date();
-  const midnight = new Date(now);
-  midnight.setHours(24,0,0,500);
-  const ms = midnight - now;
-  setTimeout(()=>{
-    doMidnightReset();
-    scheduleMidnight();
-  }, ms);
-}
-
-function doMidnightReset(){
-  // Calculate completion % before resetting
-  const totalItems = CHECKLIST.flatMap(s=>s.items).length;
-  const state = loadCL();
-  const doneItems = Object.values(state.items||{}).filter(v=>v==='done'||v==='skipped').length;
-  const pct = totalItems > 0 ? Math.round(doneItems/totalItems*100) : 0;
-
-  // Save history
-  const yesterday = new Date(); yesterday.setDate(yesterday.getDate()-1);
-  const yKey = `${yesterday.getFullYear()}-${yesterday.getMonth()+1}-${yesterday.getDate()}`;
-  try{ localStorage.setItem('jlos_cl_history_'+yKey, JSON.stringify({pct})); }catch(e){}
-
-  // Update streaks
-  const streaks = loadStreaks();
-  CHECKLIST.forEach(section => {
-    // We can't check yesterday's section completion, so just increment if >0 done today
-    const {done} = countSectionDone(section.id);
-    if(done > 0){
-      streaks[section.id] = (streaks[section.id]||0) + 1;
-    } else {
-      streaks[section.id] = 0;
-    }
-  });
-  saveStreaks(streaks);
-
-  // Celebrate if 80%+
-  if(pct >= 80){
-    showToast('✨ You showed up today! 💜 Resetting for tomorrow…', 4000);
-    setTimeout(fireConfetti, 500);
-  }
-
-  // Reset checklist
-  try{ localStorage.removeItem(CL_KEY); }catch(e){}
-  // Reset Timber needs
-  try{ localStorage.removeItem(TIMBER_NEEDS_KEY); }catch(e){}
-
-  // Re-render
-  setTimeout(()=>{ initChecklist(); renderTimberNeeds(); renderStatsTab(); }, 1000);
-}
-
-// ── CONFETTI ──────────────────────────────────────────────────────────────────
-function fireConfetti(){
-  const canvas = document.getElementById('confettiCanvas');
-  if(!canvas) return;
-  canvas.style.display = 'block';
-  const ctx = canvas.getContext('2d');
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
-  const pieces = Array.from({length:80}, ()=>({
-    x: Math.random()*canvas.width,
-    y: Math.random()*-canvas.height*.5,
-    w: 6+Math.random()*8,
-    h: 4+Math.random()*6,
-    r: Math.random()*Math.PI*2,
-    dr: (Math.random()-.5)*.15,
-    dy: 2+Math.random()*3,
-    dx: (Math.random()-.5)*1.5,
-    color: ['#b89de0','#8fc4a8','#f0b8d8','#f7e08c','#88c8ff'][Math.floor(Math.random()*5)]
-  }));
-  let frame=0;
-  function draw(){
-    ctx.clearRect(0,0,canvas.width,canvas.height);
-    pieces.forEach(p=>{
-      ctx.save();
-      ctx.translate(p.x,p.y);
-      ctx.rotate(p.r);
-      ctx.fillStyle=p.color;
-      ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h);
-      ctx.restore();
-      p.x+=p.dx; p.y+=p.dy; p.r+=p.dr;
-    });
-    frame++;
-    if(frame<120) requestAnimationFrame(draw);
-    else{ ctx.clearRect(0,0,canvas.width,canvas.height); canvas.style.display='none'; }
-  }
-  draw();
-}
-
-// ── DAY BUILDER ───────────────────────────────────────────────────────────────
-const DB_LIBRARY = [
-  {icon:'🧠', name:'Deep Work',     dur:90},
-  {icon:'🦮', name:'Walk',           dur:30},
-  {icon:'🎓', name:'Training',       dur:15},
-  {icon:'🍽️', name:'Meal',           dur:30},
-  {icon:'😴', name:'Rest',           dur:60},
-  {icon:'📋', name:'Admin',          dur:30},
-  {icon:'🏋️', name:'PT',             dur:45},
-  {icon:'🔴', name:'Red Light',      dur:40},
-  {icon:'🐾', name:'Timber Time',    dur:20},
-];
-
-const DB_QUEUE_KEY = 'jlos_db_queue';
-function loadDBQueue(){ try{ const r=JSON.parse(localStorage.getItem(DB_QUEUE_KEY)||'{}'); const k=getTodayKey(); return r.date===k?(r.queue||[]):[]; }catch(e){ return []; } }
-function saveDBQueue(q){ try{ localStorage.setItem(DB_QUEUE_KEY, JSON.stringify({date:getTodayKey(), queue:q})); }catch(e){} }
-
-window.openDayBuilder = function(){
-  const modal = document.getElementById('dbModal');
-  if(modal){ modal.classList.add('open'); renderDBQueue(); }
-};
-window.closeDayBuilder = function(){
-  const modal = document.getElementById('dbModal');
-  if(modal) modal.classList.remove('open');
-};
-window.clearAgenda = function(){
-  saveDBQueue([]);
-  const el = document.getElementById('agendaWidget');
-  if(el) el.style.display='none';
-};
-
-function renderDBQueue(){
-  const q = loadDBQueue();
-  const el = document.getElementById('dbQueueList');
-  if(!el) return;
-  if(!q.length){ el.innerHTML='<p style="font-size:.7rem;color:var(--tm);font-style:italic;text-align:center;padding:12px 0">Tap tasks above to queue them ↑</p>'; return; }
-  el.innerHTML = q.map((t,i)=>`
-    <div class="db-q-item">
-      <span class="db-q-icon">${t.icon}</span>
-      <span class="db-q-name">${esc(t.name)}</span>
-      <span class="db-q-dur">${t.dur} min</span>
-      <button class="db-q-del" onclick="removeDBTask(${i})">✕</button>
-    </div>`).join('');
-}
-
-window.addDBTask = function(icon, name, dur){
-  const q = loadDBQueue();
-  q.push({icon, name, dur});
-  saveDBQueue(q);
-  renderDBQueue();
-};
-
-window.removeDBTask = function(idx){
-  const q = loadDBQueue();
-  q.splice(idx,1);
-  saveDBQueue(q);
-  renderDBQueue();
-};
-
-window.addDBFreeform = function(){
-  const nameEl = document.getElementById('dbFfName');
-  const durEl  = document.getElementById('dbFfDur');
-  if(!nameEl||!durEl) return;
-  const name = nameEl.value.trim();
-  const dur  = parseInt(durEl.value)||30;
-  if(!name) return;
-  addDBTask('💭', name, dur);
-  nameEl.value=''; durEl.value='30';
-};
-
-window.generateAgenda = function(){
-  const q = loadDBQueue();
-  if(!q.length){ showToast('Add some tasks first!'); return; }
-  const startEl = document.getElementById('dbStartTime');
-  let startTime = '09:00';
-  if(startEl && startEl.value) startTime = startEl.value;
-  const [sh, sm] = startTime.split(':').map(Number);
-  let cursor = sh*60+sm;
-
-  const blocks = q.map(t => {
-    const hh = Math.floor(cursor/60)%24;
-    const mm  = cursor%60;
-    const ap  = hh>=12?'PM':'AM';
-    const h12 = hh%12||12;
-    const label = `${h12}:${String(mm).padStart(2,'0')} ${ap}`;
-    cursor += t.dur;
-    return {label, ...t};
-  });
-
-  // Save and render
-  localStorage.setItem('jlos_agenda', JSON.stringify({date:getTodayKey(), blocks}));
-  renderAgenda(blocks);
-  closeDayBuilder();
-  showToast('📋 Day planned! ✨');
-};
-
-function renderAgenda(blocks){
-  const widget = document.getElementById('agendaWidget');
-  const el     = document.getElementById('agendaBlocks');
-  if(!widget || !el) return;
-  if(!blocks || !blocks.length){ widget.style.display='none'; return; }
-  widget.style.display='block';
-  el.innerHTML = blocks.map(b=>`
-    <div class="agenda-block">
-      <span class="agenda-time">${b.label}</span>
-      <span>
-        <span class="agenda-name">${b.icon} ${esc(b.name)}</span>
-        <span class="agenda-dur">${b.dur} min</span>
-      </span>
-    </div>`).join('');
-}
-
-// Restore agenda on load
-(function restoreAgenda(){
-  try{
-    const raw = JSON.parse(localStorage.getItem('jlos_agenda')||'null');
-    if(raw && raw.date === getTodayKey()) renderAgenda(raw.blocks);
-  }catch(e){}
-})();
-
-// ── NFC HANDLER ───────────────────────────────────────────────────────────────
-function handleNFCHash(){
-  const hash = window.location.hash;
-  if(!hash.startsWith('#nfc=')) return;
-  const action = hash.slice(5);
-  // Clear hash
-  history.replaceState(null,'',window.location.pathname);
-
-  switch(action){
-    case 'teeth':
-      setCLState('brush-teeth','done');
-      refreshCLSection('morning');
-      showToast('🦷 Teeth brushed ✓');
-      break;
-    case 'meds-morning':
-      openNFCModal('meds-morning');
-      break;
-    case 'meds-evening':
-      openNFCModal('meds-evening');
-      break;
-    case 'walk':
-      logWalkNFC();
-      switchTab('timber');
-      break;
-    case 'cronometer':
-      setCLState('log-breakfast','done');
-      refreshCLSection('morning');
-      showToast('📱 Logged! Opening Cronometer…');
-      setTimeout(()=>{ window.open('intent://cronometer.com/#Intent;scheme=https;package=com.cronometer.android;end','_blank'); },600);
-      break;
-  }
-}
-
-// Also watch for hash changes (app is open when NFC tapped)
-window.addEventListener('hashchange', ()=>{ handleNFCHash(); });
-
-function openNFCModal(type){
-  const modal = document.getElementById('nfcModal');
-  if(!modal) return;
-  const title  = document.getElementById('nfcTitle');
-  const sub    = document.getElementById('nfcSub');
-  const items  = document.getElementById('nfcItems');
-  const confEl = document.getElementById('nfcConfirm');
-
-  if(type==='meds-morning'){
-    if(title) title.textContent = '💊 Morning Meds';
-    if(sub)   sub.textContent   = 'Tap each one you\'re taking:';
-    const medIds = ['glucosamine','iron','vitamins','vyvanse'];
-    if(items) items.innerHTML = medIds.map(id=>{
-      const it = CHECKLIST.flatMap(s=>s.items).find(i=>i.id===id);
-      if(!it) return '';
-      const weekend = isWeekend() && id==='vyvanse';
-      return `<div class="cl-item${getCLState(id)==='done'?' done':''}" onclick="clCheck('${id}');this.classList.toggle('done',true);this.querySelector('.cl-check').textContent='✓'">
-        <span class="cl-check">${getCLState(id)==='done'?'✓':''}</span>
-        <span class="cl-label">${it.icon} ${it.label}${weekend?' <span class="cl-badge">skip option</span>':''}</span>
-      </div>`;
-    }).join('');
-    if(confEl) confEl.onclick = ()=>{ refreshCLSection('morning'); closeNFCModal(); showToast('💊 Morning meds logged ✓'); };
-  } else if(type==='meds-evening'){
-    if(title) title.textContent = '🌙 Evening Meds';
-    if(sub)   sub.textContent   = 'Tap each one you\'re taking:';
-    const medIds = ['birth-control','zoloft'];
-    if(items) items.innerHTML = medIds.map(id=>{
-      const it = CHECKLIST.flatMap(s=>s.items).find(i=>i.id===id);
-      if(!it) return '';
-      return `<div class="cl-item${getCLState(id)==='done'?' done':''}" onclick="clCheck('${id}');this.classList.toggle('done',true);this.querySelector('.cl-check').textContent='✓'">
-        <span class="cl-check">${getCLState(id)==='done'?'✓':''}</span>
-        <span class="cl-label">${it.icon} ${it.label}</span>
-      </div>`;
-    }).join('');
-    if(confEl) confEl.onclick = ()=>{ refreshCLSection('evening'); closeNFCModal(); showToast('🌙 Evening meds logged ✓'); };
-  }
-
-  modal.classList.add('open');
-}
-
-window.closeNFCModal = function(){
-  const modal = document.getElementById('nfcModal');
-  if(modal) modal.classList.remove('open');
-};
-
-// ── MISC HELPERS ──────────────────────────────────────────────────────────────
-// Safe esc if not already defined
-if(typeof esc === 'undefined'){
-  window.esc = t => String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-}
-
-// ── FLOW DRAWER ──────────────────────────────────────────────────────────────
-window.openFlowDrawer = () => {
-  document.getElementById('flowDrawer').classList.add('open');
-  document.getElementById('flowDrawerOverlay').classList.add('open');
-  document.body.style.overflow = 'hidden';
-  try { updateWhatsNext(); } catch(e) {}
-};
-window.closeFlowDrawer = () => {
-  document.getElementById('flowDrawer').classList.remove('open');
-  document.getElementById('flowDrawerOverlay').classList.remove('open');
-  document.body.style.overflow = '';
-};
-// Swipe down to close
-(function(){
-  let startY = 0;
-  const dr = document.getElementById('flowDrawer');
-  if(!dr) return;
-  dr.addEventListener('touchstart', e => { startY = e.touches[0].clientY; }, {passive:true});
-  dr.addEventListener('touchend', e => {
-    if(e.changedTouches[0].clientY - startY > 80) closeFlowDrawer();
-  }, {passive:true});
-})();
-
-</script>
-
-<button class="scroll-fab" id="scrollFab" onclick="scrollFabClick()" aria-label="Scroll">↓</button>
-</body>
-</html>
+  con

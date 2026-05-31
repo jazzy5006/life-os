@@ -5550,9 +5550,21 @@ window.onload=()=>{
   handleSitterHash();
   initSanrioLayer();
   try { renderTrainTab(); } catch(e) { setTimeout(renderTrainTab, 200); }
-  initChecklist();
-  initBrainDump();
-  renderHomeCalWidget();
+  try{
+    if(typeof initChecklist==='undefined') throw new Error('initChecklist not defined — script block 4 may have failed to load');
+    initChecklist();
+  }catch(e){
+    const el=document.getElementById('homeChecklist');
+    if(el) el.innerHTML='<div style="color:var(--pa);font-size:.7rem;padding:8px;background:var(--bgp);border-radius:8px;border:2px solid var(--pa)">⚠ Checklist error: '+e.message+'</div>';
+  }
+  try{ initBrainDump(); }catch(e){}
+  try{
+    if(typeof renderHomeCalWidget==='undefined') throw new Error('renderHomeCalWidget not defined');
+    renderHomeCalWidget();
+  }catch(e){
+    const el=document.getElementById('dashCalToday');
+    if(el) el.innerHTML='<div style="color:var(--pa);font-size:.68rem">⚠ Calendar error: '+e.message+'</div>';
+  }
   renderDashTimberMini();
   renderHomeTrainingFocus();
   renderTimberBanner();
@@ -7287,7 +7299,7 @@ function renderHomeCalWidget(){
   if(!todayEl) return;
   todayEl.innerHTML = '<span class="dash-w-sub">Loading…</span>';
   fetchCalEvents().then(events => {
-    if(!events){ todayEl.innerHTML = '<span class="dash-w-sub" style="color:var(--tm)">No calendar connected — <a onclick="switchTab('cal')" style="color:var(--sa);cursor:pointer;text-decoration:underline">set up in Cal</a></span>'; return; }
+    if(!events){ todayEl.innerHTML = '<span class="dash-w-sub" style="color:var(--tm)">No calendar connected — <a onclick="switchTab(\'cal\')" style="color:var(--sa);cursor:pointer;text-decoration:underline">set up in Cal</a></span>'; return; }
     const todayStr = new Date().toDateString();
     const tomorrow = new Date(); tomorrow.setDate(tomorrow.getDate()+1);
     const tmrStr   = tomorrow.toDateString();

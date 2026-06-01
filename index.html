@@ -1120,6 +1120,17 @@ body.night .train-status.new{background:var(--pl);border-color:var(--pm);color:v
 @keyframes cl-pop{from{transform:scale(.9);opacity:0}to{transform:scale(1);opacity:1}}
 .cl-complete-icon{font-size:1.4rem}
 .cl-complete-text{font-size:.78rem;font-weight:900;color:var(--td)}
+/* ── HOME GREETING & PROGRESS ── */
+.home-greeting-card{background:linear-gradient(135deg,var(--ll),var(--sl));border-radius:var(--rlg);padding:14px 16px;margin-bottom:10px;display:flex;align-items:center;gap:12px}
+.home-greeting-emoji{font-size:1.6rem;flex-shrink:0;line-height:1}
+.home-greeting-hi{font-size:.82rem;font-weight:900;color:var(--td);margin-bottom:2px}
+.home-greeting-tip{font-size:.62rem;color:var(--tm);font-weight:700;line-height:1.4}
+.home-progress-wrap{display:flex;align-items:center;gap:10px;margin-bottom:10px;padding:10px 14px;background:var(--bgc);border-radius:var(--rlg);border:2px solid var(--lm)}
+.home-progress-bar{flex:1;height:8px;background:var(--bg);border-radius:4px;overflow:hidden}
+.home-progress-fill{height:100%;background:linear-gradient(90deg,var(--la),var(--ma));border-radius:4px;transition:width .6s cubic-bezier(.34,1.56,.64,1)}
+.home-progress-label{font-size:.6rem;font-weight:900;color:var(--tm);white-space:nowrap;min-width:82px;text-align:right}
+@keyframes btn-pulse-scale{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.025);opacity:.9}}
+.btn-pulse{animation:btn-pulse-scale 2.4s ease-in-out infinite}
 /* ── WALK INDICATOR ── */
 .walk-indicator{display:none;position:fixed;bottom:16px;right:14px;z-index:89;background:var(--pa);color:#fff;border-radius:var(--rf);padding:8px 14px;font-family:'Nunito',sans-serif;font-size:.65rem;font-weight:900;box-shadow:0 4px 14px rgba(247,154,122,.4);align-items:center;gap:6px;cursor:pointer;-webkit-tap-highlight-color:transparent}
 .walk-indicator.active{display:flex}
@@ -1408,7 +1419,32 @@ body.night .train-status.new{background:var(--pl);border-color:var(--pm);color:v
     <div class="dash-cal-list tmr-body" id="dashCalTmr" style="display:none"></div>
   </div>
 
-  <!-- ② Timber needs mini (taps through to Timber tab) -->
+  <!-- ② Build My Day -->
+  <button id="buildMyDayBtn" class="btn" style="width:100%;background:linear-gradient(135deg,var(--la),var(--sa));color:#fff;border:none;padding:13px;font-size:.72rem;margin-bottom:12px;border-radius:var(--rlg)" onclick="openDayBuilder()">✨ Build My Day</button>
+
+  <!-- ② Today's Plan (shown once Day Builder is used) -->
+  <div class="agenda-widget" id="agendaWidget" style="display:none">
+    <div class="agenda-hd">
+      <span class="agenda-ttl">📋 Today's Plan</span>
+      <button class="agenda-clear" onclick="clearAgenda()">Clear ✕</button>
+    </div>
+    <div id="agendaBlocks"></div>
+  </div>
+
+  <!-- ③ Daily checklist — self-care first -->
+  <div id="homeChecklist"></div>
+
+  <!-- ④ Brain Dump -->
+  <div class="card" style="margin-bottom:10px;margin-top:10px">
+    <div class="scratch-lbl" style="margin-bottom:6px"><span style="font-size:.65rem;font-weight:900;color:var(--la)">💭 Brain Dump</span><span style="font-size:.58rem;color:var(--tm);margin-left:6px">— get it out of your head</span></div>
+    <div style="display:flex;gap:6px;margin-bottom:8px">
+      <textarea class="lab-ta scratch-ta" id="brainDumpInput" placeholder="Type anything… 💜" rows="2" style="flex:1;margin-bottom:0;min-height:60px" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();addBrainDump();}"></textarea>
+      <button onclick="addBrainDump()" style="background:var(--la);color:#fff;border:none;border-radius:var(--rf);padding:0 14px;font-family:'Nunito',sans-serif;font-size:.7rem;font-weight:900;cursor:pointer;flex-shrink:0;align-self:stretch">Add</button>
+    </div>
+    <div id="brainDumpList" style="display:flex;flex-direction:column;gap:5px"></div>
+  </div>
+
+  <!-- ⑤ Timber needs mini (taps through to Timber tab) -->
   <div class="card" style="margin-bottom:10px;cursor:pointer" onclick="switchTab('timber')">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
       <span style="font-size:.58rem;font-weight:900;letter-spacing:.12em;text-transform:uppercase;color:var(--tm)">🐾 Timber needs</span>
@@ -1417,7 +1453,16 @@ body.night .train-status.new{background:var(--pl);border-color:var(--pm);color:v
     <div class="dash-timber-mini" id="dashTimberMini"></div>
   </div>
 
-  <!-- ③ Connection Heartbeat -->
+  <!-- ⑥ Today's Training Focus -->
+  <div class="card" style="margin-bottom:10px">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+      <span style="font-size:.58rem;font-weight:900;letter-spacing:.12em;text-transform:uppercase;color:var(--tm)">🎓 Today's Training</span>
+      <button onclick="switchTab('train')" style="background:none;border:none;font-size:.55rem;font-weight:900;color:var(--sa);cursor:pointer;padding:0;font-family:'Nunito',sans-serif">See all →</button>
+    </div>
+    <div id="homeTrainingFocus"></div>
+  </div>
+
+  <!-- ⑦ Connection Heartbeat — at the bottom, a moment of warmth to end on -->
   <div class="card" style="margin-bottom:10px">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
       <span style="font-size:.58rem;font-weight:900;letter-spacing:.12em;text-transform:uppercase;color:var(--tm)">💜 Connection</span>
@@ -1441,40 +1486,6 @@ body.night .train-status.new{background:var(--pl);border-color:var(--pm);color:v
       </div>
     </div>
     <div class="conn-nudge-wrap" id="homeConnNudge" style="display:none"></div>
-  </div>
-
-  <!-- ④ Build My Day -->
-  <button class="btn" style="width:100%;background:linear-gradient(135deg,var(--la),var(--sa));color:#fff;border:none;padding:13px;font-size:.72rem;margin-bottom:12px;border-radius:var(--rlg)" onclick="openDayBuilder()">✨ Build My Day</button>
-
-  <!-- ④ Daily checklist -->
-  <div id="homeChecklist"></div>
-
-  <!-- ⑤ Brain Dump -->
-  <div class="card" style="margin-bottom:10px;margin-top:10px">
-    <div class="scratch-lbl" style="margin-bottom:6px"><span style="font-size:.65rem;font-weight:900;color:var(--la)">💭 Brain Dump</span><span style="font-size:.58rem;color:var(--tm);margin-left:6px">— get it out of your head</span></div>
-    <div style="display:flex;gap:6px;margin-bottom:8px">
-      <textarea class="lab-ta scratch-ta" id="brainDumpInput" placeholder="Type anything… 💜" rows="2" style="flex:1;margin-bottom:0;min-height:60px" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();addBrainDump();}"></textarea>
-      <button onclick="addBrainDump()" style="background:var(--la);color:#fff;border:none;border-radius:var(--rf);padding:0 14px;font-family:'Nunito',sans-serif;font-size:.7rem;font-weight:900;cursor:pointer;flex-shrink:0;align-self:stretch">Add</button>
-    </div>
-    <div id="brainDumpList" style="display:flex;flex-direction:column;gap:5px"></div>
-  </div>
-
-  <!-- ⑥ Today's Training Focus -->
-  <div class="card" style="margin-bottom:10px">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
-      <span style="font-size:.58rem;font-weight:900;letter-spacing:.12em;text-transform:uppercase;color:var(--tm)">🎓 Today's Training</span>
-      <button onclick="switchTab('train')" style="background:none;border:none;font-size:.55rem;font-weight:900;color:var(--sa);cursor:pointer;padding:0;font-family:'Nunito',sans-serif">See all →</button>
-    </div>
-    <div id="homeTrainingFocus"></div>
-  </div>
-
-  <!-- ⑦ Today's Plan (shown once Day Builder is used) -->
-  <div class="agenda-widget" id="agendaWidget" style="display:none">
-    <div class="agenda-hd">
-      <span class="agenda-ttl">📋 Today's Plan</span>
-      <button class="agenda-clear" onclick="clearAgenda()">Clear ✕</button>
-    </div>
-    <div id="agendaBlocks"></div>
   </div>
 
 </div>
@@ -7320,6 +7331,32 @@ function initChecklist(){
   container.innerHTML = '';
   const h = new Date().getHours();
 
+  // ── Time-aware greeting card ───────────────────────────────────────────────
+  var greet, emoji, tip;
+  if(h < 5)       { greet='Still up?'; emoji='🌙'; tip='Rest is medicine too — even lying down counts.'; }
+  else if(h < 9)  { greet='Good morning!'; emoji='🌸'; tip='Start with one thing. Just one. You\'ve got this 💜'; }
+  else if(h < 12) { greet='Morning, Jazzy!'; emoji='☀️'; tip='Meds first — everything else can wait a few minutes.'; }
+  else if(h < 15) { greet='Good afternoon!'; emoji='🌻'; tip='How\'s your energy? Check in with yourself.'; }
+  else if(h < 18) { greet='Afternoon, Jazzy 💜'; emoji='🍵'; tip='You\'re doing more than you think. Breathe.'; }
+  else if(h < 21) { greet='Good evening!'; emoji='🌙'; tip='Evening meds + Timber\'s last out = wind-down unlocked.'; }
+  else            { greet='Almost bedtime!'; emoji='💜'; tip='Did Timber go out? Then you\'re done for today.'; }
+  var greetDiv = document.createElement('div');
+  greetDiv.className = 'home-greeting-card';
+  greetDiv.innerHTML = '<span class="home-greeting-emoji">'+emoji+'</span>'
+    +'<div><div class="home-greeting-hi">'+greet+'</div>'
+    +'<div class="home-greeting-tip">'+tip+'</div></div>';
+  container.appendChild(greetDiv);
+
+  // ── Total progress bar ─────────────────────────────────────────────────────
+  var progressDiv = document.createElement('div');
+  progressDiv.id = 'homeTotalProgress';
+  progressDiv.className = 'home-progress-wrap';
+  container.appendChild(progressDiv);
+  refreshTotalProgress();
+
+  // ── Build My Day pulse ─────────────────────────────────────────────────────
+  updateBuildMyDayPulse();
+
   CHECKLIST.forEach(section => {
     const {done, total} = countSectionDone(section.id);
     const complete = done === total && total > 0;
@@ -7419,24 +7456,83 @@ function refreshCLSection(sectionId){
   const {done,total} = countSectionDone(sectionId);
   const complete = done===total && total>0;
   // Update counter
-  const hd = document.querySelector(`#cl-section-${sectionId} .cl-section-hd span:last-child span:first-child`);
-  if(hd) hd.textContent=`${done}/${total}`;
+  const hd = document.querySelector('#cl-section-'+sectionId+' .cl-section-hd span:last-child span:first-child');
+  if(hd) hd.textContent = done+'/'+total;
+  if(hd) hd.style.color = complete ? 'var(--ma)' : 'var(--tm)';
   // Show completion banner
-  const existingBanner = document.querySelector(`#cl-section-${sectionId} .cl-complete-banner`);
+  const existingBanner = document.querySelector('#cl-section-'+sectionId+' .cl-complete-banner');
   if(complete && !existingBanner){
-    const streak = getStreak(sectionId);
     const banner = document.createElement('div');
     banner.className = 'cl-complete-banner';
-    banner.innerHTML = `<span class="cl-complete-icon">✨</span><span class="cl-complete-text">${section.label.split(' ').slice(1).join(' ')} done! 💜</span>`;
+    banner.innerHTML = '<span class="cl-complete-icon">✨</span><span class="cl-complete-text">'+getSectionCompleteMsg(sectionId)+'</span>';
     const sDiv = document.getElementById('cl-section-'+sectionId);
     if(sDiv) sDiv.insertBefore(banner, body);
     fireConfetti();
+    // Auto-collapse after celebration so completed sections get out of the way
+    setTimeout(function(){
+      var b2 = document.getElementById('cl-body-'+sectionId);
+      var c2 = document.getElementById('cl-chev-'+sectionId);
+      if(b2 && !b2.classList.contains('cl-hidden')){
+        b2.classList.add('cl-hidden');
+        b2.style.maxHeight = '0';
+        if(c2) c2.classList.add('collapsed');
+      }
+    }, 2400);
   }
+  refreshTotalProgress();
   refreshDashTimberMini();
 }
 
 function refreshDashTimberMini(){
   renderDashTimberMini();
+}
+
+// ── TOTAL PROGRESS BAR ────────────────────────────────────────────────────────
+function refreshTotalProgress(){
+  var fill = document.getElementById('homeProgressFill');
+  var label = document.getElementById('homeProgressLabel');
+  // Elements may not exist yet on first call — build them if present in wrapper
+  var wrap = document.getElementById('homeTotalProgress');
+  if(!wrap) return;
+  if(!fill){
+    wrap.innerHTML = '<div class="home-progress-bar"><div class="home-progress-fill" id="homeProgressFill" style="width:0%"></div></div>'
+      +'<span class="home-progress-label" id="homeProgressLabel">Let\'s start! 💪</span>';
+    fill = document.getElementById('homeProgressFill');
+    label = document.getElementById('homeProgressLabel');
+  }
+  var allItems = CHECKLIST.reduce(function(acc, s){ return acc.concat(s.items); }, []).filter(function(it){
+    if(it.dependsOn && getCLState(it.dependsOn) !== 'skipped') return false;
+    if(it.weekendSkip && isWeekend()) return false;
+    return true;
+  });
+  var totalDone = allItems.filter(function(it){ return ['done','skipped'].includes(getCLState(it.id)); }).length;
+  var totalAll = allItems.length;
+  var pct = totalAll ? Math.round(totalDone/totalAll*100) : 0;
+  var allDone = totalDone === totalAll && totalAll > 0;
+  if(fill) fill.style.width = pct+'%';
+  if(label) label.textContent = allDone ? 'Amazing day! 🌟' : totalDone === 0 ? 'Let\'s start! 💪' : totalDone+' of '+totalAll+' done';
+}
+
+// ── SECTION COMPLETION MESSAGES ───────────────────────────────────────────────
+function getSectionCompleteMsg(sectionId){
+  var msgs = {
+    morning: ['Morning routine done! 🌸 You started strong.', 'Morning complete! ☀️ You showed up for yourself.', 'Nailed the morning 💜 That\'s everything.'],
+    midday: ['Midday done! ☀️', 'Midday sorted 💪 Keep that energy.', 'Afternoon on track 🌻'],
+    evening: ['Evening done! 🌙 Wind-down time.', 'Evening complete 💜 You made it through the day.', 'Night routine done — so proud of you 🌙'],
+    wellness: ['Wellness complete! 🌿 You took care of yourself.', 'Body taken care of 💜🌿 That\'s self-love.', 'Wellness done — that matters more than you know 🌿'],
+  };
+  var list = msgs[sectionId] || ['Section done! 💜'];
+  return list[Math.floor(Math.random()*list.length)];
+}
+
+// ── BUILD MY DAY PULSE ────────────────────────────────────────────────────────
+function updateBuildMyDayPulse(){
+  var btn = document.getElementById('buildMyDayBtn');
+  if(!btn) return;
+  var agenda = document.getElementById('agendaWidget');
+  var hasAgenda = agenda && agenda.style.display !== 'none';
+  if(hasAgenda){ btn.classList.remove('btn-pulse'); }
+  else { btn.classList.add('btn-pulse'); }
 }
 
 // ── BRAIN DUMP ────────────────────────────────────────────────────────────────
@@ -8497,132 +8593,133 @@ function generatePartnerViewHtml(rawUrl, gistId, token){
     '    renderMemories();',
     '  }catch(e){showSync("❌ Save failed","memSyncStatus");window._pMems.pop();window._jasMems.pop();}',
     '}',
-
-    'fetchData();'
+    'window.addEventListener("load",function(){fetchData();});',
   ].join('\n');
 
-  return '<!DOCTYPE html>\n<html lang="en">\n<head>\n<meta charset="UTF-8">\n<meta name="viewport" content="width=device-width,initial-scale=1">\n<title>Timber\'s Day 🐾</title>\n<style>\n' + CSS + '\n</style>\n</head>\n<body>\n' + BODY_HTML + '\n<script>\n' + V + '\n' + JS + '\n</' + 'script>\n</body>\n</html>';
+  var html = '<!DOCTYPE html><html lang="en"><head>'
+    + '<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">'
+    + '<title>Timber — Partner View<\/title>'
+    + '<style>' + CSS + '<\/style>'
+    + '<\/head><body>'
+    + BODY_HTML
+    + '<scr' + 'ipt>' + V + JS + '<\/' + 'script>'
+    + '<\/body><\/html>';
+  return html;
 }
 
-// ── TIMBER EXERCISE BANNER ────────────────────────────────────────────────────
-const TIMBER_BDAY = new Date(2025, 11, 30); // Dec 30 2025
+// ── DAY BUILDER ───────────────────────────────────────────────────────────────
+function loadDBQueue(){ try{ return JSON.parse(localStorage.getItem('jlos_day_queue')||'[]'); }catch(e){ return []; } }
+function saveDBQueue(q){ try{ localStorage.setItem('jlos_day_queue', JSON.stringify(q)); }catch(e){} }
 
-function renderTimberBanner(){
-  const now = new Date();
-  const ageMs = now - TIMBER_BDAY;
-  const ageMonths = ageMs / (30.44 * 24 * 3600 * 1000);
-  const ageMo = Math.floor(ageMonths);
-  const targetMinsPerSession = ageMo * 5;
-  const targetTotal = targetMinsPerSession * 2;
-  const walks = loadTimberWalks();
-  const totalMins = walks.reduce((acc, w) => acc + w.mins, 0);
-  const ageLbl = ageMo < 1 ? 'Under 1 month' : `${ageMo} month${ageMo === 1 ? '' : 's'} old`;
-  const title = document.getElementById('timberAgeTitle');
-  const sub   = document.getElementById('timberAgeSub');
-  if(title) title.textContent = `🐾 Timber · ${ageLbl}`;
-  if(sub){
-    if(targetTotal > 0){
-      sub.textContent = `${totalMins}/${targetTotal} min today · ${targetMinsPerSession} min × 2 sessions`;
-    } else {
-      sub.textContent = 'Short gentle play only — puppy joints still growing!';
-    }
-  }
-  updateTimberExerciseProg(totalMins);
+function openDayBuilder(){
+  renderDBQueue();
+  var m = document.getElementById('dbModal');
+  if(m) m.classList.add('open');
 }
 
-function updateTimberExerciseProg(mins){
-  const now = new Date();
-  const ageMo = Math.floor((now - TIMBER_BDAY) / (30.44 * 24 * 3600 * 1000));
-  const targetTotal = ageMo * 5 * 2;
-  const pct = targetTotal > 0 ? Math.min(100, Math.round((mins / targetTotal) * 100)) : 0;
-  const bar = document.getElementById('timberExerciseProg');
-  if(bar) bar.style.width = pct + '%';
+function closeDayBuilder(){
+  var m = document.getElementById('dbModal');
+  if(m) m.classList.remove('open');
 }
 
-// ── HOME TAB TRAINING FOCUS WIDGET ──────────────────────────────────────────
-function renderHomeTrainingFocus(){
-  const el = document.getElementById('homeTrainingFocus');
-  if(!el) return;
-  const dow = new Date().getDay();
-  const dayNames = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-  const cues = TRAIN_CUES.filter(c => c.rotation && c.rotation.includes(dow)).slice(0, 4);
-  if(!cues.length){
-    el.innerHTML = '<div style="font-size:.64rem;color:var(--tm);font-style:italic;padding:4px 0">Rest day — short name + recall warmup only</div>';
+function addDBTask(icon, name, dur){
+  var q = loadDBQueue();
+  q.push({id: Date.now()+'_'+Math.random().toString(36).slice(2), icon: icon, name: name, dur: Number(dur)});
+  saveDBQueue(q);
+  renderDBQueue();
+}
+
+function addDBFreeform(){
+  var nameEl = document.getElementById('dbFfName');
+  var durEl = document.getElementById('dbFfDur');
+  if(!nameEl) return;
+  var name = nameEl.value.trim();
+  if(!name) return;
+  var dur = parseInt(durEl ? durEl.value : '30', 10) || 30;
+  var q = loadDBQueue();
+  q.push({id: Date.now()+'_'+Math.random().toString(36).slice(2), icon: '✏️', name: name, dur: dur});
+  saveDBQueue(q);
+  nameEl.value = '';
+  if(durEl) durEl.value = '30';
+  renderDBQueue();
+}
+
+function removeDBItem(itemId){
+  var q = loadDBQueue().filter(function(x){ return x.id !== itemId; });
+  saveDBQueue(q);
+  renderDBQueue();
+}
+
+function renderDBQueue(){
+  var list = document.getElementById('dbQueueList');
+  if(!list) return;
+  var q = loadDBQueue();
+  if(!q.length){
+    list.innerHTML = '<p style="font-size:.68rem;color:var(--tm);font-style:italic;padding:8px 0;text-align:center">Nothing yet — tap tasks above to add them 💜</p>';
     return;
   }
-  el.innerHTML =
-    '<div style="font-size:.56rem;font-weight:900;letter-spacing:.1em;text-transform:uppercase;color:var(--pa);margin-bottom:6px">' + dayNames[dow] + '\'s Focus</div>' +
-    '<div style="display:flex;flex-wrap:wrap;gap:5px">' +
-    cues.map(c =>
-      '<span style="background:var(--pl);border:1.5px solid var(--pm);border-radius:20px;padding:3px 10px;font-size:.64rem;font-weight:800;color:var(--pa)">' +
-      c.icon + ' ' + c.name + '</span>'
-    ).join('') +
-    '</div>';
-}
-
-// ── TIMBER TAB DAILY ROTATION CARD ──────────────────────────────────────────
-function renderTimberDailyRotation(){
-  const el = document.getElementById('timberDailyRotation');
-  if(!el) return;
-  const dow = new Date().getDay();
-  const dayNames = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-  const cues = TRAIN_CUES.filter(c => c.rotation && c.rotation.includes(dow));
-  if(!cues.length){
-    el.innerHTML =
-      '<div class="train-rotation-day">Rest Day 🌿</div>' +
-      '<p style="font-size:.66rem;color:var(--td);line-height:1.5;margin-top:4px">Short name recognition + recall warmup only today.</p>';
-    return;
-  }
-  el.innerHTML =
-    '<div class="train-rotation-day">' + dayNames[dow] + '\'s Focus Cues</div>' +
-    '<p style="font-size:.66rem;color:var(--td);line-height:1.5;margin-top:2px">Run these using breakfast kibble — keep sessions 5–10 min, end on a win.</p>' +
-    '<div class="train-rotation-list" style="margin-top:8px">' +
-    cues.map(c => '<span class="train-rotation-pill">' + c.icon + ' ' + c.name + '</span>').join('') +
-    '</div>';
-}
-
-// ── STATS TAB RENDERER ────────────────────────────────────────────────────────
-function renderStatsTab(){
-  // placeholder — stats tab renders its own charts on switchTab
-}
-
-function handleNFCHash(){
-  const h = location.hash;
-  if(!h) return;
-  if(h === '#timber-log'){
-    switchTab('timber');
-    document.querySelectorAll('.tab-btn').forEach(b=>{ b.classList.toggle('active', b.dataset.tab==='timber'); });
-    setTimeout(()=>{ document.getElementById('timberActivitySection')?.scrollIntoView({behavior:'smooth'}); }, 300);
-  }
-}
-
-function initMidnightReset(){
-  const msUntilMidnight = () => {
-    const now = new Date();
-    const midnight = new Date(now); midnight.setHours(24,0,0,0);
-    return midnight - now;
-  };
-  setTimeout(() => {
-    // Clear today's Timber activity caches
-    try{ renderTimberActivity(); }catch(e){}
-    try{ renderTimberBanner(); }catch(e){}
-    try{ renderDashTimberMini(); }catch(e){}
-    initMidnightReset();
-  }, msUntilMidnight());
-}
-
-function initTimberMemories(){
-  document.getElementById('memSubmitT')?.addEventListener('click', () => {
-    const inp = document.getElementById('memInputT');
-    if(!inp) return;
-    const text = inp.value.trim();
-    if(!text) return;
-    const mems = loadMemories();
-    mems.push({id: Date.now(), text, emoji:'🐾', source:'timber-tab'});
-    saveMemories(mems);
-    renderMemories('memListT');
-    inp.value = '';
+  list.innerHTML = '';
+  q.forEach(function(item){
+    var div = document.createElement('div');
+    div.style.cssText = 'display:flex;align-items:center;gap:8px;padding:8px 11px;background:var(--bgp);border:2px solid var(--lm);border-radius:var(--rmd);margin-bottom:5px';
+    var iconEl = document.createElement('span');
+    iconEl.style.fontSize = '1.1rem'; iconEl.textContent = item.icon;
+    var nameEl = document.createElement('span');
+    nameEl.style.cssText = 'flex:1;font-size:.8rem;font-weight:700;color:var(--td)'; nameEl.textContent = item.name;
+    var durEl = document.createElement('span');
+    durEl.style.cssText = 'font-size:.62rem;color:var(--tm);font-weight:700'; durEl.textContent = item.dur+'m';
+    var btn = document.createElement('button');
+    btn.textContent = '✕';
+    btn.style.cssText = 'background:none;border:none;cursor:pointer;color:var(--tm);font-size:.85rem;opacity:.5;padding:2px;flex-shrink:0';
+    btn.onclick = (function(id){ return function(){ removeDBItem(id); }; })(item.id);
+    div.appendChild(iconEl); div.appendChild(nameEl); div.appendChild(durEl); div.appendChild(btn);
+    list.appendChild(div);
   });
 }
 
-</script></body></html>
+function generateAgenda(){
+  var q = loadDBQueue();
+  if(!q.length){ alert('Add some tasks first! 💜'); return; }
+  var startEl = document.getElementById('dbStartTime');
+  var startVal = startEl ? startEl.value : '09:00';
+  var parts = startVal.split(':');
+  var curMin = (parseInt(parts[0],10)||9)*60 + (parseInt(parts[1],10)||0);
+  var blocks = q.map(function(item){
+    var start = curMin; curMin += item.dur;
+    return {icon:item.icon, name:item.name, dur:item.dur, startMin:start, endMin:curMin};
+  });
+  function fmtT(mins){
+    var hh=Math.floor(mins/60)%24, mm=mins%60, ap=hh>=12?'PM':'AM', h12=hh%12||12;
+    return h12+':'+(mm<10?'0'+mm:mm)+' '+ap;
+  }
+  var ab = document.getElementById('agendaBlocks');
+  if(ab){
+    ab.innerHTML = '';
+    blocks.forEach(function(b){
+      var row = document.createElement('div');
+      row.style.cssText = 'display:flex;align-items:center;gap:10px;padding:8px 10px;border-bottom:1px solid var(--lm)';
+      row.innerHTML = '<span style="font-size:.62rem;font-weight:900;color:var(--sa);white-space:nowrap;min-width:100px">'+fmtT(b.startMin)+' – '+fmtT(b.endMin)+'</span>'
+        +'<span style="font-size:1rem">'+b.icon+'</span>'
+        +'<span style="font-size:.78rem;font-weight:700;color:var(--td)">'+esc(b.name)+'</span>'
+        +'<span style="margin-left:auto;font-size:.58rem;color:var(--tm);font-weight:700">'+b.dur+'m</span>';
+      ab.appendChild(row);
+    });
+  }
+  var aw = document.getElementById('agendaWidget');
+  if(aw) aw.style.display = 'block';
+  closeDayBuilder();
+  updateBuildMyDayPulse();
+  saveDBQueue([]);
+}
+
+function clearAgenda(){
+  var aw = document.getElementById('agendaWidget');
+  if(aw) aw.style.display = 'none';
+  var ab = document.getElementById('agendaBlocks');
+  if(ab) ab.innerHTML = '';
+  updateBuildMyDayPulse();
+}
+
+</script>
+</body>
+</html>

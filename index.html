@@ -4110,9 +4110,11 @@ async function gistPull(){
 // Auto-push whenever memories change — debounced gistPush after each save
 function saveMemories(m){
   try{localStorage.setItem('timber_memories',JSON.stringify(m));}catch(e){}
-  // Debounced push
   clearTimeout(saveMemories._pushTimer);
-  saveMemories._pushTimer = setTimeout(()=>{ if(_getGistToken()) gistPush(); }, 1200);
+  saveMemories._pushTimer = setTimeout(()=>{
+    if(_getGistToken()) gistPush();
+    try{ if(typeof partnerPush==='function') partnerPush(); }catch(e){}
+  }, 1200);
 }
 
 function initGistSync(){
@@ -8261,7 +8263,13 @@ function generatePartnerViewHtml(rawUrl, gistId, token){
     '<!-- TRAINING PANE -->',
     '<div class="pane" id="pane-training">',
     '  <div class="card" style="margin-top:12px">',
-    '    <p style="font-size:.68rem;color:#6a90b8;margin-bottom:10px">Keep sessions 5–10 min. End on a win! Mark with "yes!" within 1–2 sec of the behaviour.</p>',
+    '    <div id="focusSectionWrap">',
+    '      <div style="font-size:.62rem;font-weight:900;color:#6a90b8;letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px" id="focusDayLabel">Today\'s Focus</div>',
+    '      <p style="font-size:.66rem;color:#6a90b8;margin-bottom:8px">Keep sessions 5–10 min. End on a win! Mark with \'yes!\' within 1–2 sec.</p>',
+    '      <div id="focusList"><div style="font-size:.7rem;color:#6a90b8;font-style:italic">Loading…</div></div>',
+    '    </div>',
+    '    <hr style="border:none;border-top:1px solid #dde8ff;margin:14px 0">',
+    '    <div style="font-size:.62rem;font-weight:900;color:#6a90b8;letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px">All Skills</div>',
     '    <div class="filter-row" id="trainFilterRow">',
     '      <button class="filter-btn active" onclick="filterSkills(\'all\',this)">All</button>',
     '      <button class="filter-btn" onclick="filterSkills(\'class\',this)">📚 Class</button>',
@@ -8336,6 +8344,7 @@ function generatePartnerViewHtml(rawUrl, gistId, token){
     '  var ptCount=(d.potty||[]).length+_partnerLogs.filter(function(e){return e.type==="potty";}).length;',
     '  document.getElementById("statPotty").textContent=ptCount||0;',
     '  renderTimeline(d);',
+    '  renderFocus(d);',
     '  renderSkills(d);',
     '  renderMemories();',
     '  updatePartnerMeta();',
@@ -8358,7 +8367,22 @@ function generatePartnerViewHtml(rawUrl, gistId, token){
     '  }).join("");',
     '}',
 
-    'function renderSkills(d){',
+    'function renderFocus(d){',
+    '  var focus=d&&d.trainingFocus?d.trainingFocus:[];',
+    '  var fl=document.getElementById("focusList");',
+    '  var dl=document.getElementById("focusDayLabel");',
+    '  var days=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];',
+    '  if(dl) dl.textContent=days[new Date().getDay()]+"\'s Focus";',
+    '  if(!fl) return;',
+    '  if(!focus.length){ fl.innerHTML="<em style=\'font-size:.7rem;color:#6a90b8\'>Rest day — name + recall warmup only 🌿</em>"; return; }',
+    '  fl.innerHTML=focus.map(function(s){',
+    '    var tip=s.tip?"<p style=\'font-size:.64rem;color:#6a90b8;font-style:italic;margin-top:3px\'>💡 "+s.tip+"</p>":"";',
+    '    return "<div style=\'background:#edf4ff;border-radius:12px;padding:11px;margin-bottom:8px;border-left:3px solid #4d7ee0\'>"',
+    '      +"<div style=\'font-size:.78rem;font-weight:900;color:#1c3a5e;margin-bottom:3px\'>"+s.icon+" "+s.name+"</div>"',
+    '      +"<div style=\'font-size:.7rem;color:#6a90b8;margin-bottom:4px\'><strong>Cue:</strong> "+s.cue+"</div>"',
+    '      +"<div style=\'font-size:.68rem;color:#1c3a5e;line-height:1.5\'>"+s.howTo+"</div>"+tip+"</div>";',
+    '  }).join("");',
+    '}',
     '  var allSkills=d&&d.allSkills?d.allSkills:[];',
     '  window._allSkills=allSkills;',
     '  filterSkills(_activeFilter,null);',

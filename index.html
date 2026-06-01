@@ -3916,6 +3916,12 @@ async function gistPush(){
     const scratch = (() => { try{ return localStorage.getItem(SCRATCH_KEY)||''; }catch(e){ return ''; } })();
     const brainItems = (() => { try{ return localStorage.getItem('jlos_brain_items')||'[]'; }catch(e){ return '[]'; } })();
     const brainDate = (() => { try{ return localStorage.getItem('jlos_brain_date')||''; }catch(e){ return ''; } })();
+    // Timber daily activity + checklist + persistent training statuses
+    const checklist    = (() => { try{ return localStorage.getItem(CL_KEY)||''; }catch(e){ return ''; } })();
+    const timberWalks  = (() => { try{ return localStorage.getItem(TIMBER_WALK_KEY)||''; }catch(e){ return ''; } })();
+    const timberTrains = (() => { try{ return localStorage.getItem(TIMBER_TRAIN_KEY)||''; }catch(e){ return ''; } })();
+    const timberFeeds  = (() => { try{ return localStorage.getItem(TIMBER_FEED_KEY)||''; }catch(e){ return ''; } })();
+    const trainStatus  = (() => { try{ return localStorage.getItem(TRAIN_STATUS_KEY)||''; }catch(e){ return ''; } })();
     const content = JSON.stringify({
       memories,
       ptDays,
@@ -3924,6 +3930,11 @@ async function gistPush(){
       scratch,
       brainItems,
       brainDate,
+      checklist,
+      timberWalks,
+      timberTrains,
+      timberFeeds,
+      trainStatus,
       updated: new Date().toISOString()
     }, null, 2);
     const gistId = _getGistId();
@@ -4031,6 +4042,27 @@ async function gistPull(){
         if(parsed.brainItems){ localStorage.setItem('jlos_brain_items', parsed.brainItems); }
         if(parsed.brainDate){ localStorage.setItem('jlos_brain_date', parsed.brainDate); }
         renderBrainItems();
+      }
+      // Checklist state
+      if(parsed.checklist){
+        try{ localStorage.setItem(CL_KEY, parsed.checklist); }catch(e){}
+        try{ renderChecklist(); }catch(e){}
+        try{ renderDashTimberMini(); }catch(e){}
+      }
+      // Timber daily activity (walks, training, feedings)
+      const hadTimberData = parsed.timberWalks || parsed.timberTrains || parsed.timberFeeds;
+      if(parsed.timberWalks)  try{ localStorage.setItem(TIMBER_WALK_KEY,  parsed.timberWalks); }catch(e){}
+      if(parsed.timberTrains) try{ localStorage.setItem(TIMBER_TRAIN_KEY, parsed.timberTrains); }catch(e){}
+      if(parsed.timberFeeds)  try{ localStorage.setItem(TIMBER_FEED_KEY,  parsed.timberFeeds); }catch(e){}
+      if(hadTimberData){
+        try{ renderTimberActivity(); }catch(e){}
+        try{ renderTimberBanner(); }catch(e){}
+        try{ renderDashTimberMini(); }catch(e){}
+      }
+      // Training skill statuses (persistent across days)
+      if(parsed.trainStatus){
+        try{ localStorage.setItem(TRAIN_STATUS_KEY, parsed.trainStatus); }catch(e){}
+        try{ renderTrainTab(); }catch(e){}
       }
       _setGistStatus('synced','Synced ✓');
     }

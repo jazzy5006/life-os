@@ -5819,6 +5819,91 @@ const TRAIN_CUES = [
     note:'Night crate routine is solid. Daytime crate door stays open — he chooses fluffy bed over crate now.',
     rotation:[0,4]
   },
+
+  // ── WEEK 3 CLASS SKILLS ────────────────────────────────────────────────────
+  {
+    id:'find-it', name:'Find It', icon:'🔍',
+    source:'class', tags:['enrichment','focus','calm'],
+    cue:'Toss a treat on the floor and say "find it"',
+    howTo:'Scatter a few treats on the floor/grass and say "find it." Great for redirecting attention, calming an overstimulated pup, or buying time when distractions appear on walks. Sniffing to find food is mentally tiring in the best way.',
+    status_default:'practicing',
+    note:'Great warm-up tool before class and on walks when another dog is nearby. Use with Name Game + Touch as your engagement warm-up trio.',
+    rotation:[0,2,4]
+  },
+  {
+    id:'up-down-pattern', name:'Up/Down Pattern Game', icon:'🔄',
+    source:'class', tags:['focus','impulse','engagement'],
+    cue:'Treat on the floor → wait for eye contact → treat from hand',
+    howTo:'Toss a treat to the floor (dog goes "down" to eat it), then as he finishes and looks back up at you: mark + treat from your hand. Build a rhythm. The loop teaches him that checking back in with you is where the good stuff lives.',
+    status_default:'new',
+    note:'Introduced week 3. Use as a warm-up in any new or distracting environment. Builds the habit of offering attention.',
+    rotation:[1,4]
+  },
+  {
+    id:'mat-work', name:'Mat Work — Settling', icon:'🛏️',
+    source:'class', tags:['calm','impulse','foundation'],
+    cue:'Lay mat down — no verbal cue yet',
+    howTo:'Place mat/blanket casually while watching TV or relaxing. Any time Timber chooses to step onto it or settle on it, quietly mark + treat. Keep it organic — don\'t lure or point yet. You\'re building a history that mat = good things happen.',
+    status_default:'new',
+    note:'Week 3: NO verbal cue yet. Just capturing the behaviour. Next step (week 4): add duration (sit → down → sit on mat). Practice also without the mat so the behaviour generalises.',
+    rotation:[0,3,6]
+  },
+  {
+    id:'engage-disengage', name:'Engage/Disengage', icon:'👁️',
+    source:'class', tags:['focus','reactivity','engagement'],
+    cue:'No cue — watch Timber, mark when he notices and looks away from a distraction',
+    howTo:'Level 1: let Timber notice a distraction (person, dog, sound). The instant he looks at it, mark. Feed. Repeat. You\'re not asking him to look away yet — you\'re just marking that he noticed it calmly. Level 2 (week 4): wait for him to look at the distraction and then voluntarily disengage back to you — that\'s what earns the mark.',
+    status_default:'new',
+    note:'Week 3 = Level 1 only. Week 4 = Level 2 (voluntary disengage). This is a foundational game for leash reactivity prevention.',
+    rotation:[2,5]
+  },
+
+  // ── WEEK 4 CLASS SKILLS ────────────────────────────────────────────────────
+  {
+    id:'ping-pong', name:'Ping Pong Pattern Game', icon:'🏓',
+    source:'class', tags:['focus','engagement','recall'],
+    cue:'Treat one side → treat other side → repeat',
+    howTo:'Toss a treat to your left → as he eats and turns → toss a treat to your right → repeat. Builds momentum, focus, and the idea of returning to you. You become the most interesting thing in the room.',
+    status_default:'new',
+    note:'Introduced week 4 as new warm-up pattern game. Use at the start of training sessions to get him switched on.',
+    rotation:[0,3]
+  },
+  {
+    id:'mat-duration', name:'Mat Work — Puppy Pushups', icon:'🏋️',
+    source:'class', tags:['calm','impulse','foundation'],
+    cue:'Once on mat with 4 feet: lure sit → down → sit',
+    howTo:'When Timber is on the mat with all 4 feet, lure a sit, then a down, then back to a sit (puppy pushups). No more than a few reps, then break. Reward generously for each position. The goal is building duration and body awareness on the mat.',
+    status_default:'new',
+    note:'Week 4 progression from organic mat settling. Still no verbal cue for mat itself — that comes later. Also practice without the mat.',
+    rotation:[1,5]
+  },
+  {
+    id:'follow-me', name:'Follow Me', icon:'🚶',
+    source:'class', tags:['leash','foundation'],
+    cue:'Walk, mark + treat when he stays near your side',
+    howTo:'Walk around your home (start indoors). Any time Timber chooses to walk near your side, mark + treat. Change direction often so he has to pay attention and follow. You\'re building the muscle memory of "staying near human = treats."',
+    status_default:'new',
+    note:'LLW Drill 1. Start indoors only — build the skill at home before taking it outside.',
+    rotation:[1,4]
+  },
+  {
+    id:'cookie-two-step', name:'Cookie Two Step', icon:'🍪',
+    source:'class', tags:['leash','foundation'],
+    cue:'Mark loose leash → toss treat forward so he has to catch up',
+    howTo:'Walk forward. When leash is loose and he\'s near your side: mark, then toss the treat slightly ahead of you (not to the side). He has to move forward and catch up to you to eat it, naturally repositioning him at your side for the next mark. Creates a rhythm.',
+    status_default:'new',
+    note:'LLW Drill 2. Great for keeping momentum on walks without stopping. The treat toss does the repositioning work for you.',
+    rotation:[2,6]
+  },
+  {
+    id:'choose-to-heel', name:'Choose to Heel', icon:'🦶',
+    source:'class', tags:['leash','foundation'],
+    cue:'Walk. Mark + treat the moment he volunteers heel position.',
+    howTo:'Don\'t lure or guide — just walk. Mark and heavily reward any time Timber voluntarily comes to heel position at your left side. He\'s choosing to be there. That choice is what builds a reliable walk without needing constant management.',
+    status_default:'new',
+    note:'LLW Drill 3. More advanced — patience is key. Let him figure it out. Also remember: goal for puppies is a loose leash, not formal heel. Sniffari walks count!',
+    rotation:[3,5]
+  },
 ];
 
 // Daily rotation: 5 cues per day distributed across the week
@@ -7752,13 +7837,6 @@ function renderTimberActivity(){
     ? '<span style="font-size:.55rem;font-weight:900;color:var(--pa);background:var(--pl);border-radius:var(--rf);padding:1px 6px;margin-left:6px;flex-shrink:0">👥 partner</span>'
     : '';
 
-  tl.innerHTML =
-    '<div style="font-size:.58rem;font-weight:900;color:var(--tm);letter-spacing:.06em;text-transform:uppercase;margin-bottom:6px">Today</div>' +
-    events.map(e =>
-  const byBadge = by => by==='partner'
-    ? '<span style="font-size:.55rem;font-weight:900;color:var(--pa);background:var(--pl);border-radius:var(--rf);padding:1px 6px;margin-left:6px;flex-shrink:0">👥 partner</span>'
-    : '';
-
   const delBtn = e => e.by==='partner' ? '' :
     '<button onclick="deleteTimberEvent('+e.ts+',\''+e.type+'\')" style="background:none;border:none;cursor:pointer;font-size:.7rem;color:var(--tm);opacity:.45;padding:0 0 0 4px;flex-shrink:0;line-height:1" title="Delete">✕</button>';
 
@@ -8275,29 +8353,27 @@ function generatePartnerViewHtml(rawUrl, gistId, token){
     '  window._pMems.push(entry);',
     '  var today=new Date().toISOString().slice(0,10);',
     '  var payload={date:today,logs:_partnerLogs,memories:window._pMems};',
-    '  showSync("Saving memory…","memSyncStatus");',
+    '  showSync("Saving memory\u2026","memSyncStatus");',
     '  try{',
     '    var r=await fetch("https://api.github.com/gists/"+GIST_ID,{',
     '      method:"PATCH",',
     '      headers:{"Authorization":"token "+TOKEN,"Content-Type":"application/json"},',
     '      body:JSON.stringify({files:{[PARTNER_FILE]:{content:JSON.stringify(payload,null,2)}}})});',
     '    if(!r.ok) throw new Error(r.status);',
-    '    showSync("✅ Memory saved!","memSyncStatus");',
+    '    showSync("\u2705 Memory saved!","memSyncStatus");',
     '    document.getElementById("pMemText").value="";',
-    '    // Merge into display',
     '    var curMems=window._jasMems||[];',
     '    curMems.push(entry);',
     '    window._jasMems=curMems;',
     '    renderMemories(null);',
-    '  }catch(e){showSync("❌ Save failed — check connection","memSyncStatus");window._pMems.pop();}',
+    '  }catch(e){showSync("\u274c Save failed — check connection","memSyncStatus");window._pMems.pop();}',
     '}',
-
+    '',
     'fetchData();'
   ].join('\n');
 
-  return '<!DOCTYPE html>\n<html lang="en">\n<head>\n<meta charset="UTF-8">\n<meta name="viewport" content="width=device-width,initial-scale=1">\n<title>Timber\'s Day 🐾</title>\n<style>\n' + CSS + '\n</style>\n</head>\n<body>\n' + BODY_HTML + '\n<script>\n' + V + '\n' + JS + '\n</' + 'script>\n</body>\n</html>';
+  return '<!DOCTYPE html>\n<html lang="en">\n<head>\n<meta charset="UTF-8">\n<meta name="viewport" content="width=device-width,initial-scale=1">\n<title>Timber\'s Day \uD83D\uDC3E</title>\n<style>\n' + CSS + '\n</style>\n</head>\n<body>\n' + BODY_HTML + '\n<script>\n' + V + '\n' + JS + '\n</' + 'script>\n</body>\n</html>';
 }
-
 // ── TIMBER EXERCISE BANNER ────────────────────────────────────────────────────
 const TIMBER_BDAY = new Date(2025, 11, 30); // Dec 30 2025
 
@@ -8377,14 +8453,46 @@ function renderTimberDailyRotation(){
 
 // ── STATS TAB RENDERER ────────────────────────────────────────────────────────
 function renderStatsTab(){
-  // 7-day heatmap
-  const heatEl = document.getElementById('statsHeatGrid');
-  if(heatEl){
-    const today = new Date().getDay();
-    const order  = [1,2,3,4,5,6,0];
-    const labels = ['M','T','W','T','F','S','S'];
-    heatEl.innerHTML = order.map((d,i) => {
-      const total = getDayTotal(d);
-      const done  = total ? getDayDone(d) : 0;
-      const pct   = total ? Math.min(1, done / total) : 0;
-      const isToday = d ===
+  // placeholder — stats tab renders its own charts on switchTab
+}
+
+function handleNFCHash(){
+  const h = location.hash;
+  if(!h) return;
+  if(h === '#timber-log'){
+    switchTab('timber');
+    document.querySelectorAll('.tab-btn').forEach(b=>{ b.classList.toggle('active', b.dataset.tab==='timber'); });
+    setTimeout(()=>{ document.getElementById('timberActivitySection')?.scrollIntoView({behavior:'smooth'}); }, 300);
+  }
+}
+
+function initMidnightReset(){
+  const msUntilMidnight = () => {
+    const now = new Date();
+    const midnight = new Date(now); midnight.setHours(24,0,0,0);
+    return midnight - now;
+  };
+  setTimeout(() => {
+    // Clear today's Timber activity caches
+    try{ renderTimberActivity(); }catch(e){}
+    try{ renderTimberBanner(); }catch(e){}
+    try{ renderDashTimberMini(); }catch(e){}
+    initMidnightReset();
+  }, msUntilMidnight());
+}
+
+function initTimberMemories(){
+  document.getElementById('memSubmitT')?.addEventListener('click', () => {
+    const inp = document.getElementById('memInputT');
+    if(!inp) return;
+    const text = inp.value.trim();
+    if(!text) return;
+    const mems = loadMemories();
+    mems.push({id: Date.now(), text, emoji:'🐾', source:'timber-tab'});
+    saveMemories(mems);
+    renderMemories('memListT');
+    inp.value = '';
+  });
+}
+
+</script></body></html>

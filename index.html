@@ -1204,6 +1204,7 @@ body.night .train-status.new{background:var(--pl);border-color:var(--pm);color:v
 /* ── TIMBER ACTIVITY LOG BUTTONS ── */
 .activity-log-btn{width:100%;padding:13px 8px;border:none;border-radius:var(--rlg);font-family:'Nunito',sans-serif;font-size:.76rem;font-weight:900;cursor:pointer;transition:transform .12s,box-shadow .2s;box-shadow:var(--neu-shadow-sm);-webkit-tap-highlight-color:transparent}
 .activity-log-btn:active{transform:scale(.95)}
+.potty-btn{background:var(--gl);color:var(--ga);}
 .walk-btn{background:var(--sl);color:var(--sa)}
 .walk-btn.walk-active{background:var(--sa);color:#fff;animation:pulse-walk 1.2s ease-in-out infinite}
 .train-btn{background:var(--ml);color:var(--ma)}
@@ -2057,6 +2058,11 @@ body.night .train-status.new{background:var(--pl);border-color:var(--pm);color:v
         <button onclick="confirmManualWalk()" style="flex:1;background:var(--sa);color:#fff;border:none;border-radius:var(--rf);padding:9px;font-family:'Nunito',sans-serif;font-size:.7rem;font-weight:900;cursor:pointer">Log Walk</button>
         <button onclick="toggleManualWalkEntry()" style="background:none;border:1.5px solid var(--sm);border-radius:var(--rf);padding:9px 12px;font-family:'Nunito',sans-serif;font-size:.7rem;font-weight:900;color:var(--tm);cursor:pointer">✕</button>
       </div>
+    </div>
+    <!-- Potty row -->
+    <div style="display:flex;align-items:center;gap:10px;margin:6px 0 4px">
+      <button id="pottyLogBtn" onclick="logPottyTrip()" class="activity-log-btn potty-btn" style="flex:1">🚽 Outside / Potty</button>
+      <div id="pottyActivityMeta" class="activity-meta" style="min-width:80px;text-align:right">No trips</div>
     </div>
     <div id="activityTimeline" style="margin-top:8px"></div>
   </div>
@@ -3947,6 +3953,7 @@ async function gistPush(){
     const timberWalks  = (() => { try{ return localStorage.getItem(TIMBER_WALK_KEY)||''; }catch(e){ return ''; } })();
     const timberTrains = (() => { try{ return localStorage.getItem(TIMBER_TRAIN_KEY)||''; }catch(e){ return ''; } })();
     const timberFeeds  = (() => { try{ return localStorage.getItem(TIMBER_FEED_KEY)||''; }catch(e){ return ''; } })();
+    const timberPotty  = (() => { try{ return localStorage.getItem(TIMBER_POTTY_KEY)||''; }catch(e){ return ''; } })();
     const trainStatus  = (() => { try{ return localStorage.getItem(TRAIN_STATUS_KEY)||''; }catch(e){ return ''; } })();
     const content = JSON.stringify({
       memories,
@@ -3960,6 +3967,7 @@ async function gistPush(){
       timberWalks,
       timberTrains,
       timberFeeds,
+      timberPotty,
       trainStatus,
       updated: new Date().toISOString()
     }, null, 2);
@@ -4076,10 +4084,11 @@ async function gistPull(){
         try{ renderDashTimberMini(); }catch(e){}
       }
       // Timber daily activity (walks, training, feedings)
-      const hadTimberData = parsed.timberWalks || parsed.timberTrains || parsed.timberFeeds;
+      const hadTimberData = parsed.timberWalks || parsed.timberTrains || parsed.timberFeeds || parsed.timberPotty;
       if(parsed.timberWalks)  try{ localStorage.setItem(TIMBER_WALK_KEY,  parsed.timberWalks); }catch(e){}
       if(parsed.timberTrains) try{ localStorage.setItem(TIMBER_TRAIN_KEY, parsed.timberTrains); }catch(e){}
       if(parsed.timberFeeds)  try{ localStorage.setItem(TIMBER_FEED_KEY,  parsed.timberFeeds); }catch(e){}
+      if(parsed.timberPotty) try{ localStorage.setItem(TIMBER_POTTY_KEY, parsed.timberPotty); }catch(e){}
       if(hadTimberData){
         try{ renderTimberActivity(); }catch(e){}
         try{ renderTimberBanner(); }catch(e){}
@@ -7685,6 +7694,27 @@ function saveTimberFeeds(f){
   saveTimberFeeds._t = setTimeout(()=>{ if(typeof gistPush==='function'&&_getGistToken()) gistPush(); }, 1500);
 }
 
+const TIMBER_POTTY_KEY = 'jlos_timber_potty';
+function loadTimberPotty(){
+  try{
+    const r = JSON.parse(localStorage.getItem(TIMBER_POTTY_KEY)||'{}');
+    const k = getTodayKey();
+    return r.date===k ? r.trips : [];
+  }catch(e){ return []; }
+}
+function saveTimberPotty(p){
+  try{ localStorage.setItem(TIMBER_POTTY_KEY, JSON.stringify({date:getTodayKey(),trips:p})); }catch(e){}
+  clearTimeout(saveTimberPotty._t);
+  saveTimberPotty._t = setTimeout(()=>{ if(typeof gistPush==='function'&&_getGistToken()) gistPush(); }, 1500);
+}
+window.logPottyTrip = function(){
+  const trips = loadTimberPotty();
+  trips.push({ts:Date.now()});
+  saveTimberPotty(trips);
+  renderTimberActivity();
+  try{ renderDashTimberMini(); }catch(e){}
+};
+
 window.toggleFeedEntry = function(){
   const row = document.getElementById('feedEntryRow');
   if(!row) return;
@@ -7753,6 +7783,7 @@ function renderTimberActivity(){
   const walks = loadTimberWalks();
   const trains = loadTimberTrains();
   const feeds = loadTimberFeeds();
+  const potties = loadTimberPotty();
   const fmt = ts => new Date(ts).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
 
   // Walk button state + meta
@@ -7805,6 +7836,20 @@ function renderTimberActivity(){
     }
   }
 
+  // Potty meta
+  const pottyMeta = document.getElementById('pottyActivityMeta');
+  if(pottyMeta){
+    if(potties.length){
+      const last = potties[potties.length-1];
+      const ago = Math.round((Date.now()-last.ts)/60000);
+      pottyMeta.textContent = potties.length===1
+        ? `1 trip · ${fmt(last.ts)}`
+        : `${potties.length} trips · ${ago<60 ? ago+'m ago' : fmt(last.ts)}`;
+    } else {
+      pottyMeta.textContent = 'No trips';
+    }
+  }
+
   // Combined timeline (newest first)
   const tl = document.getElementById('activityTimeline');
   if(!tl) return;
@@ -7820,6 +7865,7 @@ function renderTimberActivity(){
     ...walks.map(w  => ({ts:w.ts, type:'walk',  label:walkLabel(w), by:'you'})),
     ...trains.map(t => ({ts:t.ts, type:'train', label:'🎓 Training session', by:'you'})),
     ...feeds.map(f  => ({ts:f.ts, type:'feed',  label: f.note ? '🍽️ Fed — '+f.note : '🍽️ Fed', by:'you'})),
+    ...potties.map(p => ({ts:p.ts, type:'potty', label:'🚽 Outside / potty', by:'you'})),
   ];
   // Merge partner activity if cached
   const partnerCache = window._partnerActivityCache;
@@ -7942,6 +7988,7 @@ function buildPartnerPayload(){
     date: today,
     updated: new Date().toISOString(),
     walks: walks.map(w=>({time:fmt(w.ts), mins:w.mins, dist:w.dist||'', ts:w.ts})),
+    potty: (()=>{ try{ return loadTimberPotty().map(p=>({time:fmt(p.ts),ts:p.ts})); }catch(e){ return []; } })(),
     training: trains.map(t=>({time:fmt(t.ts), ts:t.ts})),
     feedings: feeds.map(f=>({time:fmt(f.ts), note:f.note||'', ts:f.ts})),
     totalWalkMins: walks.reduce((a,w)=>a+w.mins,0),
@@ -8077,19 +8124,29 @@ function generatePartnerViewHtml(rawUrl, gistId, token){
     '.top-bar{background:linear-gradient(135deg,#a8c4f5,#96ccec);padding:18px 18px 14px;text-align:center}',
     '.top-bar h1{font-size:1.2rem;font-weight:800;color:#1c3a5e;margin-bottom:2px}',
     '.sub{font-size:.7rem;color:#3a6090}',
+    '.tabs{display:flex;background:#dde8ff;position:sticky;top:0;z-index:10}',
+    '.tab-btn{flex:1;padding:11px 0;border:none;background:none;font-family:inherit;font-size:.72rem;font-weight:800;color:#6a90b8;cursor:pointer}',
+    '.tab-btn.active{background:#f7fbff;color:#4d7ee0;border-bottom:2.5px solid #4d7ee0}',
+    '.pane{display:none;padding-bottom:40px}',
+    '.pane.active{display:block}',
     '.card{background:#f7fbff;border-radius:18px;padding:16px;margin:12px 14px;box-shadow:4px 4px 12px rgba(120,160,220,.2),-4px -4px 10px rgba(255,255,255,.8)}',
     '.section-title{font-size:.62rem;font-weight:900;color:#6a90b8;letter-spacing:.08em;text-transform:uppercase;margin:18px 14px 2px}',
-    '.log-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}',
+    '.log-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px}',
     '.log-btn{width:100%;padding:13px 6px;border:none;border-radius:14px;font-family:inherit;font-size:.76rem;font-weight:900;cursor:pointer;transition:transform .1s;box-shadow:3px 3px 8px rgba(120,160,220,.2)}',
     '.log-btn:active{transform:scale(.95)}',
     '.log-btn.walk{background:#eaf3ff;color:#5ba0f0}',
     '.log-btn.feed{background:#fdf8e8;color:#c8940a}',
     '.log-btn.train{background:#d8f0f8;color:#2596c8;grid-column:1/-1}',
+    '.log-btn.potty{background:#e8f7ee;color:#3dba87;grid-column:1/-1}',
     '.meta-txt{font-size:.6rem;color:#6a90b8;text-align:center;margin-top:3px;min-height:1em}',
     '.entry-row{display:none;background:#edf4ff;border-radius:12px;padding:10px;margin-top:8px;gap:8px;align-items:center}',
     '.entry-row.open{display:flex}',
     'input.log-input{flex:1;background:#fff;border:1.5px solid #a8c4f5;border-radius:10px;padding:8px 10px;font-family:inherit;font-size:.72rem;color:#1c3a5e;outline:none}',
-    '.confirm-btn{background:#5ba0f0;color:#fff;border:none;border-radius:10px;padding:8px 14px;font-family:inherit;font-size:.7rem;font-weight:900;cursor:pointer}',
+    '.confirm-btn{background:#5ba0f0;color:#fff;border:none;border-radius:10px;padding:8px 14px;font-family:inherit;font-size:.7rem;font-weight:900;cursor:pointer;white-space:nowrap}',
+    '.stat-row{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}',
+    '.stat{flex:1;min-width:60px;background:#edf4ff;border-radius:12px;padding:10px 8px;text-align:center}',
+    '.stat-num{font-size:1.1rem;font-weight:900;color:#4d7ee0;line-height:1}',
+    '.stat-lbl{font-size:.56rem;color:#6a90b8;margin-top:2px;font-weight:700}',
     '.tl-row{display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid #dde8ff;font-size:.76rem}',
     '.tl-row:last-child{border-bottom:none}',
     '.tl-time{color:#6a90b8;min-width:54px;font-weight:700;font-size:.66rem}',
@@ -8098,21 +8155,24 @@ function generatePartnerViewHtml(rawUrl, gistId, token){
     '.del-btn{background:none;border:none;cursor:pointer;font-size:.7rem;color:#b0b8cc;padding:0 2px;flex-shrink:0}',
     '.del-btn:hover{color:#e05555}',
     '.empty{font-size:.7rem;color:#6a90b8;font-style:italic;padding:8px 0}',
-    '.stat-row{display:flex;gap:8px;margin-bottom:12px}',
-    '.stat{flex:1;background:#edf4ff;border-radius:12px;padding:10px 8px;text-align:center}',
-    '.stat-num{font-size:1.2rem;font-weight:900;color:#4d7ee0;line-height:1}',
-    '.stat-lbl{font-size:.58rem;color:#6a90b8;margin-top:2px;font-weight:700}',
+    '.sync-status{font-size:.62rem;color:#6a90b8;text-align:center;margin-top:6px;min-height:1.2em}',
     '.skill-card{background:#edf4ff;border-radius:12px;padding:12px;margin-bottom:8px;border-left:3px solid #a8c4f5}',
     '.skill-name{font-size:.78rem;font-weight:900;color:#1c3a5e;margin-bottom:3px}',
+    '.skill-badge{display:inline-block;font-size:.56rem;font-weight:900;padding:2px 8px;border-radius:999px;margin-bottom:5px}',
+    '.skill-badge.new{background:#ede8f7;color:#9b77d4}',
+    '.skill-badge.practicing{background:#d8f0f8;color:#2596c8}',
+    '.skill-badge.mastered{background:#d8f7ee;color:#3dba87}',
     '.skill-cue{font-size:.7rem;color:#6a90b8;margin-bottom:5px}',
     '.skill-how{font-size:.68rem;color:#1c3a5e;line-height:1.5;margin-bottom:3px}',
     '.skill-tip{font-size:.64rem;color:#6a90b8;font-style:italic}',
+    '.filter-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}',
+    '.filter-btn{background:#edf4ff;border:1.5px solid #a8c4f5;border-radius:999px;padding:4px 12px;font-family:inherit;font-size:.63rem;font-weight:800;color:#4d7ee0;cursor:pointer}',
+    '.filter-btn.active{background:#4d7ee0;color:#fff;border-color:#4d7ee0}',
+    '.mem-form{display:flex;gap:8px;margin-top:10px}',
+    'textarea.mem-input{flex:1;background:#fff;border:1.5px solid #a8c4f5;border-radius:10px;padding:8px 10px;font-family:inherit;font-size:.72rem;color:#1c3a5e;resize:vertical;min-height:60px;outline:none}',
     '.mem-card{background:#edf4ff;border-radius:12px;padding:11px;margin-bottom:7px}',
     '.mem-text{font-size:.74rem;color:#1c3a5e;line-height:1.5;margin-bottom:3px}',
     '.mem-date{font-size:.58rem;color:#6a90b8}',
-    '.mem-form{display:flex;gap:8px;margin-top:10px}',
-    'textarea.mem-input{flex:1;background:#fff;border:1.5px solid #a8c4f5;border-radius:10px;padding:8px 10px;font-family:inherit;font-size:.72rem;color:#1c3a5e;resize:vertical;min-height:60px;outline:none}',
-    '.sync-status{font-size:.62rem;color:#6a90b8;text-align:center;margin-top:6px;min-height:1.2em}',
     '.refresh-row{text-align:center;padding:10px 0 6px}',
     '.refresh-btn{background:none;border:1.5px solid #a8c4f5;border-radius:999px;padding:5px 16px;font-family:inherit;font-size:.64rem;font-weight:800;color:#4d7ee0;cursor:pointer}',
     '@media(prefers-color-scheme:dark){',
@@ -8120,89 +8180,122 @@ function generatePartnerViewHtml(rawUrl, gistId, token){
     '.card,.stat,.skill-card,.mem-card{background:#251735}',
     '.top-bar{background:linear-gradient(135deg,#46305a,#2c4a3e)}',
     '.top-bar h1,.tl-label,.skill-name,.skill-how{color:#f0e8f5}',
-    '.sub,.tl-time,.stat-lbl,.empty,.skill-cue,.skill-tip,.mem-date,.section-title{color:#8a7a98}',
+    '.sub,.tl-time,.stat-lbl,.empty,.skill-cue,.skill-tip,.section-title{color:#8a7a98}',
     '.stat-num{color:#b896d6}',
     '.tl-row{border-bottom-color:#2e1d3e}',
     '.stat{background:#1f1330}',
+    '.tabs{background:#1f1330;position:sticky;top:0}',
+    '.tab-btn{color:#8a7a98}',
+    '.tab-btn.active{background:#251735;color:#b896d6;border-bottom-color:#b896d6}',
     '.log-btn.walk{background:#15202e;color:#88a8d4}',
     '.log-btn.feed{background:#2a2410;color:#e8c060}',
     '.log-btn.train{background:#1a2e26;color:#8fc4a8}',
+    '.log-btn.potty{background:#1a2e20;color:#5dba87}',
     'input.log-input,textarea.mem-input{background:#2e1d3e;border-color:#46305a;color:#f0e8f5}',
-    '.entry-row{background:#1f1330}',
-    '.edf4ff,.mem-form{background:#251735}',
+    '.entry-row,.pane{background:transparent}',
+    '.filter-btn{background:#1f1330;border-color:#46305a;color:#b896d6}',
+    '.filter-btn.active{background:#46305a;color:#f0e8f5}',
+    '.skill-card{border-left-color:#46305a}',
     '}'
   ].join('\n');
 
   var BODY_HTML = [
     '<div class="top-bar">',
-    '<div style="font-size:2rem;margin-bottom:4px">🐾</div>',
-    '<h1>Timber\'s Day</h1>',
-    '<div class="sub" id="dateLabel">Loading…</div>',
+    '  <div style="font-size:2rem;margin-bottom:4px">🐾</div>',
+    '  <h1>Timber\'s Day</h1>',
+    '  <div class="sub" id="dateLabel">Loading…</div>',
+    '</div>',
+    '<div class="tabs">',
+    '  <button class="tab-btn active" onclick="showTab(\'today\',this)">Today</button>',
+    '  <button class="tab-btn" onclick="showTab(\'training\',this)">Training</button>',
     '</div>',
 
-    '<div class="section-title">Log for Timber</div>',
-    '<div class="card">',
-    '<p style="font-size:.66rem;color:#6a90b8;margin-bottom:12px">Your logs appear in Jasmine\'s app automatically.</p>',
-    '<div class="log-grid">',
-    '<div><button class="log-btn walk" onclick="toggleEntry(\'walkEntry\')">🦮 Walk</button><div class="meta-txt" id="pWalkMeta">No walks today</div></div>',
-    '<div><button class="log-btn feed" onclick="toggleEntry(\'feedEntry\')">🍽️ Feeding</button><div class="meta-txt" id="pFeedMeta">No feedings today</div></div>',
-    '<button class="log-btn train" onclick="logPartnerTrain()">🎓 Training Session</button>',
-    '</div>',
-    '<div class="entry-row" id="walkEntry">',
-    '<input class="log-input" id="pWalkMins" type="number" min="1" max="300" placeholder="Mins (e.g. 20)">',
-    '<input class="log-input" id="pWalkDist" type="text" placeholder="Distance (optional)">',
-    '<button class="confirm-btn" onclick="confirmPartnerWalk()">Log</button>',
-    '</div>',
-    '<div class="entry-row" id="feedEntry">',
-    '<input class="log-input" id="pFeedNote" type="text" placeholder="Amount / note (e.g. ½ cup)">',
-    '<button class="confirm-btn" style="background:#c8940a" onclick="confirmPartnerFeed()">Log</button>',
-    '</div>',
-    '<div class="sync-status" id="partnerSyncStatus"></div>',
+    '<!-- TODAY PANE -->',
+    '<div class="pane active" id="pane-today">',
+
+    '  <div class="section-title">Log for Timber</div>',
+    '  <div class="card">',
+    '    <p style="font-size:.66rem;color:#6a90b8;margin-bottom:12px">Your logs appear in Jasmine\'s app automatically.</p>',
+    '    <div class="log-grid">',
+    '      <div><button class="log-btn walk" onclick="toggleEntry(\'walkEntry\')">🦮 Walk</button><div class="meta-txt" id="pWalkMeta">No walks</div></div>',
+    '      <div><button class="log-btn feed" onclick="toggleEntry(\'feedEntry\')">🍽️ Feeding</button><div class="meta-txt" id="pFeedMeta">No feedings</div></div>',
+    '      <button class="log-btn train" onclick="logPartnerTrain()">🎓 Training Session</button>',
+    '      <button class="log-btn potty" onclick="logPartnerPotty()">🚽 Outside / Potty</button>',
+    '    </div>',
+    '    <div class="entry-row" id="walkEntry">',
+    '      <input class="log-input" id="pWalkMins" type="number" min="1" max="300" placeholder="Mins (e.g. 20)">',
+    '      <input class="log-input" id="pWalkDist" type="text" placeholder="Distance (optional)">',
+    '      <button class="confirm-btn" onclick="confirmPartnerWalk()">Log</button>',
+    '    </div>',
+    '    <div class="entry-row" id="feedEntry">',
+    '      <input class="log-input" id="pFeedNote" type="text" placeholder="Amount / note (e.g. ½ cup)">',
+    '      <button class="confirm-btn" style="background:#c8940a" onclick="confirmPartnerFeed()">Log</button>',
+    '    </div>',
+    '    <div class="sync-status" id="partnerSyncStatus"></div>',
+    '  </div>',
+
+    '  <div class="section-title">Today\'s Timeline</div>',
+    '  <div class="card">',
+    '    <div class="stat-row">',
+    '      <div class="stat"><div class="stat-num" id="statWalks">—</div><div class="stat-lbl">Walks</div></div>',
+    '      <div class="stat"><div class="stat-num" id="statMins">—</div><div class="stat-lbl">Walk min</div></div>',
+    '      <div class="stat"><div class="stat-num" id="statFeeds">—</div><div class="stat-lbl">Meals</div></div>',
+    '      <div class="stat"><div class="stat-num" id="statPotty">—</div><div class="stat-lbl">Potty</div></div>',
+    '    </div>',
+    '    <div id="timelineBody"><div class="empty">Loading…</div></div>',
+    '  </div>',
+
+    '  <div class="section-title">Timber\'s Memories</div>',
+    '  <div class="card">',
+    '    <div id="memList"><div class="empty">Loading…</div></div>',
+    '    <div class="mem-form">',
+    '      <textarea class="mem-input" id="pMemText" placeholder="Add a memory… a funny moment, milestone ✨"></textarea>',
+    '      <button class="confirm-btn" style="align-self:flex-end" onclick="addPartnerMemory()">Save</button>',
+    '    </div>',
+    '    <div class="sync-status" id="memSyncStatus"></div>',
+    '  </div>',
+
+    '  <div class="refresh-row"><button class="refresh-btn" onclick="fetchData()">↻ Refresh</button></div>',
     '</div>',
 
-    '<div class="section-title">Today\'s Timeline</div>',
-    '<div class="card">',
-    '<div class="stat-row">',
-    '<div class="stat"><div class="stat-num" id="statWalks">—</div><div class="stat-lbl">Walks</div></div>',
-    '<div class="stat"><div class="stat-num" id="statMins">—</div><div class="stat-lbl">Walk mins</div></div>',
-    '<div class="stat"><div class="stat-num" id="statFeeds">—</div><div class="stat-lbl">Meals</div></div>',
-    '</div>',
-    '<div id="timelineBody"><div class="empty">Loading…</div></div>',
-    '</div>',
-
-    '<div class="section-title">Training Focus</div>',
-    '<div class="card" id="focusCard">',
-    '<div id="focusList"><div class="empty">Loading…</div></div>',
-    '</div>',
-
-    '<div class="section-title">Timber\'s Memories</div>',
-    '<div class="card">',
-    '<div id="memList"><div class="empty">Loading…</div></div>',
-    '<div class="mem-form">',
-    '<textarea class="mem-input" id="pMemText" placeholder="Add a memory… a funny moment, first time doing something, milestone ✨"></textarea>',
-    '<button class="confirm-btn" style="align-self:flex-end" onclick="addPartnerMemory()">Save</button>',
-    '</div>',
-    '<div class="sync-status" id="memSyncStatus"></div>',
-    '</div>',
-
-    '<div class="refresh-row">',
-    '<button class="refresh-btn" onclick="fetchData()">↻ Refresh</button>',
+    '<!-- TRAINING PANE -->',
+    '<div class="pane" id="pane-training">',
+    '  <div class="card" style="margin-top:12px">',
+    '    <p style="font-size:.68rem;color:#6a90b8;margin-bottom:10px">Keep sessions 5–10 min. End on a win! Mark with "yes!" within 1–2 sec of the behaviour.</p>',
+    '    <div class="filter-row" id="trainFilterRow">',
+    '      <button class="filter-btn active" onclick="filterSkills(\'all\',this)">All</button>',
+    '      <button class="filter-btn" onclick="filterSkills(\'class\',this)">📚 Class</button>',
+    '      <button class="filter-btn" onclick="filterSkills(\'new\',this)">🌱 New</button>',
+    '      <button class="filter-btn" onclick="filterSkills(\'practicing\',this)">🔄 Practicing</button>',
+    '      <button class="filter-btn" onclick="filterSkills(\'mastered\',this)">⭐ Mastered</button>',
+    '    </div>',
+    '    <div id="allSkillsList"></div>',
+    '  </div>',
+    '  <div class="refresh-row"><button class="refresh-btn" onclick="fetchData()">↻ Refresh</button></div>',
     '</div>'
   ].join('\n');
 
   var JS = [
-    'var _data=null,_partnerLogs=[],_refreshTimer=null;',
-    'function fmtTime(ts){return new Date(ts).toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"});}',
-    'function fmtDate(ts){return new Date(ts).toLocaleDateString([],{month:"short",day:"numeric"});}',
+    'var _data=null,_partnerLogs=[],_refreshTimer=null,_activeFilter="all";',
+    'window._pMems=[];window._jasMems=[];',
+
+    'function showTab(t,btn){',
+    '  document.querySelectorAll(".pane").forEach(function(p){p.classList.remove("active");});',
+    '  document.querySelectorAll(".tab-btn").forEach(function(b){b.classList.remove("active");});',
+    '  document.getElementById("pane-"+t).classList.add("active");',
+    '  if(btn) btn.classList.add("active");',
+    '}',
     'function toggleEntry(id){',
     '  var el=document.getElementById(id);',
     '  var open=el.classList.contains("open");',
     '  document.querySelectorAll(".entry-row").forEach(function(r){r.classList.remove("open");});',
     '  if(!open) el.classList.add("open");',
     '}',
+    'function fmtTime(ts){return new Date(ts).toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"});}',
+    'function fmtDate(ts){return new Date(ts).toLocaleDateString([],{month:"short",day:"numeric"});}',
     'function showSync(msg,elId){',
     '  var el=document.getElementById(elId||"partnerSyncStatus");',
-    '  if(el){el.textContent=msg;setTimeout(function(){el.textContent="";},3500);}',
+    '  if(el){el.textContent=msg;setTimeout(function(){if(el)el.textContent="";},3500);}',
     '}',
 
     '// ── FETCH ───────────────────────────────────────────────────────────────',
@@ -8228,7 +8321,8 @@ function generatePartnerViewHtml(rawUrl, gistId, token){
     '      var parsed=JSON.parse(raw);',
     '      var today=new Date().toISOString().slice(0,10);',
     '      _partnerLogs=(parsed.date===today?parsed.logs:[])||[];',
-    '      if(Array.isArray(parsed.memories)){window._partnerMems=parsed.memories;}',
+    '      window._pMems=Array.isArray(parsed.memories)?parsed.memories:[];',
+    '      if(Array.isArray(parsed.memories)) window._jasMems=window._jasMems.concat(parsed.memories.filter(function(m){return !window._jasMems.find(function(x){return x.id===m.id;});}));',
     '    }',
     '  }catch(e){_partnerLogs=[];}',
     '}',
@@ -8239,9 +8333,11 @@ function generatePartnerViewHtml(rawUrl, gistId, token){
     '  document.getElementById("statWalks").textContent=(d.walks||[]).length;',
     '  document.getElementById("statMins").textContent=d.totalWalkMins||0;',
     '  document.getElementById("statFeeds").textContent=(d.feedings||[]).length;',
+    '  var ptCount=(d.potty||[]).length+_partnerLogs.filter(function(e){return e.type==="potty";}).length;',
+    '  document.getElementById("statPotty").textContent=ptCount||0;',
     '  renderTimeline(d);',
-    '  renderTraining(d);',
-    '  renderMemories(d);',
+    '  renderSkills(d);',
+    '  renderMemories();',
     '  updatePartnerMeta();',
     '}',
 
@@ -8250,6 +8346,7 @@ function generatePartnerViewHtml(rawUrl, gistId, token){
     '  (d.walks||[]).forEach(function(w){events.push({ts:w.ts,label:"🦮 Walk"+(w.mins?" · "+w.mins+" min":"")+(w.dist?" · "+w.dist:""),by:"jasmine"});});',
     '  (d.training||[]).forEach(function(t){events.push({ts:t.ts,label:"🎓 Training session",by:"jasmine"});});',
     '  (d.feedings||[]).forEach(function(f){events.push({ts:f.ts,label:f.note?"🍽️ Fed — "+f.note:"🍽️ Fed",by:"jasmine"});});',
+    '  (d.potty||[]).forEach(function(p){events.push({ts:p.ts,label:"🚽 Outside / potty",by:"jasmine"});});',
     '  _partnerLogs.forEach(function(e,i){events.push(Object.assign({},e,{by:"partner",pidx:i}));});',
     '  events.sort(function(a,b){return b.ts-a.ts;});',
     '  var body=document.getElementById("timelineBody");',
@@ -8257,27 +8354,40 @@ function generatePartnerViewHtml(rawUrl, gistId, token){
     '  body.innerHTML=events.map(function(e){',
     '    var byBadge=e.by==="partner"?\'<span class="by-badge">👥 you</span>\':"";',
     '    var delBtn=e.by==="partner"?\'<button class="del-btn" onclick="deletePartnerLog(\'+e.pidx+\')">✕</button>\':"";',
-    '    return \'<div class="tl-row"><span class="tl-time">\'+fmtTime(e.ts)+\'</span><span class="tl-label">\'+e.label+\'</span>\'+byBadge+delBtn+\'</div>\';',
+    '    return \'<div class="tl-row"><span class="tl-time">\'+fmtTime(e.ts)+\'</span><span class="tl-label">\'+e.label+\'</span>\'+byBadge+delBtn+"</div>";',
     '  }).join("");',
     '}',
 
-    'function renderTraining(d){',
-    '  var focus=d.trainingFocus||[];',
-    '  var fl=document.getElementById("focusList");',
-    '  if(!fl) return;',
-    '  if(!focus.length){fl.innerHTML=\'<div class="empty">Rest day — short name + recall warmup only 🌿</div>\';return;}',
-    '  var tip=\'<p style="font-size:.66rem;color:#6a90b8;margin-bottom:10px">Keep sessions 5–10 min. End on a win! Mark with "yes!" within 1–2 sec.</p>\';',
-    '  fl.innerHTML=tip+focus.map(function(s){',
-    '    return \'<div class="skill-card"><div class="skill-name">\'+s.icon+" "+s.name+\'</div><div class="skill-cue"><strong>Cue:</strong> \'+s.cue+\'</div><div class="skill-how">\'+s.howTo+\'</div>\'+(s.tip?\'<div class="skill-tip">\'+s.tip+\'</div>\':"")+"</div>";',
+    'function renderSkills(d){',
+    '  var allSkills=d&&d.allSkills?d.allSkills:[];',
+    '  window._allSkills=allSkills;',
+    '  filterSkills(_activeFilter,null);',
+    '}',
+    'function filterSkills(f,btn){',
+    '  _activeFilter=f;',
+    '  document.querySelectorAll(".filter-btn").forEach(function(b){b.classList.remove("active");});',
+    '  if(btn) btn.classList.add("active");',
+    '  var skills=window._allSkills||[];',
+    '  var sl;',
+    '  if(f==="all") sl=skills;',
+    '  else if(f==="class") sl=skills.filter(function(s){return s.source==="class";});',
+    '  else sl=skills.filter(function(s){return s.status===f;});',
+    '  var list=document.getElementById("allSkillsList");',
+    '  if(!list) return;',
+    '  if(!sl.length){list.innerHTML=\'<div class="empty" style="padding:12px 0">No skills here yet.</div>\';return;}',
+    '  var lbl={new:"🌱 New",practicing:"🔄 Practicing",mastered:"⭐ Mastered"};',
+    '  list.innerHTML=sl.map(function(s){',
+    '    var badge=\'<span class="skill-badge \'+s.status+\'">\'+( lbl[s.status]||s.status)+\'</span>\';',
+    '    var tip=s.tip?\'<div class="skill-tip">💡 \'+s.tip+\'</div>\':"";',
+    '    return \'<div class="skill-card"><div class="skill-name">\'+s.icon+" "+s.name+"</div>"+badge+\'<div class="skill-cue"><strong>Cue:</strong> \'+s.cue+\'</div><div class="skill-how">\'+s.howTo+"</div>"+tip+"</div>";',
     '  }).join("");',
     '}',
 
-    'function renderMemories(d){',
-    '  var mems=(d&&d.memories)||window._jasMems||[];',
-    '  if(d&&d.memories) window._jasMems=d.memories;',
+    'function renderMemories(){',
+    '  var mems=window._jasMems||[];',
     '  var el=document.getElementById("memList");',
     '  if(!el) return;',
-    '  if(!mems.length){el.innerHTML=\'<div class="empty">No memories yet — add the first one below ✨</div>\';return;}',
+    '  if(!mems.length){el.innerHTML=\'<div class="empty">No memories yet — add one below ✨</div>\';return;}',
     '  var sorted=mems.slice().sort(function(a,b){return String(b.id).localeCompare(String(a.id));});',
     '  el.innerHTML=sorted.slice(0,20).map(function(m){',
     '    return \'<div class="mem-card"><div class="mem-text">\'+(m.emoji||"🐾")+" "+m.text+\'</div><div class="mem-date">\'+fmtDate(m.id)+\'</div></div>\';',
@@ -8287,8 +8397,9 @@ function generatePartnerViewHtml(rawUrl, gistId, token){
     'function updatePartnerMeta(){',
     '  var mw=_partnerLogs.filter(function(e){return e.type==="walk";});',
     '  var mf=_partnerLogs.filter(function(e){return e.type==="feed";});',
-    '  document.getElementById("pWalkMeta").textContent=mw.length?mw.length+"x today":"No walks today";',
-    '  document.getElementById("pFeedMeta").textContent=mf.length?mf.length+" meal"+(mf.length>1?"s":"")+" today":"No feedings today";',
+    '  var mp=_partnerLogs.filter(function(e){return e.type==="potty";});',
+    '  document.getElementById("pWalkMeta").textContent=mw.length?mw.length+"x today":"No walks";',
+    '  document.getElementById("pFeedMeta").textContent=mf.length?mf.length+" meal"+(mf.length>1?"s":""):"No feedings";',
     '}',
 
     '// ── PUSH ────────────────────────────────────────────────────────────────',
@@ -8296,12 +8407,11 @@ function generatePartnerViewHtml(rawUrl, gistId, token){
     '  if(!GIST_ID||!TOKEN){showSync("⚠️ No write access","partnerSyncStatus");return;}',
     '  var today=new Date().toISOString().slice(0,10);',
     '  _partnerLogs.push(entry);',
-    '  var payload={date:today,logs:_partnerLogs,memories:window._pMems||[]};',
+    '  var payload={date:today,logs:_partnerLogs,memories:window._pMems};',
     '  showSync("Syncing…","partnerSyncStatus");',
     '  try{',
     '    var r=await fetch("https://api.github.com/gists/"+GIST_ID,{',
-    '      method:"PATCH",',
-    '      headers:{"Authorization":"token "+TOKEN,"Content-Type":"application/json"},',
+    '      method:"PATCH",headers:{"Authorization":"token "+TOKEN,"Content-Type":"application/json"},',
     '      body:JSON.stringify({files:{[PARTNER_FILE]:{content:JSON.stringify(payload,null,2)}}})});',
     '    if(!r.ok) throw new Error(r.status);',
     '    showSync("✅ Synced!","partnerSyncStatus");',
@@ -8309,16 +8419,14 @@ function generatePartnerViewHtml(rawUrl, gistId, token){
     '    updatePartnerMeta();',
     '  }catch(e){showSync("❌ Sync failed","partnerSyncStatus");_partnerLogs.pop();}',
     '}',
-
     'async function deletePartnerLog(idx){',
     '  if(!GIST_ID||!TOKEN) return;',
     '  _partnerLogs.splice(idx,1);',
     '  var today=new Date().toISOString().slice(0,10);',
-    '  var payload={date:today,logs:_partnerLogs,memories:window._pMems||[]};',
+    '  var payload={date:today,logs:_partnerLogs,memories:window._pMems};',
     '  try{',
     '    await fetch("https://api.github.com/gists/"+GIST_ID,{',
-    '      method:"PATCH",',
-    '      headers:{"Authorization":"token "+TOKEN,"Content-Type":"application/json"},',
+    '      method:"PATCH",headers:{"Authorization":"token "+TOKEN,"Content-Type":"application/json"},',
     '      body:JSON.stringify({files:{[PARTNER_FILE]:{content:JSON.stringify(payload,null,2)}}})});',
     '  }catch(e){}',
     '  if(_data) renderTimeline(_data);',
@@ -8336,12 +8444,12 @@ function generatePartnerViewHtml(rawUrl, gistId, token){
     '}',
     'function confirmPartnerFeed(){',
     '  var note=(document.getElementById("pFeedNote").value||"").trim();',
-    '  var label=note?"🍽️ Fed — "+note:"🍽️ Fed";',
-    '  pushPartnerLog({ts:Date.now(),type:"feed",label:label,note:note});',
+    '  pushPartnerLog({ts:Date.now(),type:"feed",label:note?"🍽️ Fed — "+note:"🍽️ Fed",note:note});',
     '  document.getElementById("feedEntry").classList.remove("open");',
     '  document.getElementById("pFeedNote").value="";',
     '}',
     'function logPartnerTrain(){pushPartnerLog({ts:Date.now(),type:"train",label:"🎓 Training session"});}',
+    'function logPartnerPotty(){pushPartnerLog({ts:Date.now(),type:"potty",label:"🚽 Outside / potty"});}',
 
     '// ── MEMORIES ────────────────────────────────────────────────────────────',
     'async function addPartnerMemory(){',
@@ -8349,31 +8457,28 @@ function generatePartnerViewHtml(rawUrl, gistId, token){
     '  if(!txt){showSync("Write something first ✏️","memSyncStatus");return;}',
     '  if(!GIST_ID||!TOKEN){showSync("⚠️ No write access","memSyncStatus");return;}',
     '  var entry={id:Date.now(),text:txt,emoji:"🐾",by:"partner"};',
-    '  window._pMems=window._pMems||[];',
     '  window._pMems.push(entry);',
+    '  window._jasMems.push(entry);',
     '  var today=new Date().toISOString().slice(0,10);',
     '  var payload={date:today,logs:_partnerLogs,memories:window._pMems};',
-    '  showSync("Saving memory\u2026","memSyncStatus");',
+    '  showSync("Saving…","memSyncStatus");',
     '  try{',
     '    var r=await fetch("https://api.github.com/gists/"+GIST_ID,{',
-    '      method:"PATCH",',
-    '      headers:{"Authorization":"token "+TOKEN,"Content-Type":"application/json"},',
+    '      method:"PATCH",headers:{"Authorization":"token "+TOKEN,"Content-Type":"application/json"},',
     '      body:JSON.stringify({files:{[PARTNER_FILE]:{content:JSON.stringify(payload,null,2)}}})});',
     '    if(!r.ok) throw new Error(r.status);',
-    '    showSync("\u2705 Memory saved!","memSyncStatus");',
+    '    showSync("✅ Memory saved!","memSyncStatus");',
     '    document.getElementById("pMemText").value="";',
-    '    var curMems=window._jasMems||[];',
-    '    curMems.push(entry);',
-    '    window._jasMems=curMems;',
-    '    renderMemories(null);',
-    '  }catch(e){showSync("\u274c Save failed — check connection","memSyncStatus");window._pMems.pop();}',
+    '    renderMemories();',
+    '  }catch(e){showSync("❌ Save failed","memSyncStatus");window._pMems.pop();window._jasMems.pop();}',
     '}',
-    '',
+
     'fetchData();'
   ].join('\n');
 
-  return '<!DOCTYPE html>\n<html lang="en">\n<head>\n<meta charset="UTF-8">\n<meta name="viewport" content="width=device-width,initial-scale=1">\n<title>Timber\'s Day \uD83D\uDC3E</title>\n<style>\n' + CSS + '\n</style>\n</head>\n<body>\n' + BODY_HTML + '\n<script>\n' + V + '\n' + JS + '\n</' + 'script>\n</body>\n</html>';
+  return '<!DOCTYPE html>\n<html lang="en">\n<head>\n<meta charset="UTF-8">\n<meta name="viewport" content="width=device-width,initial-scale=1">\n<title>Timber\'s Day 🐾</title>\n<style>\n' + CSS + '\n</style>\n</head>\n<body>\n' + BODY_HTML + '\n<script>\n' + V + '\n' + JS + '\n</' + 'script>\n</body>\n</html>';
 }
+
 // ── TIMBER EXERCISE BANNER ────────────────────────────────────────────────────
 const TIMBER_BDAY = new Date(2025, 11, 30); // Dec 30 2025
 

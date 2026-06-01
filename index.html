@@ -1416,7 +1416,33 @@ body.night .train-status.new{background:var(--pl);border-color:var(--pm);color:v
     <div class="dash-timber-mini" id="dashTimberMini"></div>
   </div>
 
-  <!-- ③ Build My Day -->
+  <!-- ③ Connection Heartbeat -->
+  <div class="card" style="margin-bottom:10px">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+      <span style="font-size:.58rem;font-weight:900;letter-spacing:.12em;text-transform:uppercase;color:var(--tm)">💜 Connection</span>
+      <span style="font-size:.55rem;color:var(--tm);font-weight:700">tap to log a moment</span>
+    </div>
+    <div style="display:flex;justify-content:space-around;align-items:flex-end">
+      <div class="orbit-person" onclick="openConnModal('Partner','💙')">
+        <div class="orbit-ring warm" id="homeOrbit-Partner" style="width:62px;height:62px">💙</div>
+        <div class="orbit-name">Nathan</div>
+        <div class="orbit-days" id="homeOrbitDays-Partner">—</div>
+      </div>
+      <div class="orbit-person" onclick="openConnModal('Mom','💗')">
+        <div class="orbit-ring warm" id="homeOrbit-Mom" style="width:56px;height:56px">💗</div>
+        <div class="orbit-name">Mom</div>
+        <div class="orbit-days" id="homeOrbitDays-Mom">—</div>
+      </div>
+      <div class="orbit-person" onclick="openConnModal('Sister','🌸')">
+        <div class="orbit-ring warm" id="homeOrbit-Sister" style="width:56px;height:56px">🌸</div>
+        <div class="orbit-name">Sister</div>
+        <div class="orbit-days" id="homeOrbitDays-Sister">—</div>
+      </div>
+    </div>
+    <div class="conn-nudge-wrap" id="homeConnNudge" style="display:none"></div>
+  </div>
+
+  <!-- ④ Build My Day -->
   <button class="btn" style="width:100%;background:linear-gradient(135deg,var(--la),var(--sa));color:#fff;border:none;padding:13px;font-size:.72rem;margin-bottom:12px;border-radius:var(--rlg)" onclick="openDayBuilder()">✨ Build My Day</button>
 
   <!-- ④ Daily checklist -->
@@ -2969,7 +2995,7 @@ window.switchTab=(tab)=>{
   const tb=document.getElementById('tab-'+tab);
   if(pg)pg.classList.add('active');
   if(tb)tb.classList.add('active');
-  if(tab==='home'){renderHomeCalWidget();renderDashTimberMini();renderHomeTrainingFocus();}
+  if(tab==='home'){renderHomeCalWidget();renderDashTimberMini();renderHomeTrainingFocus();renderOrbits();}
   if(tab==='timber'){renderTimberNeeds();renderTimberBanner();renderMemories('memListT');renderTimberDailyRotation();loadPartnerActivity();}
   if(tab==='life'){renderOrbits();renderBattery();renderMemories('memList');}
   if(tab==='cal')loadCalendar();
@@ -4349,14 +4375,14 @@ function renderOrbits(){
     let ringClass = days>=overdue?'overdue':days>=warn?'distant':days>=nudge?'cool':'warm';
     const daysLabel = days===0?'today 💜':days===999?'not yet logged':`${days}d ago`;
     if(days>=overdue) nudges.push(`${person.emoji} ${person.name}`);
-    [`orbit-${person.name}`,`deskOrbit-${person.name}`].forEach(id=>{const el=document.getElementById(id);if(el)el.className=`orbit-ring ${ringClass}`;});
-    [`orbitDays-${person.name}`,`deskOrbitDays-${person.name}`].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=daysLabel;});
+    [`orbit-${person.name}`,`deskOrbit-${person.name}`,`homeOrbit-${person.name}`].forEach(id=>{const el=document.getElementById(id);if(el)el.className=`orbit-ring ${ringClass}`;});
+    [`orbitDays-${person.name}`,`deskOrbitDays-${person.name}`,`homeOrbitDays-${person.name}`].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=daysLabel;});
   });
   // Gentle nudge — warm and low-pressure
   const nudgeTxt = nudges.length
     ? `A gentle reminder to reach out — ${nudges.join('  ·  ')}`
     : '';
-  ['connNudge','deskConnNudge'].forEach(id=>{
+  ['connNudge','deskConnNudge','homeConnNudge'].forEach(id=>{
     const el=document.getElementById(id);
     if(!el) return;
     el.textContent = nudgeTxt;

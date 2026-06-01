@@ -4368,7 +4368,11 @@ const CONN_PEOPLE = [
 ];
 let _connModalPerson = null;
 function loadConnLog(){ try{return JSON.parse(localStorage.getItem(CONN_KEY)||'{}');}catch(e){return {};} }
-function saveConnLog(log){ try{localStorage.setItem(CONN_KEY,JSON.stringify(log));}catch(e){} }
+function saveConnLog(log){
+  try{localStorage.setItem(CONN_KEY,JSON.stringify(log));}catch(e){}
+  clearTimeout(saveConnLog._t);
+  saveConnLog._t = setTimeout(()=>{ if(typeof gistPush==='function'&&_getGistToken()) gistPush(); }, 1500);
+}
 function daysSince(dateStr){ if(!dateStr)return 999; return Math.floor((new Date()-new Date(dateStr))/(1000*60*60*24)); }
 
 function renderOrbits(){
@@ -7728,9 +7732,9 @@ function renderTimberActivity(){
   };
 
   let events = [
-    ...walks.map(w  => ({ts:w.ts, label:walkLabel(w), by:'you'})),
-    ...trains.map(t => ({ts:t.ts, label:'🎓 Training session', by:'you'})),
-    ...feeds.map(f  => ({ts:f.ts, label: f.note ? `🍽️ Fed — ${f.note}` : '🍽️ Fed', by:'you'})),
+    ...walks.map(w  => ({ts:w.ts, type:'walk',  label:walkLabel(w), by:'you'})),
+    ...trains.map(t => ({ts:t.ts, type:'train', label:'🎓 Training session', by:'you'})),
+    ...feeds.map(f  => ({ts:f.ts, type:'feed',  label: f.note ? '🍽️ Fed — '+f.note : '🍽️ Fed', by:'you'})),
   ];
   // Merge partner activity if cached
   const partnerCache = window._partnerActivityCache;
@@ -7751,15 +7755,43 @@ function renderTimberActivity(){
   tl.innerHTML =
     '<div style="font-size:.58rem;font-weight:900;color:var(--tm);letter-spacing:.06em;text-transform:uppercase;margin-bottom:6px">Today</div>' +
     events.map(e =>
-      `<div class="activity-timeline-row">
-        <span class="activity-timeline-time">${fmt(e.ts)}</span>
-        <span class="activity-timeline-label" style="flex:1">${e.label}</span>${byBadge(e.by)}
-      </div>`
+  const byBadge = by => by==='partner'
+    ? '<span style="font-size:.55rem;font-weight:900;color:var(--pa);background:var(--pl);border-radius:var(--rf);padding:1px 6px;margin-left:6px;flex-shrink:0">👥 partner</span>'
+    : '';
+
+  const delBtn = e => e.by==='partner' ? '' :
+    '<button onclick="deleteTimberEvent('+e.ts+',\''+e.type+'\')" style="background:none;border:none;cursor:pointer;font-size:.7rem;color:var(--tm);opacity:.45;padding:0 0 0 4px;flex-shrink:0;line-height:1" title="Delete">✕</button>';
+
+  tl.innerHTML =
+    '<div style="font-size:.58rem;font-weight:900;color:var(--tm);letter-spacing:.06em;text-transform:uppercase;margin-bottom:6px">Today</div>' +
+    events.map(e =>
+      '<div class="activity-timeline-row">'+
+      '<span class="activity-timeline-time">'+fmt(e.ts)+'</span>'+
+      '<span class="activity-timeline-label" style="flex:1">'+e.label+'</span>'+byBadge(e.by)+delBtn(e)+
+      '</div>'
     ).join('');
 
   // Also keep exercise banner in sync
   const totalMins = walks.reduce((a,w)=>a+w.mins,0);
   updateTimberExerciseProg(totalMins);
+}
+
+function deleteTimberEvent(ts, type){
+  if(!confirm('Remove this entry?')) return;
+  ts = Number(ts);
+  if(type==='walk'){
+    const w = loadTimberWalks().filter(x=>x.ts!==ts);
+    saveTimberWalks(w);
+  } else if(type==='train'){
+    const s = loadTimberTrains().filter(x=>x.ts!==ts);
+    saveTimberTrains(s);
+  } else if(type==='feed'){
+    const f = loadTimberFeeds().filter(x=>x.ts!==ts);
+    saveTimberFeeds(f);
+  }
+  renderTimberActivity();
+  try{ renderTimberBanner(); }catch(e){}
+  try{ renderDashTimberMini(); }catch(e){}
 }
 
 // ── PARTNER GIST SYNC ──────────────────────────────────────────────────────────
@@ -7782,7 +7814,19 @@ async function loadPartnerActivity(){
       const parsed = JSON.parse(raw);
       const todayKey = new Date().toISOString().slice(0,10);
       window._partnerActivityCache = (parsed.date===todayKey ? parsed.logs : []) || [];
-      renderTimberActivity(); // re-render with partner data
+      if(Array.isArray(parsed.memories) && parsed.memories.length){
+        try{
+          const local = loadMemories();
+          const localIds = new Set(local.map(m=>m.id));
+          const incoming = parsed.memories.filter(m=>m.id && !localIds.has(m.id));
+          if(incoming.length){
+            const merged = [...local,...incoming].sort((a,b)=>String(a.id).localeCompare(String(b.id)));
+            saveMemories(merged);
+            renderAllMemories();
+          }
+        }catch(e){}
+      }
+      renderTimberActivity();
     }
   }catch(e){ /* silent — partner data is bonus */ }
 }
@@ -7825,6 +7869,7 @@ function buildPartnerPayload(){
     totalWalkMins: walks.reduce((a,w)=>a+w.mins,0),
     trainingFocus,
     allSkills,
+    memories: (()=>{ try{ return (loadMemories()||[]).slice(-40); }catch(e){ return []; } })(),
   };
 }
 
@@ -7946,145 +7991,151 @@ window.downloadPartnerView = function(){
 };
 
 function generatePartnerViewHtml(rawUrl, gistId, token){
-  // Use JSON.stringify to safely embed values — no template literal wrapper so inner backticks are safe
-  var V = 'const RAW_URL='+JSON.stringify(rawUrl)+';const GIST_ID='+JSON.stringify(gistId)+';const TOKEN='+JSON.stringify(token)+';const PARTNER_FILE="timber-partner.json";';
+  var V = 'const RAW_URL='+JSON.stringify(rawUrl)+';const GIST_ID='+JSON.stringify(gistId)+';const TOKEN='+JSON.stringify(token)+';const PARTNER_FILE="timber-partner.json";const JASMINE_FILE="timber-today.json";';
 
   var CSS = [
     '*{box-sizing:border-box;margin:0;padding:0}',
-    'body{font-family:"Segoe UI",system-ui,sans-serif;background:#edf4ff;color:#1c3a5e;min-height:100vh;padding:0 0 50px}',
-    '.top-bar{background:linear-gradient(135deg,#a8c4f5,#96ccec);padding:20px 18px 16px;text-align:center}',
-    '.top-bar h1{font-size:1.25rem;font-weight:800;color:#1c3a5e;margin-bottom:2px}',
-    '.sub{font-size:.72rem;color:#3a6090}',
-    '.tabs{display:flex;background:#dde8ff}',
-    '.tab-btn{flex:1;padding:11px 0;border:none;background:none;font-family:inherit;font-size:.72rem;font-weight:800;color:#6a90b8;cursor:pointer;transition:all .2s}',
-    '.tab-btn.active{background:#f7fbff;color:#4d7ee0;border-bottom:2px solid #4d7ee0}',
-    '.tab-pane{display:none;padding:0 0 60px}',
-    '.tab-pane.active{display:block}',
+    'body{font-family:"Segoe UI",system-ui,sans-serif;background:#edf4ff;color:#1c3a5e;min-height:100vh;padding:0 0 60px}',
+    '.top-bar{background:linear-gradient(135deg,#a8c4f5,#96ccec);padding:18px 18px 14px;text-align:center}',
+    '.top-bar h1{font-size:1.2rem;font-weight:800;color:#1c3a5e;margin-bottom:2px}',
+    '.sub{font-size:.7rem;color:#3a6090}',
     '.card{background:#f7fbff;border-radius:18px;padding:16px;margin:12px 14px;box-shadow:4px 4px 12px rgba(120,160,220,.2),-4px -4px 10px rgba(255,255,255,.8)}',
-    'h2{font-size:.85rem;font-weight:800;color:#1c3a5e;margin-bottom:12px}',
-    '.row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid #dde8ff;font-size:.78rem}',
-    '.row:last-child{border-bottom:none}',
-    '.time{color:#6a90b8;min-width:58px;font-weight:700;font-size:.68rem}',
-    '.event{font-weight:700;color:#1c3a5e;flex:1}',
-    '.by-badge{font-size:.54rem;font-weight:900;color:#e8608f;background:#fdf0f5;border-radius:999px;padding:1px 7px;flex-shrink:0}',
-    '.empty{font-size:.72rem;color:#6a90b8;font-style:italic;padding:8px 0}',
-    '.stat-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:12px 14px 0}',
-    '.stat{background:#f7fbff;border-radius:14px;padding:12px 10px;text-align:center;box-shadow:4px 4px 12px rgba(120,160,220,.2)}',
-    '.stat-num{font-size:1.4rem;font-weight:900;color:#4d7ee0;line-height:1}',
-    '.stat-lbl{font-size:.6rem;color:#6a90b8;margin-top:3px;font-weight:700}',
-    '.log-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}',
-    '.log-btn{width:100%;padding:12px 6px;border:none;border-radius:14px;font-family:inherit;font-size:.74rem;font-weight:900;cursor:pointer;transition:transform .1s;box-shadow:3px 3px 8px rgba(120,160,220,.2)}',
+    '.section-title{font-size:.62rem;font-weight:900;color:#6a90b8;letter-spacing:.08em;text-transform:uppercase;margin:18px 14px 2px}',
+    '.log-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}',
+    '.log-btn{width:100%;padding:13px 6px;border:none;border-radius:14px;font-family:inherit;font-size:.76rem;font-weight:900;cursor:pointer;transition:transform .1s;box-shadow:3px 3px 8px rgba(120,160,220,.2)}',
     '.log-btn:active{transform:scale(.95)}',
     '.log-btn.walk{background:#eaf3ff;color:#5ba0f0}',
     '.log-btn.feed{background:#fdf8e8;color:#c8940a}',
     '.log-btn.train{background:#d8f0f8;color:#2596c8;grid-column:1/-1}',
     '.meta-txt{font-size:.6rem;color:#6a90b8;text-align:center;margin-top:3px;min-height:1em}',
-    '.entry-row{display:none;background:#edf4ff;border-radius:12px;padding:10px;margin-bottom:10px;gap:8px;align-items:center}',
+    '.entry-row{display:none;background:#edf4ff;border-radius:12px;padding:10px;margin-top:8px;gap:8px;align-items:center}',
     '.entry-row.open{display:flex}',
     'input.log-input{flex:1;background:#fff;border:1.5px solid #a8c4f5;border-radius:10px;padding:8px 10px;font-family:inherit;font-size:.72rem;color:#1c3a5e;outline:none}',
     '.confirm-btn{background:#5ba0f0;color:#fff;border:none;border-radius:10px;padding:8px 14px;font-family:inherit;font-size:.7rem;font-weight:900;cursor:pointer}',
-    '.skill-card{background:#f7fbff;border-radius:14px;padding:12px;margin-bottom:8px;border-left:3px solid #a8c4f5;box-shadow:2px 2px 8px rgba(120,160,220,.15)}',
-    '.skill-name{font-size:.8rem;font-weight:900;color:#1c3a5e;margin-bottom:4px}',
-    '.skill-cue{font-size:.72rem;color:#6a90b8;margin-bottom:6px}',
-    '.skill-how{font-size:.7rem;color:#1c3a5e;line-height:1.5;margin-bottom:4px}',
-    '.skill-tip{font-size:.66rem;color:#6a90b8;font-style:italic}',
-    '.skill-status{display:inline-block;font-size:.58rem;font-weight:900;padding:2px 8px;border-radius:999px;margin-bottom:6px}',
-    '.skill-status.new{background:#ede8f7;color:#9b77d4}',
-    '.skill-status.practicing{background:#d8f0f8;color:#2596c8}',
-    '.skill-status.mastered{background:#d8f7ee;color:#3dba87}',
-    '.section-hd{font-size:.62rem;font-weight:900;color:#6a90b8;letter-spacing:.06em;text-transform:uppercase;margin:14px 14px 2px}',
-    '.filter-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}',
-    '.filter-btn{background:#edf4ff;border:1.5px solid #a8c4f5;border-radius:999px;padding:4px 12px;font-family:inherit;font-size:.64rem;font-weight:800;color:#4d7ee0;cursor:pointer}',
-    '.filter-btn.active{background:#4d7ee0;color:#fff;border-color:#4d7ee0}',
-    '.status-badge{display:inline-block;padding:2px 10px;border-radius:999px;font-size:.62rem;font-weight:900;background:#d8f0f8;color:#2596c8}',
-    '.status-badge.err{background:#ffe8e8;color:#c84444}',
-    '@media(prefers-color-scheme:dark){body{background:#1a0f24;color:#f0e8f5}.card,.stat,.skill-card{background:#251735}.top-bar{background:linear-gradient(135deg,#46305a,#2c4a3e)}.top-bar h1,.event,.skill-name,.skill-how{color:#f0e8f5}.sub,.time,.stat-lbl,.empty,.skill-cue,.skill-tip,.meta-txt,.section-hd{color:#8a7a98}.stat-num{color:#b896d6}.row{border-bottom-color:#2e1d3e}.tabs{background:#1f1330}.tab-btn{color:#8a7a98}.tab-btn.active{background:#251735;color:#b896d6;border-bottom-color:#b896d6}.log-btn.walk{background:#15202e;color:#88a8d4}.log-btn.feed{background:#2a2410;color:#e8c060}.log-btn.train{background:#1a2e26;color:#8fc4a8}input.log-input{background:#2e1d3e;border-color:#46305a;color:#f0e8f5}.entry-row{background:#1f1330}.filter-btn{background:#1f1330;border-color:#46305a;color:#b896d6}.filter-btn.active{background:#46305a;color:#f0e8f5}.skill-card{border-left-color:#46305a}}'
+    '.tl-row{display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid #dde8ff;font-size:.76rem}',
+    '.tl-row:last-child{border-bottom:none}',
+    '.tl-time{color:#6a90b8;min-width:54px;font-weight:700;font-size:.66rem}',
+    '.tl-label{flex:1;font-weight:700;color:#1c3a5e}',
+    '.by-badge{font-size:.54rem;font-weight:900;color:#e8608f;background:#fdf0f5;border-radius:999px;padding:2px 8px;flex-shrink:0}',
+    '.del-btn{background:none;border:none;cursor:pointer;font-size:.7rem;color:#b0b8cc;padding:0 2px;flex-shrink:0}',
+    '.del-btn:hover{color:#e05555}',
+    '.empty{font-size:.7rem;color:#6a90b8;font-style:italic;padding:8px 0}',
+    '.stat-row{display:flex;gap:8px;margin-bottom:12px}',
+    '.stat{flex:1;background:#edf4ff;border-radius:12px;padding:10px 8px;text-align:center}',
+    '.stat-num{font-size:1.2rem;font-weight:900;color:#4d7ee0;line-height:1}',
+    '.stat-lbl{font-size:.58rem;color:#6a90b8;margin-top:2px;font-weight:700}',
+    '.skill-card{background:#edf4ff;border-radius:12px;padding:12px;margin-bottom:8px;border-left:3px solid #a8c4f5}',
+    '.skill-name{font-size:.78rem;font-weight:900;color:#1c3a5e;margin-bottom:3px}',
+    '.skill-cue{font-size:.7rem;color:#6a90b8;margin-bottom:5px}',
+    '.skill-how{font-size:.68rem;color:#1c3a5e;line-height:1.5;margin-bottom:3px}',
+    '.skill-tip{font-size:.64rem;color:#6a90b8;font-style:italic}',
+    '.mem-card{background:#edf4ff;border-radius:12px;padding:11px;margin-bottom:7px}',
+    '.mem-text{font-size:.74rem;color:#1c3a5e;line-height:1.5;margin-bottom:3px}',
+    '.mem-date{font-size:.58rem;color:#6a90b8}',
+    '.mem-form{display:flex;gap:8px;margin-top:10px}',
+    'textarea.mem-input{flex:1;background:#fff;border:1.5px solid #a8c4f5;border-radius:10px;padding:8px 10px;font-family:inherit;font-size:.72rem;color:#1c3a5e;resize:vertical;min-height:60px;outline:none}',
+    '.sync-status{font-size:.62rem;color:#6a90b8;text-align:center;margin-top:6px;min-height:1.2em}',
+    '.refresh-row{text-align:center;padding:10px 0 6px}',
+    '.refresh-btn{background:none;border:1.5px solid #a8c4f5;border-radius:999px;padding:5px 16px;font-family:inherit;font-size:.64rem;font-weight:800;color:#4d7ee0;cursor:pointer}',
+    '@media(prefers-color-scheme:dark){',
+    'body{background:#1a0f24;color:#f0e8f5}',
+    '.card,.stat,.skill-card,.mem-card{background:#251735}',
+    '.top-bar{background:linear-gradient(135deg,#46305a,#2c4a3e)}',
+    '.top-bar h1,.tl-label,.skill-name,.skill-how{color:#f0e8f5}',
+    '.sub,.tl-time,.stat-lbl,.empty,.skill-cue,.skill-tip,.mem-date,.section-title{color:#8a7a98}',
+    '.stat-num{color:#b896d6}',
+    '.tl-row{border-bottom-color:#2e1d3e}',
+    '.stat{background:#1f1330}',
+    '.log-btn.walk{background:#15202e;color:#88a8d4}',
+    '.log-btn.feed{background:#2a2410;color:#e8c060}',
+    '.log-btn.train{background:#1a2e26;color:#8fc4a8}',
+    'input.log-input,textarea.mem-input{background:#2e1d3e;border-color:#46305a;color:#f0e8f5}',
+    '.entry-row{background:#1f1330}',
+    '.edf4ff,.mem-form{background:#251735}',
+    '}'
   ].join('\n');
 
   var BODY_HTML = [
     '<div class="top-bar">',
-    '<div style="font-size:2rem;margin-bottom:5px">🐾</div>',
+    '<div style="font-size:2rem;margin-bottom:4px">🐾</div>',
     '<h1>Timber\'s Day</h1>',
     '<div class="sub" id="dateLabel">Loading…</div>',
     '</div>',
-    '<div class="tabs">',
-    '<button class="tab-btn active" onclick="showTab(\'today\',this)">Today</button>',
-    '<button class="tab-btn" onclick="showTab(\'log\',this)">Log Activity</button>',
-    '<button class="tab-btn" onclick="showTab(\'training\',this)">Training</button>',
+
+    '<div class="section-title">Log for Timber</div>',
+    '<div class="card">',
+    '<p style="font-size:.66rem;color:#6a90b8;margin-bottom:12px">Your logs appear in Jasmine\'s app automatically.</p>',
+    '<div class="log-grid">',
+    '<div><button class="log-btn walk" onclick="toggleEntry(\'walkEntry\')">🦮 Walk</button><div class="meta-txt" id="pWalkMeta">No walks today</div></div>',
+    '<div><button class="log-btn feed" onclick="toggleEntry(\'feedEntry\')">🍽️ Feeding</button><div class="meta-txt" id="pFeedMeta">No feedings today</div></div>',
+    '<button class="log-btn train" onclick="logPartnerTrain()">🎓 Training Session</button>',
     '</div>',
-    '<div class="tab-pane active" id="tab-today">',
+    '<div class="entry-row" id="walkEntry">',
+    '<input class="log-input" id="pWalkMins" type="number" min="1" max="300" placeholder="Mins (e.g. 20)">',
+    '<input class="log-input" id="pWalkDist" type="text" placeholder="Distance (optional)">',
+    '<button class="confirm-btn" onclick="confirmPartnerWalk()">Log</button>',
+    '</div>',
+    '<div class="entry-row" id="feedEntry">',
+    '<input class="log-input" id="pFeedNote" type="text" placeholder="Amount / note (e.g. ½ cup)">',
+    '<button class="confirm-btn" style="background:#c8940a" onclick="confirmPartnerFeed()">Log</button>',
+    '</div>',
+    '<div class="sync-status" id="partnerSyncStatus"></div>',
+    '</div>',
+
+    '<div class="section-title">Today\'s Timeline</div>',
+    '<div class="card">',
     '<div class="stat-row">',
     '<div class="stat"><div class="stat-num" id="statWalks">—</div><div class="stat-lbl">Walks</div></div>',
     '<div class="stat"><div class="stat-num" id="statMins">—</div><div class="stat-lbl">Walk mins</div></div>',
     '<div class="stat"><div class="stat-num" id="statFeeds">—</div><div class="stat-lbl">Meals</div></div>',
     '</div>',
-    '<div class="card"><h2>📋 Timeline</h2><div id="timelineBody"><div class="empty">Loading…</div></div></div>',
+    '<div id="timelineBody"><div class="empty">Loading…</div></div>',
     '</div>',
-    '<div class="tab-pane" id="tab-log">',
+
+    '<div class="section-title">Training Focus</div>',
+    '<div class="card" id="focusCard">',
+    '<div id="focusList"><div class="empty">Loading…</div></div>',
+    '</div>',
+
+    '<div class="section-title">Timber\'s Memories</div>',
     '<div class="card">',
-    '<h2 style="margin-bottom:4px">Log for Timber</h2>',
-    '<p style="font-size:.68rem;color:#6a90b8;margin-bottom:14px">Your logs appear in Jasmine\'s app automatically.</p>',
-    '<div class="log-grid">',
-    '<div><button class="log-btn walk" onclick="toggleEntry(\'walkEntry\')">🦮 Log Walk</button><div class="meta-txt" id="pWalkMeta">No walks today</div></div>',
-    '<div><button class="log-btn feed" onclick="toggleEntry(\'feedEntry\')">🍽️ Log Feeding</button><div class="meta-txt" id="pFeedMeta">No feedings today</div></div>',
-    '<button class="log-btn train" onclick="logPartnerTrain()">🎓 Log Training Session</button>',
+    '<div id="memList"><div class="empty">Loading…</div></div>',
+    '<div class="mem-form">',
+    '<textarea class="mem-input" id="pMemText" placeholder="Add a memory… a funny moment, first time doing something, milestone ✨"></textarea>',
+    '<button class="confirm-btn" style="align-self:flex-end" onclick="addPartnerMemory()">Save</button>',
     '</div>',
-    '<div class="entry-row" id="walkEntry">',
-    '<input class="log-input" id="pWalkMins" type="number" min="1" max="300" placeholder="Mins (e.g. 20)">',
-    '<input class="log-input" id="pWalkDist" type="text" placeholder="Distance (optional)">',
-    '<button class="confirm-btn" onclick="confirmPartnerWalk()">Log</button>',
+    '<div class="sync-status" id="memSyncStatus"></div>',
     '</div>',
-    '<div class="entry-row" id="feedEntry">',
-    '<input class="log-input" id="pFeedNote" type="text" placeholder="Amount / note… e.g. ½ cup">',
-    '<button class="confirm-btn" style="background:#c8940a" onclick="confirmPartnerFeed()">Log</button>',
-    '</div>',
-    '<div id="partnerSyncStatus" style="font-size:.64rem;color:#6a90b8;text-align:center;margin-top:8px"></div>',
-    '</div></div>',
-    '<div class="tab-pane" id="tab-training">',
-    '<div class="card" id="focusCard"><h2>Today\'s Focus</h2><div id="focusList"><div class="empty">Loading…</div></div></div>',
-    '<div class="section-hd">All Skills</div>',
-    '<div style="padding:0 14px;margin-top:6px">',
-    '<div class="filter-row">',
-    '<button class="filter-btn active" onclick="filterSkills(\'all\',this)">All</button>',
-    '<button class="filter-btn" onclick="filterSkills(\'new\',this)">🌱 New</button>',
-    '<button class="filter-btn" onclick="filterSkills(\'practicing\',this)">🔄 Practicing</button>',
-    '<button class="filter-btn" onclick="filterSkills(\'mastered\',this)">⭐ Mastered</button>',
-    '</div></div>',
-    '<div id="allSkillsList" style="padding:0 14px 20px"></div>',
-    '</div>',
-    '<div style="text-align:center;padding:12px 0 4px">',
-    '<div class="status-badge" id="statusBadge">Loading…</div><br>',
-    '<button onclick="fetchData()" style="margin-top:6px;background:none;border:1.5px solid #a8c4f5;border-radius:999px;padding:5px 14px;font-family:inherit;font-size:.64rem;font-weight:800;color:#4d7ee0;cursor:pointer">↻ Refresh</button>',
+
+    '<div class="refresh-row">',
+    '<button class="refresh-btn" onclick="fetchData()">↻ Refresh</button>',
     '</div>'
   ].join('\n');
 
   var JS = [
-    'var _data=null,_partnerLogs=[],_refreshTimer=null,_allSkills=[],_activeFilter="all";',
-    'function showTab(t,btn){',
-    '  document.querySelectorAll(".tab-pane").forEach(function(p){p.classList.remove("active");});',
-    '  document.querySelectorAll(".tab-btn").forEach(function(b){b.classList.remove("active");});',
-    '  document.getElementById("tab-"+t).classList.add("active");',
-    '  if(btn) btn.classList.add("active");',
-    '}',
+    'var _data=null,_partnerLogs=[],_refreshTimer=null;',
+    'function fmtTime(ts){return new Date(ts).toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"});}',
+    'function fmtDate(ts){return new Date(ts).toLocaleDateString([],{month:"short",day:"numeric"});}',
     'function toggleEntry(id){',
     '  var el=document.getElementById(id);',
     '  var open=el.classList.contains("open");',
     '  document.querySelectorAll(".entry-row").forEach(function(r){r.classList.remove("open");});',
     '  if(!open) el.classList.add("open");',
     '}',
-    'function fmtTime(ts){return new Date(ts).toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"});}',
+    'function showSync(msg,elId){',
+    '  var el=document.getElementById(elId||"partnerSyncStatus");',
+    '  if(el){el.textContent=msg;setTimeout(function(){el.textContent="";},3500);}',
+    '}',
+
+    '// ── FETCH ───────────────────────────────────────────────────────────────',
     'async function fetchData(){',
-    '  var badge=document.getElementById("statusBadge");',
-    '  badge.textContent="Refreshing…";badge.className="status-badge";',
     '  try{',
     '    var r=await fetch(RAW_URL+"?t="+Date.now());',
     '    if(!r.ok) throw new Error("HTTP "+r.status);',
     '    _data=await r.json();',
     '    await fetchPartnerLogs();',
     '    render(_data);',
-    '    var t=new Date().toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"});',
-    '    badge.textContent="Updated "+t;badge.className="status-badge";',
-    '  }catch(e){badge.textContent="Could not load — check connection";badge.className="status-badge err";}',
+    '  }catch(e){showSync("Could not load — check connection","partnerSyncStatus");}',
     '  clearInterval(_refreshTimer);',
     '  _refreshTimer=setInterval(fetchData,5*60*1000);',
     '}',
@@ -8095,76 +8146,108 @@ function generatePartnerViewHtml(rawUrl, gistId, token){
     '    if(!r.ok) return;',
     '    var d=await r.json();',
     '    var raw=d.files&&d.files[PARTNER_FILE]&&d.files[PARTNER_FILE].content;',
-    '    if(raw){var parsed=JSON.parse(raw);var today=new Date().toISOString().slice(0,10);_partnerLogs=(parsed.date===today?parsed.logs:[])||[];}',
+    '    if(raw){',
+    '      var parsed=JSON.parse(raw);',
+    '      var today=new Date().toISOString().slice(0,10);',
+    '      _partnerLogs=(parsed.date===today?parsed.logs:[])||[];',
+    '      if(Array.isArray(parsed.memories)){window._partnerMems=parsed.memories;}',
+    '    }',
     '  }catch(e){_partnerLogs=[];}',
     '}',
+
+    '// ── RENDER ──────────────────────────────────────────────────────────────',
     'function render(d){',
     '  document.getElementById("dateLabel").textContent=d.date||"";',
     '  document.getElementById("statWalks").textContent=(d.walks||[]).length;',
     '  document.getElementById("statMins").textContent=d.totalWalkMins||0;',
     '  document.getElementById("statFeeds").textContent=(d.feedings||[]).length;',
-    '  renderTimeline(d);renderTraining(d);updatePartnerMeta();',
+    '  renderTimeline(d);',
+    '  renderTraining(d);',
+    '  renderMemories(d);',
+    '  updatePartnerMeta();',
     '}',
+
     'function renderTimeline(d){',
     '  var events=[];',
     '  (d.walks||[]).forEach(function(w){events.push({ts:w.ts,label:"🦮 Walk"+(w.mins?" · "+w.mins+" min":"")+(w.dist?" · "+w.dist:""),by:"jasmine"});});',
     '  (d.training||[]).forEach(function(t){events.push({ts:t.ts,label:"🎓 Training session",by:"jasmine"});});',
     '  (d.feedings||[]).forEach(function(f){events.push({ts:f.ts,label:f.note?"🍽️ Fed — "+f.note:"🍽️ Fed",by:"jasmine"});});',
-    '  _partnerLogs.forEach(function(e){events.push(Object.assign({},e,{by:"partner"}));});',
+    '  _partnerLogs.forEach(function(e,i){events.push(Object.assign({},e,{by:"partner",pidx:i}));});',
     '  events.sort(function(a,b){return b.ts-a.ts;});',
     '  var body=document.getElementById("timelineBody");',
     '  if(!events.length){body.innerHTML=\'<div class="empty">Nothing logged yet today ✨</div>\';return;}',
     '  body.innerHTML=events.map(function(e){',
-    '    return \'<div class="row"><span class="time">\'+fmtTime(e.ts)+\'</span><span class="event">\'+e.label+\'</span>\'+(e.by==="partner"?\'<span class="by-badge">👥 you</span>\':\'\')+\'</div>\';',
+    '    var byBadge=e.by==="partner"?\'<span class="by-badge">👥 you</span>\':"";',
+    '    var delBtn=e.by==="partner"?\'<button class="del-btn" onclick="deletePartnerLog(\'+e.pidx+\')">✕</button>\':"";',
+    '    return \'<div class="tl-row"><span class="tl-time">\'+fmtTime(e.ts)+\'</span><span class="tl-label">\'+e.label+\'</span>\'+byBadge+delBtn+\'</div>\';',
     '  }).join("");',
     '}',
+
     'function renderTraining(d){',
     '  var focus=d.trainingFocus||[];',
     '  var fl=document.getElementById("focusList");',
-    '  if(!focus.length){fl.innerHTML=\'<div class="empty">No focus rotation today — free practice! 🐾</div>\';}',
-    '  else{',
-    '    var tip=\'<p style="font-size:.68rem;color:#6a90b8;margin-bottom:10px">Keep sessions 5–10 min. End on a win! Mark with "yes!" within 1–2 sec.</p>\';',
-    '    fl.innerHTML=tip+focus.map(function(s){',
-    '      return \'<div class="skill-card"><div class="skill-name">\'+s.icon+\' \'+s.name+\'</div><div class="skill-cue"><strong>Cue:</strong> \'+s.cue+\'</div><div class="skill-how">\'+s.howTo+\'</div>\'+(s.tip?\'<div class="skill-tip">\'+s.tip+\'</div>\':\'\')+\'</div>\';',
-    '    }).join("");',
-    '  }',
-    '  _allSkills=d.allSkills||[];filterSkills(_activeFilter,null);',
-    '}',
-    'function filterSkills(f,btn){',
-    '  _activeFilter=f;',
-    '  document.querySelectorAll(".filter-btn").forEach(function(b){b.classList.remove("active");});',
-    '  if(btn) btn.classList.add("active");',
-    '  var list=document.getElementById("allSkillsList");',
-    '  var sl=f==="all"?_allSkills:_allSkills.filter(function(s){return s.status===f;});',
-    '  if(!sl.length){list.innerHTML=\'<div class="empty" style="padding:16px 0">No skills here yet.</div>\';return;}',
-    '  var lbl={new:"🌱 New",practicing:"🔄 Practicing",mastered:"⭐ Mastered"};',
-    '  list.innerHTML=sl.map(function(s){',
-    '    return \'<div class="skill-card"><div class="skill-name">\'+s.icon+\' \'+s.name+\'</div><span class="skill-status \'+s.status+\'">\'+( lbl[s.status]||s.status)+\'</span><div class="skill-cue"><strong>Cue:</strong> \'+s.cue+\'</div><div class="skill-how">\'+s.howTo+\'</div>\'+(s.tip?\'<div class="skill-tip">\'+s.tip+\'</div>\':\'\')+\'</div>\';',
+    '  if(!fl) return;',
+    '  if(!focus.length){fl.innerHTML=\'<div class="empty">Rest day — short name + recall warmup only 🌿</div>\';return;}',
+    '  var tip=\'<p style="font-size:.66rem;color:#6a90b8;margin-bottom:10px">Keep sessions 5–10 min. End on a win! Mark with "yes!" within 1–2 sec.</p>\';',
+    '  fl.innerHTML=tip+focus.map(function(s){',
+    '    return \'<div class="skill-card"><div class="skill-name">\'+s.icon+" "+s.name+\'</div><div class="skill-cue"><strong>Cue:</strong> \'+s.cue+\'</div><div class="skill-how">\'+s.howTo+\'</div>\'+(s.tip?\'<div class="skill-tip">\'+s.tip+\'</div>\':"")+"</div>";',
     '  }).join("");',
     '}',
+
+    'function renderMemories(d){',
+    '  var mems=(d&&d.memories)||window._jasMems||[];',
+    '  if(d&&d.memories) window._jasMems=d.memories;',
+    '  var el=document.getElementById("memList");',
+    '  if(!el) return;',
+    '  if(!mems.length){el.innerHTML=\'<div class="empty">No memories yet — add the first one below ✨</div>\';return;}',
+    '  var sorted=mems.slice().sort(function(a,b){return String(b.id).localeCompare(String(a.id));});',
+    '  el.innerHTML=sorted.slice(0,20).map(function(m){',
+    '    return \'<div class="mem-card"><div class="mem-text">\'+(m.emoji||"🐾")+" "+m.text+\'</div><div class="mem-date">\'+fmtDate(m.id)+\'</div></div>\';',
+    '  }).join("");',
+    '}',
+
     'function updatePartnerMeta(){',
     '  var mw=_partnerLogs.filter(function(e){return e.type==="walk";});',
     '  var mf=_partnerLogs.filter(function(e){return e.type==="feed";});',
     '  document.getElementById("pWalkMeta").textContent=mw.length?mw.length+"x today":"No walks today";',
     '  document.getElementById("pFeedMeta").textContent=mf.length?mf.length+" meal"+(mf.length>1?"s":"")+" today":"No feedings today";',
     '}',
+
+    '// ── PUSH ────────────────────────────────────────────────────────────────',
     'async function pushPartnerLog(entry){',
-    '  if(!GIST_ID||!TOKEN){showSync("⚠️ No write access — re-download partner view");return;}',
+    '  if(!GIST_ID||!TOKEN){showSync("⚠️ No write access","partnerSyncStatus");return;}',
     '  var today=new Date().toISOString().slice(0,10);',
     '  _partnerLogs.push(entry);',
-    '  var payload={date:today,logs:_partnerLogs};',
-    '  showSync("Syncing…");',
+    '  var payload={date:today,logs:_partnerLogs,memories:window._pMems||[]};',
+    '  showSync("Syncing…","partnerSyncStatus");',
     '  try{',
     '    var r=await fetch("https://api.github.com/gists/"+GIST_ID,{',
     '      method:"PATCH",',
     '      headers:{"Authorization":"token "+TOKEN,"Content-Type":"application/json"},',
     '      body:JSON.stringify({files:{[PARTNER_FILE]:{content:JSON.stringify(payload,null,2)}}})});',
     '    if(!r.ok) throw new Error(r.status);',
-    '    showSync("✅ Synced!");',
-    '    if(_data) renderTimeline(_data);updatePartnerMeta();',
-    '  }catch(e){showSync("❌ Sync failed — check connection");_partnerLogs.pop();}',
+    '    showSync("✅ Synced!","partnerSyncStatus");',
+    '    if(_data) renderTimeline(_data);',
+    '    updatePartnerMeta();',
+    '  }catch(e){showSync("❌ Sync failed","partnerSyncStatus");_partnerLogs.pop();}',
     '}',
-    'function showSync(msg){var el=document.getElementById("partnerSyncStatus");if(el)el.textContent=msg;setTimeout(function(){if(el)el.textContent="";},3000);}',
+
+    'async function deletePartnerLog(idx){',
+    '  if(!GIST_ID||!TOKEN) return;',
+    '  _partnerLogs.splice(idx,1);',
+    '  var today=new Date().toISOString().slice(0,10);',
+    '  var payload={date:today,logs:_partnerLogs,memories:window._pMems||[]};',
+    '  try{',
+    '    await fetch("https://api.github.com/gists/"+GIST_ID,{',
+    '      method:"PATCH",',
+    '      headers:{"Authorization":"token "+TOKEN,"Content-Type":"application/json"},',
+    '      body:JSON.stringify({files:{[PARTNER_FILE]:{content:JSON.stringify(payload,null,2)}}})});',
+    '  }catch(e){}',
+    '  if(_data) renderTimeline(_data);',
+    '  updatePartnerMeta();',
+    '}',
+
+    '// ── LOG HELPERS ─────────────────────────────────────────────────────────',
     'function confirmPartnerWalk(){',
     '  var mins=parseInt(document.getElementById("pWalkMins").value)||0;',
     '  var dist=(document.getElementById("pWalkDist").value||"").trim();',
@@ -8181,11 +8264,40 @@ function generatePartnerViewHtml(rawUrl, gistId, token){
     '  document.getElementById("pFeedNote").value="";',
     '}',
     'function logPartnerTrain(){pushPartnerLog({ts:Date.now(),type:"train",label:"🎓 Training session"});}',
+
+    '// ── MEMORIES ────────────────────────────────────────────────────────────',
+    'async function addPartnerMemory(){',
+    '  var txt=(document.getElementById("pMemText").value||"").trim();',
+    '  if(!txt){showSync("Write something first ✏️","memSyncStatus");return;}',
+    '  if(!GIST_ID||!TOKEN){showSync("⚠️ No write access","memSyncStatus");return;}',
+    '  var entry={id:Date.now(),text:txt,emoji:"🐾",by:"partner"};',
+    '  window._pMems=window._pMems||[];',
+    '  window._pMems.push(entry);',
+    '  var today=new Date().toISOString().slice(0,10);',
+    '  var payload={date:today,logs:_partnerLogs,memories:window._pMems};',
+    '  showSync("Saving memory…","memSyncStatus");',
+    '  try{',
+    '    var r=await fetch("https://api.github.com/gists/"+GIST_ID,{',
+    '      method:"PATCH",',
+    '      headers:{"Authorization":"token "+TOKEN,"Content-Type":"application/json"},',
+    '      body:JSON.stringify({files:{[PARTNER_FILE]:{content:JSON.stringify(payload,null,2)}}})});',
+    '    if(!r.ok) throw new Error(r.status);',
+    '    showSync("✅ Memory saved!","memSyncStatus");',
+    '    document.getElementById("pMemText").value="";',
+    '    // Merge into display',
+    '    var curMems=window._jasMems||[];',
+    '    curMems.push(entry);',
+    '    window._jasMems=curMems;',
+    '    renderMemories(null);',
+    '  }catch(e){showSync("❌ Save failed — check connection","memSyncStatus");window._pMems.pop();}',
+    '}',
+
     'fetchData();'
   ].join('\n');
 
   return '<!DOCTYPE html>\n<html lang="en">\n<head>\n<meta charset="UTF-8">\n<meta name="viewport" content="width=device-width,initial-scale=1">\n<title>Timber\'s Day 🐾</title>\n<style>\n' + CSS + '\n</style>\n</head>\n<body>\n' + BODY_HTML + '\n<script>\n' + V + '\n' + JS + '\n</' + 'script>\n</body>\n</html>';
 }
+
 // ── TIMBER EXERCISE BANNER ────────────────────────────────────────────────────
 const TIMBER_BDAY = new Date(2025, 11, 30); // Dec 30 2025
 
@@ -8275,121 +8387,4 @@ function renderStatsTab(){
       const total = getDayTotal(d);
       const done  = total ? getDayDone(d) : 0;
       const pct   = total ? Math.min(1, done / total) : 0;
-      const isToday = d === today;
-      const bg    = isToday ? 'var(--la)' : pct >= 1 ? 'var(--ma)' : pct > 0 ? 'var(--pa)' : 'var(--ll)';
-      const fg    = isToday || pct > 0 ? '#fff' : 'var(--tm)';
-      return '<div style="width:34px;height:34px;border-radius:9px;background:' + bg + ';display:flex;align-items:center;justify-content:center;font-size:.58rem;font-weight:900;color:' + fg + '">' + labels[i] + '</div>';
-    }).join('');
-  }
-
-  // Morning streak — count consecutive days with at least one morning checklist item done
-  const streakEl = document.getElementById('statsMorningStreak');
-  if(streakEl){
-    let streak = 0;
-    try{
-      const stored = JSON.parse(localStorage.getItem(CL_KEY)||'{}');
-      const todayKey = getTodayKey();
-      if(stored.date === todayKey){
-        const morningItems = (CHECKLIST.find(s => s.id === 'morning') || {items:[]}).items;
-        const anyDone = morningItems.some(it => (stored.items||{})[it.id] === 'done');
-        if(anyDone) streak = 1;
-      }
-    }catch(e){}
-    streakEl.textContent = streak + (streak === 1 ? ' day' : ' days');
-  }
-
-  // Timber walk mins today
-  const walkEl = document.getElementById('statsTimberWalks');
-  if(walkEl){
-    try{
-      const walks = loadTimberWalks();
-      const total = walks.reduce((a, w) => a + (w.mins || 0), 0);
-      walkEl.textContent = total + ' min';
-    }catch(e){ walkEl.textContent = '0 min'; }
-  }
-
-  // Refresh weekly bar chart
-  try{ refreshWeeklyChart(); }catch(e){}
-}
-
-// ── NFC HASH HANDLER ──────────────────────────────────────────────────────────
-function handleNFCHash(){
-  const hash = window.location.hash.replace('#','');
-  if(!hash || hash === 'sitter' || hash === 'cats') return;
-  let matched = false;
-  try{
-    CHECKLIST.forEach(section => {
-      section.items.forEach(item => {
-        if(item.nfcKey && item.nfcKey === hash){
-          const state = loadCL();
-          if((state.items[item.id] || 'pending') !== 'done'){
-            state.items[item.id] = 'done';
-            saveCL(state);
-            matched = true;
-            showToast('✓ ' + item.label + ' — tapped!');
-            try{ renderChecklist(); }catch(e){}
-            try{ renderDashTimberMini(); }catch(e){}
-          }
-        }
-      });
-    });
-  }catch(e){}
-  if(matched){
-    try{ history.replaceState('', document.title, window.location.pathname + window.location.search); }catch(e){}
-  }
-}
-
-// ── MIDNIGHT RESET ─────────────────────────────────────────────────────────────
-function initMidnightReset(){
-  function msToMidnight(){
-    const now = new Date();
-    const next = new Date(now);
-    next.setHours(24, 0, 5, 0); // 12:00:05 AM
-    return next - now;
-  }
-  function scheduleReset(){
-    setTimeout(function(){
-      try{ renderChecklist(); }catch(e){}
-      try{ renderTimberNeeds(); }catch(e){}
-      try{ renderTimberBanner(); }catch(e){}
-      try{ renderStatsTab(); }catch(e){}
-      try{ renderDashTimberMini(); }catch(e){}
-      showToast('🌅 Good morning! New day started.', 3000);
-      scheduleReset();
-    }, msToMidnight());
-  }
-  scheduleReset();
-}
-
-// ── TIMBER MEMORIES — TAB VARIANT ────────────────────────────────────────────
-function initTimberMemories(){
-  // Wrap addMemory to handle the 'T' (Timber tab) variant
-  const _origAddMemory = window.addMemory;
-  window.addMemory = function(variant){
-    if(variant === 'T'){
-      const input = document.getElementById('memInputT');
-      if(!input) return;
-      const text = input.value.trim();
-      if(!text) return;
-      try{
-        const mems = loadMemories();
-        mems.push({
-          id: Date.now() + '-' + Math.random().toString(36).slice(2, 7),
-          cat: 'general',
-          text: text,
-          date: fmtMemDate('')
-        });
-        saveMemories(mems);
-        input.value = '';
-        renderMemories('memListT');
-        renderAllMemories();
-        showToast('🐾 Memory saved!', 2000);
-      }catch(e){}
-    } else {
-      if(typeof _origAddMemory === 'function') _origAddMemory();
-    }
-  };
-}
-</script>
-</body>
-</html>
+      const isToday = d ===

@@ -4122,6 +4122,13 @@ function initGistSync(){
     _setGistStatus('synced','Synced ✓');
     _lastGistPull = Date.now();
     gistPull();
+    // Periodic background pull every 3 minutes so changes sync while both devices are open
+    setInterval(()=>{
+      if(_getGistToken() && document.visibilityState === 'visible'){
+        _lastGistPull = Date.now();
+        gistPull();
+      }
+    }, 3 * 60 * 1000);
     // Proactive expiry warning on load
     const daysLeft = _getTokenDaysLeft();
     if(daysLeft !== null && daysLeft <= 14 && daysLeft > 0){
@@ -7165,7 +7172,12 @@ function loadCL(){
     return raw;
   }catch(e){ return {date:getTodayKey(), items:{}}; }
 }
-function saveCL(state){ try{ localStorage.setItem(CL_KEY, JSON.stringify(state)); }catch(e){} }
+function saveCL(state){
+  try{ localStorage.setItem(CL_KEY, JSON.stringify(state)); }catch(e){}
+  // Auto-push to Gist for cross-device sync (debounced)
+  clearTimeout(saveCL._t);
+  saveCL._t = setTimeout(()=>{ if(typeof gistPush==='function'&&_getGistToken()) gistPush(); }, 1500);
+}
 function getCLState(id){ return loadCL().items[id]||'pending'; }
 function setCLState(id, val){
   const s = loadCL(); s.items[id]=val; saveCL(s);
@@ -7457,7 +7469,11 @@ function toggleTimberNeed(id){
 const WALK_TIMER_KEY = 'jlos_walk_timer';
 
 function loadTimberWalks(){ try{ const r=JSON.parse(localStorage.getItem(TIMBER_WALK_KEY)||'{}'); const k=getTodayKey(); return r.date===k?r.walks:[]; }catch(e){ return []; } }
-function saveTimberWalks(w){ try{ localStorage.setItem(TIMBER_WALK_KEY, JSON.stringify({date:getTodayKey(),walks:w})); }catch(e){} }
+function saveTimberWalks(w){
+  try{ localStorage.setItem(TIMBER_WALK_KEY, JSON.stringify({date:getTodayKey(),walks:w})); }catch(e){}
+  clearTimeout(saveTimberWalks._t);
+  saveTimberWalks._t = setTimeout(()=>{ if(typeof gistPush==='function'&&_getGistToken()) gistPush(); }, 1500);
+}
 
 function initWalkTimer(){
   // Check if walk was in progress (app reloaded)
@@ -7544,7 +7560,11 @@ function loadTimberTrains(){
     return r.date===k ? r.sessions : [];
   }catch(e){ return []; }
 }
-function saveTimberTrains(s){ try{ localStorage.setItem(TIMBER_TRAIN_KEY, JSON.stringify({date:getTodayKey(),sessions:s})); }catch(e){} }
+function saveTimberTrains(s){
+  try{ localStorage.setItem(TIMBER_TRAIN_KEY, JSON.stringify({date:getTodayKey(),sessions:s})); }catch(e){}
+  clearTimeout(saveTimberTrains._t);
+  saveTimberTrains._t = setTimeout(()=>{ if(typeof gistPush==='function'&&_getGistToken()) gistPush(); }, 1500);
+}
 
 window.logTrainingSession = function(){
   const sessions = loadTimberTrains();
@@ -7570,7 +7590,11 @@ function loadTimberFeeds(){
     return r.date===k ? r.feeds : [];
   }catch(e){ return []; }
 }
-function saveTimberFeeds(f){ try{ localStorage.setItem(TIMBER_FEED_KEY, JSON.stringify({date:getTodayKey(),feeds:f})); }catch(e){} }
+function saveTimberFeeds(f){
+  try{ localStorage.setItem(TIMBER_FEED_KEY, JSON.stringify({date:getTodayKey(),feeds:f})); }catch(e){}
+  clearTimeout(saveTimberFeeds._t);
+  saveTimberFeeds._t = setTimeout(()=>{ if(typeof gistPush==='function'&&_getGistToken()) gistPush(); }, 1500);
+}
 
 window.toggleFeedEntry = function(){
   const row = document.getElementById('feedEntryRow');

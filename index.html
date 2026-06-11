@@ -1929,12 +1929,15 @@ body.night .train-status.new{background:var(--pl);border-color:var(--pm);color:v
     <div id="calSetupCard" class="cal-setup-card" style="display:none">
       <div class="cal-setup-title">📅 Connect Google Calendar</div>
       <div class="cal-setup-sub">
-        Paste your private Google Calendar iCal link. Read-only — the app never modifies your calendar.<br><br>
+        Paste your private Google Calendar iCal link(s). Read-only — the app never modifies your calendar.<br><br>
         <strong>How to get it:</strong><br>
         1. Open Google Calendar → Settings → your calendar → Scroll to "Secret address in iCal format"<br>
-        2. Copy that link and paste it below
+        2. Copy that link and paste it below. Add a second one for a shared calendar if you'd like.
       </div>
+      <div style="font-size:.6rem;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:var(--tm);margin:8px 0 4px">Your calendar</div>
       <input class="cal-url-input" id="calUrlInput" type="url" placeholder="https://calendar.google.com/calendar/ical/…">
+      <div style="font-size:.6rem;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:var(--tm);margin:8px 0 4px">Shared calendar (optional)</div>
+      <input class="cal-url-input" id="calUrlInput2" type="url" placeholder="https://calendar.google.com/calendar/ical/…">
       <div style="display:flex;align-items:center;margin-top:8px">
         <button class="cal-save-btn" onclick="saveCalUrl()">Connect Calendar</button>
         <span class="cal-status" id="calStatus"></span>
@@ -2395,10 +2398,13 @@ body.night .train-status.new{background:var(--pl);border-color:var(--pm);color:v
         <div id="deskCalSetupCard" class="cal-setup-card" style="display:none">
           <div class="cal-setup-title">📅 Connect Google Calendar</div>
           <div class="cal-setup-sub">
-            Paste your private Google Calendar iCal link. Read-only — the app never modifies your calendar.<br><br>
-            <strong>How to get it:</strong> Google Calendar → Settings → your calendar → "Secret address in iCal format"
+            Paste your private Google Calendar iCal link(s). Read-only — the app never modifies your calendar.<br><br>
+            <strong>How to get it:</strong> Google Calendar → Settings → your calendar → "Secret address in iCal format". Add a second link for a shared calendar if you'd like.
           </div>
+          <div style="font-size:.6rem;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:var(--tm);margin:8px 0 4px">Your calendar</div>
           <input class="cal-url-input" id="deskCalUrlInput" type="url" placeholder="https://calendar.google.com/calendar/ical/…">
+          <div style="font-size:.6rem;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:var(--tm);margin:8px 0 4px">Shared calendar (optional)</div>
+          <input class="cal-url-input" id="deskCalUrlInput2" type="url" placeholder="https://calendar.google.com/calendar/ical/…">
           <div style="display:flex;align-items:center;margin-top:8px">
             <button class="cal-save-btn" onclick="saveCalUrl()">Connect Calendar</button>
             <span class="cal-status" id="deskCalStatus"></span>
@@ -5219,11 +5225,34 @@ function renderSheetOverrideSection(blockIdx){
 // ─── CALENDAR ENGINE ─────────────────────────────────────────────────────────
 // Single source of truth: fetch → parse → cache → render everywhere
 
-const CAL_URL_KEY   = 'jlos_cal_url';
+const CAL_URL_KEY   = 'jlos_cal_url';   // legacy single-URL key (migrated)
+const CAL_URLS_KEY  = 'jlos_cal_urls';  // JSON array of up to 2 iCal URLs: [personal, shared]
 const CAL_CACHE_KEY = 'jlos_cal_cache';  // sessionStorage: {ts, events[]}
 
-function getCalUrl(){ try{ return localStorage.getItem(CAL_URL_KEY)||''; }catch(e){ return ''; } }
-function setCalUrl(u){ try{ localStorage.setItem(CAL_URL_KEY,u); }catch(e){} }
+// Returns array of non-empty calendar URLs (migrates legacy single-URL storage)
+function getCalUrls(){
+  try{
+    const raw = localStorage.getItem(CAL_URLS_KEY);
+    if(raw){
+      const arr = JSON.parse(raw);
+      if(Array.isArray(arr)) return arr.map(u=>(u||'').trim()).filter(Boolean);
+    }
+    // Migrate legacy single URL
+    const legacy = localStorage.getItem(CAL_URL_KEY);
+    if(legacy){
+      const arr = [legacy.trim()];
+      localStorage.setItem(CAL_URLS_KEY, JSON.stringify(arr));
+      return arr.filter(Boolean);
+    }
+  }catch(e){}
+  return [];
+}
+function setCalUrls(arr){
+  try{ localStorage.setItem(CAL_URLS_KEY, JSON.stringify((arr||[]).map(u=>(u||'').trim()).filter(Boolean))); }catch(e){}
+}
+// Back-compat single-URL accessor (returns first configured calendar)
+function getCalUrl(){ return getCalUrls()[0] || ''; }
+function setCalUrl(u){ setCalUrls([u]); }
 
 // ── iCal parser ──────────────────────────────────────────────────────────────
 function parseICal(text){
@@ -5363,31 +5392,8 @@ function parseICal(text){
 }
 
 // ── Fetch with fallback proxy + sessionStorage cache ─────────────────────────
-async function fetchCalEvents(forceRefresh = false){
-  const url = getCalUrl();
-  if(!url) return null;
-
-  // Return session-cached events if fresh (< 5 min old) and not forced
-  if(!forceRefresh){
-    try{
-      const cached = JSON.parse(sessionStorage.getItem(CAL_CACHE_KEY)||'null');
-      if(cached && Date.now() - cached.ts < 5*60*1000){
-        return cached.events.map(e => ({...e, start: new Date(e.start), end: e.end ? new Date(e.end) : null}));
-      }
-    }catch(e){}
-  }
-
-  // Check for manually pasted iCal (escape hatch)
-  try{
-    const manual = JSON.parse(localStorage.getItem('jlos_ical_manual')||'null');
-    if(manual && manual.ical && manual.ical.includes('BEGIN:VCALENDAR') && !forceRefresh){
-      const events = parseICal(manual.ical);
-      _cacheCalEvents(events);
-      return events;
-    }
-  }catch(e){}
-
-  // Try proxies
+// Fetch a single iCal URL through fallback proxies. Returns raw iCal text or null.
+async function _fetchIcalText(url){
   const proxyDefs = [
     {
       build: u => `https://divine-dust-c8fa.jazzy5006.workers.dev/?url=${encodeURIComponent(u)}`,
@@ -5415,7 +5421,6 @@ async function fetchCalEvents(forceRefresh = false){
     },
   ];
 
-  let ical = null;
   let lastErr = '';
   for(const proxy of proxyDefs){
     try{
@@ -5426,27 +5431,72 @@ async function fetchCalEvents(forceRefresh = false){
       ]);
       if(!r.ok){ lastErr = `HTTP ${r.status}`; continue; }
       const text = await proxy.extract(r);
-      if(text && text.includes('BEGIN:VCALENDAR')){ ical = text; break; }
+      if(text && text.includes('BEGIN:VCALENDAR')) return { ical: text };
       lastErr = 'response did not contain calendar data';
     }catch(e){ lastErr = e.message; continue; }
   }
+  return { error: lastErr };
+}
 
-  if(ical){
-    // Save to Gist as backup cache
-    _saveIcalToGist(ical);
-    const events = parseICal(ical);
+async function fetchCalEvents(forceRefresh = false){
+  const urls = getCalUrls();
+  if(!urls.length) return null;
+
+  // Return session-cached events if fresh (< 5 min old) and not forced
+  if(!forceRefresh){
+    try{
+      const cached = JSON.parse(sessionStorage.getItem(CAL_CACHE_KEY)||'null');
+      if(cached && Date.now() - cached.ts < 5*60*1000){
+        return cached.events.map(e => ({...e, start: new Date(e.start), end: e.end ? new Date(e.end) : null}));
+      }
+    }catch(e){}
+  }
+
+  // Check for manually pasted iCal (escape hatch — applies when no proxy works)
+  let manualIcal = null;
+  try{
+    const manual = JSON.parse(localStorage.getItem('jlos_ical_manual')||'null');
+    if(manual && manual.ical && manual.ical.includes('BEGIN:VCALENDAR')){
+      manualIcal = manual.ical;
+      if(!forceRefresh){
+        const events = parseICal(manualIcal);
+        _cacheCalEvents(events);
+        return events;
+      }
+    }
+  }catch(e){}
+
+  // Fetch each calendar URL independently and merge events
+  const icals = [];
+  let lastErr = '';
+  let anySucceeded = false;
+  for(const url of urls){
+    const res = await _fetchIcalText(url);
+    if(res.ical){ icals.push(res.ical); anySucceeded = true; }
+    else lastErr = res.error || lastErr;
+  }
+
+  if(anySucceeded){
+    _saveIcalToGist(icals);
+    const events = icals.flatMap(ical => parseICal(ical));
     _cacheCalEvents(events);
     return events;
   }
 
-  // All proxies failed — try Gist backup cache
+  // All proxies failed for all calendars — try manual paste, then Gist backup cache
+  if(manualIcal){
+    const events = parseICal(manualIcal);
+    _cacheCalEvents(events);
+    return events;
+  }
+
   try{
-    const gistIcal = await _loadIcalFromGist();
-    if(gistIcal && gistIcal.ical && gistIcal.ical.includes('BEGIN:VCALENDAR')){
-      const ageMin = Math.round((Date.now() - gistIcal.ts) / 60000);
+    const gistData = await _loadIcalFromGist();
+    if(gistData && gistData.icals && gistData.icals.length){
+      const ageMin = Math.round((Date.now() - gistData.ts) / 60000);
       const ageStr = ageMin < 60 ? `${ageMin}m ago` : `${Math.round(ageMin/60)}h ago`;
       showToast(`📅 Showing cached calendar (${ageStr})`, 4000);
-      const events = parseICal(gistIcal.ical);
+      const events = gistData.icals.flatMap(ical => parseICal(ical));
       _cacheCalEvents(events);
       return events;
     }
@@ -5464,7 +5514,7 @@ function _cacheCalEvents(events){
   }catch(e){}
 }
 
-async function _saveIcalToGist(ical){
+async function _saveIcalToGist(icals){
   try{
     const token = _getGistToken();
     const gistId = localStorage.getItem('jlos_gist_id');
@@ -5472,7 +5522,7 @@ async function _saveIcalToGist(ical){
     await fetch(`https://api.github.com/gists/${gistId}`, {
       method:'PATCH',
       headers:{'Authorization':`token ${token}`,'Content-Type':'application/json'},
-      body: JSON.stringify({files:{'jlos_ical_cache.json':{content:JSON.stringify({ts:Date.now(),ical})}}})
+      body: JSON.stringify({files:{'jlos_ical_cache.json':{content:JSON.stringify({ts:Date.now(),icals})}}})
     });
   }catch(e){}
 }
@@ -5489,7 +5539,10 @@ async function _loadIcalFromGist(){
     const data = await r.json();
     const file = data.files?.['jlos_ical_cache.json'];
     if(!file) return null;
-    return JSON.parse(file.content);
+    const parsed = JSON.parse(file.content);
+    // Back-compat: older cache stored a single `ical` string instead of `icals` array
+    if(!parsed.icals && parsed.ical) parsed.icals = [parsed.ical];
+    return parsed;
   }catch(e){ return null; }
 }
 
@@ -5531,7 +5584,7 @@ function todayDateString(){ return new Date().toDateString(); }
 function populateShapeMeetings(){
   const el = document.getElementById('shapeMeetings');
   if(!el) return;
-  if(!getCalUrl()){
+  if(!getCalUrls().length){
     el.innerHTML = '<div class="shape-cal-empty">No calendar connected — <button onclick="switchTab(\'cal\')" style="background:none;border:none;color:var(--sa);font-weight:900;cursor:pointer;font-size:.68rem;text-decoration:underline">connect one in Cal tab</button></div>';
     return;
   }
@@ -5550,10 +5603,11 @@ function populateShapeMeetings(){
 
 // ── Cal URL save / toggle setup ───────────────────────────────────────────────
 window.saveCalUrl = () => {
-  const u = (document.getElementById('calUrlInput')?.value||document.getElementById('deskCalUrlInput')?.value||'').trim();
-  if(!u){ showToast('Paste your iCal URL first',2000); return; }
-  setCalUrl(u);
-  try{ sessionStorage.removeItem(CAL_CACHE_KEY); }catch(e){}  // bust cache on new URL
+  const u1 = (document.getElementById('calUrlInput')?.value||document.getElementById('deskCalUrlInput')?.value||'').trim();
+  const u2 = (document.getElementById('calUrlInput2')?.value||document.getElementById('deskCalUrlInput2')?.value||'').trim();
+  if(!u1 && !u2){ showToast('Paste at least one iCal URL first',2000); return; }
+  setCalUrls([u1, u2]);
+  try{ sessionStorage.removeItem(CAL_CACHE_KEY); }catch(e){}  // bust cache on new URL(s)
   ['calStatus','deskCalStatus'].forEach(id=>{ const el=document.getElementById(id); if(el){ el.textContent='Saved! Loading…'; el.style.color='var(--ma)'; } });
   toggleCalSetup(false);
   loadCalendar();
@@ -5564,16 +5618,18 @@ window.toggleCalSetup = (forceOpen) => {
     const el=document.getElementById(id); if(!el) return;
     const open = forceOpen !== undefined ? forceOpen : el.style.display==='none';
     el.style.display = open ? 'block' : 'none';
-    const inp = id==='calSetupCard' ? document.getElementById('calUrlInput') : document.getElementById('deskCalUrlInput');
-    const url = getCalUrl();
-    if(inp && url) inp.value = url;
+    const inp1 = id==='calSetupCard' ? document.getElementById('calUrlInput') : document.getElementById('deskCalUrlInput');
+    const inp2 = id==='calSetupCard' ? document.getElementById('calUrlInput2') : document.getElementById('deskCalUrlInput2');
+    const urls = getCalUrls();
+    if(inp1 && urls[0]) inp1.value = urls[0];
+    if(inp2 && urls[1]) inp2.value = urls[1];
   });
 };
 
 // ── Main calendar page renderer ───────────────────────────────────────────────
 window.loadCalendar = async (forceRefresh = false) => {
   const listEls = ['calEventsList','deskCalEventsList'];
-  const url = getCalUrl();
+  const url = getCalUrls()[0];
   if(!url){
     toggleCalSetup(true);
     listEls.forEach(id=>{ const el=document.getElementById(id); if(el) el.innerHTML='<div class="cal-empty">Connect your Google Calendar above ☝️</div>'; });
@@ -5639,7 +5695,7 @@ window.loadCalendar = async (forceRefresh = false) => {
 };
 
 function initCalendar(){
-  if(getCalUrl()) loadCalendar();
+  if(getCalUrls().length) loadCalendar();
   else{
     toggleCalSetup(true);
     ['calEventsList','deskCalEventsList'].forEach(id=>{ const el=document.getElementById(id); if(el) el.innerHTML='<div class="cal-empty">Connect your Google Calendar above ☝️</div>'; });

@@ -6004,6 +6004,44 @@ const TRAIN_CUES = [
     note:'LLW Drill 3. More advanced — patience is key. Let him figure it out. Also remember: goal for puppies is a loose leash, not formal heel. Sniffari walks count!',
     rotation:[3,5]
   },
+
+  // ── WEEK 5 CLASS SKILLS ────────────────────────────────────────────────────
+  {
+    id:'collar-grabs', name:'Collar Grabs', icon:'🤝',
+    source:'class', tags:['recall','safety','foundation'],
+    cue:'No treats in hand — show empty hands first, then touch neck/collar',
+    howTo:'Show Timber your hands so he can sniff and see they\'re empty. Touch the side of his neck gently — mark + treat. Repeat 5–10x. Once comfy, close your hand around his collar (no yank/pull) — mark + treat. Repeat 5–10x. If he\'s nervous about the hand approaching from the side, slow way down.',
+    status_default:'new',
+    note:'Week 5. Builds comfort with collar grabs so recall can end safely (e.g. before clipping a leash). Go slow if he\'s unsure.',
+    rotation:[0,3]
+  },
+  {
+    id:'back-step-recall', name:'Back-Step Recall', icon:'🔙',
+    source:'class', tags:['recall','foundation'],
+    cue:'Step backward when he\'s looking at you, then add recall word',
+    howTo:'When Timber is looking at you, take a step back — when he moves to you, mark + treat. Repeat 5–10x. Once reliable, add your recall word right before stepping back. Once confident, add a collar grab: say recall word, step back, and when he comes, lean in, grab the collar, then mark + treat.',
+    status_default:'new',
+    note:'Week 5. Only add the collar grab once Timber is comfortable with [[collar-grabs]]. Builds toward a recall that ends with a hand on the collar.',
+    rotation:[1,4]
+  },
+  {
+    id:'get-it-and-come', name:'Get It and Come', icon:'🔁',
+    source:'class', tags:['recall','engagement','pattern'],
+    cue:'"Get it!" (toss treat) → "Come!" (call back)',
+    howTo:'Tell Timber "get it!" and toss a treat a short distance away (2–3 ft). As soon as he eats it, say "come!" — the moment he heads back, mark, then reward directly to his mouth on arrival. Repeat the loop. Use two treat values: a lower-value one to toss away, and a higher-value one for the recall reward.',
+    status_default:'new',
+    note:'Week 5 pattern game — builds on Up/Down and Ping Pong, helps him reorient back to you. Great quick warm-up.',
+    rotation:[2,5]
+  },
+  {
+    id:'counting-game', name:'Counting Game (Calm Greetings)', icon:'🔢',
+    source:'class', tags:['impulse','greeting','management'],
+    cue:'Mark + reward calm moments during approach/greeting before jumping happens',
+    howTo:'Per Chirag Patel\'s Counting Game: as a person approaches or greets Timber, count out marks/treats for calm 4-on-the-floor moments, rewarding steadily to keep him from escalating into jumping. Also helps with "keep away" — instead of chasing a stolen object, redirect and reward calm/disengagement.',
+    status_default:'new',
+    note:'Week 5 — focus on management for jumping on people and the "steal and keep-away" game. Prevention first; more specific cues coming next week. Remember: behavior is information — make sure his needs are being met.',
+    rotation:[0,6]
+  },
 ];
 
 // Daily rotation: 5 cues per day distributed across the week
@@ -6243,7 +6281,7 @@ initVineBanners();
   <div class="sitter-hero">
     <div class="sitter-paws">🐾 🐱 🐾</div>
     <h1>Pet Care Guide</h1>
-    <p class="hero-sub">March 30 – April 11, 2026 · Thank you so much! 💜</p>
+    <p class="hero-sub">General Care Reference · Thank you so much! 💜</p>
     <div class="sitter-nav-pills">
       <span class="sitter-nav-pill dog" id="pillDog" onclick="showSitterTab('dog')">🐶 Timber</span>
       <span class="sitter-nav-pill cat" id="pillCat" onclick="showSitterTab('cat')">🐱 Tigris & Tulip</span>
@@ -6255,9 +6293,9 @@ initVineBanners();
     <div class="sitter-body">
 
       <div class="sitter-section">
-        <div class="sitter-section-title">👋 Hi Milo & Lili!</div>
+        <div class="sitter-section-title">👋 Hi there!</div>
         <div class="sitter-card orange">
-          <p>Thank you so much for taking care of Timber while I'm in Germany! He's a 12-week-old miniature poodle and a very good boy. This page has everything you need. Please don't hesitate to reach out any time!</p>
+          <p>Thank you so much for taking care of Timber! He's a miniature poodle puppy and a very good boy. This page covers his everyday routine — what he's used to, what he needs, and how to handle the trickier moments. Please don't hesitate to text or call with any questions!</p>
         </div>
       </div>
 
@@ -6265,16 +6303,17 @@ initVineBanners();
       <div class="sitter-section">
         <div class="sitter-section-title">⚡ TL;DR — The Essentials</div>
         <div class="sitter-card orange">
-          <p>Timber is a happy, healthy 12-week-old miniature poodle. Here's everything in 30 seconds:</p>
+          <p>Here's Timber's normal routine in 30 seconds:</p>
           <ul style="margin-top:8px">
-            <li>🍽️ <strong>4 meals a day</strong> — breakfast, two midday snacks, dinner (8–8:30 PM). Measure a full day's worth into the treat pouch each morning and distribute from there. Puzzle feeders and snuffle mat are there for any leftover food.</li>
-            <li>💤 <strong>After every 45 minutes awake, he needs a 2-hour nap.</strong> Awake → potty → crate + treat → 2 hr nap → repeat all day.</li>
-            <li>🎓 <strong>Breakfast &amp; dinner are training sessions</strong> — handful by handful. Sit (OK hand signal), name recognition, come, paw handling. Mark good behaviour with <strong>"good!"</strong> Leftover kibble → puzzle feeder or snuffle mat.</li>
-            <li>🚽 <strong>Outside for every daytime potty trip.</strong> Carry him — backyard only, no public ground.</li>
-            <li>🌙 <strong>Overnight:</strong> guest room with crate open + litter box set up before bed (pee pad + pine pellets). Big reward for outside, no reward needed for litter box.</li>
-            <li>🐕 <strong>Dogs always supervised with Timber.</strong> Start with big dogs tethered. Carry Timber if dogs are loose in the house.</li>
-            <li>💧 <strong>Water away at 8:15 PM.</strong> Bedtime crate by 8:45 PM.</li>
-            <li>🎓 <strong>Puppy class:</strong> April 1 &amp; April 8 at 6 PM — All Dogs Durham.</li>
+            <li>🍽️ <strong>3 meals a day</strong> — a scant 1/3 cup of Fromm puppy food each, in the morning (after his walk or play), around 1–2 PM, and 6–8 PM. Feed the meal first (snuffle mat or puzzle feeder is great), then do training after — his food isn't used as training treats. If he's not hungry at lunch, that's fine — just give him extra at dinner.</li>
+            <li>🐾 <strong>Paw wipes every time he comes in from outside.</strong> Hold the wipe out and wait for him to come to you (or call him over), then wipe all four paws.</li>
+            <li>🚽 <strong>Outside to potty</strong> first thing out of the crate (8:30–9:30 AM), after naps, after meals, and roughly every 2–3 hrs while awake.</li>
+            <li>💤 <strong>1–2 naps a day, 2–3 hrs each.</strong> If he's wound up — zoomies, barking, nipping — that's the sign for a crate nap, with a frozen treat.</li>
+            <li>🦴 <strong>Frozen treats</strong> (bone broth/carrot/Greek yogurt/peanut butter) live in the freezer — one every time he goes in the crate.</li>
+            <li>💧 <strong>Water picked up 1–2 hrs before bed</strong> to help him hold it overnight.</li>
+            <li>🌙 <strong>Crate whenever works for your evening</strong> — he can sleep ~9 hrs overnight, no accidents.</li>
+            <li>🎓 <strong>Knows:</strong> come (great recall), sit, down, touch (point your finger, he touches it), paw (offer your hand, he gives a paw). Should sit before going through doors — if he doesn't on his own, just ask for one first.</li>
+            <li>🛋️ <strong>Couch:</strong> he doesn't get on furniture at home, so he won't ask — but if your pets are allowed up and you're okay with it, he can join on his own. Just please don't invite him.</li>
           </ul>
         </div>
       </div>
@@ -6286,14 +6325,12 @@ initVineBanners();
           <div class="stoc-col">
             <a href="#s-contacts" class="stoc-link-purple">📞 Contacts &amp; Emergency Vets</a>
             <a href="#s-feeding" class="stoc-link-orange">🍽️ Feeding</a>
-            <a href="#s-training" class="stoc-link-orange">🎓 Training</a>
-            <a href="#s-schedule" class="stoc-link-orange">🗓️ Daily Schedule (example)</a>
-            <a href="#s-milo" class="stoc-link-orange">📅 When You're Both Out (M/W/F)</a>
-            <a href="#s-dogs" class="stoc-link-orange">🐕 Your Dogs &amp; Timber</a>
-            <a href="#s-health" class="stoc-link-orange">🏥 Health Notes</a>
-            <a href="#s-classes" class="stoc-link-orange">🎓 Puppy Classes</a>
-            <a href="#s-potty" class="stoc-link-orange">🚽 Potty Protocol</a>
-            <a href="#s-crate" class="stoc-link-orange" style="border-bottom:none">🏠 Crate &amp; Naps</a>
+            <a href="#s-training" class="stoc-link-orange">🎓 Commands &amp; Training</a>
+            <a href="#s-schedule" class="stoc-link-orange">🗓️ Typical Day</a>
+            <a href="#s-health" class="stoc-link-orange">🏥 Health &amp; Safety</a>
+            <a href="#s-potty" class="stoc-link-orange">🚽 Potty &amp; Paw Wiping</a>
+            <a href="#s-naps" class="stoc-link-orange">💤 Naps, Crate &amp; Settling</a>
+            <a href="#s-manners" class="stoc-link-orange" style="border-bottom:none">🛋️ Manners &amp; House Rules</a>
           </div>
         </div>
       </div>
@@ -6334,249 +6371,144 @@ initVineBanners();
       <div class="sitter-section">
         <div class="sitter-section-title">🍽️ Feeding</div>
         <div class="sitter-card orange">
-          <h3>🐾 Food: Fromm Puppy Gold</h3>
-          <p><strong>4 meals per day</strong> — breakfast, two midday tethered snacks, and dinner. Breakfast and dinner are full Learn to Earn sessions — hold the meal in your hand and ask him to sit or make eye contact before each handful (5–10 min). The two midday meals are dropped as calm-behaviour rewards during his tethered awake windows: kibble goes down when he's settled or playing quietly with a toy. Nothing for jumping, mouthing, or demanding.</p>
-          <div class="sitter-tip"><strong>Each morning, measure out his full day's food</strong> (roughly ¾ to 1 cup of Fromm Puppy Gold) into his treat pouch and distribute from there throughout the day — breakfast training session, two midday tethered snacks, and dinner training session. You'll find the treat pouch and a measuring cup with his supplies. If there's kibble left over after a training session and you don't have time to keep working, just pop it into one of the <strong>two puzzle feeders or the snuffle mat</strong> — they're great for keeping him occupied and making him work for his food. Dog treats are completely fine throughout the day too — just keep in mind he needs to arrive at each meal hungry enough to eat his full portion. No table scraps please, but any dog treats are great.</div>
+          <h3>🐾 Food: Fromm puppy food</h3>
+          <p><strong>3 meals a day</strong> — a scant 1/3 cup each (just barely 1/3 cup, not a full packed scoop). Meal #1 is in the morning after his walk or play. Meals #2 and #3 are around 1–2 PM and 6–8 PM.</p>
+          <div class="sitter-tip"><strong>How each meal works:</strong> feed him his meal first (snuffle mat or puzzle feeder is great for this), then do a quick training session afterward (see 🎓 Commands &amp; Training) — his food isn't used as training treats. If he's not very hungry at lunch, that's totally fine — just give him a bit extra at dinner. If he still seems hungry, it's fine to offer a bit more — he's a growing boy.</div>
           <div class="sitter-pill-row">
-            <span class="sitter-pill orange">Breakfast ~8 AM</span>
-            <span class="sitter-pill orange">Tethered snack ~11 AM</span>
-            <span class="sitter-pill orange">Tethered snack ~2 PM</span>
-            <span class="sitter-pill orange">Dinner 8–8:30 PM</span>
+            <span class="sitter-pill orange">Breakfast — after morning walk or play</span>
+            <span class="sitter-pill orange">Lunch ~1–2 PM</span>
+            <span class="sitter-pill orange">Dinner 6–8 PM</span>
           </div>
         </div>
-        <div class="sitter-warning">Last meal is dinner at <strong>8–8:30 PM</strong>, during his evening awake window. Pick up his water bowl at <strong>8:15 PM</strong> — before dinner starts. No water after 8:15 PM — this gives his bladder 30 minutes before his 8:45 PM bedtime potty and helps him sleep through the night.</div>
+        <div class="sitter-warning">Pick up his water bowl 1–2 hours before bedtime — this helps him hold it overnight. No need to refill until morning.</div>
       </div>
 
-      <!-- TRAINING -->
+      <!-- COMMANDS & TRAINING -->
       <div id="s-training" class="sitter-section">
-        <div class="sitter-section-title">🎓 Training — Breakfast &amp; Dinner Sessions</div>
+        <div class="sitter-section-title">🎓 Commands &amp; Training</div>
         <div class="sitter-card orange">
-          <h3>🐾 How a Learn to Earn session works</h3>
-          <p>Breakfast and dinner are full training sessions — his entire meal is earned as rewards, handful by handful. No bowl. Keep sessions to <strong>5–10 minutes max</strong>, then anything left over goes in a puzzle feeder or the snuffle mat. He's learning that good behaviour makes food appear, which is the foundation of everything.</p>
-          <div class="sitter-tip">Short and fun is better than long and perfect. End on a win even if it means asking for something easy.</div>
-        </div>
-
-        <div class="sitter-card orange">
-          <h3>🖐️ Sit</h3>
-          <p>The hand signal for sit is the <strong>OK sign</strong> — make a circle with your thumb and index finger, back of your hand facing him. Hold it in front of him and wait. The moment his bottom hits the floor, mark it with "good!" and give him a handful of kibble.</p>
-          <p style="margin-top:8px">Once he's sitting reliably, try this: <strong>walk away from him a few steps</strong>. If he follows and then sits, reward the sit with extra enthusiasm — that's a bonus!</p>
-        </div>
-
-        <div class="sitter-card orange">
-          <h3>🏃 Name Recognition &amp; Come</h3>
-
-          <p style="margin-bottom:8px"><strong>His name — "Timber"</strong></p>
-          <p>Say his name once in a happy voice. If he looks at you, immediately say <strong>"good!"</strong> and reward him. That's it — that's the whole exercise.</p>
-          <p style="margin-top:8px">A few important rules:</p>
-          <ul style="margin-top:4px">
-            <li><strong>Say it once only.</strong> If he doesn't look at you, don't repeat it — get his attention another way first (make a funny noise, a kissy sound, say "hey!" or "puppy puppy") and once he looks at you, reward that. Then try his name again another time.</li>
-            <li><strong>Don't overuse it.</strong> If he hears his name constantly, he'll start tuning it out or learn he can wait for the second call. Save it so it means something.</li>
+          <h3>🐾 What he knows</h3>
+          <p>Timber has a solid little vocabulary already — using these words (and matching hand signals) keeps things consistent for him:</p>
+          <ul style="margin-top:8px">
+            <li><strong>Come</strong> — he has very good recall and comes reliably when called</li>
+            <li><strong>Sit</strong> — right hand, palm facing you, pointer finger and thumb touching</li>
+            <li><strong>Down</strong> — same hand shape as sit, but palm facing the floor</li>
+            <li><strong>Touch</strong> — point your index finger out, he'll touch it with his nose</li>
+            <li><strong>Paw</strong> — hold your hand out, he'll offer a paw</li>
           </ul>
-
-          <p style="margin-top:12px;margin-bottom:8px"><strong>Come</strong></p>
-          <p>Hold a handful of kibble in an open palm. Walk a few steps away. If he doesn't follow on his own, <strong>squat down, open your hand toward him, and invite him in</strong> — he'll come trotting over. The moment he reaches you, reward him and give lots of praise.</p>
-          <p style="margin-top:8px">For now, <strong>don't say "come" yet</strong> — just let him do the behaviour and reward it. Once he's consistently trotting to you every time, you can start saying "come" as he's already on his way to you. The word only gets added once you're sure he's doing it reliably — and like his name, you only say it once.</p>
-          <div class="sitter-tip">The rule for both his name and "come" is the same: <strong>say it once, mean it, and never repeat it.</strong> If he doesn't respond, get his attention a different way rather than saying the word again.</div>
-        </div>
-
-        <div class="sitter-card orange">
-          <h3>🐾 Paw Handling</h3>
-          <p>This one is less about tricks and more about getting him comfortable being touched — important for the vet and for grooming. Here's how:</p>
-          <ol style="margin-top:8px;padding-left:16px">
-            <li style="margin-bottom:6px">Ask him to sit (use the OK hand signal)</li>
-            <li style="margin-bottom:6px">Once he's sitting, <strong>gently pick up one paw</strong> with one hand while your other hand feeds him kibble continuously</li>
-            <li style="margin-bottom:6px">Feed him <strong>for as long as he lets you hold the paw without pulling away</strong></li>
-            <li style="margin-bottom:6px">The moment he pulls away, stop feeding — no big deal, just try again</li>
-            <li>Keep sessions short — a few seconds of tolerance is a win at this age</li>
-          </ol>
-          <div class="sitter-tip">The goal isn't to hold the paw for a long time — it's to teach him that a hand near his paw means good things happen. Go at his pace.</div>
-        </div>
-
-        <div class="sitter-card orange">
-          <h3>🧩 Puzzle Feeders &amp; Snuffle Mat</h3>
-          <p>If there's kibble left over after a training session and you don't have time to keep working with him, just load it into one of the <strong>two puzzle feeders or the snuffle mat</strong>. He'll have to sniff and problem-solve to get the kibble out — it tires him out mentally just as much as training does and is a great way to use up the rest of his meal.</p>
-          <div class="sitter-tip">Mental enrichment counts as awake time. After a good puzzle feeder session, he'll be ready for his crate.</div>
+          <div class="sitter-tip">A short training session with a handful of treats happens after each meal (not during) — any of the cues above work great. Mark good behaviour with "good!" and reward right away.</div>
+          <div class="sitter-tip" style="margin-top:8px">He should sit before going through any door — if he doesn't sit on his own, just ask for one before opening it. It'd also be great if he can keep practicing sitting to ask to go outside for potty — if he wanders to the door, ask for a sit before letting him out.</div>
         </div>
       </div>
 
-      <!-- DAILY SCHEDULE -->
+      <!-- TYPICAL DAY -->
       <div id="s-schedule"><!-- anchor --></div>
       <div class="sitter-section">
-        <div class="sitter-section-title">🗓️ Daily Schedule</div>
-        <div class="sitter-tip" style="margin-bottom:10px">The pattern all day: <strong>awake window → potty → crate + treat → 2–3 hr nap → repeat.</strong> Every nap starts with a potty trip and a treat in the crate. He has <strong>two naps a day</strong> and sleeps from 9 PM to 9 AM overnight — no middle-of-the-night trips needed.<br><br><strong>The schedule below is an example</strong> — it's what Timber does at home every day so he'll feel right at home with it. Don't worry if you can't follow it to the minute. The core rhythm (awake, potty, crate, nap) matters more than the exact times.</div>
+        <div class="sitter-section-title">🗓️ Typical Day</div>
+        <div class="sitter-tip" style="margin-bottom:10px">The rhythm: <strong>wake → outside → paw wipe → training + meal → walk → awake time → nap (or crate nap if overtired) → repeat.</strong> This is what Timber's used to at home — a guide, not a strict timetable. The pattern matters more than exact times.</div>
         <div class="sitter-card orange">
           <h3>🌅 Morning</h3>
-          <div class="sitter-schedule-row orange"><span class="sitter-icon">🌅</span><span class="sitter-time">9:00 AM</span><div class="sitter-event">Wake + potty<small>Carry straight outside — bladder is full after the night</small></div></div>
-          <div class="sitter-schedule-row orange"><span class="sitter-icon">🍽️</span><span class="sitter-time">9:00–9:45</span><div class="sitter-event">Breakfast (Learn to Earn)<small>Hand-feed full breakfast as training rewards — see the 🎓 Training section below for exactly what to work on. 5–10 min max, then puzzle feeder or snuffle mat for any remainder.</small></div></div>
-          <div class="sitter-schedule-row orange"><span class="sitter-icon">🚽</span><span class="sitter-time">9:45 AM</span><div class="sitter-event">Potty → crate + treat<small>Outside first, then high-value treat in crate. Cover crate, walk away.</small></div></div>
-          <div class="sitter-schedule-row orange"><span class="sitter-icon">💤</span><span class="sitter-time">10:00–12:00</span><div class="sitter-event">Nap #1 — 2–3 hours<small>Minimum 2 hours. If he's still asleep at noon, let him sleep up to 1:00 PM — he'll wake when ready.</small></div></div>
+          <div class="sitter-schedule-row orange"><span class="sitter-icon">🏠</span><span class="sitter-time">8:30–9:30 AM</span><div class="sitter-event">Out of the crate<small>Take him straight outside to potty as soon as he's released — bladder is full after the night.</small></div></div>
+          <div class="sitter-schedule-row orange"><span class="sitter-icon">🐾</span><span class="sitter-time">Coming back in</span><div class="sitter-event">Paw wipe<small>Hold the wipe out and wait for him to come to you (or call him over), then wipe all four paws.</small></div></div>
+          <div class="sitter-schedule-row orange"><span class="sitter-icon">🚶</span><span class="sitter-time">Morning walk or play</span><div class="sitter-event">Walk after he's up and about<small>Happens after he wakes up. A play session works fine in place of a walk.</small></div></div>
+          <div class="sitter-schedule-row orange"><span class="sitter-icon">🍽️🎓</span><span class="sitter-time">Breakfast</span><div class="sitter-event">Meal, then training<small>Feed his meal (snuffle mat or puzzle feeder works great), then a quick training session afterward.</small></div></div>
         </div>
         <div class="sitter-card orange">
-          <h3>☀️ Afternoon</h3>
-          <div class="sitter-schedule-row orange"><span class="sitter-icon">🌅</span><span class="sitter-time">12:00 PM</span><div class="sitter-event">Wake + potty<small>Carry straight outside — bladder is full</small></div></div>
-          <div class="sitter-schedule-row orange"><span class="sitter-icon">🪢</span><span class="sitter-time">12:00–1:30</span><div class="sitter-event">Awake window + midday meal<small>Tethered to you or anchored nearby. Drop kibble for calm behaviour or quiet toy play. Watch for tired signals (yawning, nippy) — crate him early if needed.</small></div></div>
-          <div class="sitter-schedule-row orange"><span class="sitter-icon">🚽</span><span class="sitter-time">1:30 PM</span><div class="sitter-event">Potty → crate + treat</div></div>
-          <div class="sitter-schedule-row orange"><span class="sitter-icon">💤</span><span class="sitter-time">1:45–3:45</span><div class="sitter-event">Nap #2 — 2–3 hours<small>Minimum 2 hours. If he's still asleep at 3:45, let him sleep up to 4:45 PM.</small></div></div>
-          <div class="sitter-schedule-row orange"><span class="sitter-icon">🌅</span><span class="sitter-time">3:45 PM</span><div class="sitter-event">Wake + potty</div></div>
-          <div class="sitter-schedule-row orange"><span class="sitter-icon">🪢</span><span class="sitter-time">3:45–5:00</span><div class="sitter-event">Awake window + afternoon meal<small>Tethered nearby. Drop kibble for calm behaviour. A chew or puzzle feeder works well here.</small></div></div>
-          <div class="sitter-schedule-row orange"><span class="sitter-icon">🍽️</span><span class="sitter-time">5:00 PM</span><div class="sitter-event">Dinner (Learn to Earn)<small>Hand-feed full dinner as training rewards in the backyard — same cues as breakfast (see 🎓 Training section). 5–10 min max, then puzzle feeder for any remainder.</small></div></div>
-          <div class="sitter-schedule-row orange"><span class="sitter-icon">🚶</span><span class="sitter-time">5:15–5:45</span><div class="sitter-event">Afternoon walk — 30 min<small>Paws on the ground are fine for neighbourhood walks. Let him sniff freely.</small></div></div>
-          <div class="sitter-schedule-row orange"><span class="sitter-icon">🚽</span><span class="sitter-time">5:45 PM</span><div class="sitter-event">Post-walk potty<small>He's been moving — almost always needs to go after a walk.</small></div></div>
+          <h3>☀️ Throughout the Day</h3>
+          <div class="sitter-schedule-row orange"><span class="sitter-icon">💤</span><span class="sitter-time">1–2 naps, 2–3 hrs each</span><div class="sitter-event">Naps<small>He often settles on his own when tired. If he's wound up instead — zoomies, barking, nipping — that's the cue for a crate nap (see 💤 Naps, Crate &amp; Settling).</small></div></div>
+          <div class="sitter-schedule-row orange"><span class="sitter-icon">🚽</span><span class="sitter-time">Every 2–3 hrs awake</span><div class="sitter-event">Potty trips<small>Outside, with a paw wipe when he comes back in.</small></div></div>
+          <div class="sitter-schedule-row orange"><span class="sitter-icon">🍽️</span><span class="sitter-time">~1–2 PM</span><div class="sitter-event">Lunch — scant 1/3 cup<small>If he's not hungry, that's fine — just give him extra at dinner.</small></div></div>
         </div>
         <div class="sitter-card orange">
-          <h3>🌙 Evening & Overnight</h3>
-          <div class="sitter-schedule-row orange"><span class="sitter-icon">🛋️</span><span class="sitter-time">6:00–8:00</span><div class="sitter-event">Calm tethered evening<small>Tethered nearby. No rough play — low stimulation so he winds down naturally. A stuffed Kong or chew helps him settle.</small></div></div>
-          <div class="sitter-schedule-row orange"><span class="sitter-icon">🚽</span><span class="sitter-time">8:00 PM</span><div class="sitter-event">Evening potty<small>He's been awake 4+ hours — this trip bridges him to bedtime</small></div></div>
-          <div class="sitter-schedule-row orange"><span class="sitter-icon">💧</span><span class="sitter-time">8:30 PM</span><div class="sitter-event">Pick up water bowl<small>No water after this — helps him sleep through the night</small></div></div>
-          <div class="sitter-schedule-row orange"><span class="sitter-icon">🪢</span><span class="sitter-time">8:15–8:45</span><div class="sitter-event">Final wind-down<small>Tethered, low stimulation. No rough play — you want him drowsy.</small></div></div>
-          <div class="sitter-schedule-row orange"><span class="sitter-icon">🌙</span><span class="sitter-time">8:45 PM</span><div class="sitter-event">Potty → crate + treat — Bedtime<small>High-value treat, cover crate, lights low, walk away calmly. He sleeps from 9 PM to 9 AM — no overnight trips needed.</small></div></div>
+          <h3>🌙 Evening &amp; Overnight</h3>
+          <div class="sitter-schedule-row orange"><span class="sitter-icon">🍽️🎓</span><span class="sitter-time">6–8 PM</span><div class="sitter-event">Dinner — scant 1/3 cup, then training<small>Offer more if he seems hungry — especially if lunch was skipped. Quick training session after dinner too.</small></div></div>
+          <div class="sitter-schedule-row orange"><span class="sitter-icon">💧</span><span class="sitter-time">1–2 hrs before bed</span><div class="sitter-event">Pick up water bowl<small>Helps him hold it overnight.</small></div></div>
+          <div class="sitter-schedule-row orange"><span class="sitter-icon">🚽</span><span class="sitter-time">Before bed</span><div class="sitter-event">Last potty trip + paw wipe</div></div>
+          <div class="sitter-schedule-row orange"><span class="sitter-icon">🏠</span><span class="sitter-time">Whenever works for you</span><div class="sitter-event">Crate for the night<small>He can sleep about 9 hours overnight with no accidents — no need to match a specific time.</small></div></div>
+          <div class="sitter-schedule-row orange"><span class="sitter-icon">🚽</span><span class="sitter-time">If he wakes overnight</span><div class="sitter-event">Outside to potty<small>If he's not sleeping, he should go out roughly every 2–3 hrs.</small></div></div>
         </div>
       </div>
 
-      <!-- MILO AWAY -->
-      <div id="s-milo" class="sitter-section">
-        <div class="sitter-section-title">📅 When You're Both Out (M/W/F 8am–12pm)</div>
-        <div class="sitter-card orange">
-          <h3>🐾 The plan for those mornings</h3>
-          <p>On M/W/F mornings when you both leave at 8am, Timber will be on his own in the <strong>guest room with the door closed</strong> — away from the dogs — until you're back at noon. Here's how to set him up for success before you go:</p>
-          <div style="margin-top:10px">
-            <div class="sitter-schedule-row orange"><span class="sitter-icon">⏰</span><span class="sitter-time">~7:00 AM</span><div class="sitter-event">Wake Timber a little early<small>On these mornings, start his routine about an hour earlier than usual so everything is done before you leave at 8.</small></div></div>
-            <div class="sitter-schedule-row orange"><span class="sitter-icon">🚽</span><span class="sitter-time">7:00 AM</span><div class="sitter-event">Outside for potty — big praise<small>Carry him straight to the backyard. Reward well.</small></div></div>
-            <div class="sitter-schedule-row orange"><span class="sitter-icon">🎓</span><span class="sitter-time">7:00–7:45</span><div class="sitter-event">Breakfast training session<small>Even 5 minutes of sit, come, or paw handling counts. Leftover kibble goes in a puzzle feeder or the snuffle mat in his room.</small></div></div>
-            <div class="sitter-schedule-row orange"><span class="sitter-icon">🚽</span><span class="sitter-time">7:45 AM</span><div class="sitter-event">Outside for potty again<small>One more trip before crating him — gives him the best chance of staying dry.</small></div></div>
-            <div class="sitter-schedule-row orange"><span class="sitter-icon">🏠</span><span class="sitter-time">~8:00 AM</span><div class="sitter-event">Put him in the guest room — crate door open<small>Clean and reset the litter box first with a fresh pee pad and a scatter of pine pellets. Crate door stays open so he can get out and use it if he needs to. Close the guest room door. Dogs stay loose in the rest of the house.</small></div></div>
-            <div class="sitter-schedule-row orange"><span class="sitter-icon">💤</span><span class="sitter-time">8:00–12:00</span><div class="sitter-event">Timber is settled in the guest room<small>He'll sleep for most of this. Crate door is open so if he wakes and needs to go, the litter box is right there. He's safe, contained, and away from the dogs.</small></div></div>
-            <div class="sitter-schedule-row orange"><span class="sitter-icon">🌅</span><span class="sitter-time">12:00 PM</span><div class="sitter-event">You're back — take him straight outside<small>First thing when you get home: outside for a proper potty trip with big praise and a treat. Then pick up and clean the litter box.</small></div></div>
-          </div>
-        </div>
-        <div class="sitter-card orange">
-          <h3>💡 A few things to remember</h3>
-          <ul>
-            <li><strong>Crate door stays open</strong> — he needs to be able to get out and reach the litter box if he needs it.</li>
-            <li><strong>Clean and reset the litter box before you leave</strong> — fresh pee pad, scatter of pine pellets on top.</li>
-            <li>Leave the litter box in his room <strong>on M/W/F specifically</strong> — it's his backup for the longer solo stretch. On other days the overnight routine applies as normal.</li>
-            <li><strong>Close the guest room door</strong> before you leave — the dogs should have no access to him while you're out.</li>
-            <li>The 7am start is the only real adjustment — everything else flows from there.</li>
-          </ul>
-          <div class="sitter-tip">He's going to do great. By the time you're back at noon he'll probably still be napping!</div>
-        </div>
-      </div>
-
-      <!-- LARGE DOGS -->
-      <div id="s-dogs"><!-- anchor --></div>
-      <div class="sitter-section">
-        <div class="sitter-section-title">🐕 Your Dogs &amp; Timber</div>
-        <div class="sitter-warning" style="margin-bottom:8px">Timber weighs 5.8 lbs. Large dogs can seriously injure a puppy this size even during gentle play — please keep all interactions supervised.</div>
-        <div class="sitter-card orange">
-          <h3>🐾 Since they've already met</h3>
-          <p>Timber already met your dogs last week from the safety of his stroller, which was a great first introduction! Going forward, the best interactions they can have are stroller or carry-based ones where Timber is up in your arms or in the stroller — that lets everyone sniff and get comfortable without any risk of him getting knocked over.</p>
-          <p style="margin-top:8px">When you're ready to let them interact more closely, please follow this approach:</p>
-          <ul style="margin-top:6px">
-            <li><strong>Start with your dogs tethered or on a lead</strong> — let them greet Timber while calm and under control before giving any freedom</li>
-            <li>Once you're confident your dogs are calm and won't jump on him, you can let them interact more freely — but always stay present</li>
-            <li>If you're just walking through the house to take him outside and the dogs are loose, <strong>carry Timber</strong> — don't set him down</li>
-            <li>Your dogs should never have unsupervised free access to Timber. When they can reach each other, someone should always be watching</li>
-            <li>Never leave Timber alone with your dogs, even if they seem gentle and calm</li>
-            <li>If things get too rough or Timber seems overwhelmed, separate and give everyone a break</li>
-          </ul>
-          <div class="sitter-tip">Timber may be fearless — puppies often are. That doesn't mean it's safe. He doesn't know his own size yet.</div>
-        </div>
-      </div>
-
-      <!-- HEALTH -->
+      <!-- HEALTH & SAFETY -->
       <div id="s-health"><!-- anchor --></div>
       <div class="sitter-section">
-        <div class="sitter-section-title">🏥 Health Notes</div>
+        <div class="sitter-section-title">🏥 Health &amp; Safety</div>
         <div class="sitter-card orange">
-          <h3>💉 Vaccines &amp; Parasites</h3>
-          <ul>
-            <li>DHPP: 1st dose given by breeder · <strong>2nd &amp; 3rd dose (booster) given by me at Leesville Animal Hospital</strong> — most recent March 20 ✓</li>
-            <li>Lepto vaccine #1 given <strong>March 20</strong> — Lepto #2 due April 10 (vet will follow up)</li>
-            <li>He is <strong>not fully vaccinated</strong> — paws off public ground at all times. Carry him, or use your private yard only.</li>
-            <li>NexGuard Plus (flea/tick/heartworm) — next dose due April 19</li>
-            <li>I treated him for hookworms shortly after bringing him home — fully resolved</li>
-          </ul>
+          <h3>🍯 Just Good to Know</h3>
+          <p>Toy breed puppies can occasionally get a blood sugar dip if a meal is delayed or he gets very overtired — Timber's never had an episode, just worth knowing.</p>
+          <p style="margin-top:8px"><strong>Signs to watch for:</strong> wobbly/unsteady, glassy eyes, shivering, unusual lethargy. <strong>If you see this:</strong> rub a little Karo syrup or honey on his gums and head to the vet — no need to call first, just go and let me know when you can.</p>
         </div>
         <div class="sitter-card orange">
-          <h3>🩺 GI History — March 6</h3>
-          <p>Timber had a bout of hemorrhagic diarrhea at 8 weeks old and needed a vet visit. He received fluids, antibiotics, and a probiotic. Parvo was ruled out. He recovered fully by March 9 and has been doing great since — he handles treats and variety well, his stomach isn't particularly sensitive.</p>
-          <p style="margin-top:8px"><strong>Watch for:</strong> bloody or very loose stool, straining to go, not eating, or unusual lethargy. If you see any of these, please take him to the vet — no need to call me first, just go and let me know when you can.</p>
-          <div class="sitter-tip">No table scraps please, but dog treats are completely fine. Just keep in mind he needs to come to his meals hungry enough to eat his full portion, so go easy on the extras throughout the day.</div>
-        </div>
-        <div class="sitter-card orange">
-          <h3>🍯 Hypoglycemia (Low Blood Sugar) — Just Good to Know</h3>
-          <p>Miniature poodles this small can occasionally have blood sugar dips, especially if meals are delayed or he gets very overtired. He's never had an episode — this is just worth being aware of.</p>
-          <p style="margin-top:8px"><strong>Signs to watch for:</strong> wobbly or unsteady on his feet, glassy eyes, shivering, unusual lethargy.</p>
-          <p style="margin-top:6px"><strong>If you notice any of these:</strong> rub a small amount of Karo syrup or honey on his gums, then take him to the vet. No need to call me first — just go, and let me know when you can.</p>
-          <div class="sitter-tip">Please try to keep his meals reasonably consistent — 4 times a day, roughly spaced out. You're already doing him such a huge favour by being there, and he's going to have a wonderful time with you!</div>
+          <p>For anything else that seems off — vomiting, diarrhea, not eating, very unusual behaviour — please use the contacts above. Go straight to the vet for anything urgent and let me know when you can.</p>
         </div>
       </div>
 
-      <!-- PUPPY CLASSES -->
-      <div id="s-classes"><!-- anchor --></div>
-      <div class="sitter-section">
-        <div class="sitter-section-title">🎓 Puppy Classes</div>
-        <div class="sitter-card orange">
-          <h3>🐾 Successful Socialization — All Dogs Durham</h3>
-          <p>Timber has puppy class on <strong>April 1st and April 8th at 6:00 PM</strong>. Please take him!</p>
-          <div class="sitter-tip">This is a socialization class — the goal is exposure to other puppies, people, and new environments. He doesn't need to be perfect, he just needs to be there. Bring lots of high-value treats (small pieces of chicken or cheese work great).</div>
-          <div class="sitter-pill-row">
-            <span class="sitter-pill orange">📅 April 1st · 6:00 PM</span>
-            <span class="sitter-pill orange">📅 April 8th · 6:00 PM</span>
-            <span class="sitter-pill orange">📍 All Dogs Durham</span>
-          </div>
-          <p style="margin-top:10px"><strong>Important:</strong> He'll be very stimulated after class — keep the rest of the evening calm. Go straight home, do his bedtime potty, and crate him as normal. Skip any extra play.</p>
-        </div>
-      </div>
-
-      <!-- POTTY PROTOCOL -->
+      <!-- POTTY & PAW WIPING -->
       <div id="s-potty"><!-- anchor --></div>
       <div class="sitter-section">
-        <div class="sitter-section-title">🚽 Potty Protocol</div>
-
+        <div class="sitter-section-title">🚽 Potty &amp; Paw Wiping</div>
         <div class="sitter-card orange">
-          <h3>🌿 Daytime — always take him outside</h3>
-          <p>Every daytime potty trip is outside. Carry him to the backyard — he should only be set down on the ground on private property, not on public sidewalks or at the dog park.</p>
+          <h3>🌿 Outside, every time</h3>
+          <p>All potty trips are outside. He should go: first thing out of the crate, after naps, after meals, and roughly every 2–3 hrs while he's awake.</p>
           <ul style="margin-top:8px">
-            <li>Stand still and wait. Give him 3–5 minutes.</li>
-            <li>The moment he goes, say <strong>"good potty!"</strong> and give big praise and a high-value treat</li>
-            <li>If he doesn't go after waking from a nap, crate for 10 minutes and try again</li>
-            <li>Watch for signals: sniffing the floor, circling, squatting suddenly</li>
+            <li>Give him a few minutes to sniff around and go</li>
+            <li>The moment he goes, praise him</li>
+            <li>Watch for signals: sniffing, circling, suddenly heading for the door</li>
           </ul>
-          <div class="sitter-tip">Always take him out right after: waking from a nap, finishing a meal, and after exciting play. These are the highest-accident moments.</div>
         </div>
-
         <div class="sitter-card orange">
-          <h3>🌙 Overnight — litter box in his room</h3>
-          <p>At night, set Timber up in the <strong>guest room with his crate door open</strong> so he can sleep inside it but move around if he needs to. <strong>Before you put him in for the night</strong>, set out his litter box with a pee pad and a small scatter of pine pellets on top — he knows exactly what it's for and the pine pellets help attract him to it.</p>
-          <p style="margin-top:8px"><strong>The overnight routine:</strong></p>
-          <ul>
-            <li><strong>Before bed (~8:45 PM):</strong> take him outside for his normal bedtime potty — praise and treat as usual</li>
-            <li><strong>Set up the litter box</strong> in his room before closing the door for the night</li>
-            <li><strong>Overnight:</strong> he may use the litter box, he may sleep through — either is totally fine</li>
-            <li><strong>Morning (~8 AM):</strong> as soon as you open the door, carry him straight outside for a proper morning potty — praise and treat</li>
-            <li>Collect and clean the litter box as part of the morning routine</li>
-          </ul>
-          <div class="sitter-tip">Outside potty trips are what gets celebrated — big praise, treats, the works. The litter box is just a quiet safety net for overnight. No need to reward it, and no need to stress about it either way.</div>
+          <h3>🐾 Paw wipes — every time he comes back in</h3>
+          <p>Hold a wipe out and wait for him to come to you (or call him over), then wipe all four paws before he wanders off. He's used to this as part of coming back inside, so he won't mind. If you skip it sometimes, that's totally fine too — it's just our house preference, not something he needs.</p>
         </div>
-
-        <div class="sitter-warning">If there's an accident outside the litter box, use the enzymatic cleaner in the laundry room closet — regular cleaner leaves a scent that draws him back to the same spot.</div>
+        <div class="sitter-card orange">
+          <h3>🌙 Overnight</h3>
+          <p>He sleeps in his crate overnight with no accidents and can go about 9 hours. If he's awake and not settling, he should still get an outside trip every 2–3 hrs.</p>
+        </div>
       </div>
 
-      <!-- CRATE & NAPS -->
-      <div id="s-crate"><!-- anchor --></div>
+      <!-- NAPS, CRATE & SETTLING -->
+      <div id="s-naps"><!-- anchor --></div>
       <div class="sitter-section">
-        <div class="sitter-section-title">🏠 Crate & Naps</div>
+        <div class="sitter-section-title">💤 Naps, Crate &amp; Settling</div>
         <div class="sitter-card orange">
-          <h3>🏠 Crate basics</h3>
-          <p>I'll set up a travel crate at your place before I leave — it's his safe space and he's very used to it. Never use it as punishment. At 12 weeks he still needs a lot of sleep. If he seems wired or bitey, he's almost certainly overtired and needs a nap, not more play.</p>
-          <div class="sitter-tip">When he whines in the crate, wait for a 10-second pause before letting him out. Letting him out mid-whine teaches him that whining = freedom.</div>
-          <div class="sitter-warning" style="margin-top:8px">The <strong>10-minute rule</strong> only applies after waking up: if he doesn't potty after a nap, crate him for 10 minutes and try again. If you're putting him in for a nap and he doesn't go before — that's fine, just put him in. No need to wait.</div>
-          <div class="sitter-pill-row">
-            <span class="sitter-pill orange">4 naps per day</span>
-            <span class="sitter-pill orange">45 min awake at a time</span>
-            <span class="sitter-pill orange">Overtired = bitey</span>
-          </div>
+          <h3>💤 Naps</h3>
+          <p>Timber takes 1–2 naps a day, lasting 2–3 hours each. He won't often settle into a nap on his own — see below for how to help him get there.</p>
+        </div>
+        <div class="sitter-card orange">
+          <h3>😵‍💫 If he won't settle</h3>
+          <p>He has trouble settling on his own. If he's acting crazy and overtired — running around, barking, nipping — that's the sign it's time for a crate nap, even if it's hard to catch the early signs. It's better to crate him before he gets to that point, but it's understandably tricky to spot in time, so don't worry if he's already wound up by the time you notice.</p>
+          <p style="margin-top:8px"><strong>Try this order:</strong></p>
+          <ol style="margin-top:4px;padding-left:16px">
+            <li style="margin-bottom:6px">Offer a chew or a snuffle with treats</li>
+            <li>If that doesn't settle him, crate nap time — with a frozen treat</li>
+          </ol>
+          <div class="sitter-tip">No need to feel bad about crating him when he's overtired — it's exactly what he needs, and he's very used to it.</div>
+        </div>
+        <div class="sitter-card orange">
+          <h3>🦴 Frozen Treats</h3>
+          <p>He gets a frozen treat every time he goes in the crate — these are made from combinations of bone broth, carrot, Greek yogurt, and peanut butter. They're stored in the freezer (his own — there's nothing else of his in there).</p>
+        </div>
+        <div class="sitter-card orange">
+          <h3>🏠 Crate Timing</h3>
+          <p>You can put him in the crate whenever works for your evening — there's no need to match a specific time. He can sleep about 9 hours overnight and sleeps through with no accidents.</p>
+        </div>
+      </div>
+
+      <!-- MANNERS & HOUSE RULES -->
+      <div id="s-manners"><!-- anchor --></div>
+      <div class="sitter-section">
+        <div class="sitter-section-title">🛋️ Manners &amp; House Rules</div>
+        <div class="sitter-card orange">
+          <h3>🚪 Doors</h3>
+          <p>Timber sits before going through any door — wait for the sit, then release him through.</p>
+        </div>
+        <div class="sitter-card orange">
+          <h3>🛋️ Couch &amp; Furniture</h3>
+          <p>At home he doesn't get on furniture, so he won't ask. But if your pets are allowed on the couch and you're comfortable with it, he's welcome to join on his own — just please don't invite him up.</p>
+        </div>
+        <div class="sitter-card orange">
+          <h3>💕 He loves</h3>
+          <p>Cuddles, playing fetch, and belly scratches!</p>
         </div>
       </div>
 

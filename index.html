@@ -3966,6 +3966,9 @@ async function gistPush(){
     const timberFeeds  = (() => { try{ return localStorage.getItem(TIMBER_FEED_KEY)||''; }catch(e){ return ''; } })();
     const timberPotty  = (() => { try{ return localStorage.getItem(TIMBER_POTTY_KEY)||''; }catch(e){ return ''; } })();
     const trainStatus  = (() => { try{ return localStorage.getItem(TRAIN_STATUS_KEY)||''; }catch(e){ return ''; } })();
+    const homeBrainDump = (() => { try{ return localStorage.getItem('jlos_braindump')||''; }catch(e){ return ''; } })();
+    const dayQueue      = (() => { try{ return localStorage.getItem('jlos_day_queue')||''; }catch(e){ return ''; } })();
+    const agendaState   = (() => { try{ return localStorage.getItem('jlos_agenda_state')||''; }catch(e){ return ''; } })();
     const content = JSON.stringify({
       memories,
       ptDays,
@@ -3980,6 +3983,9 @@ async function gistPush(){
       timberFeeds,
       timberPotty,
       trainStatus,
+      homeBrainDump,
+      dayQueue,
+      agendaState,
       updated: new Date().toISOString()
     }, null, 2);
     const gistId = _getGistId();
@@ -4109,6 +4115,21 @@ async function gistPull(){
       if(parsed.trainStatus){
         try{ localStorage.setItem(TRAIN_STATUS_KEY, parsed.trainStatus); }catch(e){}
         try{ renderTrainTab(); }catch(e){}
+      }
+      // Home brain dump (separate from labResults categorised dump)
+      if(typeof parsed.homeBrainDump === 'string' && parsed.homeBrainDump){
+        try{ localStorage.setItem('jlos_braindump', parsed.homeBrainDump); }catch(e){}
+        try{ if(typeof renderBD==='function') renderBD(); }catch(e){}
+      }
+      // Day Builder queue
+      if(typeof parsed.dayQueue === 'string' && parsed.dayQueue){
+        try{ localStorage.setItem('jlos_day_queue', parsed.dayQueue); }catch(e){}
+        try{ if(typeof renderDBQueue==='function') renderDBQueue(); }catch(e){}
+      }
+      // Generated agenda (today's plan)
+      if(typeof parsed.agendaState === 'string' && parsed.agendaState){
+        try{ localStorage.setItem('jlos_agenda_state', parsed.agendaState); }catch(e){}
+        try{ if(typeof restoreAgenda==='function') restoreAgenda(); }catch(e){}
       }
       _setGistStatus('synced','Synced ✓');
     }
@@ -5690,6 +5711,7 @@ window.onload=()=>{
   handleNFCHash();
   initMidnightReset();
   initWalkTimer();
+  try{ restoreAgenda(); }catch(e){}
 };
 
 // ══════════════════════════════════════════════════════════════════════════════
@@ -5949,6 +5971,12 @@ function saveTrainStatus(id, status) {
   const s = getTrainStatuses();
   s[id] = status;
   localStorage.setItem(TRAIN_STATUS_KEY, JSON.stringify(s));
+  // Cross-device + partner sync (debounced)
+  clearTimeout(saveTrainStatus._t);
+  saveTrainStatus._t = setTimeout(()=>{
+    try{ if(typeof gistPush==='function'&&_getGistToken()) gistPush(); }catch(e){}
+    try{ if(typeof partnerPush==='function') partnerPush(); }catch(e){}
+  }, 1500);
 }
 
 const STATUS_CYCLE = ['new','practicing','mastered'];
@@ -7538,7 +7566,12 @@ function updateBuildMyDayPulse(){
 // ── BRAIN DUMP ────────────────────────────────────────────────────────────────
 const BD_KEY = 'jlos_braindump';
 function loadBD(){ try{ return JSON.parse(localStorage.getItem(BD_KEY)||'[]'); }catch(e){ return []; } }
-function saveBD(a){ try{ localStorage.setItem(BD_KEY, JSON.stringify(a)); }catch(e){} }
+function saveBD(a){
+  try{ localStorage.setItem(BD_KEY, JSON.stringify(a)); }catch(e){}
+  // Cross-device sync (debounced)
+  clearTimeout(saveBD._t);
+  saveBD._t = setTimeout(()=>{ try{ if(typeof gistPush==='function'&&_getGistToken()) gistPush(); }catch(e){} }, 1500);
+}
 
 function initBrainDump(){ renderBD(); }
 
@@ -7811,6 +7844,8 @@ window.logPottyTrip = function(){
   saveTimberPotty(trips);
   renderTimberActivity();
   try{ renderDashTimberMini(); }catch(e){}
+  partnerPush();
+  showToast('🚽 Potty trip logged!');
 };
 
 window.toggleFeedEntry = function(){
@@ -8010,10 +8045,14 @@ function deleteTimberEvent(ts, type){
   } else if(type==='feed'){
     const f = loadTimberFeeds().filter(x=>x.ts!==ts);
     saveTimberFeeds(f);
+  } else if(type==='potty'){
+    const p = loadTimberPotty().filter(x=>x.ts!==ts);
+    saveTimberPotty(p);
   }
   renderTimberActivity();
   try{ renderTimberBanner(); }catch(e){}
   try{ renderDashTimberMini(); }catch(e){}
+  partnerPush();
 }
 
 // ── PARTNER GIST SYNC ──────────────────────────────────────────────────────────
@@ -8079,7 +8118,7 @@ function buildPartnerPayload(){
   const allSkills = [];
   try{
     TRAIN_CUES.forEach(c=>{
-      allSkills.push({name:c.name, icon:c.icon||'🎯', cue:c.cue||'', howTo:c.howTo||'', status:statuses[c.id]||c.status_default||'new', category:c.category||'cue', tip:c.note||''});
+      allSkills.push({name:c.name, icon:c.icon||'🎯', cue:c.cue||'', howTo:c.howTo||'', status:statuses[c.id]||c.status_default||'new', category:c.category||'cue', source:c.source||'', tip:c.note||''});
     });
   }catch(e){}
   return {
@@ -8609,7 +8648,11 @@ function generatePartnerViewHtml(rawUrl, gistId, token){
 
 // ── DAY BUILDER ───────────────────────────────────────────────────────────────
 function loadDBQueue(){ try{ return JSON.parse(localStorage.getItem('jlos_day_queue')||'[]'); }catch(e){ return []; } }
-function saveDBQueue(q){ try{ localStorage.setItem('jlos_day_queue', JSON.stringify(q)); }catch(e){} }
+function saveDBQueue(q){
+  try{ localStorage.setItem('jlos_day_queue', JSON.stringify(q)); }catch(e){}
+  clearTimeout(saveDBQueue._t);
+  saveDBQueue._t = setTimeout(()=>{ try{ if(typeof gistPush==='function'&&_getGistToken()) gistPush(); }catch(e){} }, 1500);
+}
 
 function openDayBuilder(){
   renderDBQueue();
@@ -8677,6 +8720,52 @@ function renderDBQueue(){
   });
 }
 
+function _agendaFmtT(mins){
+  var hh=Math.floor(mins/60)%24, mm=mins%60, ap=hh>=12?'PM':'AM', h12=hh%12||12;
+  return h12+':'+(mm<10?'0'+mm:mm)+' '+ap;
+}
+
+function _renderAgendaBlocks(blocks){
+  var ab = document.getElementById('agendaBlocks');
+  if(!ab) return;
+  ab.innerHTML = '';
+  blocks.forEach(function(b){
+    var row = document.createElement('div');
+    row.style.cssText = 'display:flex;align-items:center;gap:10px;padding:8px 10px;border-bottom:1px solid var(--lm)';
+    row.innerHTML = '<span style="font-size:.62rem;font-weight:900;color:var(--sa);white-space:nowrap;min-width:100px">'+_agendaFmtT(b.startMin)+' – '+_agendaFmtT(b.endMin)+'</span>'
+      +'<span style="font-size:1rem">'+b.icon+'</span>'
+      +'<span style="font-size:.78rem;font-weight:700;color:var(--td)">'+esc(b.name)+'</span>'
+      +'<span style="margin-left:auto;font-size:.58rem;color:var(--tm);font-weight:700">'+b.dur+'m</span>';
+    ab.appendChild(row);
+  });
+}
+
+function _todayKeyForAgenda(){ try{ return new Date().toDateString(); }catch(e){ return ''; } }
+
+function saveAgendaState(blocks){
+  try{ localStorage.setItem('jlos_agenda_state', JSON.stringify({date:_todayKeyForAgenda(),blocks:blocks})); }catch(e){}
+  clearTimeout(saveAgendaState._t);
+  saveAgendaState._t = setTimeout(()=>{ try{ if(typeof gistPush==='function'&&_getGistToken()) gistPush(); }catch(e){} }, 1500);
+}
+
+function restoreAgenda(){
+  try{
+    var raw = localStorage.getItem('jlos_agenda_state');
+    if(!raw) return;
+    var st = JSON.parse(raw);
+    if(!st || !Array.isArray(st.blocks) || !st.blocks.length) return;
+    // Only restore if it's still the same day
+    if(st.date && st.date !== _todayKeyForAgenda()){
+      try{ localStorage.removeItem('jlos_agenda_state'); }catch(e){}
+      return;
+    }
+    _renderAgendaBlocks(st.blocks);
+    var aw = document.getElementById('agendaWidget');
+    if(aw) aw.style.display = 'block';
+    if(typeof updateBuildMyDayPulse==='function') updateBuildMyDayPulse();
+  }catch(e){}
+}
+
 function generateAgenda(){
   var q = loadDBQueue();
   if(!q.length){ alert('Add some tasks first! 💜'); return; }
@@ -8688,28 +8777,13 @@ function generateAgenda(){
     var start = curMin; curMin += item.dur;
     return {icon:item.icon, name:item.name, dur:item.dur, startMin:start, endMin:curMin};
   });
-  function fmtT(mins){
-    var hh=Math.floor(mins/60)%24, mm=mins%60, ap=hh>=12?'PM':'AM', h12=hh%12||12;
-    return h12+':'+(mm<10?'0'+mm:mm)+' '+ap;
-  }
-  var ab = document.getElementById('agendaBlocks');
-  if(ab){
-    ab.innerHTML = '';
-    blocks.forEach(function(b){
-      var row = document.createElement('div');
-      row.style.cssText = 'display:flex;align-items:center;gap:10px;padding:8px 10px;border-bottom:1px solid var(--lm)';
-      row.innerHTML = '<span style="font-size:.62rem;font-weight:900;color:var(--sa);white-space:nowrap;min-width:100px">'+fmtT(b.startMin)+' – '+fmtT(b.endMin)+'</span>'
-        +'<span style="font-size:1rem">'+b.icon+'</span>'
-        +'<span style="font-size:.78rem;font-weight:700;color:var(--td)">'+esc(b.name)+'</span>'
-        +'<span style="margin-left:auto;font-size:.58rem;color:var(--tm);font-weight:700">'+b.dur+'m</span>';
-      ab.appendChild(row);
-    });
-  }
+  _renderAgendaBlocks(blocks);
   var aw = document.getElementById('agendaWidget');
   if(aw) aw.style.display = 'block';
   closeDayBuilder();
   updateBuildMyDayPulse();
   saveDBQueue([]);
+  saveAgendaState(blocks);
 }
 
 function clearAgenda(){
@@ -8717,7 +8791,9 @@ function clearAgenda(){
   if(aw) aw.style.display = 'none';
   var ab = document.getElementById('agendaBlocks');
   if(ab) ab.innerHTML = '';
+  try{ localStorage.removeItem('jlos_agenda_state'); }catch(e){}
   updateBuildMyDayPulse();
+  try{ if(typeof gistPush==='function'&&_getGistToken()) gistPush(); }catch(e){}
 }
 
 </script>

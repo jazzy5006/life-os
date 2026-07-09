@@ -292,6 +292,26 @@ select{appearance:none;background:transparent;border:none;outline:none;font-fami
 .dn .pn{text-decoration:line-through;opacity:.35}
 .dn .pd{opacity:.3}
 .psb{margin-bottom:14px}
+/* ── PT RAMP ── */
+.serve-btn{width:100%;background:linear-gradient(135deg,var(--ll),var(--ml));border:2px solid var(--lm);border-radius:var(--rlg);padding:14px;font-family:'Nunito',sans-serif;font-size:.9rem;font-weight:900;color:var(--td);cursor:pointer;box-shadow:var(--neu-shadow);margin-bottom:12px;transition:transform .15s;-webkit-tap-highlight-color:transparent}
+.serve-btn:active{transform:scale(.97)}
+.serve-card{background:var(--bgp);border:2px solid var(--lm);border-radius:var(--rlg);padding:18px;text-align:center;margin-bottom:12px;box-shadow:var(--neu-shadow);animation:fs .3s ease-out both}
+.serve-name{font-size:1.15rem;font-weight:900;color:var(--td)}
+.serve-dose{font-size:.72rem;font-weight:900;letter-spacing:.12em;text-transform:uppercase;color:var(--tm);margin:6px 0 14px}
+.serve-done-btn{background:var(--mm);border:none;border-radius:var(--rf);padding:14px 38px;font-family:'Nunito',sans-serif;font-size:.95rem;font-weight:900;color:#fff;cursor:pointer;transition:transform .15s;-webkit-tap-highlight-color:transparent}
+.serve-done-btn:active{transform:scale(.95)}
+.serve-sub-btn{background:none;border:none;font-family:'Nunito',sans-serif;font-size:.62rem;font-weight:900;color:var(--tm);cursor:pointer;margin-top:10px;display:inline-block}
+.fatigue-strip{display:flex;justify-content:center;gap:10px;margin-top:12px;animation:fs .25s ease-out both}
+.fatigue-btn{background:var(--bgc);border:2px solid var(--lm);border-radius:14px;padding:8px 12px;font-size:1.1rem;cursor:pointer;font-family:'Nunito',sans-serif;transition:transform .15s;-webkit-tap-highlight-color:transparent}
+.fatigue-btn:active{transform:scale(.9)}
+.fatigue-lbl{display:block;font-size:.5rem;font-weight:900;text-transform:uppercase;letter-spacing:.08em;color:var(--tm);margin-top:2px}
+.ready-card{background:var(--ml);border:2px solid var(--mm);border-radius:var(--rlg);padding:14px;margin-bottom:12px;text-align:center;animation:fs .3s ease-out both}
+.ready-title{font-size:.82rem;font-weight:900;color:var(--td);margin-bottom:10px}
+.ready-btns{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.ready-yes{background:var(--ma);color:#fff;border:none;border-radius:var(--rf);padding:9px 18px;font-family:'Nunito',sans-serif;font-size:.68rem;font-weight:900;cursor:pointer}
+.ready-not{background:none;border:2px solid var(--mm);border-radius:var(--rf);padding:9px 18px;font-family:'Nunito',sans-serif;font-size:.68rem;font-weight:900;color:var(--tm);cursor:pointer}
+.fatigue-note{background:var(--pl);border:2px solid var(--pm);border-radius:var(--rlg);padding:12px 14px;margin-bottom:12px;font-size:.7rem;color:var(--td);font-weight:700;text-align:center;line-height:1.5;animation:fs .3s ease-out both}
+.phase-hint{text-align:center;font-size:.62rem;color:var(--tm);font-weight:800;margin:10px 0 4px}
 .psl{font-size:.52rem;font-weight:900;letter-spacing:.2em;text-transform:uppercase;color:var(--la);padding-bottom:5px;margin-bottom:7px;border-bottom:2px solid var(--lm)}
 .rc{text-align:center;padding:24px 14px;background:var(--bgc);border-radius:var(--rlg);border:2px dashed var(--lm)}
 .rc .ico{font-size:1.7rem;display:block;margin-bottom:7px}
@@ -1351,6 +1371,16 @@ body.night .train-status.new{background:var(--pl);border-color:var(--pm);color:v
 <canvas id="confettiCanvas"></canvas>
 <div class="walk-indicator" id="walkIndicator" onclick="switchTab('timber')">🐾 Walk — <span id="walkTimerDisplay">0:00</span></div>
 
+<!-- Fatigue check-in dock (PT ramp) -->
+<div id="fatigueDock" style="display:none;position:fixed;left:50%;transform:translateX(-50%);bottom:calc(76px + env(safe-area-inset-bottom));z-index:400;background:var(--bgp);border:2px solid var(--lm);border-radius:18px;padding:10px 16px;box-shadow:0 6px 24px rgba(0,0,0,.18);text-align:center">
+  <div style="font-size:.6rem;font-weight:900;color:var(--tm);text-transform:uppercase;letter-spacing:.1em;margin-bottom:2px">How did that feel?</div>
+  <div class="fatigue-strip" style="margin-top:6px">
+    <button class="fatigue-btn" onclick="rateFatigue(1)">😌<span class="fatigue-lbl">easy</span></button>
+    <button class="fatigue-btn" onclick="rateFatigue(2)">😐<span class="fatigue-lbl">ok</span></button>
+    <button class="fatigue-btn" onclick="rateFatigue(3)">😮‍💨<span class="fatigue-lbl">rough</span></button>
+  </div>
+</div>
+
 
 <!-- FLOATING TIMER BAR -->
 <div class="timer-bar" id="timerBar">
@@ -1605,6 +1635,9 @@ body.night .train-status.new{background:var(--pl);border-color:var(--pm);color:v
         </div>
       </div>
     </div>
+    <div id="mReady"></div>
+    <button class="serve-btn" onclick="openServe()">🎲 Serve Me One</button>
+    <div id="mServe"></div>
     <div class="prog-card">
       <div class="pt2"><span class="lbl">Movement Progress</span><span class="pp" id="mPtxt">0%</span></div>
       <div class="ptr"><div class="pf" id="mPbar"></div></div>
@@ -1614,6 +1647,7 @@ body.night .train-status.new{background:var(--pl);border-color:var(--pm);color:v
       </div>
     </div>
     <div id="mPtb"></div>
+    <div class="phase-hint" id="mPhaseHint"></div>
   </div>
 </div>
 
@@ -2274,6 +2308,9 @@ body.night .train-status.new{background:var(--pl);border-color:var(--pm);color:v
                 </select>
               </div>
             </div>
+            <div id="dReady"></div>
+            <button class="serve-btn" onclick="openServe()">🎲 Serve Me One</button>
+            <div id="dServe"></div>
             <div class="prog-card" style="margin-bottom:12px">
               <div class="pt2"><span class="lbl">Movement Progress</span><span class="pp" id="dPtxt">0%</span></div>
               <div class="ptr"><div class="pf" id="dPbar"></div></div>
@@ -2283,6 +2320,7 @@ body.night .train-status.new{background:var(--pl);border-color:var(--pm);color:v
               </div>
             </div>
             <div class="desk-pts" id="dPtb"></div>
+            <div class="phase-hint" id="dPhaseHint"></div>
           </div>
         </div>
       </div>
@@ -2822,32 +2860,32 @@ const CAT={
 // ─── PT DATA ──────────────────────────────────────────────────────────────────
 const PT=[
   {g:"Daily Essentials",items:[
-    {n:"Nerve Glides",d:"10 reps/side",days:[1,2,3,4,5]},
-    {n:"Plank (Standard)",d:"5×30s",days:[1,2,3,4,5]},
-    {n:"Side Plank (Knees)",d:"2×30s",days:[1,2,3,4,5]},
-    {n:"Anti-Rotation Press",d:"2×10",days:[1,2,3,4,5]},
-    {n:"Standing Clam",d:"3×10",days:[1,2,3,4,5]}]},
+    {id:"nerve-glides",n:"Nerve Glides",d:"10 reps/side",days:[1,2,3,4,5]},
+    {id:"plank-standard",n:"Plank (Standard)",d:"5×30s",days:[1,2,3,4,5]},
+    {id:"side-plank-knees",n:"Side Plank (Knees)",d:"2×30s",days:[1,2,3,4,5]},
+    {id:"anti-rotation-press",n:"Anti-Rotation Press",d:"2×10",days:[1,2,3,4,5]},
+    {id:"standing-clam",n:"Standing Clam",d:"3×10",days:[1,2,3,4,5]}]},
   {g:"Movement Snacks",items:[
-    {n:"Single Leg Stance",d:"3×30s",days:[1,2,3,4,5]},
-    {n:"Iso Hip Abd (Wall)",d:"2×20s",days:[1,2,3,4,5]},
-    {n:"Around the World",d:"2×10",days:[1,2,3,4,5]},
-    {n:"4-Way Band Walk",d:"10 reps",days:[1,2,3,4,5]}]},
+    {id:"single-leg-stance",n:"Single Leg Stance",d:"3×30s",days:[1,2,3,4,5]},
+    {id:"iso-hip-abd-wall",n:"Iso Hip Abd (Wall)",d:"2×20s",days:[1,2,3,4,5]},
+    {id:"around-the-world",n:"Around the World",d:"2×10",days:[1,2,3,4,5]},
+    {id:"4-way-band-walk",n:"4-Way Band Walk",d:"10 reps",days:[1,2,3,4,5]}]},
   {g:"Group A — Floor (M/W/F)",items:[
-    {n:"Supine Bridge",d:"3×10",days:[1,3,5]},
-    {n:"Clamshell",d:"3×10",days:[1,3,5]},
-    {n:"Inner & Outer Thigh",d:"3×10",days:[1,3,5]},
-    {n:"Active Leg Raise",d:"3×10",days:[1,3,5]},
-    {n:"Lower Trunk Rotation",d:"3×10",days:[1,3,5]},
-    {n:"Open Book",d:"3×10",days:[1,3,5]},
-    {n:"Ham/Glute Ball Set",d:"3×10",days:[1,3,5]}]},
+    {id:"supine-bridge",n:"Supine Bridge",d:"3×10",days:[1,3,5]},
+    {id:"clamshell",n:"Clamshell",d:"3×10",days:[1,3,5]},
+    {id:"inner-outer-thigh",n:"Inner & Outer Thigh",d:"3×10",days:[1,3,5]},
+    {id:"active-leg-raise",n:"Active Leg Raise",d:"3×10",days:[1,3,5]},
+    {id:"lower-trunk-rotation",n:"Lower Trunk Rotation",d:"3×10",days:[1,3,5]},
+    {id:"open-book",n:"Open Book",d:"3×10",days:[1,3,5]},
+    {id:"ham-glute-ball-set",n:"Ham/Glute Ball Set",d:"3×10",days:[1,3,5]}]},
   {g:"Group B — Standing (T/Th/Sat)",items:[
-    {n:"Wall Squat (Ball)",d:"3×10",days:[2,4,6]},
-    {n:"Single-Leg RDL",d:"2×8",days:[2,4,6]},
-    {n:"Lateral Step-Ups",d:"2×10",days:[2,4,6]},
-    {n:"Slider Lunge (Rev)",d:"3×10",days:[2,4,6]},
-    {n:"3-Way Reach (Band)",d:"3×10",days:[2,4,6]},
-    {n:"Prone Hip Extension",d:"3×10",days:[2,4,6]},
-    {n:"Hip Flex into Ball",d:"3×10s",days:[2,4,6]}]},
+    {id:"wall-squat-ball",n:"Wall Squat (Ball)",d:"3×10",days:[2,4,6]},
+    {id:"single-leg-rdl",n:"Single-Leg RDL",d:"2×8",days:[2,4,6]},
+    {id:"lateral-step-ups",n:"Lateral Step-Ups",d:"2×10",days:[2,4,6]},
+    {id:"slider-lunge-rev",n:"Slider Lunge (Rev)",d:"3×10",days:[2,4,6]},
+    {id:"3-way-reach-band",n:"3-Way Reach (Band)",d:"3×10",days:[2,4,6]},
+    {id:"prone-hip-extension",n:"Prone Hip Extension",d:"3×10",days:[2,4,6]},
+    {id:"hip-flex-into-ball",n:"Hip Flex into Ball",d:"3×10s",days:[2,4,6]}]},
 ];
 
 let ps=[],cday=new Date().getDay(),tot=0;
@@ -3157,7 +3195,7 @@ function toggleDeskCollapse(cardId,bodyId,iconId){
   else{body.style.maxHeight='1200px';if(card)card.classList.remove('collapsed');setTimeout(()=>{if(!body.classList.contains('collapsed'))body.style.maxHeight='none';},400);}
 }
 
-// ─── PT ENGINE ────────────────────────────────────────────────────────────────
+// ─── PT ENGINE (RAMP-UP) ─────────────────────────────────────────────────────
 function syncDaySelectors(){
   const s=String(cday);
   ['mDsel','dDsel'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=s;});
@@ -3169,32 +3207,85 @@ window.chDay=()=>{
   syncDaySelectors();renderPT();
 };
 
+// ── Ramp state ──
+const PT_RAMP_KEY='jlos_pt_ramp';
+const PT_PHASE_GROUPS={1:["Daily Essentials","Movement Snacks"],2:["Group A — Floor (M/W/F)"],3:["Group B — Standing (T/Th/Sat)"]};
+const PT_PHASE_START={1:["nerve-glides","standing-clam","single-leg-stance"],2:["supine-bridge","clamshell"],3:["wall-squat-ball","prone-hip-extension"]};
+const PT_PHASE_ORDER={1:["iso-hip-abd-wall","anti-rotation-press","4-way-band-walk","around-the-world","side-plank-knees","plank-standard"],2:["inner-outer-thigh","active-leg-raise","lower-trunk-rotation","open-book","ham-glute-ball-set"],3:["lateral-step-ups","3-way-reach-band","slider-lunge-rev","single-leg-rdl","hip-flex-into-ball"]};
+const PT_PHASE_ADDS={2:"Group A — Floor",3:"Group B — Standing"};
+
+function loadPtRamp(){
+  let r=null;
+  try{r=JSON.parse(localStorage.getItem(PT_RAMP_KEY));}catch(e){}
+  if(!r||typeof r!=='object')r={phase:1,unlocked:PT_PHASE_START[1].slice(),snoozeUntil:null,completions:[],denoms:{},fatigueNoteMuteUntil:null};
+  if(!r.phase||r.phase<1)r.phase=1;
+  if(r.phase>3)r.phase=3;
+  if(!Array.isArray(r.unlocked)||!r.unlocked.length)r.unlocked=PT_PHASE_START[1].slice();
+  if(!Array.isArray(r.completions))r.completions=[];
+  if(!r.denoms||typeof r.denoms!=='object')r.denoms={};
+  return r;
+}
+function savePtRamp(r){
+  try{localStorage.setItem(PT_RAMP_KEY,JSON.stringify(r));}catch(e){}
+  clearTimeout(window._ptRampPushTimer);
+  window._ptRampPushTimer=setTimeout(()=>{ if(typeof gistPush==='function'&&_getGistToken()) gistPush(); },1500);
+}
+function ptTodayKey(d){const n=d||new Date();return n.getFullYear()+'-'+String(n.getMonth()+1).padStart(2,'0')+'-'+String(n.getDate()).padStart(2,'0');}
+function ptVisibleGroups(r){let g=[];for(let p=1;p<=r.phase;p++)g=g.concat(PT_PHASE_GROUPS[p]);return g;}
+function ptFindEx(id){for(const sec of PT)for(const it of sec.items)if(it.id===id)return it;return null;}
+function ptActiveFor(day,r){
+  r=r||loadPtRamp();
+  const groups=ptVisibleGroups(r),out=[];
+  PT.forEach(sec=>{
+    if(!groups.includes(sec.g))return;
+    sec.items.forEach(it=>{if(it.days.includes(day)&&r.unlocked.includes(it.id))out.push(it);});
+  });
+  return out;
+}
+
+// ── Checklist render (active exercises only) ──
 function renderPT(){
   ['mPtb','dPtb'].forEach(cid=>{const c=document.getElementById(cid);if(c)c.innerHTML='';});
-  tot=0;
+  const ramp=loadPtRamp();
   try{ps=JSON.parse(localStorage.getItem(`jlos_${cday}`))||[];}catch(e){ps=[];}
+  const groups=ptVisibleGroups(ramp);
   const sections=[];
-  PT.forEach((sec,si)=>{const act=sec.items.filter(x=>x.days.includes(cday));if(act.length)sections.push({label:sec.g,items:act,si});});
+  PT.forEach(sec=>{
+    if(!groups.includes(sec.g))return;
+    const act=sec.items.filter(x=>x.days.includes(cday)&&ramp.unlocked.includes(x.id));
+    if(act.length)sections.push({label:sec.g,items:act});
+  });
+  tot=sections.reduce((a,s)=>a+s.items.length,0);
+  // Snapshot today's denominator so history is scored against what was active
+  if(cday===new Date().getDay()){
+    const k=ptTodayKey();
+    if(ramp.denoms[k]!==tot){
+      ramp.denoms[k]=tot;
+      try{localStorage.setItem(PT_RAMP_KEY,JSON.stringify(ramp));}catch(e){}
+    }
+  }
   ['mPtb','dPtb'].forEach(cid=>{
     const c=document.getElementById(cid);if(!c)return;
     if(!sections.length){c.innerHTML=`<div class="rc"><span class="ico">💤</span><h3>Rest Day!</h3><p style="color:var(--tm);margin-top:4px">No PT scheduled.</p></div>`;return;}
-    sections.forEach(({label,items,si})=>{
+    sections.forEach(({label,items})=>{
       const blk=document.createElement('div');blk.className='psb';
       blk.innerHTML=`<div class="psl">${label}</div>`;
-      items.forEach((item,ii)=>{
-        tot++;
-        const id=`d${cday}-${si}-${ii}`,done=ps.includes(id);
+      items.forEach(item=>{
+        const id=`d${cday}-${item.id}`,done=ps.includes(id);
         const row=document.createElement('div');row.className='pi'+(done?' dn':'');row.id=`${cid}-r-${id}`;
-        row.innerHTML=`<input type="checkbox" class="pcb" id="${cid}-cb-${id}" ${done?'checked':''} onchange="tog('${id}',this,'${cid}')"><label class="pl2" for="${cid}-cb-${id}"><span class="pn">${item.n}</span><span class="pd">${item.d}</span></label>`;
+        row.innerHTML=`<input type="checkbox" class="pcb" id="${cid}-cb-${id}" ${done?'checked':''} onchange="tog('${id}','${item.id}',this,'${cid}')"><label class="pl2" for="${cid}-cb-${id}"><span class="pn">${item.n}</span><span class="pd">${item.d}</span></label>`;
         blk.appendChild(row);
       });
       c.appendChild(blk);
     });
   });
-  tot=tot/2;updatePTUI();
+  updatePTUI();
+  renderPhaseHint(ramp);
+  renderReadyCards(ramp);
+  renderServe();
 }
 
-window.tog=(id,el,cid)=>{
+window.tog=(id,exId,el,cid)=>{
   const otherId=cid==='mPtb'?'dPtb':'mPtb';
   const otherCb=document.getElementById(`${otherId}-cb-${id}`);
   if(el.checked){
@@ -3207,7 +3298,11 @@ window.tog=(id,el,cid)=>{
     if(otherCb){otherCb.checked=false;document.getElementById(`${otherId}-r-${id}`)?.classList.remove('dn');}
   }
   try{localStorage.setItem(`jlos_${cday}`,JSON.stringify(ps));}catch(e){}
-  updatePTUI();refreshWeeklyChart();
+  if(cday===new Date().getDay()){
+    if(el.checked)ptLogCompletion(exId);
+    else ptRemoveCompletion(exId);
+  }
+  updatePTUI();refreshWeeklyChart();renderServe();
   // Sync PT to Gist (debounced)
   clearTimeout(window._ptPushTimer);
   window._ptPushTimer = setTimeout(()=>{ if(typeof gistPush==='function'&&_getGistToken()) gistPush(); }, 1500);
@@ -3226,8 +3321,179 @@ function updatePTUI(){
 window.resetDay=()=>{
   if(confirm('Reset PT for today? ☀️')){
     try{localStorage.removeItem(`jlos_${cday}`);}catch(e){}
+    if(cday===new Date().getDay()){
+      const r=loadPtRamp();const k=ptTodayKey();
+      r.completions=r.completions.filter(x=>x.date!==k);
+      savePtRamp(r);
+    }
     renderPT();refreshWeeklyChart();
     if(typeof gistPush==='function'&&_getGistToken()) setTimeout(gistPush,800);
+  }
+};
+
+// ── Completion log + fatigue check-in ──
+let _pendingFatigue=null;
+function ptLogCompletion(exId){
+  const ramp=loadPtRamp();
+  const n=new Date();
+  const entry={id:exId,date:ptTodayKey(n),time:String(n.getHours()).padStart(2,'0')+':'+String(n.getMinutes()).padStart(2,'0'),fatigue:null,ts:Date.now()};
+  ramp.completions.push(entry);
+  savePtRamp(ramp);
+  showFatigueDock(entry.ts);
+}
+function ptRemoveCompletion(exId){
+  const ramp=loadPtRamp();
+  const k=ptTodayKey();
+  for(let i=ramp.completions.length-1;i>=0;i--){
+    if(ramp.completions[i].id===exId&&ramp.completions[i].date===k){ramp.completions.splice(i,1);break;}
+  }
+  savePtRamp(ramp);
+}
+function showFatigueDock(ts){
+  _pendingFatigue=ts;
+  const d=document.getElementById('fatigueDock');if(!d)return;
+  d.style.display='block';
+  clearTimeout(window._fatigueTimer);
+  window._fatigueTimer=setTimeout(hideFatigueDock,5200);
+}
+function hideFatigueDock(){
+  _pendingFatigue=null;
+  clearTimeout(window._fatigueTimer);
+  const d=document.getElementById('fatigueDock');if(d)d.style.display='none';
+}
+window.rateFatigue=(v)=>{
+  if(_pendingFatigue!=null){
+    const ramp=loadPtRamp();
+    const e=ramp.completions.find(x=>x.ts===_pendingFatigue);
+    if(e){e.fatigue=v;savePtRamp(ramp);}
+  }
+  hideFatigueDock();
+  renderReadyCards(loadPtRamp());
+};
+
+// ── Readiness engine (trailing 7 days) ──
+function ptReadiness(r){
+  const today=new Date();
+  let denom=0,done=0,fatSum=0,fatN=0;
+  const keys=[];
+  for(let i=0;i<7;i++){
+    const d=new Date(today);d.setDate(d.getDate()-i);
+    const k=ptTodayKey(d);keys.push(k);
+    const dd=r.denoms[k];
+    denom+=(typeof dd==='number')?dd:ptActiveFor(d.getDay(),r).length;
+  }
+  r.completions.forEach(x=>{
+    if(keys.includes(x.date)){
+      done++;
+      if(x.fatigue!=null){fatSum+=x.fatigue;fatN++;}
+    }
+  });
+  return {rate:denom?done/denom:0,avgFat:fatN?fatSum/fatN:null,fatN,done,denom};
+}
+function ptNextUnlock(r){
+  const order=PT_PHASE_ORDER[r.phase]||[];
+  for(const id of order)if(!r.unlocked.includes(id))return id;
+  return null;
+}
+function renderReadyCards(r){
+  r=r||loadPtRamp();
+  const stats=ptReadiness(r);
+  const todayK=ptTodayKey();
+  let html='';
+  if(stats.avgFat!=null&&stats.fatN>=3&&stats.avgFat>=2.5&&(!r.fatigueNoteMuteUntil||todayK>=r.fatigueNoteMuteUntil)){
+    html='<div class="fatigue-note">This week\'s been heavy — it\'s okay to hold here'+(r.phase>1?', or step back a phase if you want':'')+'. 🌿<div class="ready-btns" style="margin-top:9px">'+(r.phase>1?'<button class="ready-not" onclick="ptStepBack()">Step back</button>':'')+'<button class="ready-not" onclick="ptMuteFatigueNote()">Okay 💛</button></div></div>';
+  } else if(stats.rate>=0.75&&(stats.avgFat==null||stats.avgFat<=2.0)&&(!r.snoozeUntil||todayK>=r.snoozeUntil)){
+    const next=ptNextUnlock(r);
+    if(next){
+      const ex=ptFindEx(next);
+      if(ex)html='<div class="ready-card"><div class="ready-title">Ready to unlock '+esc(ex.n)+'? 🌱</div><div class="ready-btns"><button class="ready-yes" onclick="ptUnlockNext()">Yes, add it</button><button class="ready-not" onclick="ptSnooze()">Not yet</button></div></div>';
+    } else if(r.phase<3){
+      html='<div class="ready-card"><div class="ready-title">Ready to start Phase '+(r.phase+1)+'? It adds '+esc(PT_PHASE_ADDS[r.phase+1])+'. 🌱</div><div class="ready-btns"><button class="ready-yes" onclick="ptAdvancePhase()">Yes, let\'s go</button><button class="ready-not" onclick="ptSnooze()">Not yet</button></div></div>';
+    }
+  }
+  ['mReady','dReady'].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML=html;});
+}
+window.ptUnlockNext=()=>{
+  const r=loadPtRamp();const next=ptNextUnlock(r);
+  if(next&&!r.unlocked.includes(next))r.unlocked.push(next);
+  savePtRamp(r);renderPT();refreshWeeklyChart();
+  const ex=next?ptFindEx(next):null;
+  showToast('🌱 '+(ex?ex.n:'New exercise')+' added — there when you\'re ready',3200);
+};
+window.ptAdvancePhase=()=>{
+  const r=loadPtRamp();
+  if(r.phase<3){
+    r.phase++;
+    PT_PHASE_START[r.phase].forEach(id=>{if(!r.unlocked.includes(id))r.unlocked.push(id);});
+  }
+  savePtRamp(r);renderPT();refreshWeeklyChart();
+  showToast('🌸 Phase '+r.phase+' — welcome to '+(PT_PHASE_ADDS[r.phase]||'the new phase'),3200);
+};
+window.ptSnooze=()=>{
+  const r=loadPtRamp();const d=new Date();d.setDate(d.getDate()+3);
+  r.snoozeUntil=ptTodayKey(d);savePtRamp(r);renderReadyCards(r);
+  showToast('No rush — I\'ll ask again in a few days 💛',2600);
+};
+window.ptStepBack=()=>{
+  const r=loadPtRamp();
+  if(r.phase>1)r.phase--;
+  savePtRamp(r);renderPT();refreshWeeklyChart();
+  showToast('🌿 Holding at Phase '+r.phase+' — a completely good place to be',3200);
+};
+window.ptMuteFatigueNote=()=>{
+  const r=loadPtRamp();const d=new Date();d.setDate(d.getDate()+3);
+  r.fatigueNoteMuteUntil=ptTodayKey(d);savePtRamp(r);renderReadyCards(r);
+};
+function renderPhaseHint(r){
+  r=r||loadPtRamp();
+  let txt='';
+  if(r.phase===1)txt='Phase 2 adds Group A — Floor when you\'re ready 🌱';
+  else if(r.phase===2)txt='Phase 3 adds Group B — Standing when you\'re ready 🌱';
+  else txt='All phases open 🌸';
+  ['mPhaseHint','dPhaseHint'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=txt;});
+}
+
+// ── Serve Me One ──
+let _serveOpen=false;
+function ptNextUndoneToday(){
+  const realDay=new Date().getDay();
+  let arr=[];try{arr=JSON.parse(localStorage.getItem(`jlos_${realDay}`))||[];}catch(e){}
+  const active=ptActiveFor(realDay,loadPtRamp());
+  for(const ex of active)if(!arr.includes(`d${realDay}-${ex.id}`))return ex;
+  return null;
+}
+window.openServe=()=>{_serveOpen=true;renderServe();};
+window.closeServe=()=>{_serveOpen=false;renderServe();};
+function renderServe(){
+  const targets=['mServe','dServe'].map(id=>document.getElementById(id)).filter(Boolean);
+  if(!targets.length)return;
+  if(!_serveOpen){targets.forEach(el=>el.innerHTML='');return;}
+  const ex=ptNextUndoneToday();
+  let html;
+  if(!ex){
+    html='<div class="serve-card"><div style="font-size:1.6rem">🌸</div><div class="serve-name">All done for today</div><div class="serve-dose">rest is part of the plan</div><button class="serve-sub-btn" onclick="closeServe()">close</button></div>';
+  } else {
+    html='<div class="serve-card"><div class="serve-name">'+esc(ex.n)+'</div><div class="serve-dose">'+esc(ex.d)+'</div><button class="serve-done-btn" onclick="serveDone(\''+ex.id+'\')">Done ✓</button><br><button class="serve-sub-btn" onclick="closeServe()">not right now</button></div>';
+  }
+  targets.forEach(el=>el.innerHTML=html);
+}
+window.serveDone=(exId)=>{
+  const realDay=new Date().getDay();
+  let arr=[];try{arr=JSON.parse(localStorage.getItem(`jlos_${realDay}`))||[];}catch(e){}
+  const key=`d${realDay}-${exId}`;
+  if(!arr.includes(key))arr.push(key);
+  try{localStorage.setItem(`jlos_${realDay}`,JSON.stringify(arr));}catch(e){}
+  if(cday===realDay)ps=arr;
+  ptLogCompletion(exId);
+  clearTimeout(window._ptPushTimer);
+  window._ptPushTimer=setTimeout(()=>{ if(typeof gistPush==='function'&&_getGistToken()) gistPush(); },1500);
+  renderPT();refreshWeeklyChart();
+  // Interstitial: celebrate, offer another
+  if(ptNextUndoneToday()){
+    ['mServe','dServe'].forEach(id=>{
+      const el=document.getElementById(id);if(!el)return;
+      el.innerHTML='<div class="serve-card"><div style="font-size:1.4rem">🎉</div><div class="serve-name">Nice one!</div><div class="serve-dose">logged &amp; saved</div><button class="serve-done-btn" onclick="renderServe()">Another? 🎲</button><br><button class="serve-sub-btn" onclick="closeServe()">that\'s enough for now</button></div>';
+    });
   }
 };
 
@@ -3637,16 +3903,27 @@ function loadScratch(){
 function getDayTotal(d){let t=0;PT.forEach(sec=>{sec.items.forEach(item=>{if(item.days.includes(d))t++;});});return t;}
 function getDayDone(d){try{return(JSON.parse(localStorage.getItem(`jlos_${d}`))||[]).length;}catch(e){return 0;}}
 function buildWeeklyData(){
-  const today=new Date().getDay();
-  const order=[1,2,3,4,5,6,0];
+  // Scored against ACTIVE (unlocked) exercises only. Historical days use the
+  // denominator snapshotted on that day; locked exercises are never "missed".
+  const now=new Date();
+  const todayK=ptTodayKey(now);
+  const r=loadPtRamp();
   const labels=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
-  const data=order.map(d=>{const t=getDayTotal(d);return t?Math.round(Math.min(getDayDone(d),t)/t*100):0;});
-  const bgColors=order.map(d=>{
-    if(d===today)return '#b89de0';
-    const t=getDayTotal(d);if(!t)return '#ece8f4';
-    const pct=Math.min(getDayDone(d),t)/t;
-    return pct>=1?'#5dd9a0':pct>0?'#ffd8c8':'#ece8f4';
-  });
+  const monday=new Date(now);monday.setDate(now.getDate()-((now.getDay()+6)%7));
+  const data=[],bgColors=[];
+  for(let i=0;i<7;i++){
+    const d=new Date(monday);d.setDate(monday.getDate()+i);
+    const k=ptTodayKey(d);
+    const isToday=k===todayK;
+    const isFuture=!isToday&&d>now;
+    const denom=(typeof r.denoms[k]==='number')?r.denoms[k]:ptActiveFor(d.getDay(),r).length;
+    const done=r.completions.filter(x=>x.date===k).length;
+    const pct=denom?Math.round(Math.min(done,denom)/denom*100):0;
+    data.push(isFuture?0:pct);
+    if(isToday)bgColors.push('#b89de0');
+    else if(isFuture||!denom)bgColors.push('#ece8f4');
+    else bgColors.push(pct>=100?'#5dd9a0':pct>0?'#ffd8c8':'#ece8f4');
+  }
   return{labels,data,bgColors};
 }
 const WEEK_OPTS={responsive:true,maintainAspectRatio:false,scales:{y:{display:false,min:0,max:100},x:{grid:{display:false},border:{display:false},ticks:{font:{size:9,weight:'bold'},color:'#a396b4'}}},plugins:{legend:{display:false},tooltip:{padding:8,cornerRadius:9,callbacks:{label:ctx=>`${ctx.raw}% done`}}}};
@@ -3975,6 +4252,7 @@ async function gistPush(){
     const homeBrainDump = (() => { try{ return localStorage.getItem('jlos_braindump')||''; }catch(e){ return ''; } })();
     const dayQueue      = (() => { try{ return localStorage.getItem('jlos_day_queue')||''; }catch(e){ return ''; } })();
     const agendaState   = (() => { try{ return localStorage.getItem('jlos_agenda_state')||''; }catch(e){ return ''; } })();
+    const ptRamp        = (() => { try{ return localStorage.getItem('jlos_pt_ramp')||''; }catch(e){ return ''; } })();
     const content = JSON.stringify({
       memories,
       ptDays,
@@ -3992,6 +4270,7 @@ async function gistPush(){
       homeBrainDump,
       dayQueue,
       agendaState,
+      ptRamp,
       updated: new Date().toISOString()
     }, null, 2);
     const gistId = _getGistId();
@@ -4075,6 +4354,13 @@ async function gistPull(){
         renderPT();
         refreshWeeklyChart();
         pulled.push('PT');
+      }
+      // PT ramp state (phase, unlocks, completions, fatigue)
+      if(typeof parsed.ptRamp==='string'&&parsed.ptRamp){
+        try{ localStorage.setItem('jlos_pt_ramp', parsed.ptRamp); }catch(e){}
+        renderPT();
+        refreshWeeklyChart();
+        pulled.push('PT ramp');
       }
       // Battery log
       if(parsed.battery && Array.isArray(parsed.battery)){
@@ -5764,10 +6050,18 @@ window.onload=()=>{
   renderTimberNeeds();
   initTimberMemories();
   renderStatsTab();
-  handleNFCHash();
-  initMidnightReset();
+  if(typeof handleNFCHash==='function')handleNFCHash();
+  if(typeof initMidnightReset==='function')initMidnightReset();
   initWalkTimer();
   try{ restoreAgenda(); }catch(e){}
+  // NFC deep link: ?serve=1 opens Move tab straight into Serve Me One
+  try{
+    if(new URLSearchParams(location.search).get('serve')==='1'){
+      switchTab('pt');
+      if(typeof deskSwitchPanel==='function')deskSwitchPanel('pt');
+      openServe();
+    }
+  }catch(e){}
 };
 
 // ══════════════════════════════════════════════════════════════════════════════
@@ -6415,7 +6709,7 @@ initVineBanners();
         </div>
         <div class="sitter-card orange">
           <h3>☀️ Throughout the Day</h3>
-          <div class="sitter-schedule-row orange"><span class="sitter-icon">💤</span><span class="sitter-time">1–2 naps, 2–3 hrs each</span><div class="sitter-event">Naps<small>He often settles on his own when tired. If he's wound up instead — zoomies, barking, nipping — that's the cue for a crate nap (see 💤 Naps, Crate &amp; Settling).</small></div></div>
+          <div class="sitter-schedule-row orange"><span class="sitter-icon">💤</span><span class="sitter-time">1–2 naps, 2–3 hrs each</span><div class="sitter-event">Naps<small>He won't often settle on his own. If he's wound up — zoomies, barking, nipping — that's the cue for a crate nap (see 💤 Naps, Crate &amp; Settling).</small></div></div>
           <div class="sitter-schedule-row orange"><span class="sitter-icon">🚽</span><span class="sitter-time">Every 2–3 hrs awake</span><div class="sitter-event">Potty trips<small>Outside, with a paw wipe when he comes back in.</small></div></div>
           <div class="sitter-schedule-row orange"><span class="sitter-icon">🍽️</span><span class="sitter-time">~1–2 PM</span><div class="sitter-event">Lunch — scant 1/3 cup<small>If he's not hungry, that's fine — just give him extra at dinner.</small></div></div>
         </div>

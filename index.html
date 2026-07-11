@@ -42,7 +42,7 @@
    Triggered by body.night class (set by applyTheme()). */
 body.night{
   --bg:#1a0f24;--bgc:#251735;--bgp:#1f1330;
-  --td:#f0e8f5;--tb:#c8b8d8;--tm:#8a7a98;
+  --td:#f0e8f5;--tb:#c8b8d8;--tm:#a596b6;
   --ll:#2e1d3e;--lm:#46305a;--la:#b896d6;     /* deep plum */
   --ml:#1a2e26;--mm:#2c4a3e;--ma:#8fc4a8;     /* moonlit sage */
   --pl:#2e1828;--pm:#4a2c3e;--pa:#d68aa8;     /* dusky rose */
@@ -56,7 +56,7 @@ body.night{
 /* Back-compat: anything still using body.force-dark resolves to night */
 body.force-dark{
   --bg:#1a0f24;--bgc:#251735;--bgp:#1f1330;
-  --td:#f0e8f5;--tb:#c8b8d8;--tm:#8a7a98;
+  --td:#f0e8f5;--tb:#c8b8d8;--tm:#a596b6;
   --ll:#2e1d3e;--lm:#46305a;--la:#b896d6;
   --ml:#1a2e26;--mm:#2c4a3e;--ma:#8fc4a8;
   --pl:#2e1828;--pm:#4a2c3e;--pa:#d68aa8;
@@ -312,6 +312,16 @@ select{appearance:none;background:transparent;border:none;outline:none;font-fami
 .ready-not{background:none;border:2px solid var(--mm);border-radius:var(--rf);padding:9px 18px;font-family:'Nunito',sans-serif;font-size:.68rem;font-weight:900;color:var(--tm);cursor:pointer}
 .fatigue-note{background:var(--pl);border:2px solid var(--pm);border-radius:var(--rlg);padding:12px 14px;margin-bottom:12px;font-size:.7rem;color:var(--td);font-weight:700;text-align:center;line-height:1.5;animation:fs .3s ease-out both}
 .phase-hint{text-align:center;font-size:.62rem;color:var(--tm);font-weight:800;margin:10px 0 4px}
+/* ── CONFETTI + MANUAL ENTRY ── */
+.confetti-bit{position:fixed;top:-26px;z-index:500;pointer-events:none;animation:confettiFall 1.7s ease-in forwards}
+@keyframes confettiFall{0%{transform:translateY(0) rotate(0deg);opacity:1}100%{transform:translateY(78vh) rotate(340deg);opacity:0}}
+.manual-add-btn{display:inline-flex;align-items:center;justify-content:center;min-height:38px;padding:8px 16px;background:var(--bgc);border:1.5px dashed var(--lm);border-radius:999px;font-family:'Nunito',sans-serif;font-size:.62rem;font-weight:900;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:transform .12s,background .15s}
+.manual-add-btn:active{transform:scale(.94);background:var(--ll)}
+/* ── CHECKLIST COMPACT (agenda running) ── */
+#homeChecklist.cl-compact .cl-section,#homeChecklist.cl-compact .home-greeting-card{display:none}
+#homeChecklist.cl-compact .home-progress-wrap{cursor:pointer}
+.cl-compact-hint{display:none;text-align:center;font-size:.6rem;font-weight:800;color:var(--tm);margin:2px 0 10px;cursor:pointer}
+#homeChecklist.cl-compact .cl-compact-hint{display:block}
 .psl{font-size:.52rem;font-weight:900;letter-spacing:.2em;text-transform:uppercase;color:var(--la);padding-bottom:5px;margin-bottom:7px;border-bottom:2px solid var(--lm)}
 .rc{text-align:center;padding:24px 14px;background:var(--bgc);border-radius:var(--rlg);border:2px dashed var(--lm)}
 .rc .ico{font-size:1.7rem;display:block;margin-bottom:7px}
@@ -1413,6 +1423,10 @@ body.night .train-status.new{background:var(--pl);border-color:var(--pm);color:v
     <button type="button" class="theme-toggle" id="themeToggle" data-mode="auto" onclick="cycleTheme()" title="Day / night theme — auto by default, tap to override">
       <span class="tt-glyph" id="themeToggleGlyph">☀︎</span>
     </button>
+    <button type="button" onclick="switchTab('pt');openServe()" title="Serve me one PT exercise" style="background:none;border:none;cursor:pointer;font-size:.68rem;font-weight:800;color:var(--tm);padding:4px 6px;border-radius:var(--rm);line-height:1.3;display:flex;flex-direction:column;align-items:center;gap:1px">
+      <span style="font-size:.88rem">🎲</span>
+      <span>Move</span>
+    </button>
     <button type="button" onclick="openFlowDrawer()" title="Flow schedule" style="background:none;border:none;cursor:pointer;font-size:.68rem;font-weight:800;color:var(--tm);padding:4px 6px;border-radius:var(--rm);line-height:1.3;display:flex;flex-direction:column;align-items:center;gap:1px">
       <span style="font-size:.88rem">📋</span>
       <span>Flow</span>
@@ -1464,16 +1478,6 @@ body.night .train-status.new{background:var(--pl);border-color:var(--pm);color:v
   <!-- ③ Daily checklist — self-care first -->
   <div id="homeChecklist"></div>
 
-  <!-- ④ Brain Dump -->
-  <div class="card" style="margin-bottom:10px;margin-top:10px">
-    <div class="scratch-lbl" style="margin-bottom:6px"><span style="font-size:.65rem;font-weight:900;color:var(--la)">💭 Brain Dump</span><span style="font-size:.58rem;color:var(--tm);margin-left:6px">— get it out of your head</span></div>
-    <div style="display:flex;gap:6px;margin-bottom:8px">
-      <textarea class="lab-ta scratch-ta" id="brainDumpInput" placeholder="Type anything… 💜" rows="2" style="flex:1;margin-bottom:0;min-height:60px" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();addBrainDump();}"></textarea>
-      <button onclick="addBrainDump()" style="background:var(--la);color:#fff;border:none;border-radius:var(--rf);padding:0 14px;font-family:'Nunito',sans-serif;font-size:.7rem;font-weight:900;cursor:pointer;flex-shrink:0;align-self:stretch">Add</button>
-    </div>
-    <div id="brainDumpList" style="display:flex;flex-direction:column;gap:5px"></div>
-  </div>
-
   <!-- ⑤ Timber needs mini (taps through to Timber tab) -->
   <div class="card" style="margin-bottom:10px;cursor:pointer" onclick="switchTab('timber')">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
@@ -1491,6 +1495,17 @@ body.night .train-status.new{background:var(--pl);border-color:var(--pm);color:v
     </div>
     <div id="homeTrainingFocus"></div>
   </div>
+
+  <!-- ⑥·5 Brain Dump — right under training, before connection -->
+  <div class="card" style="margin-bottom:10px">
+    <div class="scratch-lbl" style="margin-bottom:6px"><span style="font-size:.65rem;font-weight:900;color:var(--la)">💭 Brain Dump</span><span style="font-size:.58rem;color:var(--tm);margin-left:6px">— get it out of your head</span></div>
+    <div style="display:flex;gap:6px;margin-bottom:8px">
+      <textarea class="lab-ta scratch-ta" id="brainDumpInput" placeholder="Type anything… 💜" rows="2" style="flex:1;margin-bottom:0;min-height:60px" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();addBrainDump();}"></textarea>
+      <button onclick="addBrainDump()" style="background:var(--la);color:#fff;border:none;border-radius:var(--rf);padding:0 14px;font-family:'Nunito',sans-serif;font-size:.7rem;font-weight:900;cursor:pointer;flex-shrink:0;align-self:stretch">Add</button>
+    </div>
+    <div id="brainDumpList" style="display:flex;flex-direction:column;gap:5px"></div>
+  </div>
+
 
   <!-- ⑦ Connection Heartbeat — at the bottom, a moment of warmth to end on -->
   <div class="card" style="margin-bottom:10px">
@@ -2068,23 +2083,26 @@ body.night .train-status.new{background:var(--pl);border-color:var(--pm);color:v
     <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:6px">
       <div style="display:flex;flex-direction:column;gap:5px;align-items:center">
         <button id="walkToggleBtn" onclick="logWalkNFC()" class="activity-log-btn walk-btn">🦮 Walk</button>
-        <div id="walkActivityMeta" class="activity-meta">No walks</div>
-        <button onclick="toggleManualWalkEntry()" style="background:none;border:none;font-family:'Nunito',sans-serif;font-size:.58rem;font-weight:800;color:var(--sa);cursor:pointer;padding:0;margin-top:-2px">+ manual</button>
+        <div id="walkActivityMeta" class="activity-meta">first walk awaits 🐾</div>
+        <button onclick="toggleManualWalkEntry()" class="manual-add-btn" style="color:var(--sa);border-color:var(--sm)">+ manual</button>
       </div>
       <div style="display:flex;flex-direction:column;gap:5px;align-items:center">
         <button id="trainLogBtn" onclick="logTrainingSession()" class="activity-log-btn train-btn">🎓 Train</button>
-        <div id="trainActivityMeta" class="activity-meta">No sessions</div>
+        <div id="trainActivityMeta" class="activity-meta">ready when he is 🎓</div>
+        <button onclick="toggleActivityRow('trainEntryRow')" class="manual-add-btn" style="color:var(--ga);border-color:var(--gm)">+ manual</button>
       </div>
       <div style="display:flex;flex-direction:column;gap:5px;align-items:center">
         <button id="feedLogBtn" onclick="toggleFeedEntry()" class="activity-log-btn feed-btn">🍽️ Fed</button>
-        <div id="feedActivityMeta" class="activity-meta">No feedings</div>
+        <div id="feedActivityMeta" class="activity-meta">next meal awaits 🍽️</div>
+        <button onclick="toggleActivityRow('feedEntryRow')" class="manual-add-btn" style="color:var(--pa);border-color:var(--pm)">+ manual</button>
       </div>
     </div>
     <!-- Feed entry row (slides in when Fed is tapped) -->
     <div id="feedEntryRow" style="display:none;margin:10px 0 4px;padding:10px;background:var(--gl);border-radius:var(--rmd)">
       <div style="font-size:.62rem;font-weight:900;color:var(--ga);margin-bottom:7px">🍽️ Log feeding</div>
-      <div style="display:flex;gap:8px;align-items:center">
-        <input id="feedAmountInput" class="mem-input" placeholder="Amount &amp; note… e.g. ½ cup, ate well" onkeydown="if(event.key==='Enter')confirmFeedLog()" style="flex:1;font-size:.7rem">
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+        <input id="feedTimeInput" type="time" class="mem-input" style="flex:0 0 96px;font-size:.7rem" title="Time (defaults to now)">
+        <input id="feedAmountInput" class="mem-input" placeholder="Amount &amp; note… e.g. ½ cup, ate well" onkeydown="if(event.key==='Enter')confirmFeedLog()" style="flex:1;min-width:150px;font-size:.7rem">
         <button onclick="confirmFeedLog()" style="background:var(--ga);color:#fff;border:none;border-radius:var(--rf);padding:8px 14px;font-family:'Nunito',sans-serif;font-size:.68rem;font-weight:900;cursor:pointer;flex-shrink:0">Log</button>
         <button onclick="toggleFeedEntry()" style="background:none;border:1px solid var(--lm);border-radius:var(--rf);padding:8px 10px;font-family:'Nunito',sans-serif;font-size:.68rem;font-weight:900;color:var(--tm);cursor:pointer;flex-shrink:0">✕</button>
       </div>
@@ -2092,7 +2110,7 @@ body.night .train-status.new{background:var(--pl);border-color:var(--pm);color:v
     <!-- Manual walk entry row -->
     <div id="manualWalkRow" style="display:none;margin:10px 0 4px;padding:10px;background:var(--sl);border-radius:var(--rmd)">
       <div style="font-size:.62rem;font-weight:900;color:var(--sa);margin-bottom:8px">🦮 Log walk manually</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:8px;margin-bottom:8px">
         <div>
           <div style="font-size:.58rem;font-weight:800;color:var(--tm);margin-bottom:3px">Duration (mins)</div>
           <input id="manualWalkMins" type="number" min="1" max="300" placeholder="e.g. 20" class="mem-input" style="width:100%;font-size:.7rem">
@@ -2101,16 +2119,39 @@ body.night .train-status.new{background:var(--pl);border-color:var(--pm);color:v
           <div style="font-size:.58rem;font-weight:800;color:var(--tm);margin-bottom:3px">Distance (optional)</div>
           <input id="manualWalkDist" type="text" placeholder="e.g. 1.2 km" class="mem-input" style="width:100%;font-size:.7rem">
         </div>
+        <div>
+          <div style="font-size:.58rem;font-weight:800;color:var(--tm);margin-bottom:3px">Time</div>
+          <input id="manualWalkTime" type="time" class="mem-input" style="width:100%;font-size:.7rem" title="Defaults to now">
+        </div>
       </div>
       <div style="display:flex;gap:8px">
         <button onclick="confirmManualWalk()" style="flex:1;background:var(--sa);color:#fff;border:none;border-radius:var(--rf);padding:9px;font-family:'Nunito',sans-serif;font-size:.7rem;font-weight:900;cursor:pointer">Log Walk</button>
         <button onclick="toggleManualWalkEntry()" style="background:none;border:1.5px solid var(--sm);border-radius:var(--rf);padding:9px 12px;font-family:'Nunito',sans-serif;font-size:.7rem;font-weight:900;color:var(--tm);cursor:pointer">✕</button>
       </div>
     </div>
+    <!-- Manual train entry row -->
+    <div id="trainEntryRow" style="display:none;margin:10px 0 4px;padding:10px;background:var(--gl);border-radius:var(--rmd)">
+      <div style="font-size:.62rem;font-weight:900;color:var(--ga);margin-bottom:7px">🎓 Log training session</div>
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+        <input id="trainTimeInput" type="time" class="mem-input" style="flex:0 0 96px;font-size:.7rem" title="Time (defaults to now)">
+        <button onclick="confirmManualTrain()" style="background:var(--ga);color:#fff;border:none;border-radius:var(--rf);padding:8px 14px;font-family:'Nunito',sans-serif;font-size:.68rem;font-weight:900;cursor:pointer;flex-shrink:0">Log</button>
+        <button onclick="toggleActivityRow('trainEntryRow')" style="background:none;border:1px solid var(--lm);border-radius:var(--rf);padding:8px 10px;font-family:'Nunito',sans-serif;font-size:.68rem;font-weight:900;color:var(--tm);cursor:pointer;flex-shrink:0">✕</button>
+      </div>
+    </div>
     <!-- Potty row -->
     <div style="display:flex;align-items:center;gap:10px;margin:6px 0 4px">
       <button id="pottyLogBtn" onclick="logPottyTrip()" class="activity-log-btn potty-btn" style="flex:1">🚽 Outside / Potty</button>
-      <div id="pottyActivityMeta" class="activity-meta" style="min-width:80px;text-align:right">No trips</div>
+      <div id="pottyActivityMeta" class="activity-meta" style="min-width:64px;text-align:right">fresh slate 🌱</div>
+      <button onclick="toggleActivityRow('pottyEntryRow')" class="manual-add-btn" style="color:var(--ma);border-color:var(--mm);flex-shrink:0">+ manual</button>
+    </div>
+    <!-- Manual potty entry row -->
+    <div id="pottyEntryRow" style="display:none;margin:10px 0 4px;padding:10px;background:var(--ml);border-radius:var(--rmd)">
+      <div style="font-size:.62rem;font-weight:900;color:var(--ma);margin-bottom:7px">🚽 Log potty trip</div>
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+        <input id="pottyTimeInput" type="time" class="mem-input" style="flex:0 0 96px;font-size:.7rem" title="Time (defaults to now)">
+        <button onclick="confirmManualPotty()" style="background:var(--ma);color:#fff;border:none;border-radius:var(--rf);padding:8px 14px;font-family:'Nunito',sans-serif;font-size:.68rem;font-weight:900;cursor:pointer;flex-shrink:0">Log</button>
+        <button onclick="toggleActivityRow('pottyEntryRow')" style="background:none;border:1px solid var(--lm);border-radius:var(--rf);padding:8px 10px;font-family:'Nunito',sans-serif;font-size:.68rem;font-weight:900;color:var(--tm);cursor:pointer;flex-shrink:0">✕</button>
+      </div>
     </div>
     <div id="activityTimeline" style="margin-top:8px"></div>
   </div>
@@ -2168,346 +2209,7 @@ body.night .train-status.new{background:var(--pl);border-color:var(--pm);color:v
 </div>
 
 <!-- DESKTOP / TABLET LAYOUT -->
-<div class="desktop-layout" id="desktopLayout">
-  <header class="desk-header">
-    <div class="desk-brand">
-      <div class="desk-pills">
-        <span class="pill ppe">🌿 Wellness</span>
-        <span class="pill pmi">🐾 Timber</span>
-        <span class="pill pfo">💻 Focus</span>
-      </div>
-      <h1>Jasmine's Life OS ✿</h1>
-      <div style="display:flex;align-items:center;gap:7px;margin-top:3px">
-        <span class="lbl">Right now:</span>
-        <span class="clktime" id="dClk">--:-- --</span>
-      </div>
-    </div>
-    <div class="desk-wn-wrap">
-      <div class="whats-next">
-        <span class="wn-icon">⏳</span>
-        <div class="wn-text"><h4 id="dWnTitle">Loading…</h4><p id="dWnDesc"></p></div>
-      </div>
-    </div>
-    <div class="desk-header-right">
-      <button type="button" class="theme-toggle" id="deskThemeToggle" data-mode="auto" onclick="cycleTheme()" title="Day / night theme — auto by default, tap to override">
-        <span class="tt-glyph" id="deskThemeToggleGlyph">☀︎</span>
-      </button>
-      <div class="gist-bar" id="deskGistBar" onclick="openGistModal()" title="Cloud sync — Timber memories">
-        <span class="gist-dot" id="deskGistDot"></span>
-        <span class="gist-bar-txt" id="deskGistBarTxt">Sync</span>
-      </div>
-      <button class="api-gear-btn" onclick="deskSwitchPanel('stats');setTimeout(toggleDeskApiSettings,80)" title="AI API Settings">⚙️</button>
-    </div>
-  </header>
-
-  <div class="desk-grid">
-    <!-- LEFT -->
-    <div class="desk-left" style="min-height:0">
-      <div class="desk-stat-row">
-        <div class="desk-sc" style="border-color:var(--pm)"><span class="si">⏱️</span><span class="lbl" style="color:var(--pa)">Fasting</span><span class="sv">8:30 PM–8:30 AM</span></div>
-        <div class="desk-sc" style="border-color:var(--mm)"><span class="si">🥗</span><span class="lbl" style="color:var(--ma)">Daily Fuel</span><span class="sv">1,700 kcal</span></div>
-        <div class="desk-sc" style="border-color:var(--lm)"><span class="si">🔴</span><span class="lbl" style="color:var(--la)">Today's RLT</span><span class="sv" id="dTodayRlt">Loading…</span></div>
-      </div>
-
-      <div class="card desk-flow" id="deskFlowCard" style="flex:1">
-        <div class="desk-fhd" onclick="toggleDeskCollapse('deskFlowCard','deskFlowBody','deskFlowIcon')">
-          <h2 style="display:flex;align-items:center;gap:7px">Today's Flow ✿ <span class="collapse-icon" id="deskFlowIcon">▼</span></h2>
-          <div class="desk-fg" onclick="event.stopPropagation()">
-            <button class="btn desk-btn-f on"         id="dba" onclick="ftl('all','d')">All</button>
-            <button class="btn desk-btn-f f-timber"   id="dbp" onclick="ftl('timber','d')">🐾 Timber</button>
-            <button class="btn desk-btn-f f-focus"    id="dbw" onclick="ftl('focus','d')">💻 Focus</button>
-            <button class="btn desk-btn-f f-wellness" id="dbm" onclick="ftl('wellness','d')">🌿 Wellness</button>
-          </div>
-        </div>
-        <div class="collapsible-body" id="deskFlowBody" style="display:flex;flex-direction:column;flex:1;min-height:0;max-height:none">
-          <!-- Tomorrow peek — calendar events only -->
-          <div class="tomorrow-peek" id="deskTomorrowPeek" onclick="toggleDeskTomorrowPeek()" style="margin-bottom:10px;flex-shrink:0">
-            <div class="tomorrow-peek-hd">
-              <span class="tomorrow-peek-lbl">☀️ Tomorrow</span>
-              <span class="tomorrow-peek-summary" id="deskTomorrowSummary">Loading…</span>
-              <span class="tomorrow-peek-arrow">▾</span>
-            </div>
-            <div class="tomorrow-peek-body" id="deskTomorrowBody"></div>
-          </div>
-          <!-- Today's Shape — desktop -->
-          <div class="shape-card" id="deskShapeCard" style="flex-shrink:0;margin-bottom:10px">
-            <div class="shape-hd" onclick="toggleDeskShapeCard()">
-              <div class="shape-hd-left">
-                <span style="font-size:1rem">🗂️</span>
-                <div>
-                  <div class="shape-title">Today's Shape <span class="shape-ov-count" id="deskShapeOvCount" style="display:none">0</span></div>
-                  <div class="shape-subtitle" id="deskShapeSubtitle">Tap to plan around meetings or adjust your day</div>
-                </div>
-              </div>
-              <span class="shape-arrow">▾</span>
-            </div>
-            <div class="shape-body" id="deskShapeBody">
-              <div class="shape-cal-section">
-                <div class="shape-cal-lbl">📅 From your calendar today</div>
-                <div class="shape-meetings" id="deskShapeMeetings">
-                  <div class="shape-cal-empty">Loading calendar…</div>
-                </div>
-              </div>
-              <div class="shape-context-lbl">✏️ Add context or nuance</div>
-              <textarea class="shape-context-ta" id="deskShapeContextNote" rows="2"
-                placeholder="e.g. The 10am will run ~2hrs. Working from office today."
-                oninput="saveShapeContext()"></textarea>
-              <button class="shape-suggest-btn" id="deskShapeSuggestBtn" onclick="runShapeSuggest()">
-                ✨ Suggest what to compress or skip
-              </button>
-              <div class="shape-ai-result" id="deskShapeAiResult">
-                <div class="shape-ai-result-hd">✨ AI suggestions — tap to apply</div>
-                <div id="deskShapeAiSuggestions"></div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Brain Dump — desktop -->
-          <div class="lab-card" style="flex-shrink:0;margin-bottom:10px">
-            <div class="lab-hd">
-              <span class="lab-title">💭 Brain Dump</span>
-              <button class="lab-sort-btn" id="deskLabSortBtn" onclick="clearBrainDump()">🗑 Clear all</button>
-            </div>
-            <div style="display:flex;gap:6px;margin-bottom:8px">
-              <textarea class="lab-ta" id="deskScratchPad" placeholder="Type a thought and hit Add… 💜" rows="2" style="flex:1;margin-bottom:0" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();addBrainItem();}"></textarea>
-              <button onclick="addBrainItem()" style="background:var(--la);color:#fff;border:none;border-radius:var(--rf);padding:0 14px;font-family:'Nunito',sans-serif;font-size:.7rem;font-weight:900;cursor:pointer;flex-shrink:0;align-self:stretch">Add</button>
-            </div>
-            <div class="lab-results" id="deskLabResults"></div>
-          </div>
-          <div class="desk-tls" id="dTlb" style="flex:1;overflow-y:auto"></div>
-        </div>
-      </div>
-
-    </div>
-
-    <!-- RIGHT: tabbed panel -->
-    <div class="desk-right">
-      <div class="desk-tabs">
-        <button class="desk-tab active" id="dtab-pt"    onclick="deskSwitchPanel('pt')"   >💪 Movement</button>
-        <button class="desk-tab"        id="dtab-life"  onclick="deskSwitchPanel('life')"  >💜 Life</button>
-        <button class="desk-tab"        id="dtab-cal"   onclick="deskSwitchPanel('cal')"   >📅 Calendar</button>
-        <button class="desk-tab"        id="dtab-stats" onclick="deskSwitchPanel('stats')">📊 Stats</button>
-        <button class="desk-tab"        id="dtab-train" onclick="deskSwitchPanel('train')">🎓 Train</button>
-      </div>
-
-      <!-- PT panel -->
-      <div class="desk-panel active" id="dpanel-pt">
-        <div class="desk-pt" style="position:static;max-height:none">
-          <div class="desk-pt-head" onclick="toggleDeskCollapse(null,'deskPtBody','deskPtIcon')">
-            <h2>Movement Engine 🌿 <span class="collapse-icon" id="deskPtIcon">▼</span></h2>
-            <p>Pomodoro breaks → PT. Auto-saves! ✨</p>
-          </div>
-          <div class="collapsible-body" id="deskPtBody" style="display:flex;flex-direction:column;flex:1;min-height:0">
-            <div style="display:flex;justify-content:center;margin-bottom:14px">
-              <div class="dw2"><span class="lbl">Day:</span>
-                <select id="dDsel" onchange="chDay()">
-                  <option value="1">Monday</option><option value="2">Tuesday</option>
-                  <option value="3">Wednesday</option><option value="4">Thursday</option>
-                  <option value="5">Friday</option><option value="6">Saturday</option>
-                  <option value="0">Sunday</option>
-                </select>
-              </div>
-            </div>
-            <div id="dReady"></div>
-            <button class="serve-btn" onclick="openServe()">🎲 Serve Me One</button>
-            <div id="dServe"></div>
-            <div class="prog-card" style="margin-bottom:12px">
-              <div class="pt2"><span class="lbl">Movement Progress</span><span class="pp" id="dPtxt">0%</span></div>
-              <div class="ptr"><div class="pf" id="dPbar"></div></div>
-              <div class="pm2"><span>Target: 1 Hour</span><span><span id="dDn">0</span>/<span id="dTn">0</span> Done</span></div>
-              <div style="text-align:right;margin-top:8px">
-                <button onclick="resetDay()" style="background:none;border:1.5px solid var(--lm);border-radius:var(--rf);padding:4px 12px;font-family:'Nunito',sans-serif;font-size:.55rem;font-weight:900;color:var(--tm);cursor:pointer">↺ Reset Today's PT</button>
-              </div>
-            </div>
-            <div class="desk-pts" id="dPtb"></div>
-            <div class="phase-hint" id="dPhaseHint"></div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Stats panel -->
-      <!-- Life panel (desktop) -->
-      <div class="desk-panel" id="dpanel-life">
-        <div id="deskBdayBanner" class="bday-banner" style="display:none">
-          <div class="bday-title">🎂 Happy 31st Birthday, Jasmine! 🎂</div>
-          <div class="bday-sub">You've built something beautiful this year. Here's to healing, love, and Timber. 💜</div>
-        </div>
-        <!-- Battery -->
-        <div class="battery-card" style="margin-top:0">
-          <div class="battery-hd">
-            <span class="battery-title">🔋 Today's Battery</span>
-            <span class="battery-time" id="deskBatteryTime">Not logged today</span>
-          </div>
-          <div class="battery-emojis" id="deskBatteryEmojis">
-            <button class="battery-emoji-btn" onclick="logBattery(5)">🌟</button>
-            <button class="battery-emoji-btn" onclick="logBattery(4)">😊</button>
-            <button class="battery-emoji-btn" onclick="logBattery(3)">😐</button>
-            <button class="battery-emoji-btn" onclick="logBattery(2)">😔</button>
-            <button class="battery-emoji-btn" onclick="logBattery(1)">🪫</button>
-          </div>
-          <div class="energy-arc-wrap" id="deskBatteryHistory"></div>
-          <button class="battery-compress-btn" id="deskBatteryCompressBtn" onclick="runCapacityScaler()" style="display:none">
-            ⚡ My battery is low — suggest Ruthless Compression
-          </button>
-          <div class="battery-compress-result" id="deskBatteryCompressResult"></div>
-        </div>
-        <!-- Connections -->
-        <div class="connection-card">
-          <div class="connection-title">💜 Connection Heartbeat
-            <span style="font-size:.6rem;color:var(--tm);font-weight:700;margin-left:auto">tap a person to log</span>
-          </div>
-          <div class="orbits-wrap">
-            <div class="orbit-person" onclick="openConnModal('Partner','💙')">
-              <div class="orbit-ring warm" id="deskOrbit-Partner" style="width:72px;height:72px">💙</div>
-              <div class="orbit-name">Partner</div>
-              <div class="orbit-days" id="deskOrbitDays-Partner">—</div>
-            </div>
-            <div class="orbit-person" onclick="openConnModal('Mom','💗')">
-              <div class="orbit-ring warm" id="deskOrbit-Mom" style="width:64px;height:64px">💗</div>
-              <div class="orbit-name">Mom</div>
-              <div class="orbit-days" id="deskOrbitDays-Mom">—</div>
-            </div>
-            <div class="orbit-person" onclick="openConnModal('Sister','🌸')">
-              <div class="orbit-ring warm" id="deskOrbit-Sister" style="width:64px;height:64px">🌸</div>
-              <div class="orbit-name">Sister</div>
-              <div class="orbit-days" id="deskOrbitDays-Sister">—</div>
-            </div>
-          </div>
-          <div class="conn-nudge-wrap" id="deskConnNudge"></div>
-          <button class="conn-log-btn" onclick="logConnection()">Log Connection</button>
-          <div class="conn-history" id="deskConnHistory"></div>
-        </div>
-        <div class="card">
-          <h3 class="lbl" style="text-align:center;margin-bottom:10px">🐶 Timber's Firsts & Memories</h3>
-          <p class="lbl" style="margin-bottom:5px">⚡ Quick Add</p>
-          <div class="mem-presets">
-            <button class="mem-preset" onclick="presetMemoryD('First Stroller Trip','soc')">🛻 Stroller</button>
-            <button class="mem-preset" onclick="presetMemoryD('First Cat Sniff (Tulip)','soc')">🐱 Tulip</button>
-            <button class="mem-preset" onclick="presetMemoryD('First Voluntary Sit','train')">🎓 First Sit</button>
-            <button class="mem-preset" onclick="presetMemoryD('First Toothbrushing','health')">🦷 Teeth</button>
-            <button class="mem-preset" onclick="presetMemoryD('First Cat Sniff (Tigris)','soc')">🐈 Tigris</button>
-          </div>
-          <div class="mem-cats" id="memCatRowD">
-            <button class="mem-cat-btn cat-soc sel" onclick="selCatD(this,'soc')"><span class="cat-icon">🌍</span>Social</button>
-            <button class="mem-cat-btn cat-home"    onclick="selCatD(this,'home')"><span class="cat-icon">🏠</span>Home</button>
-            <button class="mem-cat-btn cat-health"  onclick="selCatD(this,'health')"><span class="cat-icon">💚</span>Health</button>
-            <button class="mem-cat-btn cat-train"   onclick="selCatD(this,'train')"><span class="cat-icon">🎓</span>Train</button>
-          </div>
-          <input type="datetime-local" class="mem-datetime" id="memWhenD" title="When did this happen?">
-          <div class="mem-add">
-            <input class="mem-input" id="memInputD" type="text" placeholder="First stroller walk…" maxlength="80">
-            <button class="mem-add-btn" onclick="addMemoryD()">+ Add</button>
-          </div>
-          <div class="mem-list" id="memListD"></div>
-        </div>
-      </div>
-
-      <div class="desk-panel" id="dpanel-stats">
-        <!-- Weekly PT chart -->
-        <div class="card" style="padding:14px">
-          <p class="lbl" style="text-align:center;margin-bottom:3px">📅 Weekly PT Consistency</p>
-          <p style="text-align:center;font-size:.58rem;color:var(--tm);margin-bottom:9px">% completed each day</p>
-          <div class="desk-cb"><canvas id="dChWeek"></canvas></div>
-        </div>
-        <div class="milestone-card" id="deskMilestoneCard">
-          <h3 class="lbl" style="color:var(--pa);margin-bottom:10px">🐾 Timber Reassessment Flags</h3>
-          <div id="deskMilestoneList"></div>
-        </div>
-        <div class="card">
-          <h3 class="lbl" style="text-align:center;margin-bottom:8px">🔴 RLT Protocol</h3>
-          <div style="display:flex;flex-direction:column;gap:5px">
-            <div style="background:var(--pl);border:1.5px solid var(--pm);border-radius:8px;padding:6px 9px">
-              <span class="lbl" style="color:var(--pa)">Nightly 9:00–9:40 PM</span>
-              <p style="font-size:.68rem;margin-top:2px">Face 10m → Hips 20m → Rotating 10m</p>
-            </div>
-            <div style="background:var(--ll);border:1.5px solid var(--lm);border-radius:8px;padding:6px 9px">
-              <span class="lbl" style="color:var(--la)">M/W/F Arms · T/Th Knees · Sat/Sun Back</span>
-            </div>
-            <div style="background:var(--pl);border:1.5px solid var(--pm);border-radius:8px;padding:6px 9px">
-              <span class="lbl" style="color:var(--pa)">Daily 12:40 PM — Fasted Stomach 20m</span>
-            </div>
-            <p style="font-size:.58rem;color:var(--tm);text-align:center;margin-top:2px">Iron at lunch = 8hr buffer ✓</p>
-          </div>
-        </div>
-      </div>
-
-      <!-- Calendar panel -->
-      <div class="desk-panel" id="dpanel-cal">
-        <div id="deskCalSetupCard" class="cal-setup-card" style="display:none">
-          <div class="cal-setup-title">📅 Connect Google Calendar</div>
-          <div class="cal-setup-sub">
-            Paste your private Google Calendar iCal link(s). Read-only — the app never modifies your calendar.<br><br>
-            <strong>How to get it:</strong> Google Calendar → Settings → your calendar → "Secret address in iCal format". Add a second link for a shared calendar if you'd like.
-          </div>
-          <div style="font-size:.6rem;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:var(--tm);margin:8px 0 4px">Your calendar</div>
-          <input class="cal-url-input" id="deskCalUrlInput" type="url" placeholder="https://calendar.google.com/calendar/ical/…">
-          <div style="font-size:.6rem;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:var(--tm);margin:8px 0 4px">Shared calendar (optional)</div>
-          <input class="cal-url-input" id="deskCalUrlInput2" type="url" placeholder="https://calendar.google.com/calendar/ical/…">
-          <div style="display:flex;align-items:center;margin-top:8px">
-            <button class="cal-save-btn" onclick="saveCalUrl()">Connect Calendar</button>
-            <span class="cal-status" id="deskCalStatus"></span>
-          </div>
-        </div>
-        <div class="cal-card">
-          <div class="cal-card-hd">
-            <span class="cal-card-title">📅 Next 7 Days</span>
-            <button class="cal-refresh-btn" onclick="loadCalendar(true)">↻ Refresh</button>
-          </div>
-          <div id="deskCalEventsList"><div class="cal-loading">Loading your calendar…</div></div>
-          <div style="text-align:center;margin-top:8px">
-            <button onclick="toggleCalSetup()" style="background:none;border:none;font-size:.6rem;font-weight:900;color:var(--tm);cursor:pointer;text-decoration:underline">⚙️ Change calendar URL</button>
-          </div>
-        </div>
-      </div>
-
-      <!-- Timber panel -->
-
-      <!-- Train panel (desktop) -->
-      <div class="desk-panel" id="dpanel-train">
-        <div style="display:flex;align-items:center;justify-content:space-between;padding:0 2px 10px">
-          <h2 style="font-family:'Nunito',sans-serif;font-size:.88rem;font-weight:900;color:var(--td)">🎓 Timber's Training</h2>
-          <span style="font-size:.55rem;color:var(--tm);font-weight:700">tap badge to update</span>
-        </div>
-
-        <!-- Progress -->
-        <div class="train-progress-wrap" style="margin:0 0 12px">
-          <div class="train-progress-row">
-            <span class="train-progress-label">🐾 Cues Mastered</span>
-            <span class="train-progress-pct" id="deskTrainProgressPct">0%</span>
-          </div>
-          <div class="train-prog-bar-track"><div class="train-prog-bar-fill" id="deskTrainProgressBar" style="width:0%"></div></div>
-          <p class="train-progress-sub" id="deskTrainProgressSub">0 of 0 mastered</p>
-        </div>
-
-        <!-- Daily rotation -->
-        <div class="train-rotation-card" style="margin:0 0 10px">
-          <div class="train-rotation-day" id="deskTrainRotationDay">Today's focus</div>
-          <p style="font-size:.64rem;color:var(--td);line-height:1.5;margin-top:2px">Run these cues this morning before your walk — 5–10 min max, use his breakfast kibble.</p>
-          <div class="train-rotation-list" id="deskTrainRotationList"></div>
-        </div>
-
-        <!-- Filter -->
-        <div class="train-filter-strip" style="padding:0 0 8px">
-          <button class="train-filter-btn active" onclick="filterTrainDesk('all',this)">All</button>
-          <button class="train-filter-btn" onclick="filterTrainDesk('cues',this)">🎯 Cues</button>
-          <button class="train-filter-btn" onclick="filterTrainDesk('technique',this)">🔧 Technique</button>
-          <button class="train-filter-btn" onclick="filterTrainDesk('conditioning',this)">🌱 Conditioning</button>
-          <button class="train-filter-btn" onclick="filterTrainDesk('enrichment',this)">🌿 Enrichment</button>
-          <button class="train-filter-btn" onclick="filterTrainDesk('new',this)">New</button>
-          <button class="train-filter-btn" onclick="filterTrainDesk('practicing',this)">Practicing</button>
-          <button class="train-filter-btn" onclick="filterTrainDesk('mastered',this)">⭐ Mastered</button>
-          <button class="train-filter-btn" onclick="filterTrainDesk('class',this)">📚 Class</button>
-          <button class="train-filter-btn" onclick="filterTrainDesk('zigzag',this)">📱 ZigZag</button>
-        </div>
-
-        <div class="train-section-hd" style="padding:0;margin-top:4px">Cue Library</div>
-        <div class="train-cue-grid" id="deskTrainCueGrid"></div>
-        <div style="height:14px"></div>
-      </div>
-
-    </div>
-  </div>
-</div>
+<!-- desktop-layout removed 2026-07-09: was display:none at every breakpoint (dead code). All widths use the responsive pages. -->
 
 <!-- BOTTOM SHEET OVERLAY -->
 <div class="sheet-overlay" id="sheetOverlay" onclick="closeSheet()"></div>
@@ -3065,10 +2767,11 @@ window.switchTab=(tab)=>{
 };
 
 window.deskSwitchPanel=(panel)=>{
+  // Desktop panels were removed (dead code) — kept as a guarded no-op shim.
   document.querySelectorAll('.desk-panel').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.desk-tab').forEach(t=>t.classList.remove('active'));
-  document.getElementById('dpanel-'+panel).classList.add('active');
-  document.getElementById('dtab-'+panel).classList.add('active');
+  document.getElementById('dpanel-'+panel)?.classList.add('active');
+  document.getElementById('dtab-'+panel)?.classList.add('active');
   if(panel==='life'){renderOrbits();renderBattery();renderMemories('memListD');}
   if(panel==='cal')loadCalendar();
   if(panel==='train')renderTrainTab();
@@ -3723,6 +3426,7 @@ const MEM_CATS = {
   train:  {label:'Training',      icon:'🎓', cls:'cat-train'},
 };
 let selCatKey = 'soc';
+let selCatKeyT = 'soc';
 let selCatKeyD = 'soc';
 
 window.selCat  = (btn, k) => { selCatKey  = k; _selCatBtn(btn,'memCatRow'); };
@@ -3783,7 +3487,7 @@ function renderMemories(listId){
   });
 }
 
-function renderAllMemories(){['memList','memListD'].forEach(id=>renderMemories(id));}
+function renderAllMemories(){['memList','memListD','memListT'].forEach(id=>renderMemories(id));}
 
 // Inline delete confirm (no confirm() dialog — works in sandboxed iframes)
 window.askDelMemory = (idx, listId) => {
@@ -3817,7 +3521,9 @@ function _addMemory(inputId, whenId, catKey){
   renderAllMemories();
   showToast('🐾 Memory saved!', 2000);
 }
-window.addMemory  = () => _addMemory('memInput',  'memWhen',  selCatKey);
+window.addMemory  = (sfx) => sfx==='T'
+  ? _addMemory('memInputT', 'memDatetimeT', selCatKeyT)
+  : _addMemory('memInput',  'memWhen',      selCatKey);
 window.addMemoryD = () => _addMemory('memInputD', 'memWhenD', selCatKeyD);
 
 // Preset quick-add — fills the input and selects category, then user hits Add
@@ -3835,6 +3541,11 @@ function _presetMemory(inputId, whenId, catRowId, catSelVar, text, cat){
 }
 window.presetMemory  = (text,cat)=>{ selCatKey  = _presetMemory('memInput', 'memWhen', 'memCatRow','selCatKey',text,cat); };
 window.presetMemoryD = (text,cat)=>{ selCatKeyD = _presetMemory('memInputD','memWhenD','memCatRowD','selCatKeyD',text,cat); };
+window.presetMemoryT = (text,cat)=>{ selCatKeyT = _presetMemory('memInputT','memDatetimeT','memCatsT','selCatKeyT',text,cat); };
+window.selMemCat = (btn, k, sfx) => {
+  if(sfx==='T'){ selCatKeyT = k; _selCatBtn(btn,'memCatsT'); }
+  else { selCatKey = k; _selCatBtn(btn,'memCatRow'); }
+};
 
 // Get current time as datetime-local value (YYYY-MM-DDTHH:mm)
 function nowISOLocal(){
@@ -4345,23 +4056,28 @@ async function gistPull(){
         }
       }
       // PT days (jlos_0 … jlos_6)
+      let _ptDirty = false;
       if(parsed.ptDays){
         for(let d=0;d<7;d++){
           if(Array.isArray(parsed.ptDays[d])){
             try{ localStorage.setItem(`jlos_${d}`, JSON.stringify(parsed.ptDays[d])); }catch(e){}
           }
         }
-        renderPT();
-        refreshWeeklyChart();
+        _ptDirty = true;
+        try{
+          const _st = JSON.parse(localStorage.getItem('jlos_pt_daystamps'))||{};
+          _st[new Date().getDay()] = getTodayKey();
+          localStorage.setItem('jlos_pt_daystamps', JSON.stringify(_st));
+        }catch(e){}
         pulled.push('PT');
       }
       // PT ramp state (phase, unlocks, completions, fatigue)
       if(typeof parsed.ptRamp==='string'&&parsed.ptRamp){
         try{ localStorage.setItem('jlos_pt_ramp', parsed.ptRamp); }catch(e){}
-        renderPT();
-        refreshWeeklyChart();
+        _ptDirty = true;
         pulled.push('PT ramp');
       }
+      if(_ptDirty){ renderPT(); refreshWeeklyChart(); }
       // Battery log
       if(parsed.battery && Array.isArray(parsed.battery)){
         saveBatteryLog(parsed.battery);
@@ -4389,7 +4105,7 @@ async function gistPull(){
       // Checklist state
       if(parsed.checklist){
         try{ localStorage.setItem(CL_KEY, parsed.checklist); }catch(e){}
-        try{ renderChecklist(); }catch(e){}
+        try{ initChecklist(); }catch(e){}
         try{ renderDashTimberMini(); }catch(e){}
       }
       // Timber daily activity (walks, training, feedings)
@@ -6015,19 +5731,21 @@ function initSanrioLayer(){
 
 // ─── INIT ─────────────────────────────────────────────────────────────────────
 window.onload=()=>{
-  setupPWA();syncThemeColor();
-  syncDaySelectors();updateRltToday();
-  renderPT();initCharts();renderAllMemories();
-  initDatetimeInputs();
-  initGistSync();
-  initClaudeInput();
-  checkBirthday();
-  renderBattery();
-  renderOrbits();
-  renderMilestones();
-  initCalendar();
-  handleSitterHash();
-  initSanrioLayer();
+  // Fault-isolated boot: one failing init step must never kill the rest.
+  const _boot=(name,fn)=>{ try{ fn(); }catch(e){ try{ console.warn('init "'+name+'" failed:', e); }catch(_){} } };
+  _boot('setupPWA',setupPWA);_boot('syncThemeColor',syncThemeColor);
+  _boot('syncDaySelectors',syncDaySelectors);_boot('updateRltToday',updateRltToday);
+  _boot('renderPT',renderPT);_boot('initCharts',initCharts);_boot('renderAllMemories',renderAllMemories);
+  _boot('initDatetimeInputs',initDatetimeInputs);
+  _boot('initGistSync',initGistSync);
+  _boot('initClaudeInput',initClaudeInput);
+  _boot('checkBirthday',checkBirthday);
+  _boot('renderBattery',renderBattery);
+  _boot('renderOrbits',renderOrbits);
+  _boot('renderMilestones',renderMilestones);
+  _boot('initCalendar',initCalendar);
+  _boot('handleSitterHash',handleSitterHash);
+  _boot('initSanrioLayer',initSanrioLayer);
   try { renderTrainTab(); } catch(e) { setTimeout(renderTrainTab, 200); }
   try{
     if(typeof initChecklist==='undefined') throw new Error('initChecklist not defined — script block 4 may have failed to load');
@@ -6044,21 +5762,20 @@ window.onload=()=>{
     const el=document.getElementById('dashCalToday');
     if(el) el.innerHTML='<div style="color:var(--pa);font-size:.68rem">⚠ Calendar error: '+e.message+'</div>';
   }
-  renderDashTimberMini();
-  renderHomeTrainingFocus();
-  renderTimberBanner();
-  renderTimberNeeds();
-  initTimberMemories();
-  renderStatsTab();
-  if(typeof handleNFCHash==='function')handleNFCHash();
-  if(typeof initMidnightReset==='function')initMidnightReset();
-  initWalkTimer();
+  _boot('renderDashTimberMini',renderDashTimberMini);
+  _boot('renderHomeTrainingFocus',renderHomeTrainingFocus);
+  _boot('renderTimberBanner',renderTimberBanner);
+  _boot('renderTimberNeeds',renderTimberNeeds);
+  _boot('initTimberMemories',initTimberMemories);
+  _boot('renderStatsTab',renderStatsTab);
+  if(typeof handleNFCHash==='function')_boot('handleNFCHash',handleNFCHash);
+  if(typeof initMidnightReset==='function')_boot('initMidnightReset',initMidnightReset);
+  _boot('initWalkTimer',initWalkTimer);
   try{ restoreAgenda(); }catch(e){}
   // NFC deep link: ?serve=1 opens Move tab straight into Serve Me One
   try{
     if(new URLSearchParams(location.search).get('serve')==='1'){
       switchTab('pt');
-      if(typeof deskSwitchPanel==='function')deskSwitchPanel('pt');
       openServe();
     }
   }catch(e){}
@@ -8130,28 +7847,59 @@ window.logPottyTrip = function(){
   showToast('🚽 Potty trip logged!');
 };
 
-window.toggleFeedEntry = function(){
-  const row = document.getElementById('feedEntryRow');
+// Generic exclusive toggle for all manual-entry rows
+const ACTIVITY_ROWS=['feedEntryRow','manualWalkRow','trainEntryRow','pottyEntryRow'];
+window.toggleActivityRow = function(id){
+  const row = document.getElementById(id);
   if(!row) return;
   const open = row.style.display !== 'none';
-  row.style.display = open ? 'none' : 'block';
+  ACTIVITY_ROWS.forEach(r=>{ const el=document.getElementById(r); if(el) el.style.display='none'; });
   if(!open){
-    const manual = document.getElementById('manualWalkRow');
-    if(manual) manual.style.display='none';
-    setTimeout(()=>{ const inp=document.getElementById('feedAmountInput'); if(inp){ inp.value=''; inp.focus(); }}, 80);
+    row.style.display='block';
+    const n=new Date();
+    row.querySelectorAll('input[type=time]').forEach(t=>{ t.value=String(n.getHours()).padStart(2,'0')+':'+String(n.getMinutes()).padStart(2,'0'); });
+    row.querySelectorAll('input:not([type=time])').forEach(i=>{ i.value=''; });
+    setTimeout(()=>{ const inp=row.querySelector('input:not([type=time])')||row.querySelector('input'); if(inp) inp.focus(); }, 80);
   }
 };
+window.toggleFeedEntry = function(){ toggleActivityRow('feedEntryRow'); };
+window.toggleManualWalkEntry = function(){ toggleActivityRow('manualWalkRow'); };
 
-window.toggleManualWalkEntry = function(){
-  const row = document.getElementById('manualWalkRow');
-  if(!row) return;
-  const open = row.style.display !== 'none';
-  row.style.display = open ? 'none' : 'block';
-  if(!open){
-    const feed = document.getElementById('feedEntryRow');
-    if(feed) feed.style.display='none';
-    setTimeout(()=>{ const inp=document.getElementById('manualWalkMins'); if(inp){ inp.value=''; inp.focus(); }}, 80);
-  }
+// Read an <input type=time> as a timestamp on today's date (empty → now)
+function _tsFromTimeVal(id){
+  const v = document.getElementById(id)?.value;
+  if(!v) return Date.now();
+  const p = v.split(':');
+  const d = new Date();
+  d.setHours(parseInt(p[0])||0, parseInt(p[1])||0, 0, 0);
+  return d.getTime();
+}
+
+window.confirmManualTrain = function(){
+  const sessions = loadTimberTrains();
+  sessions.push({ts:_tsFromTimeVal('trainTimeInput'), manual:true});
+  saveTimberTrains(sessions);
+  const s = loadTimberNeeds();
+  s.items['timber-training'] = true;
+  saveTimberNeeds(s);
+  const row = document.getElementById('trainEntryRow');
+  if(row) row.style.display='none';
+  renderTimberActivity();
+  renderDashTimberMini();
+  partnerPush();
+  showToast('🎓 Training logged!');
+};
+
+window.confirmManualPotty = function(){
+  const trips = loadTimberPotty();
+  trips.push({ts:_tsFromTimeVal('pottyTimeInput'), manual:true});
+  saveTimberPotty(trips);
+  const row = document.getElementById('pottyEntryRow');
+  if(row) row.style.display='none';
+  renderTimberActivity();
+  try{ renderDashTimberMini(); }catch(e){}
+  partnerPush();
+  showToast('🚽 Potty trip logged!');
 };
 
 window.confirmManualWalk = function(){
@@ -8159,7 +7907,7 @@ window.confirmManualWalk = function(){
   const dist = document.getElementById('manualWalkDist')?.value.trim()||'';
   const mins = minsRaw ? Math.max(1, parseInt(minsRaw)||1) : 0;
   const walks = loadTimberWalks();
-  walks.push({ts: Date.now(), mins, dist, manual:true});
+  walks.push({ts: _tsFromTimeVal('manualWalkTime'), mins, dist, manual:true});
   saveTimberWalks(walks);
   const s = loadTimberNeeds();
   s.items['timber-walk'] = true;
@@ -8179,7 +7927,7 @@ window.confirmFeedLog = function(){
   const inp = document.getElementById('feedAmountInput');
   const note = inp ? inp.value.trim() : '';
   const feeds = loadTimberFeeds();
-  feeds.push({ts: Date.now(), note});
+  feeds.push({ts: _tsFromTimeVal('feedTimeInput'), note});
   saveTimberFeeds(feeds);
   // Mark feeding need done
   const s = loadTimberNeeds();
@@ -8193,6 +7941,220 @@ window.confirmFeedLog = function(){
   const msg = note ? `🍽️ Feeding logged: ${note}` : '🍽️ Feeding logged!';
   showToast(msg);
 };
+
+// Re-apply compact state whenever the checklist is rebuilt
+try{
+  const _initChecklistCore = initChecklist;
+  initChecklist = function(){ _initChecklistCore(); try{ updateChecklistCompact(); }catch(e){} };
+}catch(e){}
+
+// ── NFC HASH ACTIONS (#nfc=teeth / meds-morning / meds-evening / walk / cronometer) ──
+function handleNFCHash(){
+  const m = (location.hash||'').match(/^#nfc=([\w-]+)/);
+  if(!m) return;
+  const action = m[1];
+  try{ history.replaceState(null,'',location.pathname+location.search); }catch(e){ location.hash=''; }
+  const markCL = (id,label)=>{ setCLState(id,'done'); try{ initChecklist(); }catch(e){} showToast('✓ '+label, 2400); };
+  if(action==='teeth'){ markCL('brush-teeth','Teeth brushed 🦷'); }
+  else if(action==='walk'){ switchTab('timber'); logWalkNFC(); }
+  else if(action==='meds-morning'){ openNFCModal('🌅 Morning meds',[['glucosamine','💊 Glucosamine'],['iron','🩸 Iron'],['vitamins','💊 Vitamins'],['vyvanse','🔵 Vyvanse']]); }
+  else if(action==='meds-evening'){ openNFCModal('🌙 Evening meds',[['birth-control','💊 Birth control'],['zoloft','💊 Zoloft']]); }
+  else if(action==='cronometer'){
+    markCL(new Date().getHours()<15 ? 'log-breakfast' : 'log-dinner', 'Meal logged 📱');
+    try{ window.open('https://cronometer.com/','_blank'); }catch(e){}
+  }
+}
+function openNFCModal(title, items){
+  closeNFCModal();
+  const wrap = document.createElement('div');
+  wrap.className = 'nfc-modal open';
+  wrap.id = 'nfcModal';
+  wrap.onclick = (e)=>{ if(e.target===wrap) closeNFCModal(); };
+  wrap.innerHTML = '<div class="nfc-modal-box"><div class="nfc-handle"></div>'
+    + '<div class="nfc-title">'+title+'</div>'
+    + '<div class="nfc-sub">Untick anything not taken yet, then confirm 💜</div>'
+    + '<div class="nfc-items">'+items.map(it=>'<label style="display:flex;align-items:center;gap:10px;background:var(--bgp);border:2px solid var(--lm);border-radius:14px;padding:11px 13px;font-size:.78rem;font-weight:800;color:var(--td);cursor:pointer"><input type="checkbox" class="pcb" checked data-cl="'+it[0]+'">'+it[1]+'</label>').join('')+'</div>'
+    + '<div class="nfc-btn-row"><button class="nfc-confirm" onclick="confirmNFCModal()">✓ Log these</button>'
+    + '<button onclick="closeNFCModal()" style="background:none;border:2px solid var(--lm);border-radius:var(--rf);padding:12px 16px;font-family:\'Nunito\',sans-serif;font-size:.7rem;font-weight:900;color:var(--tm);cursor:pointer">✕</button></div></div>';
+  document.body.appendChild(wrap);
+}
+window.confirmNFCModal = function(){
+  let n = 0;
+  document.querySelectorAll('#nfcModal input[data-cl]').forEach(b=>{ if(b.checked){ setCLState(b.dataset.cl,'done'); n++; } });
+  try{ initChecklist(); }catch(e){}
+  closeNFCModal();
+  showToast('✓ '+n+' logged 💜', 2400);
+};
+window.closeNFCModal = function(){ document.getElementById('nfcModal')?.remove(); };
+
+// ── MIDNIGHT RESET ────────────────────────────────────────────────────────────
+// PT checkboxes live in per-weekday arrays (jlos_0…6) which would otherwise
+// carry over week to week. Stamp each weekday with the date it was last used;
+// on a new date, clear that weekday's array. Also refreshes day-keyed UIs if
+// the app is left open across midnight.
+function initMidnightReset(){
+  const STAMPS = 'jlos_pt_daystamps';
+  const check = ()=>{
+    try{
+      const wd = new Date().getDay(), tk = getTodayKey();
+      let st = {};
+      try{ st = JSON.parse(localStorage.getItem(STAMPS))||{}; }catch(e){}
+      if(st[wd] !== tk){
+        try{ localStorage.removeItem(`jlos_${wd}`); }catch(e){}
+        st[wd] = tk;
+        try{ localStorage.setItem(STAMPS, JSON.stringify(st)); }catch(e){}
+        try{ renderPT(); refreshWeeklyChart(); }catch(e){}
+      }
+      if(window._lastSeenDate && window._lastSeenDate !== tk){
+        try{ initChecklist(); }catch(e){}
+        try{ renderTimberActivity(); }catch(e){}
+        try{ renderTimberBanner(); }catch(e){}
+        try{ renderStatsTab(); }catch(e){}
+      }
+      window._lastSeenDate = tk;
+    }catch(e){}
+  };
+  check();
+  clearInterval(window._midnightTimer);
+  window._midnightTimer = setInterval(check, 60000);
+}
+
+// ── CHECKLIST COMPACT MODE (when a day plan is running) ──────────────────────
+window._clExpandOverride = false;
+function updateChecklistCompact(){
+  const cl = document.getElementById('homeChecklist');
+  if(!cl) return;
+  const aw = document.getElementById('agendaWidget');
+  const active = aw && aw.style.display === 'block' && !window._clExpandOverride;
+  cl.classList.toggle('cl-compact', !!active);
+  if(!cl.querySelector('.cl-compact-hint')){
+    const pw = cl.querySelector('.home-progress-wrap');
+    const hint = document.createElement('div');
+    hint.className = 'cl-compact-hint';
+    hint.textContent = 'checklist tucked away while your plan runs — tap to peek 🌸';
+    hint.onclick = ()=>{ window._clExpandOverride = true; updateChecklistCompact(); };
+    if(pw){
+      pw.insertAdjacentElement('afterend', hint);
+      pw.addEventListener('click', ()=>{ if(cl.classList.contains('cl-compact')){ window._clExpandOverride = true; updateChecklistCompact(); } });
+    } else {
+      cl.appendChild(hint);
+    }
+  }
+}
+
+// ── REBUILT MISSING FUNCTIONS (lost in an earlier truncation) ────────────────
+const TIMBER_BIRTHDAY = new Date(2025, 11, 30); // Dec 30, 2025
+
+function timberAgeMonths(){
+  const now = new Date();
+  let m = (now.getFullYear()-TIMBER_BIRTHDAY.getFullYear())*12 + (now.getMonth()-TIMBER_BIRTHDAY.getMonth());
+  if(now.getDate() < TIMBER_BIRTHDAY.getDate()) m--;
+  return Math.max(1, m);
+}
+function timberExerciseTarget(){ return 5 * timberAgeMonths() * 2; } // 5min × age × 2
+
+function updateTimberExerciseProg(totalMins){
+  const target = timberExerciseTarget();
+  const fill = document.getElementById('timberExerciseProg');
+  if(fill) fill.style.width = Math.min(100, Math.round((totalMins/target)*100)) + '%';
+  const sub = document.getElementById('timberAgeSub');
+  if(sub) sub.textContent = totalMins + ' of ~' + target + ' min today · ' + timberAgeMonths() + ' months old';
+}
+
+function renderTimberBanner(){
+  const t = document.getElementById('timberAgeTitle');
+  if(t) t.textContent = "Timber's Daily Exercise";
+  let mins = 0;
+  try{ mins = loadTimberWalks().reduce((a,w)=>a+w.mins,0); }catch(e){}
+  updateTimberExerciseProg(mins);
+}
+
+function renderHomeTrainingFocus(){
+  const el = document.getElementById('homeTrainingFocus');
+  if(!el) return;
+  let names = [];
+  try{ names = TRAIN_ROTATION_MAP[new Date().getDay()] || []; }catch(e){}
+  if(!names.length){
+    el.innerHTML = '<p style="font-size:.68rem;color:var(--tm)">Rest day — short name + recall warmup only 🌱</p>';
+    return;
+  }
+  el.innerHTML = '<div style="display:flex;flex-wrap:wrap;gap:6px">' +
+    names.slice(0,5).map(n=>'<span class="train-rotation-pill">'+esc(n)+'</span>').join('') + '</div>';
+}
+
+function renderTimberDailyRotation(){
+  const el = document.getElementById('timberDailyRotation');
+  if(!el) return;
+  if(!document.getElementById('TimbTrainRotationList')){
+    el.innerHTML = '<div class="train-rotation-day" id="TimbTrainRotationDay">Today\'s focus</div><div class="train-rotation-list" id="TimbTrainRotationList"></div>';
+  }
+  try{ updateTrainRotation('Timb'); }catch(e){}
+}
+
+function renderStatsTab(){
+  // 7-day heatmap (Mon–Sun) scored from PT ramp history — active exercises only
+  const grid = document.getElementById('statsHeatGrid');
+  if(grid){
+    try{
+      const r = loadPtRamp();
+      const now = new Date();
+      const todayK = ptTodayKey(now);
+      const monday = new Date(now); monday.setDate(now.getDate()-((now.getDay()+6)%7));
+      const dl = ['M','T','W','T','F','S','S'];
+      const cells = [];
+      for(let i=0;i<7;i++){
+        const d = new Date(monday); d.setDate(monday.getDate()+i);
+        const k = ptTodayKey(d);
+        const isFuture = k!==todayK && d>now;
+        const denom = (typeof r.denoms[k]==='number') ? r.denoms[k] : ptActiveFor(d.getDay(),r).length;
+        const done = r.completions.filter(x=>x.date===k).length;
+        const pct = denom ? Math.min(done,denom)/denom : 0;
+        let bg = 'var(--ll)';
+        if(!isFuture && denom) bg = pct>=1 ? 'var(--mm)' : pct>0 ? 'var(--pm)' : 'var(--ll)';
+        cells.push('<div style="width:30px;height:30px;border-radius:9px;background:'+bg+';display:flex;align-items:center;justify-content:center;font-size:.55rem;font-weight:900;color:var(--td);opacity:'+(isFuture?'.45':'1')+';'+(k===todayK?'outline:2px solid var(--la);outline-offset:1px;':'')+'" title="'+k+'">'+dl[i]+'</div>');
+      }
+      grid.innerHTML = cells.join('');
+    }catch(e){}
+  }
+  const ms = document.getElementById('statsMorningStreak');
+  if(ms){ try{ ms.textContent = (getStreak('morning')||0) + ' days'; }catch(e){ ms.textContent='0 days'; } }
+  const tw = document.getElementById('statsTimberWalks');
+  if(tw){ try{ tw.textContent = loadTimberWalks().reduce((a,w)=>a+w.mins,0) + ' min'; }catch(e){ tw.textContent='0 min'; } }
+}
+
+function fireConfetti(){
+  try{
+    const bits = ['🌸','✨','💮','🌷','⭐','🌿'];
+    for(let i=0;i<14;i++){
+      const p = document.createElement('div');
+      p.className = 'confetti-bit';
+      p.textContent = bits[Math.floor(Math.random()*bits.length)];
+      p.style.left = (6+Math.random()*88)+'vw';
+      p.style.animationDelay = (Math.random()*0.3)+'s';
+      p.style.fontSize = (0.7+Math.random()*0.8)+'rem';
+      document.body.appendChild(p);
+      setTimeout(()=>{ try{ p.remove(); }catch(e){} }, 2100);
+    }
+  }catch(e){}
+}
+
+function initTimberMemories(){
+  try{
+    const dt = document.getElementById('memDatetimeT');
+    if(dt && !dt.value) dt.value = nowISOLocal();
+    const pr = document.getElementById('memPresetsT');
+    if(pr && !pr.children.length){
+      const presets = [
+        ['First Dog Park Visit','soc','🐕'],
+        ['New Trick Unlocked','train','🎓'],
+        ['Brave Vet Moment','health','💚'],
+        ['New Cozy Spot','home','🏠'],
+      ];
+      pr.innerHTML = presets.map(p=>'<button class="mem-preset" onclick="presetMemoryT(\''+p[0].replace(/'/g,"\\'")+'\',\''+p[1]+'\')">'+p[2]+' '+p[0]+'</button>').join('');
+    }
+    renderMemories('memListT');
+  }catch(e){}
+}
 
 function renderTimberActivity(){
   const walks = loadTimberWalks();
@@ -8221,7 +8183,7 @@ function renderTimberActivity(){
         ? `${totalMins} min · ${fmt(last.ts)}`
         : `${walks.length}× · ${totalMins} min`;
     } else {
-      walkMeta.textContent = 'No walks';
+      walkMeta.textContent = 'first walk awaits 🐾';
     }
   }
 
@@ -8234,7 +8196,7 @@ function renderTimberActivity(){
         ? `1 session · ${fmt(last.ts)}`
         : `${trains.length} sessions`;
     } else {
-      trainMeta.textContent = 'No sessions';
+      trainMeta.textContent = 'ready when he is 🎓';
     }
   }
 
@@ -8247,7 +8209,7 @@ function renderTimberActivity(){
         ? `1 meal · ${fmt(last.ts)}`
         : `${feeds.length} meals`;
     } else {
-      feedMeta.textContent = 'No feedings';
+      feedMeta.textContent = 'next meal awaits 🍽️';
     }
   }
 
@@ -8261,7 +8223,7 @@ function renderTimberActivity(){
         ? `1 trip · ${fmt(last.ts)}`
         : `${potties.length} trips · ${ago<60 ? ago+'m ago' : fmt(last.ts)}`;
     } else {
-      pottyMeta.textContent = 'No trips';
+      pottyMeta.textContent = 'fresh slate 🌱';
     }
   }
 
@@ -8558,7 +8520,8 @@ function generatePartnerViewHtml(rawUrl, gistId, token){
     '.log-btn.train{background:#d8f0f8;color:#2596c8;grid-column:1/-1}',
     '.log-btn.potty{background:#e8f7ee;color:#3dba87;grid-column:1/-1}',
     '.meta-txt{font-size:.6rem;color:#6a90b8;text-align:center;margin-top:3px;min-height:1em}',
-    '.entry-row{display:none;background:#edf4ff;border-radius:12px;padding:10px;margin-top:8px;gap:8px;align-items:center}',
+    '.entry-row{display:none;background:#edf4ff;border-radius:12px;padding:10px;margin-top:8px;gap:8px;align-items:center;flex-wrap:wrap}',
+    '.manual-lnk{display:inline-flex;align-items:center;justify-content:center;min-height:38px;padding:8px 16px;margin-top:4px;background:none;border:1.5px dashed #a8c4f5;border-radius:999px;font-family:inherit;font-size:.66rem;font-weight:800;color:#4d7ee0;cursor:pointer}',
     '.entry-row.open{display:flex}',
     'input.log-input{flex:1;background:#fff;border:1.5px solid #a8c4f5;border-radius:10px;padding:8px 10px;font-family:inherit;font-size:.72rem;color:#1c3a5e;outline:none}',
     '.confirm-btn{background:#5ba0f0;color:#fff;border:none;border-radius:10px;padding:8px 14px;font-family:inherit;font-size:.7rem;font-weight:900;cursor:pointer;white-space:nowrap}',
@@ -8613,6 +8576,7 @@ function generatePartnerViewHtml(rawUrl, gistId, token){
     'input.log-input,textarea.mem-input{background:#2e1d3e;border-color:#46305a;color:#f0e8f5}',
     '.entry-row,.pane{background:transparent}',
     '.filter-btn{background:#1f1330;border-color:#46305a;color:#b896d6}',
+    '.manual-lnk{color:#b896d6;border-color:#46305a}',
     '.filter-btn.active{background:#46305a;color:#f0e8f5}',
     '.skill-card{border-left-color:#46305a}',
     '}'
@@ -8636,19 +8600,29 @@ function generatePartnerViewHtml(rawUrl, gistId, token){
     '  <div class="card">',
     '    <p style="font-size:.66rem;color:#6a90b8;margin-bottom:12px">Your logs appear in Jasmine\'s app automatically.</p>',
     '    <div class="log-grid">',
-    '      <div><button class="log-btn walk" onclick="toggleEntry(\'walkEntry\')">🦮 Walk</button><div class="meta-txt" id="pWalkMeta">No walks</div></div>',
-    '      <div><button class="log-btn feed" onclick="toggleEntry(\'feedEntry\')">🍽️ Feeding</button><div class="meta-txt" id="pFeedMeta">No feedings</div></div>',
-    '      <button class="log-btn train" onclick="logPartnerTrain()">🎓 Training Session</button>',
-    '      <button class="log-btn potty" onclick="logPartnerPotty()">🚽 Outside / Potty</button>',
+    '      <div><button class="log-btn walk" onclick="toggleEntry(\'walkEntry\')">🦮 Walk</button><div class="meta-txt" id="pWalkMeta">first walk awaits 🐾</div></div>',
+    '      <div><button class="log-btn feed" onclick="toggleEntry(\'feedEntry\')">🍽️ Feeding</button><div class="meta-txt" id="pFeedMeta">next meal awaits 🍽️</div></div>',
+    '      <div style="grid-column:1/-1"><button class="log-btn train" style="width:100%" onclick="logPartnerTrain()">🎓 Training Session</button><div class="meta-txt"><button class="manual-lnk" onclick="toggleEntry(\'trainEntry\')">+ add with time</button></div></div>',
+    '      <div style="grid-column:1/-1"><button class="log-btn potty" style="width:100%" onclick="logPartnerPotty()">🚽 Outside / Potty</button><div class="meta-txt"><button class="manual-lnk" onclick="toggleEntry(\'pottyEntry\')">+ add with time</button></div></div>',
     '    </div>',
     '    <div class="entry-row" id="walkEntry">',
     '      <input class="log-input" id="pWalkMins" type="number" min="1" max="300" placeholder="Mins (e.g. 20)">',
     '      <input class="log-input" id="pWalkDist" type="text" placeholder="Distance (optional)">',
+    '      <input class="log-input" id="pWalkTime" type="time" style="flex:0 0 96px" title="Time (defaults to now)">',
     '      <button class="confirm-btn" onclick="confirmPartnerWalk()">Log</button>',
     '    </div>',
     '    <div class="entry-row" id="feedEntry">',
+    '      <input class="log-input" id="pFeedTime" type="time" style="flex:0 0 96px" title="Time (defaults to now)">',
     '      <input class="log-input" id="pFeedNote" type="text" placeholder="Amount / note (e.g. ½ cup)">',
     '      <button class="confirm-btn" style="background:#c8940a" onclick="confirmPartnerFeed()">Log</button>',
+    '    </div>',
+    '    <div class="entry-row" id="trainEntry">',
+    '      <input class="log-input" id="pTrainTime" type="time" style="flex:0 0 96px" title="Time (defaults to now)">',
+    '      <button class="confirm-btn" style="background:#2596c8" onclick="confirmPartnerTrainManual()">Log training</button>',
+    '    </div>',
+    '    <div class="entry-row" id="pottyEntry">',
+    '      <input class="log-input" id="pPottyTime" type="time" style="flex:0 0 96px" title="Time (defaults to now)">',
+    '      <button class="confirm-btn" style="background:#3dba87" onclick="confirmPartnerPottyManual()">Log potty trip</button>',
     '    </div>',
     '    <div class="sync-status" id="partnerSyncStatus"></div>',
     '  </div>',
@@ -8714,7 +8688,20 @@ function generatePartnerViewHtml(rawUrl, gistId, token){
     '  var el=document.getElementById(id);',
     '  var open=el.classList.contains("open");',
     '  document.querySelectorAll(".entry-row").forEach(function(r){r.classList.remove("open");});',
-    '  if(!open) el.classList.add("open");',
+    '  if(!open){',
+    '    el.classList.add("open");',
+    '    var n=new Date();',
+    '    el.querySelectorAll("input[type=time]").forEach(function(t){t.value=("0"+n.getHours()).slice(-2)+":"+("0"+n.getMinutes()).slice(-2);});',
+    '  }',
+    '}',
+    'function tsFromTime(id){',
+    '  var el=document.getElementById(id);',
+    '  var v=el?el.value:"";',
+    '  if(!v)return Date.now();',
+    '  var p=v.split(":");',
+    '  var d=new Date();',
+    '  d.setHours(parseInt(p[0])||0,parseInt(p[1])||0,0,0);',
+    '  return d.getTime();',
     '}',
     'function fmtTime(ts){return new Date(ts).toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"});}',
     'function fmtDate(ts){return new Date(ts).toLocaleDateString([],{month:"short",day:"numeric"});}',
@@ -8840,8 +8827,8 @@ function generatePartnerViewHtml(rawUrl, gistId, token){
     '  var mw=_partnerLogs.filter(function(e){return e.type==="walk";});',
     '  var mf=_partnerLogs.filter(function(e){return e.type==="feed";});',
     '  var mp=_partnerLogs.filter(function(e){return e.type==="potty";});',
-    '  document.getElementById("pWalkMeta").textContent=mw.length?mw.length+"x today":"No walks";',
-    '  document.getElementById("pFeedMeta").textContent=mf.length?mf.length+" meal"+(mf.length>1?"s":""):"No feedings";',
+    '  document.getElementById("pWalkMeta").textContent=mw.length?mw.length+"x today":"first walk awaits 🐾";',
+    '  document.getElementById("pFeedMeta").textContent=mf.length?mf.length+" meal"+(mf.length>1?"s":""):"next meal awaits 🍽️";',
     '}',
 
     '// ── PUSH ────────────────────────────────────────────────────────────────',
@@ -8880,18 +8867,26 @@ function generatePartnerViewHtml(rawUrl, gistId, token){
     '  var mins=parseInt(document.getElementById("pWalkMins").value)||0;',
     '  var dist=(document.getElementById("pWalkDist").value||"").trim();',
     '  var label="🦮 Walk"+(mins?" · "+mins+" min":"")+(dist?" · "+dist:"");',
-    '  pushPartnerLog({ts:Date.now(),type:"walk",label:label,mins:mins,dist:dist});',
+    '  pushPartnerLog({ts:tsFromTime("pWalkTime"),type:"walk",label:label,mins:mins,dist:dist});',
     '  document.getElementById("walkEntry").classList.remove("open");',
     '  document.getElementById("pWalkMins").value="";document.getElementById("pWalkDist").value="";',
     '}',
     'function confirmPartnerFeed(){',
     '  var note=(document.getElementById("pFeedNote").value||"").trim();',
-    '  pushPartnerLog({ts:Date.now(),type:"feed",label:note?"🍽️ Fed — "+note:"🍽️ Fed",note:note});',
+    '  pushPartnerLog({ts:tsFromTime("pFeedTime"),type:"feed",label:note?"🍽️ Fed — "+note:"🍽️ Fed",note:note});',
     '  document.getElementById("feedEntry").classList.remove("open");',
     '  document.getElementById("pFeedNote").value="";',
     '}',
     'function logPartnerTrain(){pushPartnerLog({ts:Date.now(),type:"train",label:"🎓 Training session"});}',
     'function logPartnerPotty(){pushPartnerLog({ts:Date.now(),type:"potty",label:"🚽 Outside / potty"});}',
+    'function confirmPartnerTrainManual(){',
+    '  pushPartnerLog({ts:tsFromTime("pTrainTime"),type:"train",label:"🎓 Training session"});',
+    '  document.getElementById("trainEntry").classList.remove("open");',
+    '}',
+    'function confirmPartnerPottyManual(){',
+    '  pushPartnerLog({ts:tsFromTime("pPottyTime"),type:"potty",label:"🚽 Outside / potty"});',
+    '  document.getElementById("pottyEntry").classList.remove("open");',
+    '}',
 
     '// ── MEMORIES ────────────────────────────────────────────────────────────',
     'async function addPartnerMemory(){',
@@ -9045,6 +9040,7 @@ function restoreAgenda(){
     var aw = document.getElementById('agendaWidget');
     if(aw) aw.style.display = 'block';
     if(typeof updateBuildMyDayPulse==='function') updateBuildMyDayPulse();
+    try{ updateChecklistCompact(); }catch(e){}
   }catch(e){}
 }
 
@@ -9066,6 +9062,8 @@ function generateAgenda(){
   updateBuildMyDayPulse();
   saveDBQueue([]);
   saveAgendaState(blocks);
+  window._clExpandOverride = false;
+  try{ updateChecklistCompact(); }catch(e){}
 }
 
 function clearAgenda(){
@@ -9075,6 +9073,8 @@ function clearAgenda(){
   if(ab) ab.innerHTML = '';
   try{ localStorage.removeItem('jlos_agenda_state'); }catch(e){}
   updateBuildMyDayPulse();
+  window._clExpandOverride = false;
+  try{ updateChecklistCompact(); }catch(e){}
   try{ if(typeof gistPush==='function'&&_getGistToken()) gistPush(); }catch(e){}
 }
 

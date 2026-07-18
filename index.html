@@ -1131,7 +1131,8 @@ body.night .train-status.new{background:var(--pl);border-color:var(--pm);color:v
 .cl-section-hd{display:flex;align-items:center;justify-content:space-between;padding:10px 0 6px;cursor:pointer;-webkit-tap-highlight-color:transparent;user-select:none}
 .cl-section-title{font-size:.68rem;font-weight:900;letter-spacing:.12em;text-transform:uppercase;color:var(--tm);display:flex;align-items:center;gap:6px}
 .cl-section-streak{font-size:.5rem;font-weight:900;padding:2px 7px;border-radius:var(--rf);background:var(--gl);color:var(--ga);border:1.5px solid var(--gm)}
-.cl-section-chevron{font-size:.7rem;color:var(--tm);transition:transform .25s;flex-shrink:0}
+.cl-section-chevron{font-size:.7rem;color:var(--tm);transition:transform .25s;flex-shrink:0;display:inline-block}
+.cl-section-chevron.collapsed{transform:rotate(-90deg)}
 .cl-section-body{display:flex;flex-direction:column;gap:5px;overflow:hidden;transition:max-height .35s ease,opacity .25s ease}
 .cl-section-body.cl-hidden{max-height:0!important;opacity:0;pointer-events:none}
 .cl-item{display:flex;align-items:center;gap:10px;background:var(--bgc);border-radius:var(--rmd);border:2px solid var(--lm);padding:10px 12px;transition:border-color .2s,background .15s;cursor:pointer;-webkit-tap-highlight-color:transparent;position:relative}
@@ -1290,8 +1291,8 @@ body.night .train-status.new{background:var(--pl);border-color:var(--pm);color:v
 .tmr-toggle:hover{color:var(--td)}
 .tmr-body{margin-top:6px}
 .dash-timber-mini-row{display:flex;flex-wrap:wrap;gap:5px;margin-top:4px}
-.dash-timber-need{font-size:.63rem;font-weight:700;color:var(--tm);padding:3px 8px;background:var(--bgp);border-radius:var(--rf);border:1.5px solid var(--ll);cursor:pointer;transition:all .15s}
-.dash-timber-need.done{color:var(--sa);border-color:var(--sa);background:var(--mll, #e8f5e8);text-decoration:line-through}
+.dash-timber-mini{display:flex;flex-wrap:wrap;gap:5px;margin-top:4px}
+.dash-timber-chip{display:inline-flex;align-items:center;gap:4px;padding:5px 11px;border-radius:var(--rf);font-size:.6rem;font-weight:800;border:1.5px solid transparent;white-space:nowrap}
 /* Floating scroll button */
 .scroll-fab{position:fixed;bottom:calc(18px + env(safe-area-inset-bottom));right:16px;z-index:290;width:38px;height:38px;border-radius:50%;border:none;background:var(--la);color:#fff;font-size:1rem;cursor:pointer;box-shadow:0 3px 12px rgba(0,0,0,.22);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;transform:scale(.8)}
 .scroll-fab.visible{opacity:1;pointer-events:all;transform:scale(1)}
@@ -1515,17 +1516,17 @@ body.night .train-status.new{background:var(--pl);border-color:var(--pm);color:v
     </div>
     <div style="display:flex;justify-content:space-around;align-items:flex-end">
       <div class="orbit-person" onclick="openConnModal('Partner','💙')">
-        <div class="orbit-ring warm" id="homeOrbit-Partner" style="width:62px;height:62px">💙</div>
+        <div class="orbit-ring warm" id="homeOrbit-Partner" style="width:60px;height:60px">💙</div>
         <div class="orbit-name">Nathan</div>
         <div class="orbit-days" id="homeOrbitDays-Partner">—</div>
       </div>
       <div class="orbit-person" onclick="openConnModal('Mom','💗')">
-        <div class="orbit-ring warm" id="homeOrbit-Mom" style="width:56px;height:56px">💗</div>
+        <div class="orbit-ring warm" id="homeOrbit-Mom" style="width:60px;height:60px">💗</div>
         <div class="orbit-name">Mom</div>
         <div class="orbit-days" id="homeOrbitDays-Mom">—</div>
       </div>
       <div class="orbit-person" onclick="openConnModal('Sister','🌸')">
-        <div class="orbit-ring warm" id="homeOrbit-Sister" style="width:56px;height:56px">🌸</div>
+        <div class="orbit-ring warm" id="homeOrbit-Sister" style="width:60px;height:60px">🌸</div>
         <div class="orbit-name">Sister</div>
         <div class="orbit-days" id="homeOrbitDays-Sister">—</div>
       </div>
@@ -7384,17 +7385,21 @@ function initChecklist(){
   // ── Build My Day pulse ─────────────────────────────────────────────────────
   updateBuildMyDayPulse();
 
+  // ── Accordion: exactly one section open — the time-appropriate one ─────────
+  window._clOpenSection = currentCLSection();
+
   CHECKLIST.forEach(section => {
     const {done, total} = countSectionDone(section.id);
+    if(total === 0) return; // hide sections with no active items (e.g. Midday unless iron was skipped)
     const complete = done === total && total > 0;
     const streak = getStreak(section.id);
-    const isOpen = section.autoOpen(h) || (done>0 && !complete);
+    const isOpen = section.id === window._clOpenSection;
 
     const div = document.createElement('div');
     div.className = 'cl-section';
     div.id = 'cl-section-' + section.id;
 
-    let streakHtml = streak >= 2 ? `<span class="cl-section-streak">🔥 ${streak} day streak</span>` : '';
+    let streakHtml = streak >= 2 ? `<span class="cl-section-streak">🔥 ${streak}</span>` : '';
 
     div.innerHTML = `
       <div class="cl-section-hd" onclick="toggleCLSection('${section.id}')">
@@ -7444,14 +7449,27 @@ function renderCLItems(section){
   }).join('');
 }
 
+// Which section should be open by default right now (mock time bands)
+function currentCLSection(){
+  const h = new Date().getHours();
+  let want = h < 11 ? 'morning' : h < 17 ? 'midday' : h < 21 ? 'evening' : 'wellness';
+  // If that section has no visible items today (e.g. Midday), fall back sensibly
+  if(countSectionDone(want).total === 0) want = h < 17 ? 'morning' : 'evening';
+  return want;
+}
+
 function toggleCLSection(id){
-  const body = document.getElementById('cl-body-'+id);
-  const chev = document.getElementById('cl-chev-'+id);
-  if(!body) return;
-  const isOpen = !body.classList.contains('cl-hidden');
-  body.classList.toggle('cl-hidden', isOpen);
-  body.style.maxHeight = isOpen ? '0' : '1000px';
-  if(chev) chev.classList.toggle('collapsed', isOpen);
+  // Accordion: opening one section closes the others; tapping the open one closes it
+  window._clOpenSection = (window._clOpenSection === id) ? null : id;
+  CHECKLIST.forEach(sec => {
+    const body = document.getElementById('cl-body-'+sec.id);
+    const chev = document.getElementById('cl-chev-'+sec.id);
+    if(!body) return;
+    const open = sec.id === window._clOpenSection;
+    body.classList.toggle('cl-hidden', !open);
+    body.style.maxHeight = open ? '1000px' : '0';
+    if(chev) chev.classList.toggle('collapsed', !open);
+  });
 }
 
 function clToggle(itemId, sectionId){
@@ -7503,6 +7521,7 @@ function refreshCLSection(sectionId){
         b2.classList.add('cl-hidden');
         b2.style.maxHeight = '0';
         if(c2) c2.classList.add('collapsed');
+        if(window._clOpenSection === sectionId) window._clOpenSection = null;
       }
     }, 2400);
   }
@@ -7639,20 +7658,24 @@ function renderHomeCalWidget(){
   }).catch(()=>{ todayEl.innerHTML='<span class="dash-w-sub" style="color:var(--pa)">⚠ Calendar unavailable</span>'; });
 }
 
-// ── DASHBOARD TIMBER MINI ─────────────────────────────────────────────────────
-const TIMBER_NEEDS_MINI = [
-  {id:'timber-out-am',  label:'First outside'},
-  {id:'timber-walk',    label:'Walk / play'},
-  {id:'timber-out-pm',  label:'Last out before bed'},
-];
+// ── DASHBOARD TIMBER MINI — live count chips vs daily targets ─────────────────
+const TIMBER_MINI_TARGETS = { walks:2, feeds:2, potty:4 };
 function renderDashTimberMini(){
   const el = document.getElementById('dashTimberMini');
   if(!el) return;
-  el.innerHTML = TIMBER_NEEDS_MINI.map(n => {
-    const done = getCLState(n.id)==='done' || getTimberNeedDone(n.id);
-    return `<div class="dash-timber-need${done?' done':''}" onclick="switchTab('timber')">
-      ${done?'✓':''} ${n.label}</div>`;
-  }).join('');
+  let walks=0, feeds=0, potty=0;
+  try{ walks = loadTimberWalks().length; }catch(e){}
+  try{ feeds = loadTimberFeeds().length; }catch(e){}
+  try{ potty = loadTimberPotty().length; }catch(e){}
+  const chips = [
+    {icon:'🦮', name:'Walk', n:walks, target:TIMBER_MINI_TARGETS.walks, bg:'var(--pl)', fg:'var(--pa)', bd:'var(--pm)'},
+    {icon:'🍽️', name:'Fed',  n:feeds, target:TIMBER_MINI_TARGETS.feeds, bg:'var(--gl)', fg:'var(--ga)', bd:'var(--gm)'},
+    {icon:'🚽', name:'Out',  n:potty, target:TIMBER_MINI_TARGETS.potty, bg:'var(--ml)', fg:'var(--ma)', bd:'var(--mm)'}
+  ];
+  el.innerHTML = chips.map(c =>
+    '<span class="dash-timber-chip" style="background:'+c.bg+';color:'+c.fg+';border-color:'+c.bd+'">'
+    + c.icon+' '+c.name+' '+c.n+'/'+c.target + (c.n>=c.target?' ✓':'') + '</span>'
+  ).join('');
 }
 
 // ── TIMBER NEEDS CHECKLIST ────────────────────────────────────────────────────
@@ -8072,13 +8095,14 @@ function renderTimberBanner(){
 function renderHomeTrainingFocus(){
   const el = document.getElementById('homeTrainingFocus');
   if(!el) return;
+  const lbl = '<div style="font-size:.58rem;font-weight:900;letter-spacing:.12em;text-transform:uppercase;color:var(--pa);margin-bottom:4px">Today\'s focus</div>';
   let names = [];
   try{ names = TRAIN_ROTATION_MAP[new Date().getDay()] || []; }catch(e){}
   if(!names.length){
-    el.innerHTML = '<p style="font-size:.68rem;color:var(--tm)">Rest day — short name + recall warmup only 🌱</p>';
+    el.innerHTML = lbl + '<p style="font-size:.68rem;color:var(--tm)">Rest day — short name + recall warmup only 🌱</p>';
     return;
   }
-  el.innerHTML = '<div style="display:flex;flex-wrap:wrap;gap:6px">' +
+  el.innerHTML = lbl + '<div style="display:flex;flex-wrap:wrap;gap:6px">' +
     names.slice(0,5).map(n=>'<span class="train-rotation-pill">'+esc(n)+'</span>').join('') + '</div>';
 }
 

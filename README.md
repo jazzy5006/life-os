@@ -7,28 +7,31 @@ A custom-built, single-file responsive web dashboard designed to reduce cognitiv
 ## ✨ Core Features
 
 ### 🏠 Home — Daily Dashboard
-The landing tab. Everything you need to start and pace your day, at a glance.
+The landing tab. Everything you need to start and pace your day, at a glance. Layout order: calendar → Build My Day → checklist → Timber needs → Today's Training → Brain Dump → Connection.
 - **Live clock and date** widget — always oriented.
-- **Timber needs mini-checklist** — quick-glance view of what Timber still needs today.
 - **Calendar widget** — today's and tomorrow's events pulled from Google Calendar.
-- **💜 Connection card** — Nathan / Mom / Sister orbits. Tap any person to log a moment together. Shows days since last connection.
 - **✨ Build My Day button** — opens the Day Builder modal.
-- **💭 Brain Dump** — zero-friction thought capture with "+ Day" queuing. Resets at midnight.
+- **Timber needs mini** — live count chips (🦮 Walk 0/2 · 🍽️ Fed 0/2 · 🚽 Out 0/4) pulled from the day's actual walk/feed/potty logs; taps through to the Timber tab.
+- **🎓 Today's Training** — today's rotation cues at a glance.
+- **💭 Brain Dump** — zero-friction thought capture with "+ Day" queuing, right below training. Resets at midnight.
+- **💜 Connection card** — Nathan / Mom / Sister orbits at the bottom. Tap any person to log a moment together.
 - **Daily soft checklist** — time-aware, section-collapsing checklist:
   - 🌅 **Morning** — Timber outside, Glucosamine, Iron, Vitamins, Vyvanse, Brush Teeth, Log breakfast.
   - ☀️ **Midday** — Iron nudge (only shows if morning Iron was skipped).
   - 🌙 **Evening** — Birth Control, Zoloft, Timber last out, Log dinner.
   - 🌿 **Wellness** — Red Light Therapy, Exercise/PT.
-  - Auto-expand by time of day, section streaks, confetti on completion, midnight reset.
+  - **Accordion behavior** — exactly one section open at a time (the time-appropriate one by default); opening a section closes the others. Sections with no active items today (e.g. Midday) are hidden entirely.
+  - Section streaks (compact 🔥 N chip), confetti on completion, auto-collapse after completion, midnight reset.
+  - **Compact mode** — while a generated day plan is active, the checklist tucks down to just its progress bar (tap to peek).
 
 ### 🐾 Timber — Puppy Care
 Needs-based daily care tab built around Timber's age and development.
 - **Age-aware exercise banner** — `5 min × age_months × 2` target. Calculates from Timber's birthday (December 30, 2025).
-- **Activity log buttons** — four tap-to-log buttons with combined timeline:
-  - 🦮 **Walk** — live timer + manual entry. Persistent floating 🐾 indicator appears on all tabs during a walk.
-  - 🎓 **Train** — log a training session.
-  - 🍽️ **Fed** — log a feeding with optional note.
-  - 🚽 **Outside / Potty** — log a potty trip with last-trip timestamp.
+- **Activity log buttons** — four tap-to-log buttons with combined timeline. **Every activity supports manual entry with a time picker** (defaults to now) for backfilling:
+  - 🦮 **Walk** — live timer + manual entry (mins, distance, time). Persistent floating 🐾 indicator appears on all tabs during a walk.
+  - 🎓 **Train** — one-tap log, or "+ manual" with a time picker.
+  - 🍽️ **Fed** — log a feeding with optional note and time.
+  - 🚽 **Outside / Potty** — one-tap log, or "+ manual" with a time picker.
 - **Combined activity timeline** — all four activities logged today, newest first, with ✕ delete buttons.
 - **🔗 Partner button** — generate and manage Nathan's partner view.
 - **Training daily rotation card** — today's focus cues at a glance.
@@ -45,7 +48,7 @@ A phased, gradually-unlocking PT system built for restarting after a gap — no 
 - Arm PT reference guide + RLT protocol: Face 10m → Hips 20m → Rotating 10m.
 
 ### 📊 Stats — Streaks & Progress
-- 7-day completion heatmap, morning streak counter, Timber walk minutes this week.
+- 7-day PT consistency heatmap (scored against active exercises only), morning streak counter, Timber walk minutes today.
 
 ### 📅 Calendar — Google Calendar (iCal)
 - Paste your secret iCal URL(s) — your personal calendar plus an optional shared/partner calendar. Both are fetched and merged into one combined view of the next 7 days, grouped by day.
@@ -73,6 +76,7 @@ Jasmine generates a standalone HTML file for Nathan via the **🔗 Partner** but
 
 **Today tab:**
 - Log buttons: 🦮 Walk · 🍽️ Feeding · 🎓 Training Session · 🚽 Outside/Potty
+- Every activity supports manual entry with a time picker ("+ add with time"), defaulting to now
 - Nathan's logs appear in Jasmine's app automatically
 - Combined timeline — Nathan can delete his own entries with ✕
 - Stats row: Walks / Walk mins / Meals / Potty trips
@@ -101,8 +105,10 @@ Open via **Build My Day** on the Home tab. Saved task library + freeform add + B
 | `#nfc=meds-morning` | Opens modal: Glucosamine, Iron, Vitamins, Vyvanse |
 | `#nfc=meds-evening` | Opens modal: Birth Control, Zoloft |
 | `#nfc=walk` | Smart toggle — starts/stops walk timer and logs |
-| `#nfc=cronometer` | Checks "logged meal" + opens Cronometer deep link |
+| `#nfc=cronometer` | Checks logged breakfast (before 3 PM) or dinner + opens Cronometer |
 | `?serve=1` (URL param) | Opens Move tab directly in Serve Me One mode |
+
+The 🎲 button in the header also opens Serve Me One from any tab — every NFC action has a manual UI fallback.
 
 ---
 
@@ -145,7 +151,7 @@ Auto-pushes on every save. Auto-pulls on app open + every 3 minutes.
 
 | Component | Technology |
 |---|---|
-| Structure | HTML5 — single file (~8,628 lines, 488KB) |
+| Structure | HTML5 — single file (~9,100 lines, 504KB; dead desktop-panel markup removed 2026-07) |
 | Styling | CSS3 (custom properties, grid, flexbox, safe-area-insets) |
 | Logic | Vanilla JavaScript (ES6+), 4 script blocks |
 | Charts | Chart.js |

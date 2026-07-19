@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Jasmine's Life OS ✿</title>
-<meta name="theme-color" content="#f7f2fb">
+<meta name="theme-color" content="#f7fbff">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -13,7 +13,6 @@
 <link rel="icon" id="faviconLink" type="image/svg+xml">
 <link rel="apple-touch-icon" id="appleIconLink">
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
 /* ── TOKENS ── */
 /* Day theme (default): pastel sky blue
@@ -605,6 +604,8 @@ body.timer-active .desktop-layout{padding-top:70px}
 .cal-event-time{font-size:.68rem;font-weight:900;color:var(--tm);min-width:52px;padding-top:1px}
 .cal-event-title{font-size:.78rem;font-weight:700;color:var(--td);line-height:1.4}
 .cal-event-loc{font-size:.6rem;color:var(--tm);margin-top:1px}
+.cal-event.shared{border-left-color:var(--sa)}
+.cal-event.shared .cal-event-time{color:var(--sa)}
 .cal-event.allday{border-left-color:var(--sa)}
 .cal-event.allday .cal-event-time{color:var(--sa)}
 .cal-empty{font-size:.72rem;color:var(--tm);font-style:italic;text-align:center;padding:12px 0}
@@ -832,49 +833,49 @@ body.timer-active .desktop-layout{padding-top:70px}
 .desktop-layout{display:none}
 
 /* ── SITTER PAGES ── */
-.sitter-overlay{display:none;position:fixed;inset:0;z-index:9999;background:#fdf6f0;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;font-family:'Nunito',sans-serif;}
+.sitter-overlay{display:none;position:fixed;inset:0;z-index:9999;background:var(--bg);overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;font-family:'Nunito',sans-serif;}
 .sitter-overlay.active{display:block}
 .sitter-hero{background:linear-gradient(135deg,#fde8d8 0%,#f9d6f0 50%,#d6e8f9 100%);padding:32px 20px 24px;text-align:center;border-bottom:3px solid #e8c8f0;}
-.sitter-hero h1{font-size:clamp(1.3rem,5vw,1.8rem);font-weight:900;color:#4a2d6a;line-height:1.15;margin-bottom:6px}
+.sitter-hero h1{font-size:clamp(1.3rem,5vw,1.8rem);font-weight:900;color:var(--td);line-height:1.15;margin-bottom:6px}
 .sitter-hero .hero-sub{font-size:.85rem;font-weight:700;color:#7a5a9a;margin-bottom:14px}
 .sitter-paws{font-size:1.4rem;letter-spacing:.3em;opacity:.6}
 .sitter-nav-pills{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:14px}
 .sitter-nav-pill{background:rgba(255,255,255,.7);border:2px solid rgba(255,255,255,.9);border-radius:999px;padding:7px 16px;font-size:.7rem;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:#6a4a8a;cursor:pointer;transition:all .2s;text-decoration:none;display:inline-block;-webkit-tap-highlight-color:transparent;}
-.sitter-nav-pill:hover,.sitter-nav-pill.active{background:#9a6aba;color:#fff;border-color:#9a6aba}
+.sitter-nav-pill:hover,.sitter-nav-pill.active{background:var(--la);color:#fff;border-color:var(--la)}
 .sitter-nav-pill.dog{background:rgba(255,220,180,.8);color:#8a4a20;border-color:rgba(255,190,140,.9)}
-.sitter-nav-pill.dog:hover,.sitter-nav-pill.dog.active{background:#e8834a;color:#fff;border-color:#e8834a}
+.sitter-nav-pill.dog:hover,.sitter-nav-pill.dog.active{background:var(--pa);color:#fff;border-color:var(--pa)}
 .sitter-nav-pill.cat{background:rgba(180,220,255,.8);color:#1a4a7a;border-color:rgba(140,190,255,.9)}
-.sitter-nav-pill.cat:hover,.sitter-nav-pill.cat.active{background:#4a8aba;color:#fff;border-color:#4a8aba}
+.sitter-nav-pill.cat:hover,.sitter-nav-pill.cat.active{background:var(--sa);color:#fff;border-color:var(--sa)}
 .sitter-body{max-width:520px;margin:0 auto;padding:20px 16px calc(60px + env(safe-area-inset-bottom,0px))}
 .sitter-section{margin-bottom:20px}
-.sitter-section-title{font-size:.6rem;font-weight:900;letter-spacing:.2em;text-transform:uppercase;color:#9a7aba;margin-bottom:10px;display:flex;align-items:center;gap:8px;}
+.sitter-section-title{font-size:.6rem;font-weight:900;letter-spacing:.2em;text-transform:uppercase;color:var(--tm);margin-bottom:10px;display:flex;align-items:center;gap:8px;}
 .sitter-section-title::after{content:'';flex:1;height:2px;background:linear-gradient(90deg,#e8d0f8,transparent)}
 .sitter-card{background:#fff;border-radius:18px;border:2px solid #edd8f8;padding:16px;margin-bottom:10px;box-shadow:0 2px 12px rgba(154,106,186,.08);}
 .sitter-card.orange{border-color:#fdd0b0;box-shadow:0 2px 12px rgba(232,131,74,.08)}
 .sitter-card.blue{border-color:#c8e0f8;box-shadow:0 2px 12px rgba(74,138,186,.08)}
 .sitter-card.green{border-color:#c8f0d8;box-shadow:0 2px 12px rgba(74,186,138,.08)}
 .sitter-card.red{border-color:#f8c8c8;box-shadow:0 2px 12px rgba(186,74,74,.08)}
-.sitter-card h3{font-size:.88rem;font-weight:900;color:#4a2d6a;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.sitter-card h3{font-size:.88rem;font-weight:900;color:var(--td);margin-bottom:8px;display:flex;align-items:center;gap:6px}
 .sitter-card.orange h3{color:#7a3d10}.sitter-card.blue h3{color:#1a3d6a}.sitter-card.green h3{color:#1a5a3a}.sitter-card.red h3{color:#7a1a1a}
 .sitter-card p,.sitter-card li{font-size:.78rem;font-weight:600;color:#5a4070;line-height:1.65}
 .sitter-card.orange p,.sitter-card.orange li{color:#6a3a18}.sitter-card.blue p,.sitter-card.blue li{color:#1a3a5a}.sitter-card.green p,.sitter-card.green li{color:#1a4a2a}.sitter-card.red p,.sitter-card.red li{color:#6a1a1a}
 .sitter-card ul{padding-left:16px;margin-top:4px}.sitter-card ol{padding-left:18px;margin-top:4px}.sitter-card li{margin-bottom:6px;font-size:.78rem;font-weight:600;color:#5a4070;line-height:1.6}
-.sitter-schedule-row{display:flex;align-items:flex-start;gap:10px;padding:9px 0;border-bottom:1px solid #f0e8f8;}
+.sitter-schedule-row{display:flex;align-items:flex-start;gap:10px;padding:9px 0;border-bottom:1px solid var(--ll);}
 .sitter-schedule-row:last-child{border-bottom:none;padding-bottom:0}
-.sitter-time{font-size:.7rem;font-weight:900;color:#9a6aba;min-width:62px;max-width:80px;padding-top:1px;white-space:nowrap;}
+.sitter-time{font-size:.7rem;font-weight:900;color:var(--la);min-width:62px;max-width:80px;padding-top:1px;white-space:nowrap;}
 .sitter-schedule-row.orange .sitter-time{color:#d06a20}
-.sitter-event{font-size:.78rem;font-weight:700;color:#4a2d6a;line-height:1.5}
-.sitter-event small{display:block;font-size:.68rem;font-weight:600;color:#9a7aba;margin-top:2px}
+.sitter-event{font-size:.78rem;font-weight:700;color:var(--td);line-height:1.5}
+.sitter-event small{display:block;font-size:.68rem;font-weight:600;color:var(--tm);margin-top:2px}
 .sitter-schedule-row.orange .sitter-event{color:#5a2d10}.sitter-schedule-row.orange .sitter-event small{color:#b06040}
 .sitter-icon{font-size:1rem;padding-top:1px;min-width:22px;text-align:center}
-.sitter-contact-row{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid #f0e8f8;}
+.sitter-contact-row{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid var(--ll);}
 .sitter-contact-row:last-child{border-bottom:none}
-.sitter-contact-name{font-size:.78rem;font-weight:900;color:#4a2d6a;min-width:90px;max-width:55%}
-.sitter-contact-role{font-size:.66rem;font-weight:700;color:#9a7aba}
-.sitter-contact-phone{font-size:.78rem;font-weight:800;color:#9a6aba;margin-left:auto}
+.sitter-contact-name{font-size:.78rem;font-weight:900;color:var(--td);min-width:90px;max-width:55%}
+.sitter-contact-role{font-size:.66rem;font-weight:700;color:var(--tm)}
+.sitter-contact-phone{font-size:.78rem;font-weight:800;color:var(--la);margin-left:auto}
 .sitter-contact-phone a{color:inherit;text-decoration:none}.sitter-contact-phone a:hover{text-decoration:underline}
 .sitter-pill-row{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
-.sitter-pill{background:#f4e8fc;border:2px solid #e0c8f4;border-radius:999px;padding:4px 12px;font-size:.66rem;font-weight:900;color:#7a4aba;letter-spacing:.05em;}
+.sitter-pill{background:var(--ll);border:2px solid var(--lm);border-radius:999px;padding:4px 12px;font-size:.66rem;font-weight:900;color:var(--la);letter-spacing:.05em;}
 .sitter-pill.orange{background:#fdf0e8;border-color:#f4d0b0;color:#8a4a18}.sitter-pill.blue{background:#e8f2fc;border-color:#b8d8f4;color:#1a4a7a}.sitter-pill.green{background:#e8f8f0;border-color:#b8e8d0;color:#1a5a3a}.sitter-pill.red{background:#fce8e8;border-color:#f4b8b8;color:#7a1a1a}
 .sitter-tip{background:linear-gradient(135deg,#fef9ec,#fdf0fc);border:2px solid #f4e0b0;border-radius:14px;padding:12px 14px;margin-top:8px;font-size:.74rem;font-weight:700;color:#7a5a20;line-height:1.6;}
 .sitter-tip::before{content:'💡 ';font-size:.8rem}
@@ -882,21 +883,21 @@ body.timer-active .desktop-layout{padding-top:70px}
 .sitter-warning::before{content:'⚠️ ';font-size:.8rem}
 .sitter-tab-content{display:none}.sitter-tab-content.active{display:block}
 .sitter-back{position:sticky;top:0;z-index:10;background:rgba(253,246,240,.95);backdrop-filter:blur(8px);border-bottom:2px solid #e8d0f0;padding:calc(env(safe-area-inset-top,0px) + 10px) 16px 10px;display:flex;align-items:center;gap:10px;}
-.sitter-back button{background:#f4e8fc;border:2px solid #e0c8f4;border-radius:999px;padding:6px 14px;font-size:.65rem;font-weight:900;letter-spacing:.1em;text-transform:uppercase;color:#7a4aba;cursor:pointer;font-family:'Nunito',sans-serif;}
-.sitter-back-title{font-size:.75rem;font-weight:900;color:#4a2d6a}
+.sitter-back button{background:var(--ll);border:2px solid var(--lm);border-radius:999px;padding:6px 14px;font-size:.65rem;font-weight:900;letter-spacing:.1em;text-transform:uppercase;color:var(--la);cursor:pointer;font-family:'Nunito',sans-serif;}
+.sitter-back-title{font-size:.75rem;font-weight:900;color:var(--td)}
 .sitter-vet-block{background:linear-gradient(135deg,#fff4f4,#f8ecfc);border:2px solid #f4b8c8;border-radius:14px;padding:14px;margin-top:8px;}
 .sitter-vet-block h4{font-size:.8rem;font-weight:900;color:#7a1a3a;margin-bottom:6px}
 .sitter-vet-block p{font-size:.74rem;font-weight:700;color:#6a2a4a;line-height:1.6}
 .sitter-vet-block a{color:#c0305a;font-weight:900}
 .sitter-page-tabs{display:flex;gap:8px;margin-bottom:18px}
-.sitter-page-tab{flex:1;padding:10px 6px;border-radius:12px;border:2px solid #e0c8f4;background:#f9f0fd;font-family:'Nunito',sans-serif;font-size:.68rem;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:#7a4aba;cursor:pointer;transition:all .2s;text-align:center;}
-.sitter-page-tab.active{background:#9a6aba;color:#fff;border-color:#9a6aba}
-.sitter-page-tab.dog-tab.active{background:#e8834a;border-color:#e8834a}
-.sitter-page-tab.cat-tab.active{background:#4a8aba;border-color:#4a8aba}
+.sitter-page-tab{flex:1;padding:10px 6px;border-radius:12px;border:2px solid var(--lm);background:var(--ll);font-family:'Nunito',sans-serif;font-size:.68rem;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:var(--la);cursor:pointer;transition:all .2s;text-align:center;}
+.sitter-page-tab.active{background:var(--la);color:#fff;border-color:var(--la)}
+.sitter-page-tab.dog-tab.active{background:var(--pa);border-color:var(--pa)}
+.sitter-page-tab.cat-tab.active{background:var(--sa);border-color:var(--sa)}
 
 /* ── CAT SUB-TABS ── */
-.cat-sub-tab{flex:1;padding:8px 4px 10px;border-radius:10px 10px 0 0;border:2px solid transparent;background:transparent;font-family:'Nunito',sans-serif;font-size:clamp(.5rem,.6rem + .3vw,.62rem);font-weight:900;letter-spacing:.04em;text-transform:uppercase;color:#4a6a9a;cursor:pointer;transition:all .2s;text-align:center;border-bottom:none;-webkit-tap-highlight-color:transparent;}
-.cat-sub-tab.active{background:#fff;border-color:#c8dff8;border-bottom-color:#fff;color:#1a3a6a;position:relative;bottom:-2px;}
+.cat-sub-tab{flex:1;padding:8px 4px 10px;border-radius:10px 10px 0 0;border:2px solid transparent;background:transparent;font-family:'Nunito',sans-serif;font-size:clamp(.5rem,.6rem + .3vw,.62rem);font-weight:900;letter-spacing:.04em;text-transform:uppercase;color:var(--tb);cursor:pointer;transition:all .2s;text-align:center;border-bottom:none;-webkit-tap-highlight-color:transparent;}
+.cat-sub-tab.active{background:#fff;border-color:var(--sm);border-bottom-color:#fff;color:var(--td);position:relative;bottom:-2px;}
 .cat-sub-content{display:none}
 .cat-sub-content.active{display:block}
 
@@ -909,8 +910,8 @@ body.timer-active .desktop-layout{padding-top:70px}
 /* ToC pill bar — sticky, scrollable, all screen sizes */
 .sitter-toc-bar{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;padding:10px 16px 12px;background:rgba(240,246,255,.97);backdrop-filter:blur(6px);border-bottom:1.5px solid #d8eaf8;flex-wrap:nowrap;position:sticky;top:calc(env(safe-area-inset-top,0px) + 96px);z-index:8}
 .sitter-toc-bar::-webkit-scrollbar{display:none}
-.sitter-toc-pill{display:inline-flex;align-items:center;gap:4px;white-space:nowrap;padding:6px 12px;border-radius:999px;border:1.5px solid #c8dff8;background:#f0f6ff;font-family:'Nunito',sans-serif;font-size:.68rem;font-weight:900;letter-spacing:.04em;color:#2a5a8a;text-decoration:none;-webkit-tap-highlight-color:transparent;transition:background .15s,color .15s;cursor:pointer;flex-shrink:0}
-.sitter-toc-pill:hover,.sitter-toc-pill:active{background:#4a8aba;color:#fff;border-color:#4a8aba}
+.sitter-toc-pill{display:inline-flex;align-items:center;gap:4px;white-space:nowrap;padding:6px 12px;border-radius:999px;border:1.5px solid var(--sm);background:var(--sl);font-family:'Nunito',sans-serif;font-size:.68rem;font-weight:900;letter-spacing:.04em;color:var(--sa);text-decoration:none;-webkit-tap-highlight-color:transparent;transition:background .15s,color .15s;cursor:pointer;flex-shrink:0}
+.sitter-toc-pill:hover,.sitter-toc-pill:active{background:var(--sa);color:#fff;border-color:var(--sa)}
 .sitter-toc-pill.vivi{border-color:#f4c8e8;background:#fdf0f8;color:#7a2a5a}
 .sitter-toc-pill.vivi:hover,.sitter-toc-pill.vivi:active{background:#c8509a;color:#fff;border-color:#c8509a}
 
@@ -949,43 +950,43 @@ body.timer-active .desktop-layout{padding-top:70px}
 }
 
 /* ── FEEDER TOGGLE BUTTONS ── */
-.vv-time-btn,.em-time-btn{padding:6px 14px;border-radius:999px;border:2px solid #c8dff8;background:#f0f6ff;font-family:'Nunito',sans-serif;font-size:.65rem;font-weight:900;color:#4a6a9a;cursor:pointer;transition:all .18s;-webkit-tap-highlight-color:transparent;white-space:nowrap}
-.vv-time-btn.active{background:#4a8aba;color:#fff;border-color:#4a8aba}
-.em-time-btn.active{background:#4a8aba;color:#fff;border-color:#4a8aba}
+.vv-time-btn,.em-time-btn{padding:6px 14px;border-radius:999px;border:2px solid var(--sm);background:var(--sl);font-family:'Nunito',sans-serif;font-size:.65rem;font-weight:900;color:var(--tb);cursor:pointer;transition:all .18s;-webkit-tap-highlight-color:transparent;white-space:nowrap}
+.vv-time-btn.active{background:var(--sa);color:#fff;border-color:var(--sa)}
+.em-time-btn.active{background:var(--sa);color:#fff;border-color:var(--sa)}
 .vv-inst{transition:opacity .2s}
 /* ── SITTER FEEDER WIDGET ── */
-.fdr-how-box{background:#f0f6ff;border:2px solid #c8dff8;border-radius:12px;padding:12px;margin-bottom:14px}
-.fdr-how-label{font-size:.58rem;font-weight:900;letter-spacing:.14em;text-transform:uppercase;color:#4a6a9a;margin-bottom:4px}
-.fdr-how-text{margin:0;font-size:.74rem;font-weight:700;color:#1a3a6a;line-height:1.6}
-.fdr-schedule-box{background:linear-gradient(135deg,#f0f6ff,#e8f0fc);border:2px solid #c8dff8;border-radius:14px;padding:14px;margin-bottom:14px}
-.fdr-schedule-label{font-size:.58rem;font-weight:900;letter-spacing:.14em;text-transform:uppercase;color:#4a6a9a;margin-bottom:12px}
-.fdr-clean-label{font-size:.58rem;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:#4a6a9a;margin-bottom:8px}
+.fdr-how-box{background:var(--sl);border:2px solid var(--sm);border-radius:12px;padding:12px;margin-bottom:14px}
+.fdr-how-label{font-size:.58rem;font-weight:900;letter-spacing:.14em;text-transform:uppercase;color:var(--tb);margin-bottom:4px}
+.fdr-how-text{margin:0;font-size:.74rem;font-weight:700;color:var(--td);line-height:1.6}
+.fdr-schedule-box{background:linear-gradient(135deg,var(--sl),var(--bgp));border:2px solid var(--sm);border-radius:14px;padding:14px;margin-bottom:14px}
+.fdr-schedule-label{font-size:.58rem;font-weight:900;letter-spacing:.14em;text-transform:uppercase;color:var(--tb);margin-bottom:12px}
+.fdr-clean-label{font-size:.58rem;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:var(--tb);margin-bottom:8px}
 .fdr-row-highlight{background:rgba(255,255,255,.5);border-radius:10px;padding:10px;border-bottom:none;margin-bottom:8px}
 .fdr-tip-box{background:#fef0e8;border:1.5px solid #f4c8a0;border-radius:8px;padding:8px 10px;font-size:.7rem;font-weight:700;color:#7a3a10;line-height:1.55}
 
 /* Sitter ToC anchor links */
-.stoc-link-orange{font-size:.78rem;font-weight:700;color:#d06a20;text-decoration:none;padding:5px 0;border-bottom:1px solid #f0e8f8;display:block}
-.stoc-link-purple{font-size:.78rem;font-weight:700;color:#7a4aba;text-decoration:none;padding:5px 0;border-bottom:1px solid #f0e8f8;display:block}
+.stoc-link-orange{font-size:.78rem;font-weight:700;color:#d06a20;text-decoration:none;padding:5px 0;border-bottom:1px solid var(--ll);display:block}
+.stoc-link-purple{font-size:.78rem;font-weight:700;color:var(--la);text-decoration:none;padding:5px 0;border-bottom:1px solid var(--ll);display:block}
 .stoc-col{display:flex;flex-direction:column;gap:4px}
 
 /* Cat sub-tab bar */
-.cat-sub-bar{position:sticky;top:calc(env(safe-area-inset-top,0px) + 52px);z-index:9;background:rgba(240,246,255,.97);backdrop-filter:blur(8px);border-bottom:2px solid #c8dff8;padding:10px 16px 0}
+.cat-sub-bar{position:sticky;top:calc(env(safe-area-inset-top,0px) + 52px);z-index:9;background:rgba(240,246,255,.97);backdrop-filter:blur(8px);border-bottom:2px solid var(--sm);padding:10px 16px 0}
 .cat-sub-bar-inner{display:flex;gap:8px;max-width:520px;margin:0 auto}
 
 /* feeder schedule rows */
 .fdr-row{padding:8px 0;border-bottom:1px solid #d8eaf8}
 .fdr-row:last-child{border-bottom:none}
-.fdr-date{font-size:.7rem;font-weight:900;color:#4a6a9a;margin-bottom:5px}
-.fdr-date.muted{color:#9a7aba}
-.fdr-label{font-size:.72rem;font-weight:800;color:#1a3a6a;margin-bottom:7px}
+.fdr-date{font-size:.7rem;font-weight:900;color:var(--tb);margin-bottom:5px}
+.fdr-date.muted{color:var(--tm)}
+.fdr-label{font-size:.72rem;font-weight:800;color:var(--td);margin-bottom:7px}
 .fdr-btns{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px}
-.fdr-inst{font-size:.72rem;font-weight:700;color:#2a5a8a;line-height:1.55;padding:8px 10px;background:rgba(255,255,255,.7);border-radius:8px;border:1px solid #c8dff8}
-.fdr-static{font-size:.72rem;font-weight:700;color:#1a3a6a;line-height:1.55}
+.fdr-inst{font-size:.72rem;font-weight:700;color:var(--sa);line-height:1.55;padding:8px 10px;background:rgba(255,255,255,.7);border-radius:8px;border:1px solid var(--sm)}
+.fdr-static{font-size:.72rem;font-weight:700;color:var(--td);line-height:1.55}
 
 
 
 /* ── SCROLL TO TOP ── */
-.sitter-scroll-top{position:fixed;bottom:calc(24px + env(safe-area-inset-bottom,0px));right:18px;z-index:10000;width:40px;height:40px;border-radius:50%;background:#9a6aba;color:#fff;border:none;font-size:1.1rem;cursor:pointer;box-shadow:0 3px 14px rgba(154,106,186,.4);display:none;align-items:center;justify-content:center;transition:opacity .2s,transform .2s;-webkit-tap-highlight-color:transparent}
+.sitter-scroll-top{position:fixed;bottom:calc(24px + env(safe-area-inset-bottom,0px));right:18px;z-index:10000;width:40px;height:40px;border-radius:50%;background:var(--la);color:#fff;border:none;font-size:1.1rem;cursor:pointer;box-shadow:0 3px 14px rgba(154,106,186,.4);display:none;align-items:center;justify-content:center;transition:opacity .2s,transform .2s;-webkit-tap-highlight-color:transparent}
 .sitter-scroll-top.visible{display:flex}
 .sitter-scroll-top:active{transform:scale(.9)}
 
@@ -1327,7 +1328,7 @@ body.night .train-status.new{background:var(--pl);border-color:var(--pm);color:v
     var actual = resolved(mode);
     document.body.classList.toggle('night', actual==='night');
     var meta = document.querySelector('meta[name="theme-color"]');
-    if(meta) meta.setAttribute('content', actual==='night' ? '#1a0f24' : '#f7f2fb');
+    if(meta) meta.setAttribute('content', actual==='night' ? '#1a0f24' : '#f7fbff');
     ['themeToggle','deskThemeToggle'].forEach(function(id){
       var btn = document.getElementById(id);
       if(!btn) return;
@@ -1639,7 +1640,7 @@ body.night .train-status.new{background:var(--pl);border-color:var(--pm);color:v
   <div style="margin-top:12px">
     <div class="pt-header">
       <h2>Movement Engine 🌿</h2>
-      <p style="font-size:.72rem;color:var(--tm);margin:4px 0 10px">Pomodoro breaks → PT. Auto-saves! ✨</p>
+      <p style="font-size:.72rem;color:var(--tm);margin:4px 0 10px">Gentle, phased PT — no streaks, no auto-demotion. ✨</p>
       <div style="display:flex;justify-content:center">
         <div class="dw2"><span class="lbl">Day:</span>
           <select id="mDsel" onchange="chDay()">
@@ -1735,7 +1736,7 @@ body.night .train-status.new{background:var(--pl);border-color:var(--pm);color:v
     <div class="card" style="padding:14px">
       <p class="lbl" style="text-align:center;margin-bottom:3px">📅 Weekly PT Consistency</p>
       <p style="text-align:center;font-size:.6rem;color:var(--tm);margin-bottom:9px">% completed each day</p>
-      <div style="position:relative;height:110px"><canvas id="mChWeek"></canvas></div>
+      <div id="weekBarsM" style="display:flex;align-items:flex-end;justify-content:space-around;height:100px;gap:6px"></div>
     </div>
 
     <!-- Arm PT ref -->
@@ -2179,7 +2180,6 @@ body.night .train-status.new{background:var(--pl);border-color:var(--pm);color:v
     </div>
     <div style="display:flex;flex-direction:column;gap:3px">
       <input class="mem-datetime" type="datetime-local" id="memDatetimeT">
-      <div class="mem-presets" id="memPresetsT"></div>
     </div>
     <div class="mem-add">
       <input class="mem-input" id="memInputT" placeholder="A memory with Timber… 💜" onkeydown="if(event.key==='Enter')addMemory('T')">
@@ -2592,16 +2592,15 @@ const PT=[
 ];
 
 let ps=[],cday=new Date().getDay(),tot=0;
-let weekChartM=null,weekChartD=null;
 
 // ─── PWA ──────────────────────────────────────────────────────────────────────
-const ICON_SVG=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><rect width="512" height="512" rx="110" fill="#f7f2fb"/><ellipse cx="256" cy="156" rx="38" ry="72" fill="#ffd8c8" opacity=".95"/><ellipse cx="256" cy="356" rx="38" ry="72" fill="#ffd8c8" opacity=".95"/><ellipse cx="156" cy="256" rx="72" ry="38" fill="#c2deff" opacity=".95"/><ellipse cx="356" cy="256" rx="72" ry="38" fill="#c2deff" opacity=".95"/><ellipse cx="190" cy="190" rx="38" ry="72" fill="#ddd0f0" opacity=".9" transform="rotate(-45 190 190)"/><ellipse cx="322" cy="190" rx="38" ry="72" fill="#b8f0d2" opacity=".9" transform="rotate(45 322 190)"/><ellipse cx="190" cy="322" rx="38" ry="72" fill="#b8f0d2" opacity=".9" transform="rotate(45 190 322)"/><ellipse cx="322" cy="322" rx="38" ry="72" fill="#ddd0f0" opacity=".9" transform="rotate(-45 322 322)"/><circle cx="256" cy="256" r="58" fill="#f79a7a"/><circle cx="256" cy="256" r="42" fill="#fff4ee"/><circle cx="242" cy="250" r="5" fill="#f79a7a"/><circle cx="270" cy="250" r="5" fill="#f79a7a"/><path d="M240 266 Q256 280 272 266" stroke="#f79a7a" stroke-width="4" fill="none" stroke-linecap="round"/></svg>`;
+const ICON_SVG=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><rect width="512" height="512" rx="110" fill="#f7fbff"/><ellipse cx="256" cy="156" rx="38" ry="72" fill="#ffd8c8" opacity=".95"/><ellipse cx="256" cy="356" rx="38" ry="72" fill="#ffd8c8" opacity=".95"/><ellipse cx="156" cy="256" rx="72" ry="38" fill="#c2deff" opacity=".95"/><ellipse cx="356" cy="256" rx="72" ry="38" fill="#c2deff" opacity=".95"/><ellipse cx="190" cy="190" rx="38" ry="72" fill="#ddd0f0" opacity=".9" transform="rotate(-45 190 190)"/><ellipse cx="322" cy="190" rx="38" ry="72" fill="#b8f0d2" opacity=".9" transform="rotate(45 322 190)"/><ellipse cx="190" cy="322" rx="38" ry="72" fill="#b8f0d2" opacity=".9" transform="rotate(45 190 322)"/><ellipse cx="322" cy="322" rx="38" ry="72" fill="#ddd0f0" opacity=".9" transform="rotate(-45 322 322)"/><circle cx="256" cy="256" r="58" fill="#f79a7a"/><circle cx="256" cy="256" r="42" fill="#fff4ee"/><circle cx="242" cy="250" r="5" fill="#f79a7a"/><circle cx="270" cy="250" r="5" fill="#f79a7a"/><path d="M240 266 Q256 280 272 266" stroke="#f79a7a" stroke-width="4" fill="none" stroke-linecap="round"/></svg>`;
 const ICON_URL='data:image/svg+xml,'+encodeURIComponent(ICON_SVG);
 
 function setupPWA(){
   const fi=document.getElementById('faviconLink'),ai=document.getElementById('appleIconLink');
   if(fi)fi.href=ICON_URL;if(ai)ai.href=ICON_URL;
-  const manifest={name:"Jasmine's Life OS ✿",short_name:"Life OS",description:"Daily schedule, PT engine, wellness tracker",start_url:"./",display:"fullscreen",orientation:"portrait-primary",background_color:"#f7f2fb",theme_color:"#f7f2fb",icons:[{src:ICON_URL,sizes:"512x512",type:"image/svg+xml",purpose:"any maskable"}]};
+  const manifest={name:"Jasmine's Life OS ✿",short_name:"Life OS",description:"Daily schedule, PT engine, wellness tracker",start_url:"./",display:"fullscreen",orientation:"portrait-primary",background_color:"#f7fbff",theme_color:"#f7fbff",icons:[{src:ICON_URL,sizes:"512x512",type:"image/svg+xml",purpose:"any maskable"}]};
   const blob=new Blob([JSON.stringify(manifest)],{type:'application/manifest+json'});
   const link=document.getElementById('pwaManifest');
   if(link)link.href=URL.createObjectURL(blob);
@@ -2614,7 +2613,7 @@ function setupPWA(){
 function syncThemeColor(){
   const isNight = document.body.classList.contains('night');
   const meta = document.querySelector('meta[name="theme-color"]');
-  if(meta) meta.setAttribute('content', isNight ? '#1a0f24' : '#f7f2fb');
+  if(meta) meta.setAttribute('content', isNight ? '#1a0f24' : '#f7fbff');
 }
 
 // ─── HTML ESCAPE HELPER (XSS prevention) ─────────────────────────────────────
@@ -3020,6 +3019,15 @@ function updatePTUI(){
   ['mPbar','dPbar'].forEach(id=>{const el=document.getElementById(id);if(el)el.style.width=p+'%';});
   ['mDn','dDn'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=done;});
   ['mTn','dTn'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=tot;});
+  // ── Auto-check Home "Exercise / PT" when today's PT hits 100% (one-way) ──
+  try{
+    if(p===100 && tot>0 && cday===new Date().getDay()
+       && typeof getCLState==='function' && getCLState('exercise')!=='done'){
+      setCLState('exercise','done');
+      if(typeof refreshCLSection==='function') refreshCLSection('wellness');
+      if(typeof showToast==='function') showToast('🏃 Exercise / PT checked off — Move complete! ✨');
+    }
+  }catch(e){}
 }
 
 window.resetDay=()=>{
@@ -3632,13 +3640,12 @@ function buildWeeklyData(){
     const done=r.completions.filter(x=>x.date===k).length;
     const pct=denom?Math.round(Math.min(done,denom)/denom*100):0;
     data.push(isFuture?0:pct);
-    if(isToday)bgColors.push('#b89de0');
-    else if(isFuture||!denom)bgColors.push('#ece8f4');
-    else bgColors.push(pct>=100?'#5dd9a0':pct>0?'#ffd8c8':'#ece8f4');
+    if(isToday)bgColors.push('var(--la)');
+    else if(isFuture||!denom)bgColors.push('var(--ll)');
+    else bgColors.push(pct>=100?'var(--mm)':pct>0?'var(--pm)':'var(--ll)');
   }
   return{labels,data,bgColors};
 }
-const WEEK_OPTS={responsive:true,maintainAspectRatio:false,scales:{y:{display:false,min:0,max:100},x:{grid:{display:false},border:{display:false},ticks:{font:{size:9,weight:'bold'},color:'#a396b4'}}},plugins:{legend:{display:false},tooltip:{padding:8,cornerRadius:9,callbacks:{label:ctx=>`${ctx.raw}% done`}}}};
 
 // ─── TIMER ENGINE ─────────────────────────────────────────────────────────────
 let timerInterval = null;
@@ -4636,16 +4643,21 @@ function saveScratch(){}
 function loadScratch(){ renderBrainItems(); }
 
 function initCharts(){
-  Chart.defaults.font.family="'Nunito',sans-serif";Chart.defaults.font.weight="bold";Chart.defaults.color="#a396b4";
-  const wd=buildWeeklyData();
-  const mk=(id)=>{const el=document.getElementById(id);return el?new Chart(el,{type:'bar',data:{labels:wd.labels,datasets:[{data:wd.data,backgroundColor:wd.bgColors,borderRadius:10,borderSkipped:false}]},options:WEEK_OPTS}):null;};
-  weekChartM=mk('mChWeek');weekChartD=mk('dChWeek');
+  // Canvas chart replaced with token-based CSS bars (design-system redesign 2026-07-18)
+  refreshWeeklyChart();
 }
 function refreshWeeklyChart(){
   const wd=buildWeeklyData();
-  [weekChartM,weekChartD].forEach(ch=>{
-    if(!ch)return;
-    ch.data.labels=wd.labels;ch.data.datasets[0].data=wd.data;ch.data.datasets[0].backgroundColor=wd.bgColors;ch.update('none');
+  ['weekBarsM','weekBarsD'].forEach(id=>{
+    const c=document.getElementById(id);
+    if(!c)return;
+    c.innerHTML=wd.labels.map((lb,i)=>{
+      const pct=wd.data[i];
+      const h=Math.max(4,Math.round(pct*0.9));
+      return '<div style="display:flex;flex-direction:column;align-items:center;gap:4px;flex:1">'
+        +'<div title="'+pct+'% done" style="width:100%;max-width:26px;height:'+h+'px;background:'+wd.bgColors[i]+';border-radius:8px 8px 3px 3px"></div>'
+        +'<span style="font-size:.5rem;font-weight:900;color:var(--tm)">'+lb.charAt(0)+'</span></div>';
+    }).join('');
   });
 }
 
@@ -5471,17 +5483,18 @@ async function fetchCalEvents(forceRefresh = false){
 
   // Fetch each calendar URL independently and merge events
   const icals = [];
+  const icalIdx = []; // which URL each successful ical came from (0 = personal, 1 = shared)
   let lastErr = '';
   let anySucceeded = false;
-  for(const url of urls){
-    const res = await _fetchIcalText(url);
-    if(res.ical){ icals.push(res.ical); anySucceeded = true; }
+  for(let ui = 0; ui < urls.length; ui++){
+    const res = await _fetchIcalText(urls[ui]);
+    if(res.ical){ icals.push(res.ical); icalIdx.push(ui); anySucceeded = true; }
     else lastErr = res.error || lastErr;
   }
 
   if(anySucceeded){
     _saveIcalToGist(icals);
-    const events = icals.flatMap(ical => parseICal(ical));
+    const events = icals.flatMap((ical,i) => parseICal(ical).map(e => Object.assign(e, {srcCal: icalIdx[i]})));
     _cacheCalEvents(events);
     return events;
   }
@@ -5499,7 +5512,7 @@ async function fetchCalEvents(forceRefresh = false){
       const ageMin = Math.round((Date.now() - gistData.ts) / 60000);
       const ageStr = ageMin < 60 ? `${ageMin}m ago` : `${Math.round(ageMin/60)}h ago`;
       showToast(`📅 Showing cached calendar (${ageStr})`, 4000);
-      const events = gistData.icals.flatMap(ical => parseICal(ical));
+      const events = gistData.icals.flatMap((ical,i) => parseICal(ical).map(e => Object.assign(e, {srcCal: i})));
       _cacheCalEvents(events);
       return events;
     }
@@ -5664,7 +5677,7 @@ window.loadCalendar = async (forceRefresh = false) => {
       <div class="cal-day-group">
         <div class="cal-day-label">${dayLabel(new Date(ds))}</div>
         ${evts.map(e=>`
-          <div class="cal-event${e.allDay?' allday':''}">
+          <div class="cal-event${e.allDay?' allday':''}${e.srcCal?' shared':''}">
             <div class="cal-event-time">${e.allDay?'All day':fmt12(e.start)}</div>
             <div>
               <div class="cal-event-title">${esc(e.summary)}</div>
@@ -6628,7 +6641,7 @@ initVineBanners();
                 <div class="sitter-tip">She has 14 cans of Friskies Pâté — plenty for her stay.</div>
               </div>
               <div class="sitter-card blue" style="margin-top:10px" id="vivi-feeder-widget">
-                <h3>🤖 PetLibro Wet Feeder &nbsp;<a href="https://www.youtube.com/watch?v=An7HocZA1Pw" target="_blank" style="font-size:.65rem;font-weight:700;color:#4a8aba">▶ how to clean feeder</a></h3>
+                <h3>🤖 PetLibro Wet Feeder &nbsp;<a href="https://www.youtube.com/watch?v=An7HocZA1Pw" target="_blank" style="font-size:.65rem;font-weight:700;color:var(--sa)">▶ how to clean feeder</a></h3>
 
                 <div class="fdr-how-box">
                   <div class="fdr-how-label">How it works</div>
@@ -6733,7 +6746,7 @@ initVineBanners();
         <div class="sitter-section" id="sv-water">
           <div class="sitter-section-title">💧 Water Fountains — check &amp; refill each visit</div>
           <div class="sitter-card blue">
-            <h3>💧 Upstairs — next to the shoe bench &nbsp;<a href="https://photos.app.goo.gl/KAbeSba6uQspnStM9" target="_blank" style="font-size:.65rem;font-weight:700;color:#4a8aba">▶ video</a></h3>
+            <h3>💧 Upstairs — next to the shoe bench &nbsp;<a href="https://photos.app.goo.gl/KAbeSba6uQspnStM9" target="_blank" style="font-size:.65rem;font-weight:700;color:var(--sa)">▶ video</a></h3>
             <ol>
               <li>Unplug from the wall</li>
               <li>Take the fountain to the guest bathroom</li>
@@ -6742,7 +6755,7 @@ initVineBanners();
             </ol>
           </div>
           <div class="sitter-card blue" style="margin-top:10px">
-            <h3>💧 Downstairs — top of black cat furniture in the hallway corner &nbsp;<a href="https://photos.app.goo.gl/bubKZ4Yod5Ffjmxs9" target="_blank" style="font-size:.65rem;font-weight:700;color:#4a8aba">▶ video</a></h3>
+            <h3>💧 Downstairs — top of black cat furniture in the hallway corner &nbsp;<a href="https://photos.app.goo.gl/bubKZ4Yod5Ffjmxs9" target="_blank" style="font-size:.65rem;font-weight:700;color:var(--sa)">▶ video</a></h3>
             <ol>
               <li>Unplug from the wall</li>
               <li>Refill at the kitchen sink to the fill line</li>
@@ -6755,7 +6768,7 @@ initVineBanners();
         <div class="sitter-section" id="sv-litter">
           <div class="sitter-section-title">🧹 Litter Boxes — clean each visit</div>
           <div class="sitter-card blue">
-            <h3>🧹 Laundry room closet &amp; Nathan's office closet &nbsp;<a href="https://photos.app.goo.gl/yvw1m1XcBgKFd2NV9" target="_blank" style="font-size:.65rem;font-weight:700;color:#4a8aba">▶ video</a></h3>
+            <h3>🧹 Laundry room closet &amp; Nathan's office closet &nbsp;<a href="https://photos.app.goo.gl/yvw1m1XcBgKFd2NV9" target="_blank" style="font-size:.65rem;font-weight:700;color:var(--sa)">▶ video</a></h3>
             <p style="margin-bottom:8px">All supplies on the shelves in the laundry room.</p>
             <ol>
               <li>Scoop poop into a trash bag (green scoop hooks onto the laundry room box; bags on the second shelf, far left)</li>
@@ -6771,7 +6784,7 @@ initVineBanners();
         <div class="sitter-section" id="sv-plants">
           <div class="sitter-section-title">🌿 Plants — water once a week</div>
           <div class="sitter-card green">
-            <h3>🌿 Plant locations &nbsp;<a href="https://photos.app.goo.gl/PDff5MiuWaBhYEHy5" target="_blank" style="font-size:.65rem;font-weight:700;color:#3a7a4a">▶ downstairs video</a> &nbsp;<a href="https://photos.app.goo.gl/15JSVM3DASu5PnLcA" target="_blank" style="font-size:.65rem;font-weight:700;color:#3a7a4a">▶ upstairs video</a></h3>
+            <h3>🌿 Plant locations &nbsp;<a href="https://photos.app.goo.gl/PDff5MiuWaBhYEHy5" target="_blank" style="font-size:.65rem;font-weight:700;color:var(--ma)">▶ downstairs video</a> &nbsp;<a href="https://photos.app.goo.gl/15JSVM3DASu5PnLcA" target="_blank" style="font-size:.65rem;font-weight:700;color:var(--ma)">▶ upstairs video</a></h3>
             <p style="margin-bottom:8px">Check soil first — if it's dry an inch down, it's ready. Use the blue pitcher from the kitchen.</p>
             <ul>
               <li>Downstairs kitchen plants</li>
@@ -6785,7 +6798,7 @@ initVineBanners();
             <div class="sitter-section" id="sv-trash-v">
               <div class="sitter-section-title">🗑️ Trash</div>
               <div class="sitter-card green">
-                <h3>🗑️ Trash bins &nbsp;<a href="https://photos.app.goo.gl/c4D9MyxQmwsbpdNW6" target="_blank" style="font-size:.65rem;font-weight:700;color:#3a7a4a">▶ video</a></h3>
+                <h3>🗑️ Trash bins &nbsp;<a href="https://photos.app.goo.gl/c4D9MyxQmwsbpdNW6" target="_blank" style="font-size:.65rem;font-weight:700;color:var(--ma)">▶ video</a></h3>
                 <p>Pickup is <strong>Wednesday morning</strong>. Put the <strong>green-top trash bin</strong> on the curb <strong>Tuesday evening</strong> (right side of the house facing the road, handles away from street), bring back in Wednesday.</p>
               </div>
             </div>
@@ -6795,7 +6808,7 @@ initVineBanners();
         <div class="sitter-section" id="sv-accidents">
           <div class="sitter-section-title">🧽 Accidents &amp; Hairballs</div>
           <div class="sitter-card">
-            <h3>🧽 If there's a mess &nbsp;<a href="https://photos.app.goo.gl/Zxm69JKpXNu8BkkdA" target="_blank" style="font-size:.65rem;font-weight:700;color:#7a4aba">▶ video</a></h3>
+            <h3>🧽 If there's a mess &nbsp;<a href="https://photos.app.goo.gl/Zxm69JKpXNu8BkkdA" target="_blank" style="font-size:.65rem;font-weight:700;color:var(--la)">▶ video</a></h3>
             <p style="margin-bottom:8px"><strong>On carpet:</strong> Collect solids into a trash bag first. Carpet cleaner is in the <strong>laundry room closet</strong> — plug in, press power button on the side, hold the trigger to release solution while running over the spot, release trigger and run over a few more times for the brushes to work. Dump dirty water in the toilet.</p>
             <p><strong>On hardwood:</strong> White pet-friendly spray, first shelf in the laundry room. Paper towels on the counter.</p>
           </div>
@@ -6899,7 +6912,7 @@ initVineBanners();
             <div class="sitter-section" id="em-feeder">
               <div class="sitter-section-title">🤖 Tigris — wet feeder</div>
               <div class="sitter-card blue">
-                <h3>🤖 PetLibro feeder — in the bedroom &nbsp;<a href="https://www.youtube.com/watch?v=An7HocZA1Pw" target="_blank" style="font-size:.65rem;font-weight:700;color:#4a8aba">▶ how to clean feeder</a></h3>
+                <h3>🤖 PetLibro feeder — in the bedroom &nbsp;<a href="https://www.youtube.com/watch?v=An7HocZA1Pw" target="_blank" style="font-size:.65rem;font-weight:700;color:var(--sa)">▶ how to clean feeder</a></h3>
 
                 <div class="fdr-how-box">
                   <div class="fdr-how-label">How it works</div>
@@ -6955,7 +6968,7 @@ initVineBanners();
         <div class="sitter-section" id="sv-water">
           <div class="sitter-section-title">💧 Water Fountains — check &amp; refill each visit</div>
           <div class="sitter-card blue">
-            <h3>💧 Upstairs — next to the shoe bench &nbsp;<a href="https://photos.app.goo.gl/KAbeSba6uQspnStM9" target="_blank" style="font-size:.65rem;font-weight:700;color:#4a8aba">▶ video</a></h3>
+            <h3>💧 Upstairs — next to the shoe bench &nbsp;<a href="https://photos.app.goo.gl/KAbeSba6uQspnStM9" target="_blank" style="font-size:.65rem;font-weight:700;color:var(--sa)">▶ video</a></h3>
             <ol>
               <li>Unplug from the wall</li>
               <li>Take the fountain to the guest bathroom</li>
@@ -6964,7 +6977,7 @@ initVineBanners();
             </ol>
           </div>
           <div class="sitter-card blue" style="margin-top:10px">
-            <h3>💧 Downstairs — top of black cat furniture in the hallway corner &nbsp;<a href="https://photos.app.goo.gl/bubKZ4Yod5Ffjmxs9" target="_blank" style="font-size:.65rem;font-weight:700;color:#4a8aba">▶ video</a></h3>
+            <h3>💧 Downstairs — top of black cat furniture in the hallway corner &nbsp;<a href="https://photos.app.goo.gl/bubKZ4Yod5Ffjmxs9" target="_blank" style="font-size:.65rem;font-weight:700;color:var(--sa)">▶ video</a></h3>
             <ol>
               <li>Unplug from the wall</li>
               <li>Refill at the kitchen sink to the fill line</li>
@@ -6977,7 +6990,7 @@ initVineBanners();
         <div class="sitter-section" id="sv-litter">
           <div class="sitter-section-title">🧹 Litter Boxes — clean each visit</div>
           <div class="sitter-card blue">
-            <h3>🧹 Laundry room closet &amp; Nathan's office closet &nbsp;<a href="https://photos.app.goo.gl/yvw1m1XcBgKFd2NV9" target="_blank" style="font-size:.65rem;font-weight:700;color:#4a8aba">▶ video</a></h3>
+            <h3>🧹 Laundry room closet &amp; Nathan's office closet &nbsp;<a href="https://photos.app.goo.gl/yvw1m1XcBgKFd2NV9" target="_blank" style="font-size:.65rem;font-weight:700;color:var(--sa)">▶ video</a></h3>
             <p style="margin-bottom:8px">All supplies on the shelves in the laundry room.</p>
             <ol>
               <li>Scoop poop into a trash bag (green scoop hooks onto the laundry room box; bags on the second shelf, far left)</li>
@@ -6993,7 +7006,7 @@ initVineBanners();
         <div class="sitter-section" id="sv-plants">
           <div class="sitter-section-title">🌿 Plants — water once a week</div>
           <div class="sitter-card green">
-            <h3>🌿 Plant locations &nbsp;<a href="https://photos.app.goo.gl/PDff5MiuWaBhYEHy5" target="_blank" style="font-size:.65rem;font-weight:700;color:#3a7a4a">▶ downstairs video</a> &nbsp;<a href="https://photos.app.goo.gl/15JSVM3DASu5PnLcA" target="_blank" style="font-size:.65rem;font-weight:700;color:#3a7a4a">▶ upstairs video</a></h3>
+            <h3>🌿 Plant locations &nbsp;<a href="https://photos.app.goo.gl/PDff5MiuWaBhYEHy5" target="_blank" style="font-size:.65rem;font-weight:700;color:var(--ma)">▶ downstairs video</a> &nbsp;<a href="https://photos.app.goo.gl/15JSVM3DASu5PnLcA" target="_blank" style="font-size:.65rem;font-weight:700;color:var(--ma)">▶ upstairs video</a></h3>
             <p style="margin-bottom:8px">Check soil first — if it's dry an inch down, it's ready. Use the blue pitcher from the kitchen.</p>
             <ul>
               <li>Downstairs kitchen plants</li>
@@ -7007,7 +7020,7 @@ initVineBanners();
             <div class="sitter-section" id="sv-trash-em">
               <div class="sitter-section-title">🗑️ Trash</div>
               <div class="sitter-card green">
-                <h3>🗑️ Trash bins &nbsp;<a href="https://photos.app.goo.gl/c4D9MyxQmwsbpdNW6" target="_blank" style="font-size:.65rem;font-weight:700;color:#3a7a4a">▶ video</a></h3>
+                <h3>🗑️ Trash bins &nbsp;<a href="https://photos.app.goo.gl/c4D9MyxQmwsbpdNW6" target="_blank" style="font-size:.65rem;font-weight:700;color:var(--ma)">▶ video</a></h3>
                 <p>Pickup is <strong>Wednesday morning</strong>. Put the <strong>green-top trash bin</strong> on the curb <strong>Tuesday evening</strong> (right side of the house, handles away from street), bring back in Wednesday.</p>
                 <p style="margin-top:6px"><strong>Recycling:</strong> only goes out <strong>Tuesday April 7</strong> — put both trash AND recycling bins out that night. Bring both back in Wednesday April 8.</p>
               </div>
@@ -7018,7 +7031,7 @@ initVineBanners();
         <div class="sitter-section" id="sv-accidents">
           <div class="sitter-section-title">🧽 Accidents &amp; Hairballs</div>
           <div class="sitter-card">
-            <h3>🧽 If there's a mess &nbsp;<a href="https://photos.app.goo.gl/Zxm69JKpXNu8BkkdA" target="_blank" style="font-size:.65rem;font-weight:700;color:#7a4aba">▶ video</a></h3>
+            <h3>🧽 If there's a mess &nbsp;<a href="https://photos.app.goo.gl/Zxm69JKpXNu8BkkdA" target="_blank" style="font-size:.65rem;font-weight:700;color:var(--la)">▶ video</a></h3>
             <p style="margin-bottom:8px"><strong>On carpet:</strong> Collect solids into a trash bag first. Carpet cleaner is in the <strong>laundry room closet</strong> — plug in, press power button on the side, hold the trigger to release solution while running over the spot, release trigger and run over a few more times for the brushes to work. Dump dirty water in the toilet.</p>
             <p><strong>On hardwood:</strong> White pet-friendly spray, first shelf in the laundry room. Paper towels on the counter.</p>
           </div>
@@ -7577,8 +7590,8 @@ function updateBuildMyDayPulse(){
   if(!btn) return;
   var agenda = document.getElementById('agendaWidget');
   var hasAgenda = agenda && agenda.style.display !== 'none';
-  if(hasAgenda){ btn.classList.remove('btn-pulse'); }
-  else { btn.classList.add('btn-pulse'); }
+  if(hasAgenda){ btn.classList.remove('btn-pulse'); btn.textContent = '➕ Add to My Day'; }
+  else { btn.classList.add('btn-pulse'); btn.textContent = '✨ Build My Day'; }
 }
 
 // ── BRAIN DUMP ────────────────────────────────────────────────────────────────
@@ -8166,16 +8179,7 @@ function initTimberMemories(){
   try{
     const dt = document.getElementById('memDatetimeT');
     if(dt && !dt.value) dt.value = nowISOLocal();
-    const pr = document.getElementById('memPresetsT');
-    if(pr && !pr.children.length){
-      const presets = [
-        ['First Dog Park Visit','soc','🐕'],
-        ['New Trick Unlocked','train','🎓'],
-        ['Brave Vet Moment','health','💚'],
-        ['New Cozy Spot','home','🏠'],
-      ];
-      pr.innerHTML = presets.map(p=>'<button class="mem-preset" onclick="presetMemoryT(\''+p[0].replace(/'/g,"\\'")+'\',\''+p[1]+'\')">'+p[2]+' '+p[0]+'</button>').join('');
-    }
+    // Quick Add presets removed 2026-07-18 per design-system redesign (datetime backfill kept)
     renderMemories('memListT');
   }catch(e){}
 }
@@ -8955,8 +8959,33 @@ function saveDBQueue(q){
   saveDBQueue._t = setTimeout(()=>{ try{ if(typeof gistPush==='function'&&_getGistToken()) gistPush(); }catch(e){} }, 1500);
 }
 
+// Returns today's saved agenda blocks, or null if no same-day plan exists
+function _loadAgendaToday(){
+  try{
+    var st = JSON.parse(localStorage.getItem('jlos_agenda_state')||'null');
+    if(st && Array.isArray(st.blocks) && st.blocks.length && (!st.date || st.date === _todayKeyForAgenda())) return st.blocks;
+  }catch(e){}
+  return null;
+}
+
 function openDayBuilder(){
   renderDBQueue();
+  var existing = _loadAgendaToday();
+  var startEl = document.getElementById('dbStartTime');
+  var genBtn = document.querySelector('#dbModal .db-gen-btn');
+  var sub = document.querySelector('#dbModal .db-sub');
+  if(existing && startEl){
+    // Default new tasks to slot in after the current plan (or now, whichever is later)
+    var now = new Date();
+    var nowMin = now.getHours()*60 + now.getMinutes();
+    var lastEnd = existing[existing.length-1].endMin || 0;
+    var startMin = Math.min(Math.max(lastEnd, Math.ceil(nowMin/5)*5), 24*60-5);
+    startEl.value = ('0'+Math.floor(startMin/60)).slice(-2)+':'+('0'+(startMin%60)).slice(-2);
+  }
+  if(genBtn) genBtn.textContent = existing ? 'Add to Timeline ➕' : 'Generate Timeline ✨';
+  if(sub) sub.textContent = existing
+    ? 'Add one task or a few — they\'ll slot in after your current plan'
+    : 'Tap tasks to queue them, set a start time, generate your timeline';
   var m = document.getElementById('dbModal');
   if(m) m.classList.add('open');
 }
@@ -9030,13 +9059,14 @@ function _renderAgendaBlocks(blocks){
   var ab = document.getElementById('agendaBlocks');
   if(!ab) return;
   ab.innerHTML = '';
-  blocks.forEach(function(b){
+  blocks.forEach(function(b, i){
     var row = document.createElement('div');
     row.style.cssText = 'display:flex;align-items:center;gap:10px;padding:8px 10px;border-bottom:1px solid var(--lm)';
     row.innerHTML = '<span style="font-size:.62rem;font-weight:900;color:var(--sa);white-space:nowrap;min-width:100px">'+_agendaFmtT(b.startMin)+' – '+_agendaFmtT(b.endMin)+'</span>'
       +'<span style="font-size:1rem">'+b.icon+'</span>'
-      +'<span style="font-size:.78rem;font-weight:700;color:var(--td)">'+esc(b.name)+'</span>'
-      +'<span style="margin-left:auto;font-size:.58rem;color:var(--tm);font-weight:700">'+b.dur+'m</span>';
+      +'<span style="font-size:.78rem;font-weight:700;color:var(--td);flex:1">'+esc(b.name)+'</span>'
+      +'<span style="font-size:.58rem;color:var(--tm);font-weight:700">'+b.dur+'m</span>'
+      +'<button onclick="removeAgendaBlock('+i+')" style="background:none;border:none;cursor:pointer;color:var(--tm);opacity:.45;font-size:.72rem;font-weight:900;padding:2px 0 2px 4px;flex-shrink:0;line-height:1">✕</button>';
     ab.appendChild(row);
   });
 }
@@ -9071,14 +9101,18 @@ function restoreAgenda(){
 function generateAgenda(){
   var q = loadDBQueue();
   if(!q.length){ alert('Add some tasks first! 💜'); return; }
+  var existing = _loadAgendaToday() || [];
   var startEl = document.getElementById('dbStartTime');
   var startVal = startEl ? startEl.value : '09:00';
   var parts = startVal.split(':');
   var curMin = (parseInt(parts[0],10)||9)*60 + (parseInt(parts[1],10)||0);
-  var blocks = q.map(function(item){
+  // Appending mid-day: never overlap the existing plan
+  if(existing.length) curMin = Math.max(curMin, existing[existing.length-1].endMin||0);
+  var newBlocks = q.map(function(item){
     var start = curMin; curMin += item.dur;
     return {icon:item.icon, name:item.name, dur:item.dur, startMin:start, endMin:curMin};
   });
+  var blocks = existing.concat(newBlocks);
   _renderAgendaBlocks(blocks);
   var aw = document.getElementById('agendaWidget');
   if(aw) aw.style.display = 'block';
@@ -9088,6 +9122,18 @@ function generateAgenda(){
   saveAgendaState(blocks);
   window._clExpandOverride = false;
   try{ updateChecklistCompact(); }catch(e){}
+  try{ showToast(existing.length ? '➕ Added to your day' : '✨ Day built'); }catch(e){}
+}
+
+// Remove a single block from today's plan (times of remaining blocks are kept)
+function removeAgendaBlock(i){
+  var blocks = _loadAgendaToday() || [];
+  if(i < 0 || i >= blocks.length) return;
+  blocks.splice(i, 1);
+  if(!blocks.length){ clearAgenda(); return; }
+  _renderAgendaBlocks(blocks);
+  saveAgendaState(blocks);
+  try{ showToast('Removed — plan updated'); }catch(e){}
 }
 
 function clearAgenda(){

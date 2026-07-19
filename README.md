@@ -35,7 +35,7 @@ Needs-based daily care tab built around Timber's age and development.
 - **Combined activity timeline** — all four activities logged today, newest first, with ✕ delete buttons.
 - **🔗 Partner button** — generate and manage Nathan's partner view.
 - **Training daily rotation card** — today's focus cues at a glance.
-- **Memories log** — milestone tracking categorised by Social, Home Life, Health, Training.
+- **Memories log** — milestone tracking categorised by Social, Home Life, Health, Training. Backfill date/time picker included (Quick Add presets removed 2026-07-18 per design-system redesign).
 
 ### 🌿 Move — PT Ramp-Up Engine
 A phased, gradually-unlocking PT system built for restarting after a gap — no streaks, no red states, no auto-demotion.
@@ -44,17 +44,19 @@ A phased, gradually-unlocking PT system built for restarting after a gap — no 
 - **Readiness suggestions** — when trailing 7-day completion ≥ 75% and average fatigue ≤ 2.0, a gentle card offers the next unlock (or next phase). "Not yet" snoozes it 3 days, no penalty. If fatigue runs heavy (≥ 2.5), a soft note offers holding or stepping back — same visual weight as advancing.
 - **🎲 Serve Me One** — one-tap snack-sized interface: serves the next undone exercise as a single card with a big Done ✓ button. Deep link `?serve=1` opens straight into it (for NFC tags).
 - **Fatigue check-in** — after each Done, a three-emoji strip (😌 easy · 😐 ok · 😮‍💨 rough) slides in; auto-dismisses after ~5s if ignored. Feeds the readiness engine.
-- **Weekly consistency chart** — scored only against exercises active on each day (denominator snapshotted daily).
+- **Weekly consistency chart** — scored only against exercises active on each day (denominator snapshotted daily). Rendered as design-system CSS bars (mint = 100%, pink = partial, lavender = today) — no chart library.
+- **Home sync** — when today's PT progress reaches 100%, the "Exercise / PT" item in the Home Wellness checklist auto-checks (one-way: resetting PT never un-checks it).
 - Arm PT reference guide + RLT protocol: Face 10m → Hips 20m → Rotating 10m.
 
 ### 📊 Stats — Streaks & Progress
 - 7-day PT consistency heatmap (scored against active exercises only), morning streak counter, Timber walk minutes today.
 
 ### 📅 Calendar — Google Calendar (iCal)
-- Paste your secret iCal URL(s) — your personal calendar plus an optional shared/partner calendar. Both are fetched and merged into one combined view of the next 7 days, grouped by day.
+- Paste your secret iCal URL(s) — your personal calendar plus an optional shared/partner calendar. Both are fetched and merged into one combined view of the next 7 days, grouped by day. Shared-calendar events get a sky-blue accent (personal = lavender).
 
 ### 🏠 Sitter — Pet Care Guide
 - Full sitter instructions accessible via tab or `#sitter` URL hash.
+- **Design-system aligned (2026-07-18)**: the sitter surfaces (in-app overlay + standalone guide) now use the canonical Jasmine OS tokens (pastel sky blue day palette) instead of their old drifted cream/purple palette, per the Design System governance note. Semantic warning/safety colors inside cards are unchanged.
 - **Standalone shareable file**: `Timber Care Guide.html` — a self-contained copy of the sitter guide (general care reference, not date-specific) that can be sent directly to a sitter without exposing the rest of the OS. Re-generate manually by copying the Sitter tab content if it's updated.
 
 ### 🎓 Train — Timber's Training Reference
@@ -94,6 +96,11 @@ A new link is only needed when the partner HTML structure itself changes (new bu
 ## ✨ Day Builder
 
 Open via **Build My Day** on the Home tab. Saved task library + freeform add + Brain Dump → Day queue. Generates a time-blocked agenda on the Home dashboard.
+
+**Incremental building (added 2026-07-18):** build the whole day at once, or one/a few tasks at a time and come back later.
+- Once a plan exists, the Home button becomes **➕ Add to My Day** and the modal switches to "Add to Timeline" mode — new tasks append after the current plan (start time pre-fills to the later of the last block's end or now, and never overlaps existing blocks).
+- Every agenda block has a ✕ to remove it individually throughout the day; remaining blocks keep their times (no reflow). Removing the last block clears the plan.
+- All add/remove changes persist across reloads and sync via the personal Gist, same as before.
 
 ---
 
@@ -154,7 +161,7 @@ Auto-pushes on every save. Auto-pulls on app open + every 3 minutes.
 | Structure | HTML5 — single file (~9,100 lines, 504KB; dead desktop-panel markup removed 2026-07) |
 | Styling | CSS3 (custom properties, grid, flexbox, safe-area-insets) |
 | Logic | Vanilla JavaScript (ES6+), 4 script blocks |
-| Charts | Chart.js |
+| Charts | Token-based CSS bars (Chart.js dependency removed 2026-07-18) |
 | Typography | Google Fonts (Nunito) |
 | Sync | GitHub Gist API (personal + partner Gist) |
 

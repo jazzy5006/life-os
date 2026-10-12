@@ -14,6 +14,7 @@ The landing tab. Everything you need to start and pace your day, at a glance. La
 - **Timber needs mini** — live count chips (🦮 Walk 0/2 · 🍽️ Fed 0/2 · 🚽 Out 0/4) pulled from the day's actual walk/feed/potty logs; taps through to the Timber tab.
 - **🎓 Today's Training** — today's rotation cues at a glance.
 - **💭 Brain Dump** — zero-friction thought capture with "+ Day" queuing, right below training. Resets at midnight.
+- **✿ Thought Stream shortcut** — card under Brain Dump that opens the Thought Stream page in Claude (stream capture, AI-sorted notes and to-dos, search, daily recap). Stream's data lives in Claude, not in Life OS or the Gist.
 - **💜 Connection card** — Nathan / Mom / Sister orbits at the bottom. Tap any person to log a moment together.
 - **Daily soft checklist** — time-aware, section-collapsing checklist:
   - 🌅 **Morning** — Timber outside, Glucosamine, Iron, Vitamins, Vyvanse, Brush Teeth, Log breakfast.
